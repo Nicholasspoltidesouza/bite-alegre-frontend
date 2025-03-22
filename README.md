@@ -4,7 +4,7 @@ Bem-vindo ao **Gastrô Frontend**! Este projeto é um Frontend desenvolvido com 
 
 ## 📌 **Pré-requisitos**
 Antes de rodar o projeto, certifique-se de ter instalado:
-- [Node.js](https://nodejs.org/dist/v20.9.0/node-v20.9.0-x64.msi) (versão 20.9)
+- [Node.js](https://nodejs.org/dist/v20.19.0/node-v20.19.0-x64.msi) (versão 20.19 LTS)
 - [Git](https://git-scm.com/)
 - Expo - App mobile
 
@@ -14,6 +14,7 @@ Antes de rodar o projeto, certifique-se de ter instalado:
 ```sh
   git clone https://tools.ages.pucrs.br/gastro/gastro-frontend.git
   cd gastro-frontend
+  cd gastro
 ```
 ## **Criando Branch**
 ```sh
@@ -33,7 +34,7 @@ Antes de rodar o projeto, certifique-se de ter instalado:
 
 - Acessar o [site do tools](https://tools.ages.pucrs.br/gastro/gastro-frontend/-/branches);
 - Selecionar a sua branch;
-- Solicitar o merge Request;
+- Solicitar o merge request;
     
 Obs: lembre-se de adicionar capturas de tela e explicações do que foi feito.
 
