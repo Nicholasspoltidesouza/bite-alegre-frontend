@@ -17,16 +17,16 @@ Antes de rodar o projeto, certifique-se de ter instalado:
 ```
 ## **Criando Branch**
 ```sh
-    git checkout development
-    git pull
-    git checkout -b feature/US-NUMERO-nome-feat (exemplo: feature/US-03-tela-login) (exemplo com fix: fix/US-03-tela-login)
+  git checkout development
+  git pull
+  git checkout -b feature/US-NUMERO-nome-feat (exemplo: feature/US-03-tela-login) (exemplo com fix: fix/US-03-tela-login)
 ```
 ## **Fazendo commit**
 ```sh
-    git status
-    git add .
-    git commit -m 'feat:o que eu fiz' (exemplo: 'feat: adiciona componente input') (exemplo com fix: 'fix: ajusta componente input')
-    git push
+  git status
+  git add .
+  git commit -m 'feat:o que eu fiz' (exemplo: 'feat: adiciona componente input') (exemplo com fix: 'fix: ajusta componente input')
+  git push
 ```
 
 ## **Merge Request**
