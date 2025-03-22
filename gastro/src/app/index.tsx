@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import CustomTextInput from '../components/TextFieldCadastroUsuario'; // Ensure this path is correct
+import CustomTextInput from '../components/TextFieldCadastroUsuario'; 
 
 const TextInputExample: React.FC = () => {
   const [name, setName] = useState<string>('');
@@ -11,7 +11,7 @@ const TextInputExample: React.FC = () => {
         value={name}
         onChangeText={(text) => setName(text)}
         placeholder="Nome"
-        style={styles.customInput} // Optional: Add custom styles here
+        style={styles.customInput} 
       />
     </View>
   );
@@ -19,14 +19,12 @@ const TextInputExample: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Take up the full screen
-    justifyContent: 'center', // Center vertically
-    alignItems: 'center', // Center horizontally
-    backgroundColor: '#FFFFFF', // White background
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: '#FFFFFF', 
   },
   customInput: {
-    // Optional: Add custom styles for this specific screen
-    // For example, you can add margin, change the background color, etc.
     marginBottom: 16,
   },
 });
