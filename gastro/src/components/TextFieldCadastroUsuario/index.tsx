@@ -20,13 +20,10 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const handleChangeText = (text: string) => {
-    // If validation function exists, run it
     if (validation) {
       const validationError = validation(text);
       setError(validationError);
     }
-
-    // Always call the onChangeText prop
     onChangeText(text);
   };
 
@@ -60,7 +57,6 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
             fontFamily: 'Poppins-Regular',
             fontSize: 16,
             letterSpacing: 0,
-            // Add red border if there's an error
             borderWidth: error ? 2 : 0,
             borderColor: error ? 'red' : 'transparent',
           },
