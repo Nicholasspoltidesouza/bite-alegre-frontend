@@ -1,57 +1,20 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import CustomTextInput from '../components/TextFieldCadastroUsuario'; 
+import React from 'react';
+import { SafeAreaView, StyleSheet } from 'react-native';
+import CadastroUsuario from '../screens/CadastroUsuario'; // Ajuste o caminho conforme sua estrutura
 
-const TextInputExample: React.FC = () => {
-  const [name, setName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-
-  const validateName = (text: string) => {
-    if (text.length < 2) return 'Nome deve ter no mínimo 2 caracteres';
-    if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(text)) return 'Nome deve conter apenas letras';
-    if (text.length > 50) return 'Nome deve ter no máximo 50 caracteres';
-    return null;
-  };
-
-  const validateEmail = (text: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!text) return 'Email é obrigatório';
-    if (!emailRegex.test(text)) return 'Formato de email inválido';
-    if (text.length > 100) return 'Email deve ter no máximo 100 caracteres';
-    return null;
-  };
-
+const App: React.FC = () => {
   return (
-    <View style={styles.container}>
-      <CustomTextInput
-        value={name}
-        onChangeText={setName}
-        placeholder="Nome"
-        style={styles.customInput}
-        validation={validateName}
-      />
-      <CustomTextInput
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Email"
-        style={styles.customInput}
-        validation={validateEmail}
-      />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <CadastroUsuario />
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    backgroundColor: '#FFFFFF', 
-    padding: 16,
-  },
-  customInput: {
-    marginBottom: 16,
+    flex: 1,
+    backgroundColor: '#FFFFFF',
   },
 });
 
-export default TextInputExample;
+export default App;
