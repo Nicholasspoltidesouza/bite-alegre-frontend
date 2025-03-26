@@ -1,10 +1,16 @@
 import React from 'react';
+import { View, ImageBackground, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
-const HeaderPerfilRestaurante = ({ }) => {
+const HeaderPerfilRestaurante = ({ urlFotoDoBanner, urlFotoDoPerfil}) => {
   return (
-    
+
   );
 };
+
+const styles = StyleSheet.create({
+
+});
 
 export default HeaderPerfilRestaurante;
 
