@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import CustomTextInput from '../components/TextFieldCadastroUsuario'; 
+import HeaderPerfilRestaurante from '../components/HeaderPerfilRestaurante';
 
 const TextInputExample: React.FC = () => {
   const [name, setName] = useState<string>('');
@@ -22,22 +23,39 @@ const TextInputExample: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <CustomTextInput
-        value={name}
-        onChangeText={setName}
-        placeholder="Nome"
-        style={styles.customInput}
-        validation={validateName}
-      />
-      <CustomTextInput
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Email"
-        style={styles.customInput}
-        validation={validateEmail}
-      />
-    </View>
+
+    <HeaderPerfilRestaurante></HeaderPerfilRestaurante>
+
+    // <View style={styles.container}>
+    //   <CustomTextInput
+    //     value={name}
+    //     onChangeText={setName}
+    //     placeholder="Nome"
+    //     style={styles.customInput}
+    //     validation={validateName}
+    //   />
+    //   <CustomTextInput
+    //     value={email}
+    //     onChangeText={setEmail}
+    //     placeholder="Email"
+    //     style={styles.customInput}
+    //     validation={validateEmail}
+    //   />
+    // </View>  <CustomTextInput
+    //     value={name}
+    //     onChangeText={setName}
+    //     placeholder="Nome"
+    //     style={styles.customInput}
+    //     validation={validateName}
+    //   />
+    //   <CustomTextInput
+    //     value={email}
+    //     onChangeText={setEmail}
+    //     placeholder="Email"
+    //     style={styles.customInput}
+    //     validation={validateEmail}
+    //   />
+    // </View>
   );
 };
 

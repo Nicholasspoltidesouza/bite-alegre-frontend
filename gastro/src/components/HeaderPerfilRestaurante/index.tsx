@@ -2,15 +2,15 @@ import React from 'react';
 import { View, ImageBackground, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
-const HeaderPerfilRestaurante = ({ urlFotoDoBanner, urlFotoDoPerfil}) => {
+const HeaderPerfilRestaurante = ({ }) => {
   return (
-
+    <h1>Header Perfil do Restaurante</h1>
   );
 };
 
-const styles = StyleSheet.create({
+// const styles = StyleSheet.create({
 
-});
+// });
 
 export default HeaderPerfilRestaurante;
 
