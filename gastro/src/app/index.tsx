@@ -24,7 +24,7 @@ const TextInputExample: React.FC = () => {
 
   return (
 
-    <HeaderPerfilRestaurante></HeaderPerfilRestaurante>
+    <HeaderPerfilRestaurante urlFotoBanner={''}></HeaderPerfilRestaurante>
 
     // <View style={styles.container}>
     //   <CustomTextInput
