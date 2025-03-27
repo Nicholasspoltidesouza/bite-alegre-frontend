@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   icon: {
-    transform: [{ rotate: '90deg' }],
+    transform: [{ rotate: '90deg' }], 
   },
 });
 
