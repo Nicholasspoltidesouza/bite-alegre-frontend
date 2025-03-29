@@ -4,8 +4,8 @@ import { AntDesign } from '@expo/vector-icons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 interface HeaderPerfilRestauranteProps {
-  urlFotoBanner: string;
-  urlFotoPerfil: string;
+  urlFotoBanner?: string;
+  urlFotoPerfil?: string;
   isSelected?: boolean;
 }
 
