@@ -77,8 +77,8 @@ const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({ urlFo
   return (
     <View style={styles.container_banner}>
       <ImageBackground source={{ uri: urlFotoBanner }} style={styles.container} imageStyle={styles.imageBackground} >
-        <TouchableOpacity style={styles.pinButton} >
-          <AntDesign name="pushpin" size={24}  style={styles.icon} onPress={handlePress} />
+        <TouchableOpacity style={styles.pinButton} onPress={handlePress} >
+          <AntDesign name="pushpin" size={24}  style={styles.icon}  />
         </TouchableOpacity>
       </ImageBackground>
       
