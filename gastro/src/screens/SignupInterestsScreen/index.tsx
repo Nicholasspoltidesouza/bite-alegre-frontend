@@ -63,7 +63,7 @@ const SignupInterests: React.FC = () => {
         </View>
 
         <View style={styles.buttonContainer}>
-          <Button title="Concluir" onPress={() => console.log('Botão pressionado')} type={'orange'} />
+          <Button title='Concluir' onPress={() => console.log('Botão pressionado')} type={'orange'} />
         </View>
       </ScrollView>
     </SafeAreaView>
