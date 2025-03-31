@@ -4,13 +4,15 @@ interface NavBarIconProps {
   children?: React.ReactNode;
   color: string;
   size: number;
-  focused?: boolean;  
+  focused?: boolean;
+  iconType?: string;
 }
 
-export function NavBarIcon({ children, focused }: NavBarIconProps) {
+export function NavBarIcon({ children, focused, iconType }: NavBarIconProps) {
+  const isRoulette = iconType === "roleta";
 
   return (
-    <View style={focused ? styles.active : styles.not_active}>
+    <View style={focused ? [styles.active, isRoulette && styles.rouletteActive] : styles.not_active}>
       {children}
     </View>
   )
@@ -30,5 +32,10 @@ const styles = StyleSheet.create({
     marginTop: 25,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  rouletteActive: {
+    borderRadius: 35,
+    height: 63,
+    width: 63,
   },
 })

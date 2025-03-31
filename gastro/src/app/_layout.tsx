@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Image, Pressable } from 'react-native';
 import { NavBarIcon } from "../components/NavBarItem/navBar";
 
@@ -69,6 +69,7 @@ export default function RootLayout() {
             color={color}
             size={size}
             focused={focused}
+            iconType="roleta"
             children={
               <Image source={require('../../assets/images/icon-roleta.png')} style={{ width: 55, height: 55 }} />
             }
@@ -94,7 +95,7 @@ export default function RootLayout() {
               />
             }
         />
-        )
+      )
     }}
     />
     <Tabs.Screen
