@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import CustomTextInput from '../../components/TextFieldCadastroUsuario';
+import Dropdown from '../../components/Dropdown';
 
 const SignupScreen: React.FC = () => {
   const [name, setName] = useState<string>('');
