@@ -1,18 +1,14 @@
 import HeaderPerfilRestaurante from '@/src/components/HeaderPerfilRestaurante';
-import React, { useState } from 'react';
+import React = require('react');
 
 
 
 const restaurantProfile: React.FC = () =>{
   
-
-
-
-  
   return (
 
     <HeaderPerfilRestaurante
-      urlFotoBanner={'https://media.discordapp.net/attachments/842552823412949003/1354653738295627936/image.png?ex=67e6131b&is=67e4c19b&hm=7427015e6d1f2178b1fb60e47b4ec1796d30bac349a019571ef36bbeafb3be85&=&format=webp&quality=lossless'}
+      urlFotoBanner={'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.tripadvisor.com.br%2FRestaurants-g303546-Porto_Alegre_State_of_Rio_Grande_do_Sul.html&psig=AOvVaw0rtvEJxkxhVbBmAkozIgu7&ust=1743543446232000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCJjsttSjtYwDFQAAAAAdAAAAABAE'}
       urlFotoPerfil={''}
     ></HeaderPerfilRestaurante>
 
