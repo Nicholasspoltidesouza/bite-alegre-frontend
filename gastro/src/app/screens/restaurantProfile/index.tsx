@@ -1,9 +1,14 @@
+import HeaderPerfilRestaurante from '@/src/components/HeaderPerfilRestaurante';
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import CustomTextInput from '../components/TextFieldCadastroUsuario'; 
-import HeaderPerfilRestaurante from '../components/HeaderPerfilRestaurante';
-import Tag from '../components/Tag';
 
+
+
+const restaurantProfile: React.FC = () =>{
+  
+
+
+
+  
   return (
 
     <HeaderPerfilRestaurante
@@ -13,5 +18,10 @@ import Tag from '../components/Tag';
 
   );
 
+}
+
+
+
+ 
 
 export default restaurantProfile;
