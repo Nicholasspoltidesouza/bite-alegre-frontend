@@ -1,7 +1,7 @@
 import { Tabs } from "expo-router";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Image, Pressable } from 'react-native';
-import { NavBarIcon } from "../components/NavBarItem/navBar";
+import { NavBarIcon } from "../components/NavBarItem/index";
 
 export default function RootLayout() {
 
@@ -40,7 +40,7 @@ export default function RootLayout() {
       }}
     />
     <Tabs.Screen
-      name="screens/search"
+      name="screens/search/index"
       options={{
         tabBarShowLabel: false,
         tabBarIcon: ({ color, size, focused })  => (
@@ -61,7 +61,7 @@ export default function RootLayout() {
       }}
     />
     <Tabs.Screen
-      name="screens/roullete"
+      name="screens/roullete/index"
       options={{
         tabBarShowLabel: false,
         tabBarIcon: ({ color, size, focused })  => (
@@ -78,7 +78,7 @@ export default function RootLayout() {
       }}
     />
     <Tabs.Screen
-      name="screens/community"
+      name="screens/community/index"
       options={{
         tabBarShowLabel: false,
         tabBarIcon: ({ color, size, focused })  => (
@@ -99,7 +99,7 @@ export default function RootLayout() {
     }}
     />
     <Tabs.Screen
-      name="screens/profile"
+      name="screens/profile/index"
       options={{
         tabBarShowLabel: false,
         tabBarIcon: ({ color, size, focused })  => (
