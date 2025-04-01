@@ -24,7 +24,10 @@ const TextInputExample: React.FC = () => {
   };
 
   return (
-    <p>Mude a pagina: <a href="screens/restaurantProfile">Ir para Perfil de Restaurante</a></p>
+    <div>
+      <h1>Mude a sua pagina!</h1>
+      <a href="screens/restaurantProfile">Ir para Perfil de Restaurante</a>
+    </div>
   );
 };
 
@@ -38,7 +41,7 @@ const styles = StyleSheet.create({
   },
   customInput: {
     marginBottom: 16,
-  },
+  }
 });
 
 export default TextInputExample;
