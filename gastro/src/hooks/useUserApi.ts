@@ -1,10 +1,8 @@
-import { UserDTO } from "../@types/DTO";
-
-const API_URL = "http://localhost:3000/api/users";
+import { UserDTO } from "../@types/DTO"; 
 
 export const createUser = async (userData: UserDTO): Promise<any> => {
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(API_URL_BACKEND + '/users', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
