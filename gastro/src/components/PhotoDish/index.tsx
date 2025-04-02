@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet, ImageBackground } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { View, Text, StyleSheet, ImageBackground, Animated } from "react-native";
 import { Image } from 'react-native';
 
 
@@ -10,7 +10,9 @@ interface PhotoDishProps {
 }
 
 
+
 const PhotoDish: React.FC<PhotoDishProps> = ({ urlFotoPrato, size = 200 }) => {
+
 
     const styles = StyleSheet.create({
         container: {
