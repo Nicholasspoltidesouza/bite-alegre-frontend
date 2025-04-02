@@ -3,8 +3,10 @@ import { View, StyleSheet } from 'react-native';
 import CustomTextInput from '../components/TextFieldCadastroUsuario'; 
 import HeaderPerfilRestaurante from '../components/HeaderPerfilRestaurante';
 import Tag from '../components/Tag';
+import useLocation from "../hooks/useLocation"
 
 const TextInputExample: React.FC = () => {
+
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
 
@@ -23,6 +25,9 @@ const TextInputExample: React.FC = () => {
     return null;
   };
 
+  const { latitude, longitude, errorMsg } = useLocation();
+
+  
   return (
 
     <HeaderPerfilRestaurante
