@@ -1,15 +1,16 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { Star, MapPin, Clock, CheckCircle } from "lucide-react-native";
+import Foundation from '@expo/vector-icons/Foundation';
 
 const RestaurantInformation = () => {
   return (
     <View className="p-4">
     
-      <Text className="text-xl font-bold text-gray-900">Nome Restaurante</Text>
+      <h1 className="text-xl font-bold text-gray-900">Nome Restaurante</h1>
 
       <View className="flex-row items-center mt-1">
-        <Star size={18} color="#FFA500" />
+        <Foundation name="star" size={24} color="#FF914B" />
         <Text className="text-gray-700 ml-1">4.7 (57 avaliações)</Text>
       </View>
 
