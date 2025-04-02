@@ -1,11 +1,12 @@
-import React from 'react';
-import { TextInput, StyleProp, TextInputProps, ViewStyle, TextStyle } from 'react-native';
+import React, { useState } from 'react';
+import { TextInput, StyleProp, TextInputProps, ViewStyle, TextStyle, View, Text } from 'react-native';
 
 interface CustomTextInputProps extends Omit<TextInputProps, 'style'> {
   value: string;
   onChangeText: (text: string) => void;
   placeholder: string;
   style?: StyleProp<ViewStyle | TextStyle>;
+  validation?: (text: string) => string | null; // Optional validation function
 }
 
 const CustomTextInput: React.FC<CustomTextInputProps> = ({
@@ -13,32 +14,65 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
   onChangeText,
   placeholder,
   style,
+  validation,
   ...props
 }) => {
+  const [error, setError] = useState<string | null>(null);
+
+  const handleChangeText = (text: string) => {
+    // If validation function exists, run it
+    if (validation) {
+      const validationError = validation(text);
+      setError(validationError);
+    }
+
+    // Always call the onChangeText prop
+    onChangeText(text);
+  };
+
   return (
-    <TextInput
-      className="py-0 text-base font-normal text-left"
-      style={[
-        {
-          width: 327,                  // Width: 327 
-          height: 50,                  // Height: 50 
-          borderRadius: 20,            // Corner radius: 20 
-          backgroundColor: 'rgba(255, 179, 112, 0.25)',  // #FFB370 with 25% opacity
-          paddingLeft: 24,             
-          paddingRight: 16,            
-          color: '#FF914B',            // Text color (FF914B)
-          fontFamily: 'Poppins-Regular',
-          fontSize: 16,                // Font size: 16 
-          letterSpacing: 0,            // Letter spacing: 0%
-        },
-        style,
-      ]}
-      onChangeText={onChangeText}
-      value={value}
-      placeholder={placeholder}
-      placeholderTextColor="#FF914B"   // Placeholder color FF914B with 100% opacity
-      {...props}
-    />
+    <View>
+      {error && (
+        <Text 
+          style={{
+            color: 'red',
+            fontSize: 12,
+            textAlign: 'left',
+            marginBottom: 2,
+            marginLeft: 24,
+            fontFamily: 'Poppins-Regular'
+          }}
+        >
+          {error}
+        </Text>
+      )}
+      <TextInput
+        className="py-0 text-base font-normal text-left"
+        style={[
+          {
+            width: 327,
+            height: 50,
+            borderRadius: 20,
+            backgroundColor: 'rgba(255, 179, 112, 0.25)',
+            paddingLeft: 24,
+            paddingRight: 16,
+            color: '#FF914B',
+            fontFamily: 'Poppins-Regular',
+            fontSize: 16,
+            letterSpacing: 0,
+            // Add red border if there's an error
+            borderWidth: error ? 2 : 0,
+            borderColor: error ? 'red' : 'transparent',
+          },
+          style,
+        ]}
+        onChangeText={handleChangeText}
+        value={value}
+        placeholder={placeholder}
+        placeholderTextColor="#FF914B"
+        {...props}
+      />
+    </View>
   );
 };
 

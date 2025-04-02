@@ -1,19 +1,35 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import CustomTextInput from '../components/TextFieldCadastroUsuario'; 
+import HeaderPerfilRestaurante from '../components/HeaderPerfilRestaurante';
+import Tag from '../components/Tag';
 
 const TextInputExample: React.FC = () => {
   const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+
+  const validateName = (text: string) => {
+    if (text.length < 2) return 'Nome deve ter no mínimo 2 caracteres';
+    if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(text)) return 'Nome deve conter apenas letras';
+    if (text.length > 50) return 'Nome deve ter no máximo 50 caracteres';
+    return null;
+  };
+
+  const validateEmail = (text: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!text) return 'Email é obrigatório';
+    if (!emailRegex.test(text)) return 'Formato de email inválido';
+    if (text.length > 100) return 'Email deve ter no máximo 100 caracteres';
+    return null;
+  };
 
   return (
-    <View style={styles.container}>
-      <CustomTextInput
-        value={name}
-        onChangeText={(text) => setName(text)}
-        placeholder="Nome"
-        style={styles.customInput} 
-      />
-    </View>
+
+    <HeaderPerfilRestaurante
+      urlFotoBanner={'https://media.discordapp.net/attachments/842552823412949003/1354653738295627936/image.png?ex=67e6131b&is=67e4c19b&hm=7427015e6d1f2178b1fb60e47b4ec1796d30bac349a019571ef36bbeafb3be85&=&format=webp&quality=lossless'}
+      urlFotoPerfil={''}
+    ></HeaderPerfilRestaurante>
+
   );
 };
 
@@ -23,6 +39,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', 
     alignItems: 'center', 
     backgroundColor: '#FFFFFF', 
+    padding: 16,
   },
   customInput: {
     marginBottom: 16,
