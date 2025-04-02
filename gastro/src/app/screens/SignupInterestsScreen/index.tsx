@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text, ScrollView, SafeAreaView } from 'react-native';
-import Tag from '../../components/Tag';
-import Button from '../../components/Button';
+import Tag from '../../../components/Tag';
+import Button from '../../../components/Button';
 
 const SignupInterests: React.FC = () => {
   const interests = ['Ao ar livre', 'Bistrô', 'Luz de velas', 'Casual', 'Reservado', 'Roof top', 'Música ao vivo', 'Pub', 'Familiar'];
