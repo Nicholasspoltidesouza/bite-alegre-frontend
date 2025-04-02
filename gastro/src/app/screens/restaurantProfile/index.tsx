@@ -52,7 +52,7 @@ const restaurantProfile: React.FC = () =>{
 
     <div>
       <PhotoDish
-      urlFotoPrato={'https://media-cdn.tripadvisor.com/media/photo-s/09/a3/15/8b/nando-s-grill.jpg'}
+      urlFotoPrato={'https://img.freepik.com/fotos-premium/prato-de-comida-brasileira-em-fundo-fotografico_496782-1085.jpg?w=740'}
       ></PhotoDish>
     </div>
 
