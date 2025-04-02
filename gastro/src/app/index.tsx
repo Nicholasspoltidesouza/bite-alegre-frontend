@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import CustomTextInput from '../components/TextFieldCadastroUsuario'; 
-import HeaderPerfilRestaurante from '../components/HeaderPerfilRestaurante';
-import Tag from '../components/Tag';
+// import CustomTextInput from '../components/TextFieldCadastroUsuario'; 
+// import HeaderPerfilRestaurante from '../components/HeaderPerfilRestaurante';
+// import Tag from '../components/Tag';
 
 const TextInputExample: React.FC = () => {
   const [name, setName] = useState<string>('');
