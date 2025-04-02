@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
+
 import { StyleSheet, ImageBackground, TouchableOpacity, View, Image } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { useEffect, useState } from 'react';
+import React from 'react';
+
 
 interface HeaderPerfilRestauranteProps {
   urlFotoBanner?: string;
