@@ -8,6 +8,9 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 
 const RestaurantInformation = () => {
+
+  
+
   return (
     <View className="p-4">
     
@@ -21,23 +24,23 @@ const RestaurantInformation = () => {
       <View className="mt-2">
   
         <View className="flex-row items-center mt-1">
-        <Ionicons name="document-text-outline" size={24} color="FF914B" />
+        <Ionicons name="document-text-outline" size={24} color="#FF914B" />
           <Text className="text-gray-600">Descrição</Text>
         </View>
 
 
         <View className="flex-row items-center mt-1">
-        <FontAwesome6 name="location-dot" size={24} color="FF914B" />
+        <FontAwesome6 name="location-dot" size={24} color="#FF914B" />
           <Text className="ml-2 text-gray-700">Endereço do Restaurante</Text>
         </View>
 
         <View className="flex-row items-center mt-1">
-        <FontAwesome name="cutlery" size={24} color="FF914B" />
+        <FontAwesome name="cutlery" size={24} color="#FF914B" />
           <Text className="ml-2 text-green-600">Aberto agora</Text>
         </View>
 
         <View className="flex-row items-center mt-1">
-        <MaterialCommunityIcons name="calendar-start" size={24} color="FF914B" />
+        <MaterialCommunityIcons name="calendar-start" size={24} color="#FF914B" />
           <Text className="ml-2 text-blue-600">Estive Aqui</Text>
         </View>
       </View>

@@ -52,7 +52,7 @@ const restaurantProfile: React.FC = () =>{
 
     <div>
       <PhotoDish
-      urlFotoPrato={'https://http2.mlstatic.com/D_NQ_NP_727308-MLB75452901548_042024-O-adesivo-prato-comida-brasileira-restaurante-prato-feito.webp'}
+      urlFotoPrato={'https://media-cdn.tripadvisor.com/media/photo-s/09/a3/15/8b/nando-s-grill.jpg'}
       ></PhotoDish>
     </div>
 
