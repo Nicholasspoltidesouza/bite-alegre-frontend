@@ -1,11 +1,35 @@
 import HeaderPerfilRestaurante from '@/src/components/HeaderPerfilRestaurante';
 import RestaurantInformation from '@/src/components/RestaurantInformation';
-import { View } from 'lucide-react-native';
+import { View, StyleSheet } from 'react-native';
 
 import React from 'react';
 
 
 const restaurantProfile: React.FC = () =>{
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+    },
+    carda: {
+      color: 'black',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: 20,
+      fontWeight: 'bold',
+    },
+    precoMedio: {
+      color: 'black',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: 10,
+
+    },
+
+    
+  });
+
   
   return (
       
@@ -19,13 +43,23 @@ const restaurantProfile: React.FC = () =>{
       <RestaurantInformation
 
       ></RestaurantInformation>
+
+
     </div>
+        <p style={styles.carda}>
+          Cardápio 
+        </p>
+
+        
+        <p style={styles.precoMedio}>
+          Preço médio: R$ 50,00
+        </p>
 
 
     </div>
   );
 
-
+  
 }
 
 export default restaurantProfile;
