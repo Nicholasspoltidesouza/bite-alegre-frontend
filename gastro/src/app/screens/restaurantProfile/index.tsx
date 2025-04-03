@@ -48,13 +48,6 @@ const restaurantProfile: React.FC = () => {
       </View>
 
       <View>
-        <PhotoDish
-          urlFotoPrato={'https://img.freepik.com/fotos-premium/prato-de-comida-brasileira-em-fundo-fotografico_496782-1085.jpg?w=740'}
-          descricao='Prato Principal'
-        ></PhotoDish>
-      </View>
-
-      <View>
         <p style={styles.carda}>
           Cardápio
         </p>
@@ -64,6 +57,14 @@ const restaurantProfile: React.FC = () => {
           Preço médio: R$ 50,00
         </p>
       </View>
+
+      <View>
+        <PhotoDish
+          urlFotoPrato={'https://img.freepik.com/fotos-premium/prato-de-comida-brasileira-em-fundo-fotografico_496782-1085.jpg?w=740'}
+          descricao='Prato Principal'
+        ></PhotoDish>
+      </View>
+      
       <View>
         < p style={styles.carda}>
           Influencers que já visitaram
