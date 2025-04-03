@@ -4,7 +4,6 @@ import {
   ScrollView,
   StyleSheet,
   View,
-  Text,
   Alert,
 } from "react-native";
 import CustomTextInput from "../../components/TextFieldCadastroUsuario";
@@ -24,7 +23,7 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
   const [userType, setUserType] = useState<string | null>(null);
   const [gender, setGender] = useState<string | null>(null);
 
-  const { createUser, loading, error } = useCreateUser();
+  const { createUser } = useCreateUser();
 
   const validateName = (text: string): string | null => {
     if (text.length < 2) return "Nome deve ter no mínimo 2 caracteres";
@@ -75,21 +74,6 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
     return null;
   };
 
-  const handleBirthDateChange = (text: string) => {
-    const cleaned = text.replace(/\D/g, "");
-    let formatted = "";
-    if (cleaned.length > 0) {
-      formatted += cleaned.substring(0, Math.min(2, cleaned.length));
-      if (cleaned.length > 2) {
-        formatted += "/" + cleaned.substring(2, Math.min(4, cleaned.length));
-        if (cleaned.length > 4) {
-          formatted += "/" + cleaned.substring(4, Math.min(8, cleaned.length));
-        }
-      }
-    }
-    setBirthDate(formatted);
-  };
-
   const handleSubmit = async () => {
     if (
       !name ||
@@ -121,6 +105,8 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
     try {
       const [day, month, year] = birthDate.split("/");
       const isoBirthDate = `${year}-${month}-${day}T00:00:00Z`;
+      const formattedGender =
+      gender === "PREFIRO NÃO INFORMAR" ? "NAO_QUERO_INFORMAR" : gender;
 
       const userData: UserDTO = {
         name,
@@ -128,7 +114,7 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
         email,
         password,
         phone,
-        gender,
+        gender: formattedGender,
         birthDate: isoBirthDate,
       };
 
@@ -217,7 +203,7 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
                 "PREFIRO NÃO INFORMAR",
               ]}
               onSelect={setGender}
-              width={156}
+              width={155}
             />
           </View>
           <View style={{ flex: 1 }}>
@@ -235,7 +221,7 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
               style={styles.birthDateInput}
               validation={validateBirthDate}
               keyboardType="numeric"
-              width={156}
+              width={155}
             />
           </View>
         </View>
