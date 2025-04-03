@@ -5,7 +5,7 @@ import React from 'react';
 import PhotoDish from '@/src/components/PhotoDish';
 
 
-const restaurantProfile: React.FC = () =>{
+const restaurantProfile: React.FC = () => {
 
   const styles = StyleSheet.create({
     container: {
@@ -26,64 +26,63 @@ const restaurantProfile: React.FC = () =>{
       fontSize: 10,
 
     },
+    infos: {
+      marginTop: 30,
+    }
 
-    
   });
 
-  
+
   return (
-    
-
-    <div>  
-    <HeaderPerfilRestaurante
-      urlFotoBanner={'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/5a/28/0e/salao-principal.jpg?w=600&h=-1&s=1'}
-      urlFotoPerfil={''}
-    ></HeaderPerfilRestaurante>
-
-    <div>
-      <RestaurantInformation
-        
-      ></RestaurantInformation>
 
 
-    </div>
+    <View>
+      <HeaderPerfilRestaurante
+        urlFotoBanner={'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/5a/28/0e/salao-principal.jpg?w=600&h=-1&s=1'}
+        urlFotoPerfil={'https://static.vecteezy.com/ti/vetor-gratis/p1/11874816-ilustracao-em-chef-logotipo-design-logotipo-do-restaurante-vetor.jpg'}
+      ></HeaderPerfilRestaurante>
 
-    <div>
-      <PhotoDish
-      urlFotoPrato={'https://img.freepik.com/fotos-premium/prato-de-comida-brasileira-em-fundo-fotografico_496782-1085.jpg?w=740'}
-      descricao='Prato Principal'
-      ></PhotoDish>
-    </div>
+      <View style={styles.infos}>
+        <RestaurantInformation
+        ></RestaurantInformation>
+      </View>
 
-        <div>
-            <p style={styles.carda}>
-            Cardápio 
-             </p>
+      <View>
+        <PhotoDish
+          urlFotoPrato={'https://img.freepik.com/fotos-premium/prato-de-comida-brasileira-em-fundo-fotografico_496782-1085.jpg?w=740'}
+          descricao='Prato Principal'
+        ></PhotoDish>
+      </View>
+
+      <View>
+        <p style={styles.carda}>
+          Cardápio
+        </p>
 
 
-          <p style={styles.precoMedio}>
+        <p style={styles.precoMedio}>
           Preço médio: R$ 50,00
-          </p>
-           </div>
-                    <div>
-                      <p style={styles.carda}>
-                      Influencers que já visitaram
-                     </p>
-                    </div>
+        </p>
+      </View>
+      <View>
+        < p style={styles.carda}>
+          Influencers que já visitaram
+        </p>
+      </View>
 
 
-           <div>
+      <View>
 
 
 
-           </div>
+      </View>
 
-    </div>
+    </View>
 
-    
+
   );
 
-  
+
 }
 
 export default restaurantProfile;

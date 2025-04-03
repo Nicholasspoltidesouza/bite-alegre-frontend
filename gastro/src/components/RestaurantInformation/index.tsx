@@ -1,52 +1,82 @@
 import React from "react";
-import { View, Text } from "react-native";
 import Foundation from '@expo/vector-icons/Foundation';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
+import { StyleSheet, View, Text } from 'react-native';
 
 const RestaurantInformation = () => {
-
-  
+  const styles = StyleSheet.create({
+    screenContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    contentContainer: {
+      width: '90%', // ou um valor fixo como 300
+      padding: 16,
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#1F2937',
+      marginBottom: 8,
+      textAlign: 'center',
+    },
+    infoRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: 4,
+    },
+    text: {
+      marginLeft: 8,
+    },
+    descriptionText: {
+      marginLeft: 8,
+    },
+    openText: {
+      marginLeft: 8,
+    },
+    visitedText: {
+      marginLeft: 8,
+    },
+  });
 
   return (
-    <View className="p-4">
-    
-      <h1 className="text-xl font-bold text-gray-900">Nome Restaurante</h1>
+    <View style={styles.screenContainer}>
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Nome Restaurante</Text>
 
-      <View className="flex-row items-center mt-1">
-        <Foundation name="star" size={24} color="#FF914B" />
-        <Text className="text-gray-700 ml-1">4.7 (57 avaliações)</Text>
-      </View>
-
-      <View className="mt-2">
-  
-        <View className="flex-row items-center mt-1">
-        <Ionicons name="document-text-outline" size={24} color="#FF914B" />
-          <Text className="text-gray-600">Descrição</Text>
+        <View style={styles.infoRow}>
+          <Foundation name="star" size={24} color="#FF914B" />
+          <Text style={styles.text}>4.7 (57 avaliações)</Text>
         </View>
 
+        <View style={{ marginTop: 8 }}>
+          <View style={styles.infoRow}>
+            <Ionicons name="document-text-outline" size={24} color="#FF914B" />
+            <Text style={styles.descriptionText}>Descrição</Text>
+          </View>
 
-        <View className="flex-row items-center mt-1">
-        <FontAwesome6 name="location-dot" size={24} color="#FF914B" />
-          <Text className="ml-2 text-gray-700">Endereço do Restaurante</Text>
-        </View>
+          <View style={styles.infoRow}>
+            <FontAwesome6 name="location-dot" size={24} color="#FF914B" />
+            <Text style={styles.text}>Endereço do Restaurante</Text>
+          </View>
 
-        <View className="flex-row items-center mt-1">
-        <FontAwesome name="cutlery" size={24} color="#FF914B" />
-          <Text className="ml-2 text-green-600">Aberto agora</Text>
-        </View>
+          <View style={styles.infoRow}>
+            <FontAwesome name="cutlery" size={24} color="#FF914B" />
+            <Text style={styles.openText}>Aberto agora</Text>
+          </View>
 
-        <View className="flex-row items-center mt-1">
-        <MaterialCommunityIcons name="calendar-start" size={24} color="#FF914B" />
-          <Text className="ml-2 text-blue-600">Estive Aqui</Text>
+          <View style={styles.infoRow}>
+            <MaterialCommunityIcons name="calendar-start" size={24} color="#FF914B" />
+            <Text style={styles.visitedText}>Estive Aqui</Text>
+          </View>
         </View>
       </View>
     </View>
   );
-
-
 };
+
 export default RestaurantInformation;
