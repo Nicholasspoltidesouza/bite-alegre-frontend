@@ -53,9 +53,11 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
   };
 
   const validatePhone = (text: string): string | null => {
-    const phoneRegex = /^\d{10,15}$/;
-    if (!text) return "Telefone é obrigatório";
-    if (!phoneRegex.test(text)) return "Formato de telefone inválido";
+    const cleaned = text.replace(/\D/g, ''); // remove parênteses, espaços, hífens
+
+    if (!cleaned) return 'Telefone é obrigatório';
+    if (!/^\d{10,11}$/.test(cleaned)) return 'Formato de telefone inválido';
+
     return null;
   };
 
@@ -63,6 +65,19 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
     const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
     if (!text) return "Data de nascimento é obrigatória";
     if (!dateRegex.test(text)) return "Formato deve ser DD/MM/AAAA";
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(text))
+      return 'Formato inválido. Use DD/MM/AAAA';
+
+    const [day, month, year] = text.split('/').map(Number);
+    const date = new Date(year, month - 1, day);
+
+    if (
+      date.getDate() !== day ||
+      date.getMonth() !== month - 1 ||
+      date.getFullYear() !== year
+    )
+      return 'Data inválida';
+
     return null;
   };
 
@@ -136,6 +151,7 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <SignupHeader />
       <ScrollView contentContainerStyle={styles.container}>
         <CustomTextInput
           value={name}
@@ -170,7 +186,15 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
         />
         <CustomTextInput
           value={phone}
-          onChangeText={setPhone}
+          onChangeText={(text) => {
+            const formatted = text
+              .replace(/\D/g, '') // remove tudo que não é dígito
+              .replace(/^(\d{2})(\d)/g, '($1) $2') // formata DDD
+              .replace(/(\d{5})(\d)/, '$1-$2') // formata número com hífen
+              .slice(0, 15); // limita o tamanho (ex: (99) 99999-9999)
+
+            setPhone(formatted);
+          }}
           placeholder="Telefone"
           style={styles.input}
           validation={validatePhone}
@@ -188,7 +212,8 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
           backgroundColor="#FF914B"
         />
         <View style={styles.rowContainer}>
-          <View style={styles.halfWidth}>
+
+          <View style={{ flex: 1, marginRight: 8 }}>
             <Dropdown
               label="Gênero"
               selected={gender}
@@ -200,21 +225,39 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
                 "PREFIRO NÃO INFORMAR",
               ]}
               onSelect={setGender}
-              width={155}
+              width={156}
             />
           </View>
-          <View style={styles.halfWidth}>
+
+          <View style={{ flex: 1 }}>
             <CustomTextInput
               value={birthDate}
-              onChangeText={handleBirthDateChange}
+              onChangeText={(text) => {
+                const formatted = text
+                  .replace(/\D/g, '') // remove tudo que não é dígito
+                  .replace(/^(\d{2})(\d)/, '$1/$2') // adiciona '/' após o dia
+                  .replace(/^(\d{2}\/\d{2})(\d)/, '$1/$2') // adiciona '/' após o mês
+                  .slice(0, 10); // limita a 10 caracteres (DD/MM/AAAA)
+                setBirthDate(formatted);
+              }}
               placeholder="Nascimento"
               style={styles.birthDateInput}
               validation={validateBirthDate}
               keyboardType="numeric"
-              maxLength={10}
+              width={156}
             />
           </View>
         </View>
+
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Avançar"
+            type="orange"
+            onPress={() => { handleSubmit }}
+          />
+        </View>
+      </ScrollView >
+    </SafeAreaView >
         <Button
           title={loading ? "Carregando..." : "Avançar"}
           onPress={handleSubmit}
