@@ -1,29 +1,19 @@
-import React, { useState } from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View,
-  // TouchableOpacity, // No longer needed for submit
-  Text,
-  Alert,
-} from "react-native";
-import CustomTextInput from "../../components/TextFieldCadastroUsuario";
-import Dropdown from "../../components/Dropdown";
-import Button from "../../components/Button"; // Import your custom Button
-import { UserDTO } from "@/src/@types/DTO";
-import { createUser } from "@/src/hooks/useUserApi";
+import Button from '@/src/components/Button';
+import Dropdown from '@/src/components/Dropdown';
+import SignupHeader from '@/src/components/SignupHeader';
+import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
+import React, { useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
-const SignupScreen: React.FC = ({ navigation }: any) => {
-  // --- State (remains the same) ---
-  const [name, setName] = useState<string>("");
-  const [nickname, setNickname] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [birthDate, setBirthDate] = useState<string>("");
-  const [userType, setUserType] = useState<string | null>(null); // Still seems unused in submit
+const SignupScreen = () => {
+  const [name, setName] = useState<string>('');
+  const [nickname, setNickname] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [userType, setUserType] = useState<string | null>(null);
   const [gender, setGender] = useState<string | null>(null);
+  const [birthDate, setBirthDate] = useState('');
 
   // --- Validation Functions (remain the same) ---
   const validateName = (text: string): string | null => {
@@ -54,9 +44,28 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
   };
 
   const validatePhone = (text: string): string | null => {
-    const phoneRegex = /^\d{10,15}$/;
-    if (!text) return "Telefone é obrigatório";
-    if (!phoneRegex.test(text)) return "Formato de telefone inválido";
+    const cleaned = text.replace(/\D/g, ''); // remove parênteses, espaços, hífens
+
+    if (!cleaned) return 'Telefone é obrigatório';
+    if (!/^\d{10,11}$/.test(cleaned)) return 'Formato de telefone inválido';
+
+    return null;
+  };
+
+
+  const validateBirthDate = (text: string) => {
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(text))
+      return 'Formato inválido. Use DD/MM/AAAA';
+
+    const [day, month, year] = text.split('/').map(Number);
+    const date = new Date(year, month - 1, day);
+
+    if (
+      date.getDate() !== day ||
+      date.getMonth() !== month - 1 ||
+      date.getFullYear() !== year
+    )
+      return 'Data inválida';
     return null;
   };
 
@@ -160,6 +169,7 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
   // --- JSX ---
   return (
     <SafeAreaView style={styles.safeArea}>
+      <SignupHeader />
       <ScrollView contentContainerStyle={styles.container}>
         {/* Input Fields */}
         <CustomTextInput
@@ -195,66 +205,64 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
         />
         <CustomTextInput
           value={phone}
-          onChangeText={setPhone}
+          onChangeText={(text) => {
+            const formatted = text
+              .replace(/\D/g, '') // remove tudo que não é dígito
+              .replace(/^(\d{2})(\d)/g, '($1) $2') // formata DDD
+              .replace(/(\d{5})(\d)/, '$1-$2') // formata número com hífen
+              .slice(0, 15); // limita o tamanho (ex: (99) 99999-9999)
+
+            setPhone(formatted);
+          }}
           placeholder="Telefone"
           style={styles.input}
           validation={conditionalValidatePhone}
           keyboardType="phone-pad"
           maxLength={15}
         />
-
-        {/* Dropdown for User Type (still seems unused) */}
-        <Dropdown
-          label="Tipo de Cadastro"
-          selected={userType}
-          placeholder="Tipo de cadastro"
-          options={["Cadastro de Usuário", "Cadastro de Restaurante"]}
-          onSelect={setUserType}
-          iconColor="#FFFFFF"
-          textColor="#FFFFFF"
-          backgroundColor="#FF914B"
-          // Add style if needed, e.g., style={styles.dropdownFullWidth}
-        />
-
-        {/* Row for Gender and Birth Date */}
         <View style={styles.rowContainer}>
-          <View style={styles.halfWidth}>
+
+          <View style={{ flex: 1, marginRight: 8 }}>
             <Dropdown
               label="Gênero"
               selected={gender}
               placeholder="Gênero"
-              options={[
-                "Masculino",
-                "Feminino",
-                "Outro",
-                "Prefiro não informar",
-              ]}
+              options={["Masculino", "Feminino", "Outro", "Prefiro não informar"]}
               onSelect={setGender}
-              width={155}
+              width={156}
             />
           </View>
-          <View style={styles.halfWidth}>
+
+          <View style={{ flex: 1 }}>
             <CustomTextInput
               value={birthDate}
-              onChangeText={handleBirthDateChange}
+              onChangeText={(text) => {
+                const formatted = text
+                  .replace(/\D/g, '') // remove tudo que não é dígito
+                  .replace(/^(\d{2})(\d)/, '$1/$2') // adiciona '/' após o dia
+                  .replace(/^(\d{2}\/\d{2})(\d)/, '$1/$2') // adiciona '/' após o mês
+                  .slice(0, 10); // limita a 10 caracteres (DD/MM/AAAA)
+                setBirthDate(formatted);
+              }}
               placeholder="Nascimento"
-              style={styles.birthDateInput} // Keep specific style if needed
-              validation={conditionalValidateBirthDate}
+              validation={validateBirthDate}
               keyboardType="numeric"
-              maxLength={10}
+              width={156}
             />
           </View>
         </View>
 
-        {/* Use the custom Button component */}
-        <Button
-          title="Avançar"
-          onPress={handleSubmit} // Calls the user creation logic
-          type="orange"
-          style={styles.submitButton} // Apply custom width and margin
-        />
-      </ScrollView>
-    </SafeAreaView>
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Avançar"
+            type="orange"
+            onPress={() => {
+              console.log('Botão Avançar pressionado');
+            }}
+          />
+        </View>
+      </ScrollView >
+    </SafeAreaView >
   );
 };
 
@@ -282,39 +290,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 20,
   },
-  // Optional: Style for the full-width dropdown if needed
-  // dropdownFullWidth: {
-  //   width: 327,
-  //   marginBottom: 20,
-  // },
+  buttonContainer: {
+    marginTop: 20,
+    alignItems: 'flex-end',
+    width: '100%',
+    paddingRight: 30,
+  },
   rowContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: 327, // Match input width
+    flexDirection: 'row',
+    width: 327,
     marginBottom: 20,
   },
-  halfWidth: {
-    width: "48%", // Creates a small gap between items
-  },
-  birthDateInput: {
-    // Removed fixed width, relies on parent halfWidth
-    height: 50,
-    width: 155,
-    borderRadius: 20,
-    backgroundColor: "rgba(255, 179, 112, 0.25)",
-    paddingLeft: 24,
-    paddingRight: 16,
-    color: "#FF914B",
-    fontFamily: "Poppins-Regular", // Ensure font is linked
-    fontSize: 16,
-  },
-  // Style for the custom Button component
-  submitButton: {
-    width: 327, // Override default width from Button component
-    marginTop: 20, // Add margin top
-    // Height, borderRadius, alignment etc. are handled by the Button component itself
-  },
-  // submitButtonText style is no longer needed as Button handles its text style
 });
 
 export default SignupScreen;

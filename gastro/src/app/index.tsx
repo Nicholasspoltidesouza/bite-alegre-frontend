@@ -1,11 +1,11 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
-import CadastroUsuario from '../screens/SignupScreen'; // Ajuste o caminho conforme sua estrutura
+import SignupScreen from '../screens/SignupScreen';
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <CadastroUsuario />
+      <SignupScreen />
     </SafeAreaView>
   );
 };

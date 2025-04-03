@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { TextInput, StyleProp, TextInputProps, ViewStyle, TextStyle, View, Text } from 'react-native';
+import { DimensionValue, StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
 
 interface CustomTextInputProps extends Omit<TextInputProps, 'style'> {
   value: string;
   onChangeText: (text: string) => void;
   placeholder: string;
   style?: StyleProp<ViewStyle | TextStyle>;
-  validation?: (text: string) => string | null; // Optional validation function
+  validation?: (text: string) => string | null;
+  width?: DimensionValue;
 }
 
 const CustomTextInput: React.FC<CustomTextInputProps> = ({
@@ -15,6 +16,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
   placeholder,
   style,
   validation,
+  width,
   ...props
 }) => {
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +32,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
   return (
     <View>
       {error && (
-        <Text 
+        <Text
           style={{
             color: 'red',
             fontSize: 12,
@@ -47,7 +49,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
         className="py-0 text-base font-normal text-left"
         style={[
           {
-            width: 327,
+            width: width || 327,
             height: 50,
             borderRadius: 20,
             backgroundColor: 'rgba(255, 179, 112, 0.25)',
