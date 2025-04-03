@@ -61,7 +61,8 @@ const restaurantProfile: React.FC = () => {
       <View>
         <PhotoDish
           urlFotoPrato={'https://img.freepik.com/fotos-premium/prato-de-comida-brasileira-em-fundo-fotografico_496782-1085.jpg?w=740'}
-          descricao='Prato Principal'
+          descricao='Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem.' 
+          showStar={true}
         ></PhotoDish>
       </View>
       
