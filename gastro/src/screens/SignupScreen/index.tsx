@@ -4,28 +4,27 @@ import {
   ScrollView,
   StyleSheet,
   View,
-  // TouchableOpacity, // No longer needed for submit
   Text,
   Alert,
 } from "react-native";
 import CustomTextInput from "../../components/TextFieldCadastroUsuario";
 import Dropdown from "../../components/Dropdown";
-import Button from "../../components/Button"; // Import your custom Button
+import Button from "../../components/Button";
 import { UserDTO } from "@/src/@types/DTO";
-import { createUser } from "@/src/hooks/useUserApi";
+import { useCreateUser } from "@/src/hooks/useUserApi";
 
 const SignupScreen: React.FC = ({ navigation }: any) => {
-  // --- State (remains the same) ---
   const [name, setName] = useState<string>("");
   const [nickname, setNickname] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [birthDate, setBirthDate] = useState<string>("");
-  const [userType, setUserType] = useState<string | null>(null); // Still seems unused in submit
+  const [userType, setUserType] = useState<string | null>(null);
   const [gender, setGender] = useState<string | null>(null);
 
-  // --- Validation Functions (remain the same) ---
+  const { createUser, loading, error } = useCreateUser();
+
   const validateName = (text: string): string | null => {
     if (text.length < 2) return "Nome deve ter no mínimo 2 caracteres";
     if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(text)) return "Nome deve conter apenas letras";
@@ -64,11 +63,9 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
     const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
     if (!text) return "Data de nascimento é obrigatória";
     if (!dateRegex.test(text)) return "Formato deve ser DD/MM/AAAA";
-    // Optional: Add date validity check
     return null;
   };
 
-  // --- Input Handlers (remain the same) ---
   const handleBirthDateChange = (text: string) => {
     const cleaned = text.replace(/\D/g, "");
     let formatted = "";
@@ -82,26 +79,6 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
       }
     }
     setBirthDate(formatted);
-  };
-
-  // --- Conditional Validation Helpers (remain the same) ---
-  const conditionalValidateName = (text: string): string | null => {
-    return text.length > 0 ? validateName(text) : null;
-  };
-  const conditionalValidateNickname = (text: string): string | null => {
-    return text.length > 0 ? validateNickname(text) : null;
-  };
-  const conditionalValidateEmail = (text: string): string | null => {
-    return text.length > 0 ? validateEmail(text) : null;
-  };
-  const conditionalValidatePassword = (text: string): string | null => {
-    return text.length > 0 ? validatePassword(text) : null;
-  };
-  const conditionalValidatePhone = (text: string): string | null => {
-    return text.length > 0 ? validatePhone(text) : null;
-  };
-  const conditionalValidateBirthDate = (text: string): string | null => {
-    return text.length > 0 ? validateBirthDate(text) : null;
   };
 
   const handleSubmit = async () => {
@@ -133,6 +110,9 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
     }
 
     try {
+      const [day, month, year] = birthDate.split("/");
+      const isoBirthDate = `${year}-${month}-${day}T00:00:00Z`;
+
       const userData: UserDTO = {
         name,
         nickname,
@@ -140,48 +120,43 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
         password,
         phone,
         gender,
-        birthDate,
-        // profilePhoto is optional in DTO, not collected here yet
+        birthDate: isoBirthDate,
       };
 
-      await createUser(userData); // Assuming createUser doesn't handle photo yet
+      await createUser(userData);
       Alert.alert("Sucesso", "Usuário cadastrado com sucesso!");
-      // Maybe navigate or clear form
-      // navigation.navigate('NextScreen');
-    } catch (error) {
-      console.error("Submit Error:", error);
+    } catch (err) {
+      console.error("Submit Error:", err);
       Alert.alert(
         "Erro",
-        error instanceof Error ? error.message : "Ocorreu um erro inesperado.",
+        err instanceof Error ? err.message : "Ocorreu um erro inesperado."
       );
     }
   };
 
-  // --- JSX ---
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        {/* Input Fields */}
         <CustomTextInput
           value={name}
           onChangeText={setName}
           placeholder="Nome"
           style={styles.input}
-          validation={conditionalValidateName}
+          validation={validateName}
         />
         <CustomTextInput
           value={nickname}
           onChangeText={setNickname}
           placeholder="Apelido"
           style={styles.input}
-          validation={conditionalValidateNickname}
+          validation={validateNickname}
         />
         <CustomTextInput
           value={email}
           onChangeText={setEmail}
           placeholder="Email"
           style={styles.input}
-          validation={conditionalValidateEmail}
+          validation={validateEmail}
           keyboardType="email-address"
           autoCapitalize="none"
         />
@@ -190,7 +165,7 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
           onChangeText={setPassword}
           placeholder="Senha"
           style={styles.input}
-          validation={conditionalValidatePassword}
+          validation={validatePassword}
           secureTextEntry
         />
         <CustomTextInput
@@ -198,12 +173,10 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
           onChangeText={setPhone}
           placeholder="Telefone"
           style={styles.input}
-          validation={conditionalValidatePhone}
+          validation={validatePhone}
           keyboardType="phone-pad"
           maxLength={15}
         />
-
-        {/* Dropdown for User Type (still seems unused) */}
         <Dropdown
           label="Tipo de Cadastro"
           selected={userType}
@@ -213,10 +186,7 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
           iconColor="#FFFFFF"
           textColor="#FFFFFF"
           backgroundColor="#FF914B"
-          // Add style if needed, e.g., style={styles.dropdownFullWidth}
         />
-
-        {/* Row for Gender and Birth Date */}
         <View style={styles.rowContainer}>
           <View style={styles.halfWidth}>
             <Dropdown
@@ -224,10 +194,10 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
               selected={gender}
               placeholder="Gênero"
               options={[
-                "Masculino",
-                "Feminino",
-                "Outro",
-                "Prefiro não informar",
+                "MASCULINO",
+                "FEMININO",
+                "OUTRO",
+                "PREFIRO NÃO INFORMAR",
               ]}
               onSelect={setGender}
               width={155}
@@ -238,66 +208,57 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
               value={birthDate}
               onChangeText={handleBirthDateChange}
               placeholder="Nascimento"
-              style={styles.birthDateInput} // Keep specific style if needed
-              validation={conditionalValidateBirthDate}
+              style={styles.birthDateInput}
+              validation={validateBirthDate}
               keyboardType="numeric"
               maxLength={10}
             />
           </View>
         </View>
-
-        {/* Use the custom Button component */}
         <Button
-          title="Avançar"
-          onPress={handleSubmit} // Calls the user creation logic
+          title={loading ? "Carregando..." : "Avançar"}
+          onPress={handleSubmit}
           type="orange"
-          style={styles.submitButton} // Apply custom width and margin
+          style={styles.submitButton}
         />
+        {error && <Text style={styles.errorText}>Erro: {error}</Text>}
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-// --- Styles ---
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
   container: {
-    // justifyContent: 'center', // Remove if content might exceed screen height
     alignItems: "center",
     padding: 16,
-    paddingBottom: 32, // Ensure space at the bottom
+    paddingBottom: 32,
   },
   input: {
-    width: 327, // Consider using percentages or screen width for responsiveness
+    width: 327,
     height: 50,
     borderRadius: 20,
     backgroundColor: "rgba(255, 179, 112, 0.25)",
     paddingLeft: 24,
     paddingRight: 16,
     color: "#FF914B",
-    fontFamily: "Poppins-Regular", // Ensure font is linked
+    fontFamily: "Poppins-Regular",
     fontSize: 16,
     marginBottom: 20,
   },
-  // Optional: Style for the full-width dropdown if needed
-  // dropdownFullWidth: {
-  //   width: 327,
-  //   marginBottom: 20,
-  // },
   rowContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: 327, // Match input width
+    width: 327,
     marginBottom: 20,
   },
   halfWidth: {
-    width: "48%", // Creates a small gap between items
+    width: "48%",
   },
   birthDateInput: {
-    // Removed fixed width, relies on parent halfWidth
     height: 50,
     width: 155,
     borderRadius: 20,
@@ -305,16 +266,18 @@ const styles = StyleSheet.create({
     paddingLeft: 24,
     paddingRight: 16,
     color: "#FF914B",
-    fontFamily: "Poppins-Regular", // Ensure font is linked
+    fontFamily: "Poppins-Regular",
     fontSize: 16,
   },
-  // Style for the custom Button component
   submitButton: {
-    width: 327, // Override default width from Button component
-    marginTop: 20, // Add margin top
-    // Height, borderRadius, alignment etc. are handled by the Button component itself
+    width: 327,
+    marginTop: 20,
   },
-  // submitButtonText style is no longer needed as Button handles its text style
+  errorText: {
+    color: "red",
+    marginTop: 10,
+    textAlign: "center",
+  },
 });
 
 export default SignupScreen;

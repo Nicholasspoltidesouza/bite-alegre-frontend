@@ -1,31 +1,44 @@
+import { useState } from "react";
 import { UserDTO } from "../@types/DTO";
+import { API_URL_BACKEND } from "../constants/apiUrl";
 
-const API_URL = "http://localhost:3000/api/users";
+export const useCreateUser = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<any>(null);
 
-export const createUser = async (userData: UserDTO): Promise<any> => {
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    });
+  const createUser = async (userData: UserDTO): Promise<void> => {
+    setLoading(true);
+    setError(null);
 
-    const responseData = await response.json();
+    try {
+      const response = await fetch(`${API_URL_BACKEND}/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
 
-    if (response.ok) {
-      console.log("Usuario criado:", responseData);
-      return responseData; 
-    } else {
-      throw new Error(
-        responseData.error ||
-          responseData.message ||
-          `Falha ao criar usuário. Status: ${response.status}`,
-      );
+      const responseData = await response.json();
+
+      if (response.ok) {
+        console.log("Usuário criado:", responseData);
+        setData(responseData);
+      } else {
+        throw new Error(
+          responseData.error ||
+            responseData.message ||
+            `Falha ao criar usuário. Status: ${response.status}`,
+        );
+      }
+    } catch (err: any) {
+      console.error("Erro ao criar usuário:", err);
+      setError(err.message || "Erro desconhecido");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Erro ao criar usuario:", error);
-    throw error;
-  }
+  };
+
+  return { createUser, loading, error, data };
 };
