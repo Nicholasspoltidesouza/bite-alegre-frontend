@@ -16,7 +16,7 @@ const SignupScreen = () => {
   const [gender, setGender] = useState<string | null>(null);
   const [birthDate, setBirthDate] = useState('');
 
-  const { createUser, loading, error } = useCreateUser();
+  const { createUser } = useCreateUser();
 
   const validateName = (text: string): string | null => {
     if (text.length < 2) return "Nome deve ter no mínimo 2 caracteres";
@@ -67,21 +67,6 @@ const SignupScreen = () => {
     return null;
   };
 
-  const handleBirthDateChange = (text: string) => {
-    const cleaned = text.replace(/\D/g, "");
-    let formatted = "";
-    if (cleaned.length > 0) {
-      formatted += cleaned.substring(0, Math.min(2, cleaned.length));
-      if (cleaned.length > 2) {
-        formatted += "/" + cleaned.substring(2, Math.min(4, cleaned.length));
-        if (cleaned.length > 4) {
-          formatted += "/" + cleaned.substring(4, Math.min(8, cleaned.length));
-        }
-      }
-    }
-    setBirthDate(formatted);
-  };
-
   const handleSubmit = async () => {
     if (
       !name ||
@@ -113,6 +98,8 @@ const SignupScreen = () => {
     try {
       const [day, month, year] = birthDate.split("/");
       const isoBirthDate = `${year}-${month}-${day}T00:00:00Z`;
+      const formattedGender =
+      gender === "PREFIRO NÃO INFORMAR" ? "NAO_QUERO_INFORMAR" : gender;
 
       const userData: UserDTO = {
         name,
@@ -120,7 +107,7 @@ const SignupScreen = () => {
         email,
         password,
         phone,
-        gender,
+        gender: formattedGender,
         birthDate: isoBirthDate,
       };
 
