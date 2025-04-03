@@ -1,42 +1,97 @@
-import React, { useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, ImageBackground, Animated } from "react-native";
-import { Image } from 'react-native';
-
-
+import React, { useRef } from "react";
+import { View, StyleSheet, Text, Image, Animated, TouchableOpacity } from "react-native";
 
 interface PhotoDishProps {
     urlFotoPrato: string;
+    descricao: string;
     size?: number;
 }
 
-
-
-const PhotoDish: React.FC<PhotoDishProps> = ({ urlFotoPrato, size = 200 }) => {
-
+const PhotoDish: React.FC<PhotoDishProps> = ({ urlFotoPrato, descricao, size = 200 }) => {
+    const flipAnim = useRef(new Animated.Value(0)).current;
+    let isFlipped = false;
 
     const styles = StyleSheet.create({
         container: {
-          borderRadius: 20, // Bordas arredondadas
-          overflow: 'hidden',
-          shadowColor: '#000', // Cor da sombra
-          shadowOffset: { width: 0, height: 4 }, // Deslocamento da sombra
-          shadowOpacity: 0.3, // Opacidade da sombra
-          shadowRadius: 5, // Raio da sombra
-          elevation: 5, // Sombra no Android
+            borderRadius: 20,
+            overflow: 'hidden',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 5,
+            elevation: 5,
+        },
+        card: {
+            width: size,
+            height: size,
+            backfaceVisibility: 'hidden',
         },
         image: {
-          borderRadius: 20, // Mantém o arredondamento
-          resizeMode: 'cover', // Mantém a imagem ajustada
+            borderRadius: 20,
+            resizeMode: 'cover',
         },
-      });
+        backCard: {
+            position: 'absolute',
+            top: 0,
+            width: '100%',
+            height: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#f8f8f8',
+            borderRadius: 20,
+            padding: 15,
+        },
+        descriptionText: {
+            fontSize: 16,
+            textAlign: 'center',
+            color: '#333',
+        },
+    });
 
+    const flipCard = () => {
+        Animated.spring(flipAnim, {
+            toValue: isFlipped ? 0 : 180,
+            friction: 8,
+            tension: 10,
+            useNativeDriver: true,
+        }).start(() => {
+            isFlipped = !isFlipped;
+        });
+    };
 
+    const frontInterpolate = flipAnim.interpolate({
+        inputRange: [0, 180],
+        outputRange: ['0deg', '180deg'],
+    });
+
+    const backInterpolate = flipAnim.interpolate({
+        inputRange: [0, 180],
+        outputRange: ['180deg', '360deg'],
+    });
+
+    const frontAnimatedStyle = {
+        transform: [{ rotateY: frontInterpolate }],
+    };
+
+    const backAnimatedStyle = {
+        transform: [{ rotateY: backInterpolate }],
+    };
 
     return (
-        <View style={[styles.container, { width: size, height: size }]}>
-            <Image  source={{ uri: urlFotoPrato }} style={[styles.image, { width: size, height: size }]} />
-        </View>
-        
+        <TouchableOpacity activeOpacity={0.9} onPress={flipCard}>
+            <View style={[styles.container, { width: size, height: size }]}>
+                <Animated.View style={[styles.card, frontAnimatedStyle]}>
+                    <Image 
+                        source={{ uri: urlFotoPrato }} 
+                        style={[styles.image, { width: size, height: size }]} 
+                    />
+                </Animated.View>
+                
+                <Animated.View style={[styles.card, styles.backCard, backAnimatedStyle]}>
+                    <Text style={styles.descriptionText}>{descricao}</Text>
+                </Animated.View>
+            </View>
+        </TouchableOpacity>
     );
 };
 

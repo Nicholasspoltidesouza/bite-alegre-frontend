@@ -1,8 +1,6 @@
 import HeaderPerfilRestaurante from '@/src/components/HeaderPerfilRestaurante';
 import RestaurantInformation from '@/src/components/RestaurantInformation';
 import { View, StyleSheet } from 'react-native';
-
-
 import React from 'react';
 import PhotoDish from '@/src/components/PhotoDish';
 
@@ -53,6 +51,7 @@ const restaurantProfile: React.FC = () =>{
     <div>
       <PhotoDish
       urlFotoPrato={'https://img.freepik.com/fotos-premium/prato-de-comida-brasileira-em-fundo-fotografico_496782-1085.jpg?w=740'}
+      descricao='Prato Principal'
       ></PhotoDish>
     </div>
 
