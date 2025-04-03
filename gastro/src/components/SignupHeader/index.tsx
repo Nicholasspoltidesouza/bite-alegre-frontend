@@ -1,0 +1,112 @@
+import { MaterialIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Dropdown from '../Dropdown';
+
+interface SignupHeaderProps {
+  urlProfilePhoto?: string;
+  onBack?: () => void;
+  onPhotoPress?: () => void;
+}
+
+const SignupHeader = ({ urlProfilePhoto, onBack, onPhotoPress }: SignupHeaderProps) => {
+  const [userType, setUserType] = useState<string | null>(null);
+
+  return (
+    <SafeAreaView>
+      <View style={styles.banner}>
+        <TouchableOpacity style={styles.backButton} onPress={onBack}>
+          <MaterialIcons name="keyboard-arrow-left" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
+        <View style={styles.dropdown}>
+          <Dropdown
+            label="Tipo de Cadastro"
+            selected={userType}
+            placeholder="Tipo de cadastro"
+            options={["Cadastro de Usuário", "Cadastro de Restaurante"]}
+            onSelect={setUserType}
+            iconColor='#FFFFFF'
+            textColor='#FFFFFF'
+            backgroundColor='#FF914B'
+            width={220}
+            justifyContent='center'
+          />
+        </View>
+        <View style={styles.photoContainer}>
+          <Text style={styles.title}>ESCOLHA SUA FOTO</Text>
+          <TouchableOpacity style={styles.profileContainer} onPress={onPhotoPress}>
+            {urlProfilePhoto ? (
+              <Image source={{ uri: urlProfilePhoto }} style={styles.profileImage} />
+            ) : (
+              <MaterialIcons name="person" size={30} color="rgba(255,255,255,0.85)" />
+            )}
+            <View style={styles.cameraIcon}>
+              <MaterialIcons name="photo-camera" size={20} color="#FFFFFF" />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  banner: {
+    height: 190,
+    backgroundColor: '#FF914B',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    position: 'relative',
+    alignItems: 'center',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 57,
+    left: 30,
+    backgroundColor: 'rgba(255,255,255,0.4)',
+    borderRadius: 100,
+    padding: 10,
+  },
+  dropdown: {
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    top: 50,
+    left: 68,
+  },
+  title: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    fontWeight: '500',
+    marginTop: 10,
+  },
+  profileContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 35,
+    backgroundColor: '#FFB370',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 35,
+  },
+  cameraIcon: {
+    position: 'absolute',
+    bottom: -2,
+    right: -2,
+    borderRadius: 6,
+    padding: 2,
+  },
+  photoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    marginTop: 15,
+  },
+});
+
+export default SignupHeader;

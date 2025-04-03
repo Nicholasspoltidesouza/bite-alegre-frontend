@@ -1,27 +1,21 @@
-import React, { useState } from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View,
-  Text,
-  Alert,
-} from "react-native";
-import CustomTextInput from "../../components/TextFieldCadastroUsuario";
-import Dropdown from "../../components/Dropdown";
-import Button from "../../components/Button";
-import { UserDTO } from "@/src/@types/DTO";
-import { useCreateUser } from "@/src/hooks/useUserApi";
+import { UserDTO } from '@/src/@types/DTO';
+import Button from '@/src/components/Button';
+import Dropdown from '@/src/components/Dropdown';
+import SignupHeader from '@/src/components/SignupHeader';
+import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
+import { useCreateUser } from '@/src/hooks/useUserApi';
+import React, { useState } from 'react';
+import { Alert, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
-const SignupScreen: React.FC = ({ navigation }: any) => {
-  const [name, setName] = useState<string>("");
-  const [nickname, setNickname] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [birthDate, setBirthDate] = useState<string>("");
+const SignupScreen = () => {
+  const [name, setName] = useState<string>('');
+  const [nickname, setNickname] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
   const [userType, setUserType] = useState<string | null>(null);
   const [gender, setGender] = useState<string | null>(null);
+  const [birthDate, setBirthDate] = useState('');
 
   const { createUser, loading, error } = useCreateUser();
 
@@ -53,16 +47,28 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
   };
 
   const validatePhone = (text: string): string | null => {
-    const phoneRegex = /^\d{10,15}$/;
-    if (!text) return "Telefone é obrigatório";
-    if (!phoneRegex.test(text)) return "Formato de telefone inválido";
+    const cleaned = text.replace(/\D/g, ''); 
+
+    if (!cleaned) return 'Telefone é obrigatório';
+    if (!/^\d{10,11}$/.test(cleaned)) return 'Formato de telefone inválido';
+
     return null;
   };
 
-  const validateBirthDate = (text: string): string | null => {
-    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-    if (!text) return "Data de nascimento é obrigatória";
-    if (!dateRegex.test(text)) return "Formato deve ser DD/MM/AAAA";
+
+  const validateBirthDate = (text: string) => {
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(text))
+      return 'Formato inválido. Use DD/MM/AAAA';
+
+    const [day, month, year] = text.split('/').map(Number);
+    const date = new Date(year, month - 1, day);
+
+    if (
+      date.getDate() !== day ||
+      date.getMonth() !== month - 1 ||
+      date.getFullYear() !== year
+    )
+      return 'Data inválida';
     return null;
   };
 
@@ -136,6 +142,7 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <SignupHeader />
       <ScrollView contentContainerStyle={styles.container}>
         <CustomTextInput
           value={name}
@@ -170,25 +177,24 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
         />
         <CustomTextInput
           value={phone}
-          onChangeText={setPhone}
+          onChangeText={(text) => {
+            const formatted = text
+              .replace(/\D/g, '') 
+              .replace(/^(\d{2})(\d)/g, '($1) $2')
+              .replace(/(\d{5})(\d)/, '$1-$2') 
+              .slice(0, 15); 
+
+            setPhone(formatted);
+          }}
           placeholder="Telefone"
           style={styles.input}
           validation={validatePhone}
           keyboardType="phone-pad"
           maxLength={15}
         />
-        <Dropdown
-          label="Tipo de Cadastro"
-          selected={userType}
-          placeholder="Tipo de cadastro"
-          options={["Cadastro de Usuário", "Cadastro de Restaurante"]}
-          onSelect={setUserType}
-          iconColor="#FFFFFF"
-          textColor="#FFFFFF"
-          backgroundColor="#FF914B"
-        />
         <View style={styles.rowContainer}>
-          <View style={styles.halfWidth}>
+
+          <View style={{ flex: 1, marginRight: 8 }}>
             <Dropdown
               label="Gênero"
               selected={gender}
@@ -203,27 +209,38 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
               width={155}
             />
           </View>
-          <View style={styles.halfWidth}>
+
+          <View style={{ flex: 1 }}>
             <CustomTextInput
               value={birthDate}
-              onChangeText={handleBirthDateChange}
+              onChangeText={(text) => {
+                const formatted = text
+                  .replace(/\D/g, '') 
+                  .replace(/^(\d{2})(\d)/, '$1/$2') 
+                  .replace(/^(\d{2}\/\d{2})(\d)/, '$1/$2') 
+                  .slice(0, 10); 
+                setBirthDate(formatted);
+              }}
               placeholder="Nascimento"
               style={styles.birthDateInput}
               validation={validateBirthDate}
               keyboardType="numeric"
-              maxLength={10}
+              width={155}
             />
           </View>
         </View>
-        <Button
-          title={loading ? "Carregando..." : "Avançar"}
-          onPress={handleSubmit}
-          type="orange"
-          style={styles.submitButton}
-        />
-        {error && <Text style={styles.errorText}>Erro: {error}</Text>}
-      </ScrollView>
-    </SafeAreaView>
+
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Avançar"
+            type="orange"
+            onPress={() => {
+              console.log('Botão Avançar pressionado');
+            }}
+          />
+        </View>
+      </ScrollView >
+    </SafeAreaView >
   );
 };
 
@@ -277,6 +294,12 @@ const styles = StyleSheet.create({
     color: "red",
     marginTop: 10,
     textAlign: "center",
+  },
+  buttonContainer: {
+    marginTop: 20,
+    alignItems: 'flex-end',
+    width: '100%',
+    paddingRight: 30,
   },
 });
 
