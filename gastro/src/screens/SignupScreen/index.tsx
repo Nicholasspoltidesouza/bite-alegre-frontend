@@ -46,28 +46,24 @@ const SignupScreen = () => {
   };
 
   const validatePhone = (text: string): string | null => {
-    const cleaned = text.replace(/\D/g, ''); 
-
-    if (!cleaned) return 'Telefone é obrigatório';
-    if (!/^\d{10,11}$/.test(cleaned)) return 'Formato de telefone inválido';
-
+    const cleaned = text.replace(/\D/g, "");
+    if (!cleaned) return "Telefone é obrigatório";
+    if (!/^\d{10,11}$/.test(cleaned)) return "Formato de telefone inválido";
     return null;
   };
 
   const validateBirthDate = (text: string): string | null => {
-    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(text))
-      return 'Formato inválido. Use DD/MM/AAAA';
-
-    const [day, month, year] = text.split('/').map(Number);
+    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+    if (!text) return "Data de nascimento é obrigatória";
+    if (!dateRegex.test(text)) return "Formato deve ser DD/MM/AAAA";
+    const [day, month, year] = text.split("/").map(Number);
     const date = new Date(year, month - 1, day);
-
     if (
       date.getDate() !== day ||
       date.getMonth() !== month - 1 ||
       date.getFullYear() !== year
     )
-      return 'Data inválida';
-
+      return "Data inválida";
     return null;
   };
 
@@ -178,11 +174,10 @@ const SignupScreen = () => {
           value={phone}
           onChangeText={(text) => {
             const formatted = text
-              .replace(/\D/g, '') 
-              .replace(/^(\d{2})(\d)/g, '($1) $2')
-              .replace(/(\d{5})(\d)/, '$1-$2') 
-              .slice(0, 15); 
-
+              .replace(/\D/g, "")
+              .replace(/^(\d{2})(\d)/g, "($1) $2")
+              .replace(/(\d{5})(\d)/, "$1-$2")
+              .slice(0, 15);
             setPhone(formatted);
           }}
           placeholder="Telefone"
@@ -192,7 +187,6 @@ const SignupScreen = () => {
           maxLength={15}
         />
         <View style={styles.rowContainer}>
-
           <View style={{ flex: 1, marginRight: 8 }}>
             <Dropdown
               label="Gênero"
@@ -208,16 +202,15 @@ const SignupScreen = () => {
               width={155}
             />
           </View>
-
           <View style={{ flex: 1 }}>
             <CustomTextInput
               value={birthDate}
               onChangeText={(text) => {
                 const formatted = text
-                  .replace(/\D/g, '') 
-                  .replace(/^(\d{2})(\d)/, '$1/$2') 
-                  .replace(/^(\d{2}\/\d{2})(\d)/, '$1/$2') 
-                  .slice(0, 10); 
+                  .replace(/\D/g, "")
+                  .replace(/^(\d{2})(\d)/, "$1/$2")
+                  .replace(/^(\d{2}\/\d{2})(\d)/, "$1/$2")
+                  .slice(0, 10);
                 setBirthDate(formatted);
               }}
               placeholder="Nascimento"
@@ -269,9 +262,6 @@ const styles = StyleSheet.create({
     width: 327,
     marginBottom: 20,
   },
-  halfWidth: {
-    width: "48%",
-  },
   birthDateInput: {
     height: 50,
     width: 155,
@@ -283,20 +273,11 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
     fontSize: 16,
   },
-  submitButton: {
-    width: 327,
-    marginTop: 20,
-  },
-  errorText: {
-    color: "red",
-    marginTop: 10,
-    textAlign: "center",
-  },
   buttonContainer: {
-    marginTop: 20,
-    alignItems: 'flex-end',
-    width: '100%',
-    paddingRight: 30,
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    width: 120,
   },
 });
 
