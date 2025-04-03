@@ -11,7 +11,6 @@ const SignupScreen = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
-  const [userType, setUserType] = useState<string | null>(null);
   const [gender, setGender] = useState<string | null>(null);
   const [birthDate, setBirthDate] = useState('');
 
@@ -52,8 +51,7 @@ const SignupScreen = () => {
     return null;
   };
 
-
-  const validateBirthDate = (text: string) => {
+  const validateBirthDate = (text: string): string | null => {
     if (!/^\d{2}\/\d{2}\/\d{4}$/.test(text))
       return 'Formato inválido. Use DD/MM/AAAA';
 
@@ -66,14 +64,7 @@ const SignupScreen = () => {
       date.getFullYear() !== year
     )
       return 'Data inválida';
-    return null;
-  };
 
-  const validateBirthDate = (text: string): string | null => {
-    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-    if (!text) return "Data de nascimento é obrigatória";
-    if (!dateRegex.test(text)) return "Formato deve ser DD/MM/AAAA";
-    // Optional: Add date validity check
     return null;
   };
 
@@ -256,9 +247,7 @@ const SignupScreen = () => {
           <Button
             title="Avançar"
             type="orange"
-            onPress={() => {
-              console.log('Botão Avançar pressionado');
-            }}
+            onPress={() => { handleSubmit }}
           />
         </View>
       </ScrollView >
