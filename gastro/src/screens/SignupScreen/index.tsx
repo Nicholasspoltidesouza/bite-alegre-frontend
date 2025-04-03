@@ -12,6 +12,7 @@ import Dropdown from "../../components/Dropdown";
 import Button from "../../components/Button";
 import { UserDTO } from "@/src/@types/DTO";
 import { useCreateUser } from "@/src/hooks/useUserApi";
+import SignupHeader from "@/src/components/SignupHeader";
 
 const SignupScreen: React.FC = ({ navigation }: any) => {
   const [name, setName] = useState<string>("");
@@ -53,11 +54,9 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
   };
 
   const validatePhone = (text: string): string | null => {
-    const cleaned = text.replace(/\D/g, ''); // remove parênteses, espaços, hífens
-
-    if (!cleaned) return 'Telefone é obrigatório';
-    if (!/^\d{10,11}$/.test(cleaned)) return 'Formato de telefone inválido';
-
+    const cleaned = text.replace(/\D/g, "");
+    if (!cleaned) return "Telefone é obrigatório";
+    if (!/^\d{10,11}$/.test(cleaned)) return "Formato de telefone inválido";
     return null;
   };
 
@@ -65,19 +64,14 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
     const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
     if (!text) return "Data de nascimento é obrigatória";
     if (!dateRegex.test(text)) return "Formato deve ser DD/MM/AAAA";
-    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(text))
-      return 'Formato inválido. Use DD/MM/AAAA';
-
-    const [day, month, year] = text.split('/').map(Number);
+    const [day, month, year] = text.split("/").map(Number);
     const date = new Date(year, month - 1, day);
-
     if (
       date.getDate() !== day ||
       date.getMonth() !== month - 1 ||
       date.getFullYear() !== year
     )
-      return 'Data inválida';
-
+      return "Data inválida";
     return null;
   };
 
@@ -188,11 +182,10 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
           value={phone}
           onChangeText={(text) => {
             const formatted = text
-              .replace(/\D/g, '') // remove tudo que não é dígito
-              .replace(/^(\d{2})(\d)/g, '($1) $2') // formata DDD
-              .replace(/(\d{5})(\d)/, '$1-$2') // formata número com hífen
-              .slice(0, 15); // limita o tamanho (ex: (99) 99999-9999)
-
+              .replace(/\D/g, "")
+              .replace(/^(\d{2})(\d)/g, "($1) $2")
+              .replace(/(\d{5})(\d)/, "$1-$2")
+              .slice(0, 15);
             setPhone(formatted);
           }}
           placeholder="Telefone"
@@ -212,7 +205,6 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
           backgroundColor="#FF914B"
         />
         <View style={styles.rowContainer}>
-
           <View style={{ flex: 1, marginRight: 8 }}>
             <Dropdown
               label="Gênero"
@@ -228,16 +220,15 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
               width={156}
             />
           </View>
-
           <View style={{ flex: 1 }}>
             <CustomTextInput
               value={birthDate}
               onChangeText={(text) => {
                 const formatted = text
-                  .replace(/\D/g, '') // remove tudo que não é dígito
-                  .replace(/^(\d{2})(\d)/, '$1/$2') // adiciona '/' após o dia
-                  .replace(/^(\d{2}\/\d{2})(\d)/, '$1/$2') // adiciona '/' após o mês
-                  .slice(0, 10); // limita a 10 caracteres (DD/MM/AAAA)
+                  .replace(/\D/g, "")
+                  .replace(/^(\d{2})(\d)/, "$1/$2")
+                  .replace(/^(\d{2}\/\d{2})(\d)/, "$1/$2")
+                  .slice(0, 10);
                 setBirthDate(formatted);
               }}
               placeholder="Nascimento"
@@ -248,24 +239,14 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
             />
           </View>
         </View>
-
-        <View style={styles.buttonContainer}>
-          <Button
-            title="Avançar"
-            type="orange"
-            onPress={() => { handleSubmit }}
-          />
-        </View>
-      </ScrollView >
-    </SafeAreaView >
-        <Button
-          title={loading ? "Carregando..." : "Avançar"}
-          onPress={handleSubmit}
-          type="orange"
-          style={styles.submitButton}
-        />
-        {error && <Text style={styles.errorText}>Erro: {error}</Text>}
       </ScrollView>
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Avançar"
+          type="orange"
+          onPress={handleSubmit}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -298,9 +279,6 @@ const styles = StyleSheet.create({
     width: 327,
     marginBottom: 20,
   },
-  halfWidth: {
-    width: "48%",
-  },
   birthDateInput: {
     height: 50,
     width: 155,
@@ -312,14 +290,11 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
     fontSize: 16,
   },
-  submitButton: {
-    width: 327,
-    marginTop: 20,
-  },
-  errorText: {
-    color: "red",
-    marginTop: 10,
-    textAlign: "center",
+  buttonContainer: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    width: 120,
   },
 });
 
