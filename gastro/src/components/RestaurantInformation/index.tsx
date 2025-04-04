@@ -8,40 +8,51 @@ import { StyleSheet, View, Text } from 'react-native';
 
 const RestaurantInformation = () => {
   const styles = StyleSheet.create({
-    screenContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    contentContainer: {
-      width: '90%', // ou um valor fixo como 300
-      padding: 16,
-    },
-    title: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: '#1F2937',
-      marginBottom: 8,
-      textAlign: 'center',
-    },
-    infoRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginVertical: 4,
-    },
-    text: {
-      marginLeft: 8,
-    },
-    descriptionText: {
-      marginLeft: 8,
-    },
-    openText: {
-      marginLeft: 8,
-    },
-    visitedText: {
-      marginLeft: 8,
-    },
-  });
+      screenContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      contentContainer: {
+        width: '90%',
+        padding: 16,
+        alignItems: 'center', // Centraliza o conteúdo interno
+      },
+      title: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#1F2937',
+        marginBottom: 8,
+        textAlign: 'center',
+      },
+      infoRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 4,
+      },
+      text: {
+        marginLeft: 8,
+        textAlign: 'center', // Para manter os textos alinhados
+      },
+      descriptionText: {
+        marginLeft: 8,
+        textAlign: 'center',
+      },
+      openText: {
+        marginLeft: 8,
+        textAlign: 'center',
+      },
+      visitedText: {
+        marginLeft: 8,
+        textAlign: 'center',
+      },
+      reviewText: {
+        fontSize: 10,
+        color: '#808080',
+        marginLeft: 10,
+      },
+    });
+    
 
   return (
     <View style={styles.screenContainer}>
@@ -50,7 +61,8 @@ const RestaurantInformation = () => {
 
         <View style={styles.infoRow}>
           <Foundation name="star" size={24} color="#FF914B" />
-          <Text style={styles.text}>4.7 (57 avaliações)</Text>
+          <Text style={styles.text}>4.7</Text>
+          <Text style={styles.reviewText}>(57 avaliações)</Text>
         </View>
 
         <View style={{ marginTop: 8 }}>
