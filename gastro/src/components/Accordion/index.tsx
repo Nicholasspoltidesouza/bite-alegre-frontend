@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Colors } from "@/src/constants/Colors";
 
 interface AccordionProps {
   title: string;
@@ -20,8 +21,8 @@ const Accordion: React.FC<AccordionProps> = ({ title, content }) => {
         {/* Ícone que muda dinamicamente */}
         <MaterialIcons
           name={isOpen ? "keyboard-arrow-up" : "keyboard-arrow-down"}
-          size={24}
-          color="#FF914B"
+          size={34}
+          color={Colors.orange.tint}
         />
       </TouchableOpacity>
 
@@ -37,27 +38,22 @@ const Accordion: React.FC<AccordionProps> = ({ title, content }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    backgroundColor: "#fff",
-    overflow: "hidden",
+    backgroundColor:"#fff",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 12,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 16,
+    fontFamily: "",
     color: "#333",
   },
   content: {
-    padding: 12,
     backgroundColor: "#fff",
+    fontFamily: "",
   },
   contentText: {
     fontSize: 14,
