@@ -193,6 +193,7 @@ const SignupScreen = () => {
                 ]}
                 onSelect={setGender}
                 width={155}
+                paddingLeft={24}
               />
             </View>
             <View style={{ flex: 1 }}>
