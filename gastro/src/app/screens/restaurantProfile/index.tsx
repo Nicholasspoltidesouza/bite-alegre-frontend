@@ -2,8 +2,6 @@ import HeaderPerfilRestaurante from '@/src/components/HeaderPerfilRestaurante';
 import RestaurantInformation from '@/src/components/RestaurantInformation';
 import { View, StyleSheet } from 'react-native';
 import React from 'react';
-import PhotoDish from '@/src/components/PhotoDish';
-import { Text } from 'react-native';
 
 const restaurantProfile: React.FC = () => {
 
@@ -32,10 +30,7 @@ const restaurantProfile: React.FC = () => {
 
   });
 
-
   return (
-
-
     <View>
       <HeaderPerfilRestaurante
         urlFotoBanner={'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/5a/28/0e/salao-principal.jpg?w=600&h=-1&s=1'}
@@ -49,12 +44,8 @@ const restaurantProfile: React.FC = () => {
         contReview={'102'}
         ></RestaurantInformation>
       </View>
-
-
     </View>
-
   );
-
 }
 
 export default restaurantProfile;
