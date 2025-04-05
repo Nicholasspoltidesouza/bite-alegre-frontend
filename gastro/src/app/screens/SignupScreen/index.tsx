@@ -11,9 +11,9 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import Button from "../../components/Button";
-import Dropdown from "../../components/Dropdown";
-import CustomTextInput from "../../components/TextFieldCadastroUsuario";
+import Button from "../../../components/Button";
+import Dropdown from "../../../components/Dropdown";
+import CustomTextInput from "../../../components/TextFieldCadastroUsuario";
 
 const SignupScreen: React.FC = ({ navigation }: any) => {
   const [name, setName] = useState<string>("");
@@ -202,6 +202,7 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
                 ]}
                 onSelect={setGender}
                 width={155}
+                paddingLeft={24}
               />
             </View>
             <View style={{ flex: 1 }}>

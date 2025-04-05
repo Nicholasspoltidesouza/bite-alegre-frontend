@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
-import SignupScreen from '../screens/SignupScreen';
+import SignupScreen from './screens/SignupScreen';
 
 const App = () => {
   return (
