@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     position: 'relative',
+    display: 'flex',
     alignItems: 'center',
   },
   backButton: {
@@ -69,10 +70,14 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   dropdown: {
+    alignSelf: 'center',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    textAlign: 'center',
     top: 50,
-    left: 68,
+    left: 60,
+    display: 'flex',
+    paddingLeft: 16,
+    paddingRight: 16,
   },
   title: {
     fontSize: 12,
