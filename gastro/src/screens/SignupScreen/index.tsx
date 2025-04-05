@@ -1,17 +1,19 @@
+import { UserDTO } from "@/src/@types/DTO";
+import SignupHeader from "@/src/components/SignupHeader";
+import { useCreateUser } from "@/src/hooks/useUserApi";
 import React, { useState } from "react";
 import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
-  Alert,
 } from "react-native";
-import CustomTextInput from "../../components/TextFieldCadastroUsuario";
-import Dropdown from "../../components/Dropdown";
 import Button from "../../components/Button";
-import { UserDTO } from "@/src/@types/DTO";
-import { useCreateUser } from "@/src/hooks/useUserApi";
-import SignupHeader from "@/src/components/SignupHeader";
+import Dropdown from "../../components/Dropdown";
+import CustomTextInput from "../../components/TextFieldCadastroUsuario";
 
 const SignupScreen: React.FC = ({ navigation }: any) => {
   const [name, setName] = useState<string>("");
@@ -106,7 +108,7 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
       const [day, month, year] = birthDate.split("/");
       const isoBirthDate = `${year}-${month}-${day}T00:00:00Z`;
       const formattedGender =
-      gender === "PREFIRO NÃO INFORMAR" ? "NAO_QUERO_INFORMAR" : gender;
+        gender === "PREFIRO NÃO INFORMAR" ? "NAO_QUERO_INFORMAR" : gender;
 
       const userData: UserDTO = {
         name,
@@ -130,110 +132,103 @@ const SignupScreen: React.FC = ({ navigation }: any) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <SignupHeader />
-      <ScrollView contentContainerStyle={styles.container}>
-        <CustomTextInput
-          value={name}
-          onChangeText={setName}
-          placeholder="Nome"
-          style={styles.input}
-          validation={validateName}
-        />
-        <CustomTextInput
-          value={nickname}
-          onChangeText={setNickname}
-          placeholder="Apelido"
-          style={styles.input}
-          validation={validateNickname}
-        />
-        <CustomTextInput
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Email"
-          style={styles.input}
-          validation={validateEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <CustomTextInput
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Senha"
-          style={styles.input}
-          validation={validatePassword}
-          secureTextEntry
-        />
-        <CustomTextInput
-          value={phone}
-          onChangeText={(text) => {
-            const formatted = text
-              .replace(/\D/g, "")
-              .replace(/^(\d{2})(\d)/g, "($1) $2")
-              .replace(/(\d{5})(\d)/, "$1-$2")
-              .slice(0, 15);
-            setPhone(formatted);
-          }}
-          placeholder="Telefone"
-          style={styles.input}
-          validation={validatePhone}
-          keyboardType="phone-pad"
-          maxLength={15}
-        />
-        <Dropdown
-          label="Tipo de Cadastro"
-          selected={userType}
-          placeholder="Tipo de cadastro"
-          options={["Cadastro de Usuário", "Cadastro de Restaurante"]}
-          onSelect={setUserType}
-          iconColor="#FFFFFF"
-          textColor="#FFFFFF"
-          backgroundColor="#FF914B"
-        />
-        <View style={styles.rowContainer}>
-          <View style={{ flex: 1, marginRight: 8 }}>
-            <Dropdown
-              label="Gênero"
-              selected={gender}
-              placeholder="Gênero"
-              options={[
-                "MASCULINO",
-                "FEMININO",
-                "OUTRO",
-                "PREFIRO NÃO INFORMAR",
-              ]}
-              onSelect={setGender}
-              width={155}
-            />
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
+    >
+      <SafeAreaView style={styles.safeArea}>
+        <SignupHeader />
+        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+          <CustomTextInput
+            value={name}
+            onChangeText={setName}
+            placeholder="Nome"
+            style={styles.input}
+            validation={validateName}
+          />
+          <CustomTextInput
+            value={nickname}
+            onChangeText={setNickname}
+            placeholder="Apelido"
+            style={styles.input}
+            validation={validateNickname}
+          />
+          <CustomTextInput
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Email"
+            style={styles.input}
+            validation={validateEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          <CustomTextInput
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Senha"
+            style={styles.input}
+            validation={validatePassword}
+            secureTextEntry
+          />
+          <CustomTextInput
+            value={phone}
+            onChangeText={(text) => {
+              const formatted = text
+                .replace(/\D/g, "")
+                .replace(/^(\d{2})(\d)/g, "($1) $2")
+                .replace(/(\d{5})(\d)/, "$1-$2")
+                .slice(0, 15);
+              setPhone(formatted);
+            }}
+            placeholder="Telefone"
+            style={styles.input}
+            validation={validatePhone}
+            keyboardType="phone-pad"
+            maxLength={15}
+          />
+
+          <View style={styles.rowContainer}>
+            <View style={{ flex: 1, marginRight: 8 }}>
+              <Dropdown
+                label="Gênero"
+                selected={gender}
+                placeholder="Gênero"
+                options={[
+                  "MASCULINO",
+                  "FEMININO",
+                  "OUTRO",
+                  "PREFIRO NÃO INFORMAR",
+                ]}
+                onSelect={setGender}
+                width={155}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <CustomTextInput
+                value={birthDate}
+                onChangeText={(text) => {
+                  const formatted = text
+                    .replace(/\D/g, "")
+                    .replace(/^(\d{2})(\d)/, "$1/$2")
+                    .replace(/^(\d{2}\/\d{2})(\d)/, "$1/$2")
+                    .slice(0, 10);
+                  setBirthDate(formatted);
+                }}
+                placeholder="Nascimento"
+                style={styles.birthDateInput}
+                validation={validateBirthDate}
+                keyboardType="numeric"
+                width={155}
+              />
+            </View>
           </View>
-          <View style={{ flex: 1 }}>
-            <CustomTextInput
-              value={birthDate}
-              onChangeText={(text) => {
-                const formatted = text
-                  .replace(/\D/g, "")
-                  .replace(/^(\d{2})(\d)/, "$1/$2")
-                  .replace(/^(\d{2}\/\d{2})(\d)/, "$1/$2")
-                  .slice(0, 10);
-                setBirthDate(formatted);
-              }}
-              placeholder="Nascimento"
-              style={styles.birthDateInput}
-              validation={validateBirthDate}
-              keyboardType="numeric"
-              width={155}
-            />
+          <View style={styles.buttonContainer}>
+            <Button title="Avançar" type="orange" onPress={handleSubmit} />
           </View>
-        </View>
-      </ScrollView>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Avançar"
-          type="orange"
-          onPress={handleSubmit}
-        />
-      </View>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -277,10 +272,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   buttonContainer: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    width: 120,
+    marginTop: 8,
+    width: 327,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
 });
 

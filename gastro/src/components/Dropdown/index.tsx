@@ -21,12 +21,14 @@ interface DropdownProps {
   iconSize?: number;
   iconColor?: string;
   width?: DimensionValue;
+  paddingLeft?: DimensionValue;
+  paddingRight?: DimensionValue;
   justifyContent?: "flex-start" | "flex-end" | "center" | "space-between" | "space-around" | "space-evenly";
   textColor?: string;
   backgroundColor?: string;
 }
 
-const Dropdown = ({ options, selected, placeholder, onSelect, iconSize = 20, iconColor = "#FF914B", width = 327, textColor = "#FF914B", backgroundColor = 'rgba(255, 179, 112, 0.25)', justifyContent = "space-between" }: DropdownProps) => {
+const Dropdown = ({ options, selected, placeholder, onSelect, iconSize = 20, iconColor = "#FF914B", width = 327, textColor = "#FF914B", backgroundColor = 'rgba(255, 179, 112, 0.25)', justifyContent = "space-between", paddingLeft = 16, paddingRight = 16 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => setIsOpen((prev) => !prev);
   const closeDropdown = () => setIsOpen(false);
@@ -36,7 +38,7 @@ const Dropdown = ({ options, selected, placeholder, onSelect, iconSize = 20, ico
       <TouchableOpacity
         onPress={toggleDropdown}
         activeOpacity={0.7}
-        style={[styles.dropdownButton, { width, backgroundColor, justifyContent }]}
+        style={[styles.dropdownButton, { width, backgroundColor, justifyContent, paddingLeft, paddingRight }]}
       >
         <Text style={[styles.text, { color: textColor }]}>
           {selected || placeholder}
