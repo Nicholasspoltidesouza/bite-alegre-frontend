@@ -3,7 +3,7 @@ import RestaurantInformation from '@/src/components/RestaurantInformation';
 import { View, StyleSheet } from 'react-native';
 import React from 'react';
 import PhotoDish from '@/src/components/PhotoDish';
-
+import { Text } from 'react-native';
 
 const restaurantProfile: React.FC = () => {
 
@@ -44,52 +44,16 @@ const restaurantProfile: React.FC = () => {
 
       <View style={styles.infos}>
         <RestaurantInformation
+        name={'Restaurante 01'}
+        starCont={'4.6'}
+        contReview={'102'}
         ></RestaurantInformation>
       </View>
 
-      <View>
-        <p style={styles.carda}>
-          Cardápio
-        </p>
-
-
-        <p style={styles.precoMedio}>
-          Preço médio: R$ 50,00
-        </p>
-      </View>
-
-      <View>
-        <PhotoDish
-          urlFotoPrato={'https://img.freepik.com/fotos-premium/prato-de-comida-brasileira-em-fundo-fotografico_496782-1085.jpg?w=740'}
-          descricao='Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem.' 
-          showStar={true}
-        ></PhotoDish>
-
-        <PhotoDish
-          urlFotoPrato={'https://img.freepik.com/fotos-premium/prato-de-comida-brasileira-em-fundo-fotografico_496782-1085.jpg?w=740'}
-          descricao='Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem.' 
-          showStar={false}
-        ></PhotoDish>
-      </View>
-      
-      <View>
-        < p style={styles.carda}>
-          Influencers que já visitaram
-        </p>
-      </View>
-
-
-      <View>
-
-
-
-      </View>
 
     </View>
 
-
   );
-
 
 }
 

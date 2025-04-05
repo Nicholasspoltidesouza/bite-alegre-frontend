@@ -6,7 +6,14 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { StyleSheet, View, Text } from 'react-native';
 
-const RestaurantInformation = () => {
+interface RestaurantInformationProps {
+  name: String;
+  starCont: String;
+  contReview: String;
+}
+
+const RestaurantInformation: React.FC<RestaurantInformationProps> = ({ name, starCont, contReview }) => {
+
   const styles = StyleSheet.create({
       screenContainer: {
         flex: 1,
@@ -16,10 +23,10 @@ const RestaurantInformation = () => {
       contentContainer: {
         width: '90%',
         padding: 16,
-        alignItems: 'center', // Centraliza o conteúdo interno
+        alignItems: 'center',
       },
       title: {
-        fontSize: 20,
+        fontSize: 25,
         fontWeight: 'bold',
         color: '#1F2937',
         marginBottom: 8,
@@ -32,7 +39,7 @@ const RestaurantInformation = () => {
       },
       text: {
         marginLeft: 8,
-        textAlign: 'center', // Para manter os textos alinhados
+        textAlign: 'center',
       },
       descriptionText: {
         marginLeft: 8,
@@ -47,7 +54,7 @@ const RestaurantInformation = () => {
         textAlign: 'center',
       },
       reviewText: {
-        fontSize: 10,
+        fontSize: 12,
         color: '#808080',
         marginLeft: 10,
       },
@@ -57,12 +64,12 @@ const RestaurantInformation = () => {
   return (
     <View style={styles.screenContainer}>
       <View style={styles.contentContainer}>
-        <Text style={styles.title}>Nome Restaurante</Text>
+        <Text style={styles.title}>{name}</Text>
 
         <View style={styles.infoRow}>
           <Foundation name="star" size={24} color="#FF914B" />
-          <Text style={styles.text}>4.7</Text>
-          <Text style={styles.reviewText}>(57 avaliações)</Text>
+          <Text style={styles.text}>{starCont}</Text>
+          <Text style={styles.reviewText}>({contReview} avaliações)</Text>
         </View>
 
         <View style={{ marginTop: 8 }}>
@@ -89,6 +96,6 @@ const RestaurantInformation = () => {
       </View>
     </View>
   );
-};
+}
 
 export default RestaurantInformation;
