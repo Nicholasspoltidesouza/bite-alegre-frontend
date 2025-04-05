@@ -6,7 +6,7 @@ import { NavBarIcon } from "../components/NavBarItem/index";
 export default function RootLayout() {
 
   return (
-    <Tabs screenOptions={{ 
+    <Tabs screenOptions={{
       tabBarActiveTintColor: '#FF914B', 
       tabBarInactiveTintColor: '#FF914B',
       headerShown: false,
@@ -40,7 +40,7 @@ export default function RootLayout() {
       }}
     />
     <Tabs.Screen
-      name="screens/search/index"
+      name="screens/Search/index"
       options={{
         tabBarShowLabel: false,
         tabBarIcon: ({ color, size, focused })  => (
@@ -61,7 +61,7 @@ export default function RootLayout() {
       }}
     />
     <Tabs.Screen
-      name="screens/roullete/index"
+      name="screens/Roullete/index"
       options={{
         tabBarShowLabel: false,
         tabBarIcon: ({ color, size, focused })  => (
@@ -78,7 +78,7 @@ export default function RootLayout() {
       }}
     />
     <Tabs.Screen
-      name="screens/community/index"
+      name="screens/Community/index"
       options={{
         tabBarShowLabel: false,
         tabBarIcon: ({ color, size, focused })  => (
@@ -99,7 +99,7 @@ export default function RootLayout() {
     }}
     />
     <Tabs.Screen
-      name="screens/profile/index"
+      name="screens/Profile/index"
       options={{
         tabBarShowLabel: false,
         tabBarIcon: ({ color, size, focused })  => (
@@ -119,6 +119,8 @@ export default function RootLayout() {
         )
       }}
     />
-  </Tabs>
+    <Tabs.Screen name="screens/Signup-interests/index" options={{ href: null }} />
+    <Tabs.Screen name="screens/SignupInterestsScreen/index" options={{ href: null }} />
+  </Tabs>  
   )
 } 
