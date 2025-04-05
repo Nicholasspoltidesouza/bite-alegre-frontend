@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { restaurantDto} from "../@types/Dto";
+import { RestaurantDTO} from "../@types/DTO";
 import { API_URL_BACKEND } from "../constants/apiUrl"; //cria apiUrl
 
 export const useCreateRestaurant = () => {
@@ -7,7 +7,7 @@ export const useCreateRestaurant = () => {
     const [error, setError] = useState<string | null>(null);
     const [data, setData] = useState<any>(null);
 
-    const createRestaurant = async (restaurantData: restaurantDto): Promise<void> => {
+    const createRestaurant = async (restaurantData: RestaurantDTO): Promise<void> => {
         setLoading(true);
         setError(null);
 
