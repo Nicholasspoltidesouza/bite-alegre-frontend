@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, ScrollView, SafeAreaView, ActivityIndicator } f
 import Tag from '../../../components/Tag';
 import Button from '../../../components/Button';
 import useFetchTags from '../../../hooks/useFetchTags';
-import { API_URL_BACKEND } from '../../../constants/Validation'; 
+import { API_URL_BACKEND } from '../../../constants/apiUrl'; 
 
 const SignupInterests: React.FC = () => {
   const { tags, loading, error }: { tags: { id: string; name: string; type: string }[]; loading: boolean; error: string | null } = useFetchTags(`${API_URL_BACKEND}/tags`);
