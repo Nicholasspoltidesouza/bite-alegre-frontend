@@ -2,6 +2,7 @@ import { Tabs } from "expo-router";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Image, Pressable } from 'react-native';
 import { NavBarIcon } from "../components/NavBarItem/index";
+import React from "react";
 
 export default function RootLayout() {
 
@@ -122,6 +123,7 @@ export default function RootLayout() {
     <Tabs.Screen name="screens/Signup-interests/index" options={{ href: null }} />
     <Tabs.Screen name="screens/SignupInterestsScreen/index" options={{ href: null }} />
     <Tabs.Screen name="screens/SignupScreen/index" options={{ href: null }} />
+    <Tabs.Screen name="screens/RestaurantProfile/index" options={{ href: null }} />
   </Tabs>  
   )
 } 

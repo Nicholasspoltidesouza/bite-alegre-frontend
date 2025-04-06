@@ -1,11 +1,14 @@
 import HeaderPerfilRestaurante from '@/src/components/HeaderPerfilRestaurante';
-import RestaurantInformation from '@/src/components/RestaurantInformation';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import React from 'react';
 import Accordion from '@/src/components/Accordion';
 import { FontAwesome, FontAwesome6, Foundation, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-const restaurantProfile: React.FC = () => {
+interface RestaurantProfileProps {
+  name: String;
+}
+
+const RestaurantProfile: React.FC<RestaurantProfileProps> = ({name = "Nome do Restaurante"}) => {
 
   const styles = StyleSheet.create({
     container: {
@@ -28,8 +31,20 @@ const restaurantProfile: React.FC = () => {
     },
     infos: {
       marginTop: 30,
+    },
+    title: {
+      fontSize: 25,
+      fontWeight: 'bold',
+      color: '#1F2937',
+      marginBottom: 8,
+      marginTop: 15,
+      textAlign: 'center',
+    },
+    infoGrid: {
+      marginTop: 10,
+      marginLeft: 50,
+      marginRight: 50,
     }
-
   });
 
   return (
@@ -40,49 +55,55 @@ const restaurantProfile: React.FC = () => {
       ></HeaderPerfilRestaurante>
 
       <View style={styles.infos}>
-        <Accordion 
-        title={'4.7'}
-        description={'(100 avalições)'}
-        content={''} 
-        staticArrow={true} 
-        children={<Foundation name="star" size={24} color="#FF914B" />}>
-        </Accordion>
 
-        <Accordion 
-        title={'Descrição'}
-        description={''}
-        content={'Descrição'} 
-        staticArrow={false} 
-        children={<Ionicons name="document-text-outline" size={24} color="#FF914B" />}>
-        </Accordion>
+        <Text style={styles.title}>{name}</Text>
 
-        <Accordion 
-        title={'Endereço do Restaurante'}
-        description={''}
-        content={'Endereço do Restaurante'} 
-        staticArrow={false} 
-        children={<FontAwesome6 name="location-dot" size={24} color="#FF914B" />}>
-        </Accordion>
+        <View style={styles.infoGrid}>
+          <Accordion 
+          title={'4.7'}
+          description={'(100 avalições)'}
+          content={''} 
+          staticArrow={true} 
+          children={<Foundation name="star" size={24} color="#FF914B" />}>
+          </Accordion>
 
-        <Accordion 
-        title={'Aberto agora'}
-        description={''}
-        content={'Horario'} 
-        staticArrow={false} 
-        children={<FontAwesome name="cutlery" size={24} color="#FF914B" />}>
-        </Accordion>
+          <Accordion 
+          title={'Descrição'}
+          description={''}
+          content={'Descrição'} 
+          staticArrow={false} 
+          children={<Ionicons name="document-text-outline" size={24} color="#FF914B" />}>
+          </Accordion>
 
-        <Accordion 
-        title={'Estive Aqui'}
-        description={''}
-        content={''} 
-        staticArrow={true} 
-        children={<MaterialCommunityIcons name="calendar-start" size={24} color="#FF914B" />}>
-        </Accordion>
+          <Accordion 
+          title={'Endereço do Restaurante'}
+          description={''}
+          content={'Endereço do Restaurante'} 
+          staticArrow={false} 
+          children={<FontAwesome6 name="location-dot" size={24} color="#FF914B" />}>
+          </Accordion>
+
+          <Accordion 
+          title={'Aberto agora'}
+          description={''}
+          content={'Horario'} 
+          staticArrow={false} 
+          children={<FontAwesome name="cutlery" size={24} color="#FF914B" />}>
+          </Accordion>
+
+          <Accordion 
+          title={'Estive Aqui'}
+          description={''}
+          content={''} 
+          staticArrow={true} 
+          children={<MaterialCommunityIcons name="calendar-start" size={24} color="#FF914B" />}>
+          </Accordion>
+        </View>
+
 
       </View>
     </View>
   );
 }
 
-export default restaurantProfile;
+export default RestaurantProfile;
