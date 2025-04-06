@@ -34,7 +34,6 @@ const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({ urlFo
         height: 200,
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
-        padding: 15,
         backgroundColor: '#FF914B',
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
