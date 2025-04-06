@@ -1,24 +1,41 @@
 import React from 'react';
-import { View, StyleSheet, Text, ScrollView, SafeAreaView } from 'react-native';
-import Tag from '../../components/Tag';
-import Button from '../../components/Button';
+import { View, StyleSheet, Text, ScrollView, SafeAreaView, ActivityIndicator } from 'react-native';
+import Tag from '../../../components/Tag';
+import Button from '../../../components/Button';
+import useFetchTags from '../../../hooks/useFetchTags';
+import { API_URL_BACKEND } from '../../../constants/Validation'; 
 
 const SignupInterests: React.FC = () => {
-  const interests = ['Ao ar livre', 'Bistrô', 'Luz de velas', 'Casual', 'Reservado', 'Roof top', 'Música ao vivo', 'Pub', 'Familiar'];
-  const category = ['Churrasco', 'Bar', 'Hambúrguer', 'Mexicana', 'Japonese', 'Árabe', 'Sorveteria', 'Cafeteria', 'Padaria'];
-  const ocasion = ['Almoço', 'Jantar', 'Festa', 'Date', 'Happy hour', 'Lanche'];
+  const { tags, loading, error }: { tags: { id: string; name: string; type: string }[]; loading: boolean; error: string | null } = useFetchTags(`${API_URL_BACKEND}/tags`);
 
-  const chunkArray = (array: string[], size: number) => {
-    const result = [];
-    for (let i = 0; i < array.length; i += size) {
-      result.push(array.slice(i, i + size));
+  const filterAndChunk = (type: string) => {
+    const filtered = tags.filter(tag => tag.type === type);
+    const result: { id: string; name: string; type: string }[][] = [];
+    for (let i = 0; i < filtered.length; i += 3) {
+      result.push(filtered.slice(i, i + 3));
     }
     return result;
   };
 
-  const chunkedInterests = chunkArray(interests, 3);
-  const chunkedCategory = chunkArray(category, 3);
-  const chunkedOcasion = chunkArray(ocasion, 3);
+  const chunkedLocals = filterAndChunk('LOCAL');
+  const chunkedCategories = filterAndChunk('CATEGORIA');
+  const chunkedOcasion = filterAndChunk('OCASIAO');
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <ActivityIndicator size="large" color="#FF914B" style={{ marginTop: 50 }} />
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>{error}</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -31,10 +48,10 @@ const SignupInterests: React.FC = () => {
 
         <View style={styles.interestsContainer}>
           <Text style={styles.interestsTitle}>Local</Text>
-          {chunkedInterests.map((row, rowIndex) => (
+          {chunkedLocals.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
-              {row.map((interest, index) => (
-                <Tag key={index} title={interest} />
+              {row.map(tag => (
+                <Tag key={tag.id} title={tag.name} />
               ))}
             </View>
           ))}
@@ -42,10 +59,10 @@ const SignupInterests: React.FC = () => {
 
         <View style={styles.interestsContainer}>
           <Text style={styles.interestsTitle}>Categoria</Text>
-          {chunkedCategory.map((row, rowIndex) => (
+          {chunkedCategories.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
-              {row.map((interest, index) => (
-                <Tag key={index} title={interest} />
+              {row.map(tag => (
+                <Tag key={tag.id} title={tag.name} />
               ))}
             </View>
           ))}
@@ -55,8 +72,8 @@ const SignupInterests: React.FC = () => {
           <Text style={styles.interestsTitle}>Ocasião</Text>
           {chunkedOcasion.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
-              {row.map((interest, index) => (
-                <Tag key={index} title={interest} />
+              {row.map(tag => (
+                <Tag key={tag.id} title={tag.name} />
               ))}
             </View>
           ))}
@@ -77,16 +94,16 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 20,
+    padding: 15,
   },
   containerTitle: {
     alignItems: 'center',
-    padding: 10,
+    padding: 30,
     marginBottom: 10,
   },
   titleText: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#FF914B',
     textAlign: 'center',
@@ -108,7 +125,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   buttonContainer: {
-    marginTop: 40,
+    marginTop: 150,
     marginBottom: 40,
     alignItems: 'flex-end',
   },

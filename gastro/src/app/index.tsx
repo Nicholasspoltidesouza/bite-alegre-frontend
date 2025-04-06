@@ -18,12 +18,7 @@ const TextInputExample: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Mude a sua página!</Text>
-      <TouchableOpacity onPress={goToRestaurantProfile}>
-        <Text style={styles.linkText}>Ir para Perfil de Restaurante</Text>
-      </TouchableOpacity>
-    </View>
+    <Text>Ola</Text>
   );
 };
 
