@@ -61,7 +61,7 @@ const RestaurantProfile: React.FC<RestaurantProfileProps> = ({name = "Nome do Re
         <View style={styles.infoGrid}>
           <Accordion 
           title={'4.7'}
-          description={'(100 avalições)'}
+          description={'(100 avaliações)'}
           content={''} 
           staticArrow={true} 
           children={<Foundation name="star" size={24} color="#FF914B" />}>
