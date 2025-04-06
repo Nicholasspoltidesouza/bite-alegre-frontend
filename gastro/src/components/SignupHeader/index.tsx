@@ -1,5 +1,5 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Dropdown from '../Dropdown';
@@ -8,10 +8,11 @@ interface SignupHeaderProps {
   urlProfilePhoto?: string;
   onBack?: () => void;
   onPhotoPress?: () => void;
+  userType: string | null;
+  setUserType: (value: string) => void;
 }
 
-const SignupHeader = ({ urlProfilePhoto, onBack, onPhotoPress }: SignupHeaderProps) => {
-  const [userType, setUserType] = useState<string | null>(null);
+const SignupHeader = ({ urlProfilePhoto, onBack, onPhotoPress, userType, setUserType }: SignupHeaderProps) => {
 
   return (
     <SafeAreaView>

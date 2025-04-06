@@ -67,6 +67,23 @@ const SignupScreen = () => {
     return null;
   };
 
+  const isFormValid =
+    name &&
+    nickname &&
+    email &&
+    password &&
+    phone &&
+    birthDate &&
+    gender &&
+    userType &&
+    !validateName(name) &&
+    !validateNickname(nickname) &&
+    !validateEmail(email) &&
+    !validatePassword(password) &&
+    !validatePhone(phone) &&
+    !validateBirthDate(birthDate);
+
+
   const handleSubmit = async () => {
     if (
       !name ||
@@ -75,7 +92,8 @@ const SignupScreen = () => {
       !password ||
       !phone ||
       !birthDate ||
-      !gender
+      !gender ||
+      !userType
     ) {
       Alert.alert("Erro", "Por favor, preencha todos os campos obrigatórios.");
       return;
@@ -100,6 +118,8 @@ const SignupScreen = () => {
       const isoBirthDate = `${year}-${month}-${day}T00:00:00Z`;
       const formattedGender =
         gender === "PREFIRO NÃO INFORMAR" ? "NAO_QUERO_INFORMAR" : gender;
+      const formattedUserType =
+        userType === "Cadastro de Restaurante" ? "RESTAURANTE" : "USUARIO";
 
       const userData: UserDTO = {
         name,
@@ -109,6 +129,7 @@ const SignupScreen = () => {
         phone,
         gender: formattedGender,
         birthDate: isoBirthDate,
+        userType: formattedUserType,
       };
 
       await createUser(userData);
@@ -129,7 +150,10 @@ const SignupScreen = () => {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
     >
       <SafeAreaView style={styles.safeArea}>
-        <SignupHeader />
+        <SignupHeader
+          userType={userType}
+          setUserType={setUserType}
+        />
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <CustomTextInput
             value={name}
@@ -228,7 +252,7 @@ const SignupScreen = () => {
             </View>
           </View>
           <View style={styles.buttonContainer}>
-            <Button title="Avançar" type="orange" onPress={handleSubmit} />
+            <Button title="Avançar" type="orange" onPress={handleSubmit} disabled={!isFormValid} />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -279,10 +303,9 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 12,
     marginTop: 4,
-    marginLeft: 8,
+    marginLeft: 24,
     fontFamily: 'Poppins-Regular',
   },
-
   buttonContainer: {
     marginTop: 8,
     width: 327,
