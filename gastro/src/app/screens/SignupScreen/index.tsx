@@ -206,13 +206,25 @@ const SignupScreen = () => {
                     .replace(/^(\d{2}\/\d{2})(\d)/, "$1/$2")
                     .slice(0, 10);
                   setBirthDate(formatted);
+                  if (!birthDateTouched) setBirthDateTouched(true);
                 }}
                 placeholder="Nascimento"
-                style={styles.birthDateInput}
-                validation={validateBirthDate}
+                style={[
+                  styles.birthDateInput,
+                  birthDateTouched && validateBirthDate(birthDate) && {
+                    borderWidth: 2,
+                    borderColor: 'red',
+                  }
+                ]}
+                validation={undefined}
                 keyboardType="numeric"
                 width={155}
               />
+              {birthDateTouched && validateBirthDate(birthDate) && (
+                <Text style={styles.errorText}>
+                  {validateBirthDate(birthDate)}
+                </Text>
+              )}
             </View>
           </View>
           <View style={styles.buttonContainer}>
@@ -263,6 +275,14 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
     fontSize: 16,
   },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 4,
+    marginLeft: 8,
+    fontFamily: 'Poppins-Regular',
+  },
+
   buttonContainer: {
     marginTop: 8,
     width: 327,
