@@ -5,7 +5,7 @@ import SignupHeader from '@/src/components/SignupHeader';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { useCreateUser } from '@/src/hooks/useUserApi';
 import React, { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View, Text } from 'react-native';
 
 const SignupScreen = () => {
   const [name, setName] = useState<string>('');
@@ -15,6 +15,8 @@ const SignupScreen = () => {
   const [phone, setPhone] = useState<string>('');
   const [gender, setGender] = useState<string | null>(null);
   const [birthDate, setBirthDate] = useState('');
+  const [userType, setUserType] = useState<string | null>(null);
+  const [birthDateTouched, setBirthDateTouched] = useState<boolean>(false);
 
   const { createUser } = useCreateUser();
 
