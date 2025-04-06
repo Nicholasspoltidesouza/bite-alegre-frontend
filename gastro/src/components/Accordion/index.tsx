@@ -29,8 +29,6 @@ const Accordion: React.FC<AccordionProps> = ({ title, description, content, stat
           color={'#FF914B'}
         />
       </TouchableOpacity>
-
-      {/* Conteúdo do Accordion */}
       {isOpen && (
         <View style={styles.content}>
           <Text style={styles.contentText}>{content}</Text>
