@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Colors } from "@/src/constants/Colors";
 
 interface AccordionProps {
   title: string;
@@ -18,12 +17,12 @@ const Accordion: React.FC<AccordionProps> = ({ title, description, content, stat
 
   return (
     <View style={styles.container}>
-      {/* Header do Accordion */}
       <TouchableOpacity style={styles.header} onPress={toggleAccordion}>
-        {children}
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
-        {/* Ícone que muda dinamicamente */}
+        <View style={styles.leftItens}>
+          {children}        
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.description}>{description}</Text>
+        </View>
         <MaterialIcons
           name={staticArrow ? "keyboard-arrow-right" : isOpen ? "keyboard-arrow-up" : "keyboard-arrow-down"}
           size={34}
@@ -47,16 +46,20 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    justifyContent: "space-evenly",
     alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: "#fff",
+  },
+  leftItens: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   title: {
     fontSize: 16,
     fontFamily: "",
     color: "#333",
-    marginLeft: 15,
-    marginRight: 15
+    marginLeft: 8,
+    marginRight: 8
   },
   content: {
     backgroundColor: "#fff",
