@@ -5,6 +5,7 @@ import HeaderPerfilRestaurante from '../components/HeaderPerfilRestaurante';
 import Tag from '../components/Tag';
 import DropdownRes from '../components/Accordion';
 import Accordion from '../components/Accordion';
+import { Foundation } from '@expo/vector-icons';
 
 const TextInputExample: React.FC = () => {
   const [name, setName] = useState<string>('');
@@ -27,7 +28,13 @@ const TextInputExample: React.FC = () => {
 
   return (
 
-    <Accordion title={'TITULO'} content={'CONTEUDO'}></Accordion>
+    <Accordion 
+    title={'4.7'} 
+    content={''} 
+    staticArrow={true}
+    children={<Foundation name="star" size={24} color="#FF914B" />}
+    description='(57 avaliações)'
+    ></Accordion>
 
   );
 };

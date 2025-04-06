@@ -5,10 +5,13 @@ import { Colors } from "@/src/constants/Colors";
 
 interface AccordionProps {
   title: string;
+  description: string;
   content: string;
+  staticArrow: boolean;
+  children: React.ReactNode; 
 }
 
-const Accordion: React.FC<AccordionProps> = ({ title, content }) => {
+const Accordion: React.FC<AccordionProps> = ({ title, description, content, staticArrow, children }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleAccordion = () => setIsOpen(!isOpen);
@@ -17,10 +20,12 @@ const Accordion: React.FC<AccordionProps> = ({ title, content }) => {
     <View style={styles.container}>
       {/* Header do Accordion */}
       <TouchableOpacity style={styles.header} onPress={toggleAccordion}>
+        {children}
         <Text style={styles.title}>{title}</Text>
+        <Text style={styles.description}>{description}</Text>
         {/* Ícone que muda dinamicamente */}
         <MaterialIcons
-          name={isOpen ? "keyboard-arrow-up" : "keyboard-arrow-down"}
+          name={staticArrow ? "keyboard-arrow-right" : isOpen ? "keyboard-arrow-up" : "keyboard-arrow-down"}
           size={34}
           color={'#FF914B'}
         />
@@ -42,7 +47,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
     alignItems: "center",
     backgroundColor: "#fff",
   },
@@ -50,6 +55,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "",
     color: "#333",
+    marginLeft: 15,
+    marginRight: 15
   },
   content: {
     backgroundColor: "#fff",
@@ -59,6 +66,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#555",
   },
+  description: {
+    fontSize: 12,
+    color: 'gray',
+  }
 });
 
 export default Accordion;
