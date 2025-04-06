@@ -5,24 +5,45 @@ import Dropdown from '../../components/Dropdown';
 import { useCreateRestaurant } from '@/src/hooks/useRestaurantApi';
 import { RestaurantDTO } from '@/src/@types/DTO';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
-
+import HoursSection from '@/src/components/HoursSection';
+import { OperatingHoursDto } from '@/src/@types/OperatingHoursDTO';
 
 const SignupRestaurant: React.FC = ({ navigation }: any) => {
   const [restaurantName, setRestaurantName] = useState<string>('');
   const [address, setAddress] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [averagePrice, setAveragePrice] = useState<number>(0);
+  const [averagePrice, setAveragePrice] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [restaurantType, setRestaurantType] = useState<string | null>(null);
   const [userType, setUserType] = useState<string>('');
+  const [operatingHours, setOperatingHours] = useState<OperatingHoursDto[]>([
+    { day: 'Segunda', time: '11:00 – 14:00' },
+    { day: 'Feriados', time: '18:30 – 23:30' },
+    { day: 'Terça', time: '11:00 – 14:00' },
+  ]);
 
   const { createRestaurant } = useCreateRestaurant();
+
+  const handleAddOperatingHour = () => {
+    setOperatingHours((prev: any) => [
+      ...prev,
+      { day: 'Quarta', startTime: '12:00', endTime: '15:00' },
+    ]);
+  };
 
   const validateNameRestaurant = (text: string): string | null => {
     if (text.length < 2) return 'Nome deve ter no mínimo 2 caracteres';
     if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(text)) return 'Nome deve conter apenas letras';
     if (text.length > 50) return 'Nome deve ter no máximo 50 caracteres';
+    return null;
+  };
+
+  const validateAddress = (text: string): string | null => {
+    if (!text.trim()) return 'Endereço é obrigatório';
+    if (text.length < 5) return 'Endereço deve ter no mínimo 5 caracteres';
+    if (text.length > 100) return 'Endereço deve ter no máximo 100 caracteres';
+    if (!/^[\wÀ-ÿ\s.,ºª\-]+$/i.test(text)) return 'Endereço contém caracteres inválidos';
     return null;
   };
 
@@ -47,6 +68,16 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
     return null;
   };
 
+  const validateAveregePrice = (text: string): string | null => {
+    if(!text) return 'Preço médio é obrigatório';
+
+    const number = parseFloat(text.replace(',','.'));
+      if(isNaN(number)) return 'Preço deve ser um número válido';
+      if(number <= 0) return 'Preço deve ser maior que zero';
+
+      return null;
+  };
+
   const handleSubmit = async () => {
     if (!restaurantName || !email || !password || !phone) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
@@ -55,9 +86,11 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
 
     const errors = [
       validateNameRestaurant(restaurantName),
+      validateAddress(address),
       validateEmail(email),
       validatePassword(password),
       validatePhone(phone),
+      validateAveregePrice(averagePrice),
     ].filter((error) => error != null);
 
     if (errors.length > 0) {
@@ -71,7 +104,7 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
         address,
         email,
         password,
-        averagePrice,
+        averagePrice: parseFloat(averagePrice) || 0,
         phone,
         restaurantType: restaurantType ?? '',
       };
@@ -99,7 +132,7 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
           onChangeText={setAddress}
           placeholder="Endereço"
           style={styles.input}
-          //validation={}
+          validation={validateAddress}
           keyboardType="email-address"
           autoCapitalize="none"
         />
@@ -121,12 +154,11 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
           secureTextEntry
         />
          <CustomTextInput
-         //alterar o value e o onChange
-          value={email}
-          onChangeText={setEmail}
+          value={averagePrice}
+          onChangeText={setAveragePrice}
           placeholder="Preço Médio"
           style={styles.input}
-          validation={validateEmail}
+          validation={validateAveregePrice}
           keyboardType="number-pad"
           autoCapitalize="none"
         />
@@ -146,6 +178,11 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
           keyboardType="phone-pad"
           maxLength={15}
         />
+        <HoursSection
+          hours={operatingHours}
+          onAdd={handleAddOperatingHour}
+        />
+
         <Dropdown
           label="Tipo de Cadastro"
           selected={userType}
