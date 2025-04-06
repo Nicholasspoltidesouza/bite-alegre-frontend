@@ -22,7 +22,7 @@ const Accordion: React.FC<AccordionProps> = ({ title, content }) => {
         <MaterialIcons
           name={isOpen ? "keyboard-arrow-up" : "keyboard-arrow-down"}
           size={34}
-          color={Colors.orange.tint}
+          color={'#FF914B'}
         />
       </TouchableOpacity>
 
