@@ -40,6 +40,7 @@ const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({ urlFo
         borderBottomRightRadius: 20,
       },
       imageBackground: {
+        width: '100%',
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
       },
