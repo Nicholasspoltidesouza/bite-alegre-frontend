@@ -1,5 +1,5 @@
 
-import { StyleSheet, ImageBackground, TouchableOpacity, View, Image } from 'react-native';
+import { StyleSheet, ImageBackground, TouchableOpacity, View, Image, SafeAreaView } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useEffect, useState } from 'react';
@@ -78,21 +78,21 @@ const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({ urlFo
     });
 
   return (
-    <View style={styles.container_banner}>
+    <SafeAreaView style={styles.container_banner}>
       <ImageBackground source={{ uri: urlFotoBanner }} style={styles.container} imageStyle={styles.imageBackground} >
         <TouchableOpacity style={styles.pinButton} onPress={handlePress} >
           <AntDesign name="pushpin" size={24}  style={styles.icon}  />
         </TouchableOpacity>
       </ImageBackground>
       
-      <View style={styles.profileContainer}>
+      <SafeAreaView style={styles.profileContainer}>
         {urlFotoPerfil ? (
           <Image source={{ uri: urlFotoPerfil }} style={styles.profileImage} />
         ) : (
           <FontAwesome6 name="user-large" size={40} color="#FFF" style={styles.profileIcon} />
         )}
-      </View>
-    </View>
+      </SafeAreaView>
+    </SafeAreaView>
   );
 };
 
