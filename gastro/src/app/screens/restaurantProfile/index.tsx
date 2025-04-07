@@ -55,14 +55,6 @@ const RestaurantProfile: React.FC = () => {
           </Accordion>
 
           <Accordion 
-            title={'Aberto agora'}
-            description={''}
-            content={'Horario'} 
-            staticArrow={false} 
-            children={<FontAwesome name="cutlery" size={24} color="#FF914B" />}>
-          </Accordion>
-
-          <Accordion 
             title={'Estive Aqui'}
             description={''}
             content={''} 
