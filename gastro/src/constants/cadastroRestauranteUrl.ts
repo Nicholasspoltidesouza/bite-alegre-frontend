@@ -1,1 +1,1 @@
-export const URL = "http://localhost:8081/api/telaRestaurante";
+export const URL = "http://localhost:8081/api/restaurant/create";

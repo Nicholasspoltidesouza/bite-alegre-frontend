@@ -6,7 +6,7 @@ import { useCreateRestaurant } from '@/src/hooks/useRestaurantApi';
 import { RestaurantDTO } from '@/src/@types/DTO';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import HoursSection from '@/src/components/HoursSection';
-import { OperatingHoursDto } from '@/src/@types/OperatingHoursDTO';
+import { OperatingHoursDto } from '@/src/@types/OperatingHoursDto';
 
 const SignupRestaurant: React.FC = ({ navigation }: any) => {
   const [restaurantName, setRestaurantName] = useState<string>('');
@@ -117,6 +117,13 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
     }
   };
 
+  const handleEditOperatingHour = (item: OperatingHoursDto, index: number) => {
+    Alert.alert(
+      'Editar Horário',
+      `Você clicou em ${item.day} - ${item.time}`
+    );
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -181,6 +188,7 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
         <HoursSection
           hours={operatingHours}
           onAdd={handleAddOperatingHour}
+          onPressItem={handleEditOperatingHour}
         />
 
         <Dropdown
@@ -192,7 +200,7 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
           iconColor="#FFFFFF"
           textColor="#FFFFFF"
           backgroundColor="#FF914B"
-        />
+          />
       </ScrollView>
       <View style={styles.buttonContainer}>
         <Button title="Avançar" type="orange" onPress={handleSubmit} />
@@ -229,6 +237,7 @@ const styles = StyleSheet.create({
     right: 20,
     width: 120,
   },
+
 });
 
 export default SignupRestaurant;

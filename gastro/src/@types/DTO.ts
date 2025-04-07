@@ -13,7 +13,7 @@ interface RestaurantDTO {
     profilePhoto?: string;
     bannerPhoto?: string;
     address: string;
-    name: string;
+    restaurantName: string;
     email: string;
     password: string;
     averagePrice: number;

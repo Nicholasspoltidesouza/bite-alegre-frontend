@@ -1,19 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Button from '../Button';
-
-interface OperatingHour {
-  day: string;
-  time: string;
-}
+import { OperatingHoursDto } from '@/src/@types/OperatingHoursDto';
 
 interface Props {
-  hours: OperatingHour[];
+  hours: OperatingHoursDto[];
   onAdd: () => void;
+  onPressItem?: (item: OperatingHoursDto, index: number) => void;
 }
 
-const HoursSection: React.FC<Props> = ({ hours, onAdd }) => {
+const HoursSection: React.FC<Props> = ({ hours, onAdd, onPressItem }) => {  
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -31,12 +27,12 @@ const HoursSection: React.FC<Props> = ({ hours, onAdd }) => {
 
       <FlatList
         data={hours}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.row}>
+        keyExtractor={(_, index) => index.toString()}
+        renderItem={({ item, index }) => (
+          <TouchableOpacity style={styles.row} onPress={() => onPressItem?.(item, index)}>
             <Text style={styles.day}>{item.day}</Text>
             <Text style={styles.time}>{item.time}</Text>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>
