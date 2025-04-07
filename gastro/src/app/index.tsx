@@ -1,48 +1,33 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import CustomTextInput from '../components/TextFieldCadastroUsuario'; 
-import HeaderPerfilRestaurante from '../components/HeaderPerfilRestaurante';
-import Tag from '../components/Tag';
-import SignupRestaurant from '../screens/Signup-restaurants';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import Button from '../components/Button';
+import { router } from 'expo-router';
+import Header from '../components/Header';
 
-
-const TextInputExample: React.FC = () => {
-  const [name, setName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-
-  const validateName = (text: string) => {
-    if (text.length < 2) return 'Nome deve ter no mínimo 2 caracteres';
-    if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(text)) return 'Nome deve conter apenas letras';
-    if (text.length > 50) return 'Nome deve ter no máximo 50 caracteres';
-    return null;
-  };
-
-  const validateEmail = (text: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!text) return 'Email é obrigatório';
-    if (!emailRegex.test(text)) return 'Formato de email inválido';
-    if (text.length > 100) return 'Email deve ter no máximo 100 caracteres';
-    return null;
-  };
-
-  return (
-
-    <SignupRestaurant/>
-
+const App: React.FC = () => {
+  
+  return (    
+    <View style={styles.container}>
+      <Header/>
+      <View style={styles.buttons}>
+        <Button title="Perfil Restaurante" onPress={() => router.push({pathname: '/screens/restaurantProfile'})} type={'orange'} />
+        <Button title="Cadastro Usuário" onPress={() => router.push({pathname: '/screens/SignupScreen'})} type={'orange'} />
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    backgroundColor: '#FFFFFF', 
-    padding: 16,
+    flex: 1,
+    backgroundColor: '#FFFFFF',
   },
-  customInput: {
-    marginBottom: 16,
-  },
+  buttons: {
+    flex: 1,
+    marginTop: 15,
+    alignItems: 'center',
+    gap: 16,
+  }
 });
 
-export default TextInputExample;
+export default App;

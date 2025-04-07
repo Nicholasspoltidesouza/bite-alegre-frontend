@@ -1,51 +1,44 @@
 import { useState } from "react";
+import { UserDTO } from "../@types/DTO";
 import { API_URL_BACKEND } from "../constants/apiUrl";
 
-interface Restaurant {
-  id: string;
-  profilePhoto: string;
-  bannerPhoto: string;
-  name: string;
-  description: string;
-  address: string;
-  averagePrice: string;
-  phone: string;
-}
-
-export const useRestaurantApi = () => {
+export const useCreateUser = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<Restaurant | null>(null);
+  const [data, setData] = useState<any>(null);
 
-  const getRestaurant = async (restaurantId: string): Promise<void> => {
+  const createUser = async (userData: UserDTO): Promise<void> => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL_BACKEND}restaurants/${restaurantId}`, {
-        method: "GET",
+      const response = await fetch(`${API_URL_BACKEND}/users`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify(userData),
       });
 
       const responseData = await response.json();
 
       if (response.ok) {
+        console.log("Usuário criado:", responseData);
         setData(responseData);
       } else {
         throw new Error(
           responseData.error ||
             responseData.message ||
-            `Falha ao buscar restaurante. Status: ${response.status}`,
+            `Falha ao criar usuário. Status: ${response.status}`,
         );
       }
     } catch (err: any) {
+      console.error("Erro ao criar usuário:", err);
       setError(err.message || "Erro desconhecido");
     } finally {
       setLoading(false);
     }
   };
 
-  return { getRestaurant, loading, error, data };
+  return { createUser, loading, error, data };
 };
