@@ -4,8 +4,9 @@ import Dropdown from '@/src/components/Dropdown';
 import SignupHeader from '@/src/components/SignupHeader';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { useCreateUser } from '@/src/hooks/useUserApi';
+import { useRouter } from "expo-router";
 import React, { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View, Text } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 const SignupScreen = () => {
   const [name, setName] = useState<string>('');
@@ -19,6 +20,7 @@ const SignupScreen = () => {
   const [birthDateTouched, setBirthDateTouched] = useState<boolean>(false);
 
   const { createUser } = useCreateUser();
+  const router = useRouter();
 
   const validateName = (text: string): string | null => {
     if (text.length < 2) return "Nome deve ter no mínimo 2 caracteres";
@@ -136,6 +138,7 @@ const SignupScreen = () => {
 
       await createUser(userData);
       Alert.alert("Sucesso", "Usuário cadastrado com sucesso!");
+      router.push("/screens/SignupInterestsScreen");
     } catch (err) {
       console.error("Submit Error:", err);
       Alert.alert(
