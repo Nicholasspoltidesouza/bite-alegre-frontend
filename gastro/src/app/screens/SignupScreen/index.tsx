@@ -152,9 +152,12 @@ const SignupScreen = () => {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
     >
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={[
+      styles.safeArea,
+      Platform.OS === 'ios' && { paddingTop: 0 }
+    ]}>
         <SignupHeader
           userType={userType}
           setUserType={setUserType}
@@ -272,11 +275,12 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
-    padding: 16,
-    paddingBottom: 32,
+    padding: '4%',
+    paddingBottom: '8%',
+    width: '100%',
   },
   input: {
-    width: 327,
+    width: '327',
     height: 50,
     borderRadius: 20,
     backgroundColor: "rgba(255, 179, 112, 0.25)",
@@ -285,17 +289,17 @@ const styles = StyleSheet.create({
     color: "#FF914B",
     fontFamily: "Poppins-Regular",
     fontSize: 16,
-    marginBottom: 20,
+    marginBottom: '5%',
   },
   rowContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: 327,
-    marginBottom: 20,
+    width: '90%',
+    marginBottom: '5%',
   },
   birthDateInput: {
     height: 50,
-    width: 155,
+    width: '100%',
     borderRadius: 20,
     backgroundColor: "rgba(255, 179, 112, 0.25)",
     paddingLeft: 24,
@@ -312,8 +316,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
   },
   buttonContainer: {
-    marginTop: 8,
-    width: 327,
+    marginTop: '2%',
+    width: '90%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
