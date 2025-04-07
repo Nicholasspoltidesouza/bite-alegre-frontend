@@ -39,11 +39,19 @@ const RestaurantProfile: React.FC = () => {
         <Text style={styles.title}>{restaurant?.name}</Text>
         <View style={styles.infoGrid}>
           <Accordion 
+<<<<<<< HEAD
             title={'Descrição'}
             description={''}
             content={restaurant?.description ?? ""} 
             staticArrow={false} 
             children={<Ionicons name="document-text-outline" size={24} color="#FF914B" />}>
+=======
+          title={'4.7'}
+          description={'(100 avaliações)'}
+          content={''} 
+          staticArrow={true} 
+          children={<Foundation name="star" size={24} color="#FF914B" />}>
+>>>>>>> 9a1b50ab9e6ce7d1a91317f378be11fd0a27d881
           </Accordion>
 
           <Accordion 
