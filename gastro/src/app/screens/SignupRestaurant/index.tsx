@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert, SafeAreaView, ScrollView } from 'react-native';
-import Button from '../../components/Button';
-import Dropdown from '../../components/Dropdown';
-import { useCreateRestaurant } from '@/src/hooks/useRestaurantApi';
-import { RestaurantDTO } from '@/src/@types/DTO';
+import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import HoursSection from '@/src/components/HoursSection';
 import { OperatingHoursDto } from '@/src/@types/OperatingHoursDto';
+import SignupHeader from '@/src/components/SignupHeader';
+import { useRouter } from 'expo-router';
+import { RestaurantDTO, UserDTO } from '@/src/@types/DTO';
+import Button from '@/src/components/Button';
 
 const SignupRestaurant: React.FC = ({ navigation }: any) => {
   const [restaurantName, setRestaurantName] = useState<string>('');
@@ -15,15 +16,16 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
   const [password, setPassword] = useState<string>('');
   const [averagePrice, setAveragePrice] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
-  const [restaurantType, setRestaurantType] = useState<string | null>(null);
-  const [userType, setUserType] = useState<string>('');
+  const [userType, setUserType] = useState<string | null>(null);
+
   const [operatingHours, setOperatingHours] = useState<OperatingHoursDto[]>([
     { day: 'Segunda', time: '11:00 – 14:00' },
     { day: 'Feriados', time: '18:30 – 23:30' },
     { day: 'Terça', time: '11:00 – 14:00' },
   ]);
 
-  const { createRestaurant } = useCreateRestaurant();
+  const { getRestaurant } = useRestaurantApi();
+  const router = useRouter();
 
   const handleAddOperatingHour = () => {
     setOperatingHours((prev: any) => [
@@ -78,8 +80,23 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
       return null;
   };
 
+  const ifFormValid = 
+  restaurantName &&
+  email &&
+  address &&
+  averagePrice &&
+  password &&
+  phone &&
+  userType &&
+  !validateNameRestaurant(restaurantName) &&
+  !validateAddress(address) &&
+  !validateEmail(email) &&
+  !validateAveregePrice(averagePrice) &&
+  !validatePassword(password) &&
+  !validatePhone(phone)
+
   const handleSubmit = async () => {
-    if (!restaurantName || !email || !password || !phone) {
+    if (!restaurantName || !email || !password || !phone || !address || !averagePrice || !userType) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
@@ -99,17 +116,19 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
     }
 
     try {
+      const formatedUserType = 
+      userType === "Cadastro de Restaurante" ? "RESTAURANTE" : "USUARIO"
       const restaurantData: RestaurantDTO = {
         restaurantName,
         address,
         email,
         password,
-        averagePrice: parseFloat(averagePrice) || 0,
+        averagePrice,
         phone,
-        restaurantType: restaurantType ?? '',
+        UserType: formatedUserType,
       };
 
-      await createRestaurant(restaurantData);
+      await getRestaurant(restaurantData);
       Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
     } catch (err) {
       console.error('Submit Error:', err);
@@ -126,6 +145,10 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+        <SignupHeader
+            userType={userType}
+            setUserType={setUserType}
+        />
       <ScrollView contentContainerStyle={styles.container}>
         <CustomTextInput
           value={restaurantName}
@@ -190,21 +213,10 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
           onAdd={handleAddOperatingHour}
           onPressItem={handleEditOperatingHour}
         />
-
-        <Dropdown
-          label="Tipo de Cadastro"
-          selected={userType}
-          placeholder="Tipo de cadastro"
-          options={['Cadastro de Usuário', 'Cadastro de Restaurante']}
-          onSelect={setUserType}
-          iconColor="#FFFFFF"
-          textColor="#FFFFFF"
-          backgroundColor="#FF914B"
-          />
       </ScrollView>
       <View style={styles.buttonContainer}>
-        <Button title="Avançar" type="orange" onPress={handleSubmit} />
-      </View>
+            <Button title="Avançar" type="orange" onPress={handleSubmit} disabled={!isFormValid} />
+        </View>
     </SafeAreaView>
   );
 };
@@ -232,10 +244,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   buttonContainer: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    width: 120,
+    marginTop: 8,
+    width: 327,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
 
 });
