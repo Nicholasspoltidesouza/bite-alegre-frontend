@@ -38,6 +38,15 @@ const RestaurantProfile: React.FC = () => {
       <View style={styles.infos}>
         <Text style={styles.title}>{restaurant?.name}</Text>
         <View style={styles.infoGrid}>
+
+            <Accordion 
+            title={'4,5'}
+            description={'(50 avaliação)'}
+            content={``} 
+            staticArrow={true} 
+            children={<FontAwesome name="star" size={24} color="#FF914B" />}>
+            </Accordion>
+
           <Accordion
             title={'Descrição'}
             description={''}
@@ -52,6 +61,22 @@ const RestaurantProfile: React.FC = () => {
             content={restaurant?.address ?? ""} 
             staticArrow={false} 
             children={<FontAwesome6 name="location-dot" size={24} color="#FF914B" />}>
+          </Accordion>
+          
+          <Accordion 
+            title={'Aberto'}
+            description={''}
+            content={
+              `Segunda-Feira   18:30 às 23:00\n` +
+              `Terça-Feira     18:30 às 23:00\n` +
+              `Quarta-Feira    18:30 às 23:00\n` +
+              `Quinta-Feira    18:30 às 23:00\n` +
+              `Sexta-Feira     18:30 às 00:00\n` +
+              `Sábado          12:00 às 00:00\n` +
+              `Domingo         12:00 às 22:00`
+            } 
+            staticArrow={false} 
+            children={<Foundation name="clock" size={24} color="#FF914B" />}>
           </Accordion>
 
           <Accordion 
