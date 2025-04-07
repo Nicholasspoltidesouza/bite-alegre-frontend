@@ -44,6 +44,7 @@ const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({ urlFo
         borderBottomRightRadius: 20,
       },
       pinButton: {
+        margin: 20,
         width: 40,
         height: 40,
         borderRadius: 20,
