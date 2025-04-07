@@ -29,6 +29,7 @@ const Tag: React.FC<TagProps> = ({ title, style, textStyle, isSelected = false }
           justifyContent: 'center',
           alignItems: 'center',
           backgroundColor: selected ? 'rgba(255, 179, 112, 0.25)' : 'rgba(227, 225, 225, 0.8)',
+          minWidth: 100,
         },
         style,
       ]}
