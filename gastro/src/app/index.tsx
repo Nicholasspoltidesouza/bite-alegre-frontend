@@ -9,8 +9,10 @@ const App: React.FC = () => {
   return (    
     <View style={styles.container}>
       <Header/>
-      <Button title="Perfil Restaurante" onPress={() => router.push({pathname: '/screens/restaurantProfile'})} type={'orange'} />
-      <Button title="Cadastro Usuário" onPress={() => router.push({pathname: '/screens/SignupScreen'})} type={'orange'} />
+      <View style={styles.buttons}>
+        <Button title="Perfil Restaurante" onPress={() => router.push({pathname: '/screens/restaurantProfile'})} type={'orange'} />
+        <Button title="Cadastro Usuário" onPress={() => router.push({pathname: '/screens/SignupScreen'})} type={'orange'} />
+      </View>
     </View>
   );
 };
@@ -20,6 +22,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
+  buttons: {
+    flex: 1,
+    marginTop: 15,
+    alignItems: 'center',
+    gap: 16,
+  }
 });
 
 export default App;
