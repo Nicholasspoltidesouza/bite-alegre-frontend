@@ -38,7 +38,7 @@ const RestaurantProfile: React.FC = () => {
       <View style={styles.infos}>
         <Text style={styles.title}>{restaurant?.name}</Text>
         <View style={styles.infoGrid}>
-          <Accordion 
+          <Accordion
             title={'Descrição'}
             description={''}
             content={restaurant?.description ?? ""} 
@@ -84,7 +84,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 10,
-
   },
   infos: {
     marginTop: 30,
@@ -98,9 +97,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   infoGrid: {
-    marginTop: 10,
     marginLeft: 50,
-    marginRight: 50,
+    marginRight: 50,    
   }
 });
 

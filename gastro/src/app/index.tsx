@@ -6,11 +6,10 @@ import { router } from 'expo-router';
 const TextInputExample: React.FC = () => {
   return (
     <View style={styles.container}>
-      <Button title="Perfil Restaurante" onPress={() => router.push({pathname: '/screens/RestaurantProfile'})}type={'orange'} />
+      <Button title="Perfil Restaurante" onPress={() => router.push({pathname: '/screens/restaurantProfile'})} type={'orange'} />
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   customInput: {

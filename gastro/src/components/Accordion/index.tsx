@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     paddingLeft: 27,
   },
   description: {
-    fontSize: 12,
+    fontSize: 11,
     color: 'gray',
   }
 });
