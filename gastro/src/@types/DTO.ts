@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-export interface RestaurantDTO {
-    profilePhoto?: string;
-    bannerPhoto?: string;
-    address: string;
-    restaurantName: string;
-    email: string;
-    password: string;
-    averagePrice: number;
-    phone: string;
-    restaurantType: string | null;
-}
-=======
 interface UserDTO {
   profilePhoto?: string;
   name: string;
@@ -24,4 +11,3 @@ interface UserDTO {
 }
 
 export type { UserDTO };
->>>>>>> development
