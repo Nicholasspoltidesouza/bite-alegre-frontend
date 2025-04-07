@@ -10,8 +10,6 @@ interface Restaurant {
   address: string;
   averagePrice: string;
   phone: string;
-  latitude: number | null;
-  longitude: number | null;
 }
 
 export const useRestaurantApi = () => {
