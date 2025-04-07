@@ -1,12 +1,14 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
-import SignupScreen from './screens/SignupScreen';
+import { StyleSheet, View } from 'react-native';
+import Button from '../components/Button';
+import { router } from 'expo-router';
 
-const App = () => {
+const App: React.FC = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <SignupScreen />
-    </SafeAreaView>
+    <View style={styles.container}>
+      <Button title="Perfil Restaurante" onPress={() => router.push({pathname: '/screens/restaurantProfile'})} type={'orange'} />
+      <Button title="Cadastro Usuário" onPress={() => router.push({pathname: '/screens/SignupScreen'})} type={'orange'} />
+    </View>
   );
 };
 
