@@ -120,8 +120,8 @@ export default function RootLayout() {
         )
       }}
     />
-    <Tabs.Screen name="screens/Signup-interests/index" options={{ href: null, tabBarShowLabel: false }} />
-    <Tabs.Screen name="screens/SignupInterestsScreen/index" options={{ href: null, tabBarShowLabel: false }} />
+    <Tabs.Screen name="screens/SignupScreen/index" options={{ href: null, tabBarShowLabel: false }} />
+    <Tabs.Screen name="screens/SignupInterestsScreen/index" options={{ href: null, tabBarShowLabel: false }} />    
     <Tabs.Screen name="screens/restaurantProfile/index" options={{ href: null, tabBarShowLabel: false }} />
   </Tabs>
   )

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { API_URL_BACKEND } from "../constants/Validation";
+import { API_URL_BACKEND } from "../constants/apiUrl";
 
 interface Restaurant {
   id: string;

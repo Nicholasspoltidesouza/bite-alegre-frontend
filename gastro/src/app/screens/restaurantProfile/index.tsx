@@ -72,24 +72,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
-  carda: {
-    color: 'black',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  precoMedio: {
-    color: 'black',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: 10,
-  },
   infos: {
     marginTop: 30,
   },
   title: {
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 8,

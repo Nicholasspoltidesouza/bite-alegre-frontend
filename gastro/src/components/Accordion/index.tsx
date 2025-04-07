@@ -19,7 +19,7 @@ const Accordion: React.FC<AccordionProps> = ({ title, description, content, stat
     <View>
       <TouchableOpacity style={styles.header} onPress={toggleAccordion}>
         <View style={styles.leftItens}>
-          {children}        
+          <View style={styles.icon} >{children}</View>                  
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.description}>{description}</Text>
         </View>
@@ -45,6 +45,9 @@ const styles = StyleSheet.create({
   leftItens: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  icon: {
+    width: 24
   },
   title: {
     fontSize: 16,
