@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { OperatingHoursDto } from '@/src/@types/OperatingHoursDto';
+import { OperatingHoursDto } from '../../@types/OperatingHoursDto';
 
 interface Props {
   hours: OperatingHoursDto[];
