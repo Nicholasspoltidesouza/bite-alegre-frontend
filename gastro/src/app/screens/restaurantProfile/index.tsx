@@ -29,7 +29,7 @@ const RestaurantProfile: React.FC = () => {
   }
 
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
       <HeaderPerfilRestaurante
         urlFotoBanner={restaurant?.bannerPhoto}
         urlFotoPerfil={restaurant?.profilePhoto}
@@ -63,14 +63,14 @@ const RestaurantProfile: React.FC = () => {
           </Accordion>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
   },
   carda: {
     color: 'black',
