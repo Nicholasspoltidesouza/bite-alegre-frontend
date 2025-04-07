@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { TextInput, StyleProp, TextInputProps, ViewStyle, TextStyle, View, Text } from 'react-native';
+import { DimensionValue, StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
 
 interface CustomTextInputProps extends Omit<TextInputProps, 'style'> {
   value: string;
   onChangeText: (text: string) => void;
   placeholder: string;
   style?: StyleProp<ViewStyle | TextStyle>;
-  validation?: (text: string) => string | null; // Optional validation function
+  validation?: (text: string) => string | null;
+  width?: DimensionValue;
 }
 
 const CustomTextInput: React.FC<CustomTextInputProps> = ({
@@ -15,25 +16,23 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
   placeholder,
   style,
   validation,
+  width,
   ...props
 }) => {
   const [error, setError] = useState<string | null>(null);
 
   const handleChangeText = (text: string) => {
-    // If validation function exists, run it
     if (validation) {
       const validationError = validation(text);
       setError(validationError);
     }
-
-    // Always call the onChangeText prop
     onChangeText(text);
   };
 
   return (
     <View>
       {error && (
-        <Text 
+        <Text
           style={{
             color: 'red',
             fontSize: 12,
@@ -50,7 +49,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
         className="py-0 text-base font-normal text-left"
         style={[
           {
-            width: 327,
+            width: width || 327,
             height: 50,
             borderRadius: 20,
             backgroundColor: 'rgba(255, 179, 112, 0.25)',
@@ -60,7 +59,6 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
             fontFamily: 'Poppins-Regular',
             fontSize: 16,
             letterSpacing: 0,
-            // Add red border if there's an error
             borderWidth: error ? 2 : 0,
             borderColor: error ? 'red' : 'transparent',
           },
