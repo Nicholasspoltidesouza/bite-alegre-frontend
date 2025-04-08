@@ -21,4 +21,4 @@ interface RestaurantDTO {
     restaurantType: string | null;
 }
 
-export type { UserDTO, RestaurantDTO };
+export type { RestaurantDTO, UserDTO };

@@ -10,7 +10,7 @@ import { Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleS
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const SignupScreen = () => {
+const SignupUser = () => {
   const [name, setName] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -18,7 +18,7 @@ const SignupScreen = () => {
   const [phone, setPhone] = useState<string>('');
   const [gender, setGender] = useState<string | null>(null);
   const [birthDate, setBirthDate] = useState('');
-  const [userType, setUserType] = useState<string | null>(null);
+  const [userType, setUserType] = useState<string | null>("Cadastro de Usuário");
   const [birthDateTouched, setBirthDateTouched] = useState<boolean>(false);
 
   const { createUser } = useCreateUser();
@@ -140,7 +140,7 @@ const SignupScreen = () => {
 
       await createUser(userData);
       Alert.alert("Sucesso", "Usuário cadastrado com sucesso!");
-      router.push("/screens/SignupInterestsScreen");
+      router.push("/screens/SignupRestaurant");
     } catch (err) {
       console.error("Submit Error:", err);
       Alert.alert(
@@ -164,6 +164,7 @@ const SignupScreen = () => {
           userType={userType}
           setUserType={setUserType}
           onBack={() => router.back()}
+          profileIcon={'person'}
         />
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <View style={styles.inputWrapper}>
@@ -343,4 +344,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignupScreen;
+export default SignupUser;
