@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -51,17 +51,20 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontFamily: "Poppins-Regular",
+    fontFamily: "Poppins-Medium",
+    fontWeight: 'bold',
     color: "#333",
     marginLeft: 8,
     marginRight: 8
   },
   contentText: {
-    fontSize: 14,
+    fontFamily: "Poppins-Medium",
+    fontSize: 12,
     color: "#555",
     paddingLeft: 27,
   },
   description: {
+    fontFamily: "Poppins-Medium",
     fontSize: 11,
     color: 'gray',
   }
