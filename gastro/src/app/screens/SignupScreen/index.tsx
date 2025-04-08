@@ -6,7 +6,9 @@ import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { useCreateUser } from '@/src/hooks/useUserApi';
 import { useRouter } from "expo-router";
 import React, { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, View, Dimensions } from 'react-native';
+
+const { width: screenWidth } = Dimensions.get('window');
 
 const SignupScreen = () => {
   const [name, setName] = useState<string>('');
@@ -152,65 +154,78 @@ const SignupScreen = () => {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
     >
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={[
+      styles.safeArea,
+      Platform.OS === 'ios' && { marginTop: 0 },
+    ]}>
         <SignupHeader
           userType={userType}
           setUserType={setUserType}
           onBack={() => router.back()}
         />
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-          <CustomTextInput
-            value={name}
-            onChangeText={setName}
-            placeholder="Nome"
-            style={styles.input}
-            validation={validateName}
-          />
-          <CustomTextInput
-            value={nickname}
-            onChangeText={setNickname}
-            placeholder="Apelido"
-            style={styles.input}
-            validation={validateNickname}
-          />
-          <CustomTextInput
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Email"
-            style={styles.input}
-            validation={validateEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <CustomTextInput
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Senha"
-            style={styles.input}
-            validation={validatePassword}
-            secureTextEntry
-          />
-          <CustomTextInput
-            value={phone}
-            onChangeText={(text) => {
-              const formatted = text
-                .replace(/\D/g, "")
-                .replace(/^(\d{2})(\d)/g, "($1) $2")
-                .replace(/(\d{5})(\d)/, "$1-$2")
-                .slice(0, 15);
-              setPhone(formatted);
-            }}
-            placeholder="Telefone"
-            style={styles.input}
-            validation={validatePhone}
-            keyboardType="phone-pad"
-            maxLength={15}
-          />
+          <View style={styles.inputWrapper}>
+            <CustomTextInput
+              value={name}
+              onChangeText={setName}
+              placeholder="Nome"
+              style={styles.input}
+              validation={validateName}
+            />
+          </View>
+          <View style={styles.inputWrapper}>
+            <CustomTextInput
+              value={nickname}
+              onChangeText={setNickname}
+              placeholder="Apelido"
+              style={styles.input}
+              validation={validateNickname}
+            />
+          </View>
+          <View style={styles.inputWrapper}>
+            <CustomTextInput
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Email"
+              style={styles.input}
+              validation={validateEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+          <View style={styles.inputWrapper}>
+            <CustomTextInput
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Senha"
+              style={styles.input}
+              validation={validatePassword}
+              secureTextEntry
+            />
+          </View>
+          <View style={styles.inputWrapper}>
+            <CustomTextInput
+              value={phone}
+              onChangeText={(text) => {
+                const formatted = text
+                  .replace(/\D/g, "")
+                  .replace(/^(\d{2})(\d)/g, "($1) $2")
+                  .replace(/(\d{5})(\d)/, "$1-$2")
+                  .slice(0, 15);
+                setPhone(formatted);
+              }}
+              placeholder="Telefone"
+              style={styles.input}
+              validation={validatePhone}
+              keyboardType="phone-pad"
+              maxLength={15}
+            />
+          </View>
 
           <View style={styles.rowContainer}>
-            <View style={{ flex: 1, marginRight: 8 }}>
+            <View style={styles.halfInputWrapper}>
               <Dropdown
                 label="Gênero"
                 selected={gender}
@@ -222,11 +237,11 @@ const SignupScreen = () => {
                   "PREFIRO NÃO INFORMAR",
                 ]}
                 onSelect={setGender}
-                width={155}
+                width="50%"
                 paddingLeft={24}
               />
             </View>
-            <View style={{ flex: 1 }}>
+            <View style={styles.halfInputWrapper}>
               <CustomTextInput
                 value={birthDate}
                 onChangeText={(text) => {
@@ -248,7 +263,7 @@ const SignupScreen = () => {
                 ]}
                 validation={undefined}
                 keyboardType="numeric"
-                width={155}
+                width="50%"
               />
               {birthDateTouched && validateBirthDate(birthDate) && (
                 <Text style={styles.errorText}>
@@ -273,35 +288,42 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
-    padding: 16,
-    paddingBottom: 32,
+    padding: '4%',
+    paddingBottom: '8%',
+    width: '100%',
+  },
+  inputWrapper: {
+    width: '90%',
+    marginBottom: '5%',
   },
   input: {
-    width: 327,
+    width: '100%',
     height: 50,
     borderRadius: 20,
     backgroundColor: "rgba(255, 179, 112, 0.25)",
     paddingLeft: 24,
     paddingRight: 16,
-    color: "#FF914B",
+    color: "#000000",
     fontFamily: "Poppins-Regular",
     fontSize: 16,
-    marginBottom: 20,
   },
   rowContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: 327,
-    marginBottom: 20,
+    width: '90%',
+    marginBottom: '5%',
+  },
+  halfInputWrapper: {
+    width: '48%',
   },
   birthDateInput: {
     height: 50,
-    width: 155,
+    width: '100%',
     borderRadius: 20,
     backgroundColor: "rgba(255, 179, 112, 0.25)",
     paddingLeft: 24,
     paddingRight: 16,
-    color: "#FF914B",
+    color: "#000000",
     fontFamily: "Poppins-Regular",
     fontSize: 16,
   },
@@ -313,8 +335,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
   },
   buttonContainer: {
-    marginTop: 8,
-    width: 327,
+    marginTop: '2%',
+    width: '90%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },

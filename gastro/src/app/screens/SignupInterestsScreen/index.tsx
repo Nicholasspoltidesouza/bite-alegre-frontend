@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, ScrollView, SafeAreaView, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, SafeAreaView, ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native';
 import Tag from '../../../components/Tag';
 import Button from '../../../components/Button';
 import useFetchTags from '../../../hooks/useFetchTags';
@@ -7,15 +7,19 @@ import { API_URL_BACKEND } from '../../../constants/apiUrl';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 
+const { width: screenWidth } = Dimensions.get('window');
+
 const SignupInterests: React.FC = () => {
   const router = useRouter();
   const { tags, loading, error }: { tags: { id: string; name: string; type: string }[]; loading: boolean; error: string | null } = useFetchTags(`${API_URL_BACKEND}/tags`);
 
   const filterAndChunk = (type: string) => {
     const filtered = tags.filter(tag => tag.type === type);
+    const itemsPerRow = screenWidth >= 768 ? 4 : 3;
+    
     const result: { id: string; name: string; type: string }[][] = [];
-    for (let i = 0; i < filtered.length; i += 3) {
-      result.push(filtered.slice(i, i + 3));
+    for (let i = 0; i < filtered.length; i += itemsPerRow) {
+      result.push(filtered.slice(i, i + itemsPerRow));
     }
     return result;
   };
@@ -44,12 +48,12 @@ const SignupInterests: React.FC = () => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         <View style={styles.containerTitle}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.push("/screens/SignupScreen")}
-        >   
-          <MaterialIcons name="keyboard-arrow-left" size={35} color="#FF914B" />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.push("/screens/SignupScreen")}
+          >   
+            <MaterialIcons name="keyboard-arrow-left" size={35} color="#FF914B" />
+          </TouchableOpacity>
           <Text style={styles.titleText}>
             {'Conte-nos seus interesses'}
           </Text>
@@ -60,8 +64,15 @@ const SignupInterests: React.FC = () => {
           {chunkedLocals.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
               {row.map(tag => (
-                <Tag key={tag.id} title={tag.name} />
+                <View key={tag.id} style={styles.tagWrapper}>
+                  <Tag title={tag.name} />
+                </View>
               ))}
+              {row.length < (screenWidth >= 768 ? 4 : 3) && 
+                Array(screenWidth >= 768 ? 4 - row.length : 3 - row.length)
+                  .fill(null)
+                  .map((_, i) => <View key={`empty-${i}`} style={styles.emptyTag} />)
+              }
             </View>
           ))}
         </View>
@@ -71,8 +82,16 @@ const SignupInterests: React.FC = () => {
           {chunkedCategories.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
               {row.map(tag => (
-                <Tag key={tag.id} title={tag.name} />
+                <View key={tag.id} style={styles.tagWrapper}>
+                  <Tag title={tag.name} />
+                </View>
               ))}
+              {/* Preencher espaços vazios para manter o layout */}
+              {row.length < (screenWidth >= 768 ? 4 : 3) && 
+                Array(screenWidth >= 768 ? 4 - row.length : 3 - row.length)
+                  .fill(null)
+                  .map((_, i) => <View key={`empty-${i}`} style={styles.emptyTag} />)
+              }
             </View>
           ))}
         </View>
@@ -82,8 +101,16 @@ const SignupInterests: React.FC = () => {
           {chunkedOcasion.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
               {row.map(tag => (
-                <Tag key={tag.id} title={tag.name} />
+                <View key={tag.id} style={styles.tagWrapper}>
+                  <Tag title={tag.name} />
+                </View>
               ))}
+              {/* Preencher espaços vazios para manter o layout */}
+              {row.length < (screenWidth >= 768 ? 4 : 3) && 
+                Array(screenWidth >= 768 ? 4 - row.length : 3 - row.length)
+                  .fill(null)
+                  .map((_, i) => <View key={`empty-${i}`} style={styles.emptyTag} />)
+              }
             </View>
           ))}
         </View>
@@ -103,48 +130,59 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 15,
+    padding: '4%',
   },
   containerTitle: {
     alignItems: 'center',
-    padding: 30,
-    marginBottom: 10,
+    paddingVertical: '8%',
+    paddingHorizontal: '4%',
+    marginBottom: '2%',
+    position: 'relative',
   },
   titleText: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 20,
+    fontSize: screenWidth < 360 ? 18 : 20,
     fontWeight: 'bold',
     color: '#FF914B',
     textAlign: 'center',
-    marginTop: 44,
+    marginTop: '10%',
   },
   interestsContainer: {
-    marginTop: 20,
-    paddingHorizontal: 10,
+    marginTop: '5%',
+    paddingHorizontal: '2%',
   },
   interestsTitle: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 20,
+    fontSize: screenWidth < 360 ? 18 : 20,
     fontWeight: '500',
     color: '#FF914B',
-    marginBottom: 20,
-    marginLeft: 4,
+    marginBottom: '5%',
+    marginLeft: '1%',
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: '3%',
+    flexWrap: 'wrap',
+  },
+  tagWrapper: {
+    width: `${100 / (screenWidth >= 768 ? 4 : 3) - 2}%`,
+    marginBottom: 8,
+  },
+  emptyTag: {
+    width: `${100 / (screenWidth >= 768 ? 4 : 3) - 2}%`,
   },
   buttonContainer: {
-    marginTop: 150,
-    marginBottom: 40,
+    marginTop: '30%',
+    marginBottom: '10%',
     alignItems: 'flex-end',
+    paddingHorizontal: '2%',
   },
   backButton: {
     position: 'absolute',
-    alignItems: 'flex-start',
-    top: 53,
-    left: 28,
+    top: '50%',
+    left: '2%',
+    zIndex: 10,
   },
 });
 
