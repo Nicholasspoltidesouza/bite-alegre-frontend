@@ -158,6 +158,7 @@ const SignupScreen = () => {
         <SignupHeader
           userType={userType}
           setUserType={setUserType}
+          onBack={() => router.back()}
         />
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <CustomTextInput

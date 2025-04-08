@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { Tabs, usePathname } from "expo-router";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Image, Pressable } from 'react-native';
 import { NavBarIcon } from "../components/NavBarItem/index";
@@ -6,12 +6,17 @@ import React from "react";
 
 export default function RootLayout() {
 
+  const pathname = usePathname();
+  const hiddenRoutes = ['/screens/SignupScreen', '/screens/SignupInterestsScreen'];
+  const shouldHideTabBar = hiddenRoutes.includes(pathname);
+
   return (
     <Tabs screenOptions={{
       tabBarActiveTintColor: '#FF914B', 
       tabBarInactiveTintColor: '#FF914B',
       headerShown: false,
       tabBarStyle: {
+        display: shouldHideTabBar ? 'none' : 'flex',
         height: 66,
         backgroundColor: 'white',
         borderTopWidth: 1.5,

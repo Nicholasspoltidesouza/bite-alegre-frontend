@@ -33,8 +33,6 @@ const useLocation = () => {
           setSubregion(locationInfo.subregion || "");
         }
 
-        console.log("LONGITUDE E LATITUDE ",coords.longitude, coords.latitude)
-        console.log("Localização do usuário:", response);
       }
     } catch (error) {
       setErrorMsg("Erro ao obter localização");
