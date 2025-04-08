@@ -2,7 +2,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Dropdown from '../Dropdown';
+
+type ProfileIcon = "person" | "store";
 
 interface SignupHeaderProps {
   urlProfilePhoto?: string;
@@ -10,9 +11,10 @@ interface SignupHeaderProps {
   onPhotoPress?: () => void;
   userType: string | null;
   setUserType: (value: string) => void;
+  profileIcon: ProfileIcon;
 }
 
-const SignupHeader = ({ urlProfilePhoto, onBack, onPhotoPress, userType, setUserType }: SignupHeaderProps) => {
+const SignupHeader = ({ urlProfilePhoto, onBack, onPhotoPress, userType, setUserType, profileIcon }: SignupHeaderProps) => {
 
   return (
     <SafeAreaView>
@@ -20,19 +22,10 @@ const SignupHeader = ({ urlProfilePhoto, onBack, onPhotoPress, userType, setUser
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
           <MaterialIcons name="keyboard-arrow-left" size={24} color="#FFFFFF" />
         </TouchableOpacity>
-        <View style={styles.dropdown}>
-          <Dropdown
-            label="Tipo de Cadastro"
-            selected={userType}
-            placeholder="Tipo de cadastro"
-            options={["Cadastro de Usuário", "Cadastro de Restaurante"]}
-            onSelect={setUserType}
-            iconColor='#FFFFFF'
-            textColor='#FFFFFF'
-            backgroundColor='#FF914B'
-            width={220}
-            justifyContent='center'
-          />
+        <View style={styles.userTypeContainer}>
+          <Text style={styles.userTypeText}>
+            {userType}
+          </Text>
         </View>
         <View style={styles.photoContainer}>
           <Text style={styles.title}>ESCOLHA SUA FOTO</Text>
@@ -40,7 +33,7 @@ const SignupHeader = ({ urlProfilePhoto, onBack, onPhotoPress, userType, setUser
             {urlProfilePhoto ? (
               <Image source={{ uri: urlProfilePhoto }} style={styles.profileImage} />
             ) : (
-              <MaterialIcons name="person" size={30} color="rgba(255,255,255,0.85)" />
+              <MaterialIcons name={profileIcon} size={30} color="rgba(255,255,255,0.85)" />
             )}
             <View style={styles.cameraIcon}>
               <MaterialIcons name="photo-camera" size={20} color="#FFFFFF" />
@@ -70,15 +63,19 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     padding: 10,
   },
-  dropdown: {
+  userTypeText: {
+    fontSize: 20,
+    color: '#FFFFFF',
+    fontFamily: 'Poppins-SemiBold',
+    textAlign: 'center',
+    marginTop: 24,
+  },
+  userTypeContainer: {
     alignSelf: 'center',
     alignItems: 'center',
     textAlign: 'center',
-    top: 50,
-    left: 60,
-    display: 'flex',
-    paddingLeft: 16,
-    paddingRight: 16,
+    top: 40,
+    marginBottom: 20
   },
   title: {
     fontSize: 12,

@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { OperatingHoursDto } from '../../@types/OperatingHoursDto';
 
 interface Props {
@@ -9,14 +9,23 @@ interface Props {
   onPressItem?: (item: OperatingHoursDto, index: number) => void;
 }
 
-const HoursSection: React.FC<Props> = ({ hours, onAdd, onPressItem }) => {  
+const HoursSection: React.FC<Props> = ({ hours, onAdd, onPressItem }) => {
+  const [operatingHours, setOperatingHours] = useState<OperatingHoursDto[]>(hours);
+
+  const handleAddOperatingHour = () => {
+    const mockHour = {
+      day: 'Quarta',
+      time: '12:00 – 15:00',
+    };
+    setOperatingHours((prev) => [...prev, mockHour]);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Funcionamento</Text>
-        <TouchableOpacity onPress={onAdd} style={styles.addButton}>
-        <MaterialCommunityIcons
-        name="plus" size={20} color="#FFFFFF" />
+        <TouchableOpacity onPress={handleAddOperatingHour} style={styles.addButton}>
+          <MaterialCommunityIcons name="plus" size={20} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
 
@@ -26,7 +35,7 @@ const HoursSection: React.FC<Props> = ({ hours, onAdd, onPressItem }) => {
       </View>
 
       <FlatList
-        data={hours}
+        data={operatingHours}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item, index }) => (
           <TouchableOpacity style={styles.row} onPress={() => onPressItem?.(item, index)}>
@@ -34,23 +43,22 @@ const HoursSection: React.FC<Props> = ({ hours, onAdd, onPressItem }) => {
             <Text style={styles.time}>{item.time}</Text>
           </TouchableOpacity>
         )}
+        contentContainerStyle={styles.flatListContainer}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#FFEBDD',
-        borderRadius: 20,
-        paddingTop: 10,
-        paddingLeft: 32,
-        paddingRight: 32,
-        marginTop: 1,
-        marginBottom: 13,
-        width: 326,
-        height: 180 ,
-        overflow: 'hidden',
+  container: {
+    backgroundColor: '#FFB37025',
+    borderRadius: 20,
+    paddingRight: 32,
+    marginTop: 1,
+    marginBottom: 13,
+    width: 327,
+    height: 'auto',
+    overflow: 'hidden',
   },
   header: {
     flexDirection: 'row',
@@ -58,13 +66,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FF914B',
     padding: 10,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderRadius: 20,
+    width: 327,
+    height: 50,
   },
   title: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 16,
     fontFamily: 'Poppins-SemiBold',
+    left: 16,
   },
   addButton: {
     backgroundColor: '#FFA552',
@@ -73,30 +83,35 @@ const styles = StyleSheet.create({
   },
   listHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     paddingTop: 10,
     paddingHorizontal: 4,
   },
   listTitle: {
-    color: '#FF914B',
+    color: '#FF9500',
     fontWeight: 'bold',
     fontSize: 14,
+    display: 'flex',
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     paddingVertical: 4,
     paddingHorizontal: 4,
   },
   day: {
-    color: '#444',
+    color: '#5B5B5B',
     fontSize: 14,
     fontFamily: 'Poppins-Regular',
   },
   time: {
-    color: '#444',
+    color: '#5B5B5B',
     fontSize: 14,
     fontFamily: 'Poppins-Regular',
+  },
+  flatListContainer: {
+    paddingBottom: 10,
+    paddingHorizontal: 4,
   },
 });
 

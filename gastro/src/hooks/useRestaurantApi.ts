@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { API_URL_BACKEND } from "../constants/apiUrl";
+import { useState } from 'react';
+import { RestaurantDTO } from '../@types/DTO';
+import { API_URL_BACKEND } from '../constants/apiUrl';
 
 interface Restaurant {
   id: string;
@@ -17,17 +18,20 @@ export const useRestaurantApi = () => {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<Restaurant | null>(null);
 
-  const getRestaurant = async (restaurantId: string): Promise<void> => {
+  const getRestaurant = async (restaurantId: RestaurantDTO): Promise<void> => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL_BACKEND}restaurants/${restaurantId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${API_URL_BACKEND}restaurants/${restaurantId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
 
       const responseData = await response.json();
 
@@ -41,7 +45,7 @@ export const useRestaurantApi = () => {
         );
       }
     } catch (err: any) {
-      setError(err.message || "Erro desconhecido");
+      setError(err.message || 'Erro desconhecido');
     } finally {
       setLoading(false);
     }

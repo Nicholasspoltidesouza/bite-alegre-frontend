@@ -8,7 +8,7 @@ import { useRouter } from "expo-router";
 import React, { useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-const SignupScreen = () => {
+const SignupUser = () => {
   const [name, setName] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -16,7 +16,7 @@ const SignupScreen = () => {
   const [phone, setPhone] = useState<string>('');
   const [gender, setGender] = useState<string | null>(null);
   const [birthDate, setBirthDate] = useState('');
-  const [userType, setUserType] = useState<string | null>(null);
+  const [userType, setUserType] = useState<string | null>("Cadastro de Usuário");
   const [birthDateTouched, setBirthDateTouched] = useState<boolean>(false);
 
   const { createUser } = useCreateUser();
@@ -138,7 +138,7 @@ const SignupScreen = () => {
 
       await createUser(userData);
       Alert.alert("Sucesso", "Usuário cadastrado com sucesso!");
-      router.push("/screens/SignupInterestsScreen");
+      router.push("/screens/SignupRestaurant");
     } catch (err) {
       console.error("Submit Error:", err);
       Alert.alert(
@@ -158,6 +158,7 @@ const SignupScreen = () => {
         <SignupHeader
           userType={userType}
           setUserType={setUserType}
+          profileIcon={'person'}
         />
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <CustomTextInput
@@ -319,4 +320,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignupScreen;
+export default SignupUser;

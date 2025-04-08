@@ -11,13 +11,14 @@ interface UserDTO {
 }
 
 interface RestaurantDTO {
-  restaurantName: string,
-  address: string,
-  email: string,
-  password: string,
-  averagePrice: string,
-  phone: string,
-  UserType:  string,
+  restaurantName: string;
+  description: string;
+  address: string;
+  email: string;
+  password: string;
+  averagePrice: string;
+  phone: string;
+  UserType: string;
 }
 
-export type { UserDTO, RestaurantDTO };
+export type { RestaurantDTO, UserDTO };
