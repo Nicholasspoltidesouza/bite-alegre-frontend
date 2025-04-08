@@ -3,19 +3,10 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text, Platform, StatusBar, TouchableOpacity } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from "@expo/vector-icons";
-import * as Font from 'expo-font';
 
 const Header: React.FC = () => {
     const { subregion, refreshLocation } = useLocation();
-    const [fontsLoaded, setFontsLoaded] = useState(false);
 
-    useEffect(() => {
-      Font.loadAsync({
-        'Poppins-Medium': require('../../../assets/fonts/Poppins-Medium.ttf'),
-      }).then(() => setFontsLoaded(true));
-    }, []);
-
-    if (!fontsLoaded) return null;
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor="#FF914B" translucent={false} />        

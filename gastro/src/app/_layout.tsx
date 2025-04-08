@@ -2,13 +2,25 @@ import { Tabs, usePathname } from "expo-router";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Image, Pressable } from 'react-native';
 import { NavBarIcon } from "../components/NavBarItem/index";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import * as Font from 'expo-font';
 
 export default function RootLayout() {
 
   const pathname = usePathname();
   const hiddenRoutes = ['/screens/SignupScreen', '/screens/SignupInterestsScreen'];
   const shouldHideTabBar = hiddenRoutes.includes(pathname);
+
+  
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+  
+  useEffect(() => {
+    Font.loadAsync({
+      'Poppins-Medium': require('../../assets/fonts/Poppins-Medium.ttf'),
+    }).then(() => setFontsLoaded(true));
+  }, []);
+
+  if (!fontsLoaded) return null;
 
   return (
     <Tabs screenOptions={{

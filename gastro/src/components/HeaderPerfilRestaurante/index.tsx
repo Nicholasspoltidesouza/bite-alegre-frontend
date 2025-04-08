@@ -59,7 +59,7 @@ const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({ urlFo
       profileContainer: {
         width: 90,
         height: 90,
-        borderRadius: 40,
+        borderRadius: 50,
         backgroundColor: '#FFB370',
         justifyContent: 'center',
         alignItems: 'center',
