@@ -11,7 +11,7 @@ const Header: React.FC = () => {
         <View style={styles.container}>
             <StatusBar backgroundColor="#FF914B" translucent={false} />        
             <LinearGradient
-                colors={['#FF914B', 'transparent']}
+                colors={['#FF914B', 'rgb(255, 255, 255)']}
                 locations={[0.45, 0.95]} 
                 style={styles.container}>
                      <View style={styles.content}>
