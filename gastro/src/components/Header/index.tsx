@@ -14,7 +14,7 @@ const Header: React.FC = () => {
         'Poppins-Medium': require('../../../assets/fonts/Poppins-Medium.ttf'),
       }).then(() => setFontsLoaded(true));
     }, []);
-  
+
     if (!fontsLoaded) return null;
     return (
         <View style={styles.container}>
@@ -32,7 +32,7 @@ const Header: React.FC = () => {
                             <TouchableOpacity onPress={refreshLocation}>
                                 <View style={styles.locationRow}>
                                     <MaterialIcons name="location-on" size={13} color="#FFFFFF" style={styles.locationIcon}/>
-                                    <Text style={styles.locationText}>{subregion ?? "Localização"}</Text>
+                                    <Text style={styles.locationText}> {subregion && subregion.trim().length > 0 ? subregion : "Localização"}</Text>
                                     <MaterialIcons name="expand-more" size={16} color="#fff" />
                                 </View>
                             </TouchableOpacity>
