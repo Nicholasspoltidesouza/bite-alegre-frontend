@@ -237,8 +237,9 @@ const SignupScreen = () => {
                   "PREFIRO NÃO INFORMAR",
                 ]}
                 onSelect={setGender}
-                width="50%"
+                width="48%"
                 paddingLeft={24}
+                textColor={gender ? "#000000" : "#FF914B"}
               />
             </View>
             <View style={styles.halfInputWrapper}>

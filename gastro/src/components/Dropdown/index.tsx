@@ -110,8 +110,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   dropdownContainer: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#FFFFFF", 
     borderRadius: 16,
+    borderWidth: 2, 
+    borderColor: "rgba(255, 179, 112, 0.75)'", 
     width: 327,
     maxHeight: Dimensions.get("window").height * 0.4,
     overflow: "hidden",
@@ -121,15 +123,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   optionBorder: {
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#rgba(0, 0, 0, 0.4)",
+    borderBottomWidth: 1, 
+    borderBottomColor: "rgba(255, 179, 112, 0.75)'", 
   },
   optionText: {
-    color: "#rgba(0, 0, 0, 0.4)",
+    color: "rgba(0, 0, 0, 0.8)", 
     fontSize: 14,
     fontFamily: "Poppins-Regular",
     textAlign: "center",
   },
 });
+
 
 export default Dropdown;
