@@ -1,5 +1,5 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import { useRouter } from "expo-router";
+import { router, useLocalSearchParams, useRouter } from "expo-router";
 import React from 'react';
 import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Button from '../../../components/Button';
@@ -12,8 +12,7 @@ interface SignupInterestsProps {
 }
 
 const SignupInterests: React.FC = () => {
-  const router = useRouter();
-  const { screenTitle } = router.query;
+  const { screenTitle, backRoute } = useLocalSearchParams();
 
   const { tags, loading, error }: { tags: { id: string; name: string; type: string }[]; loading: boolean; error: string | null } = useFetchTags(`${API_URL_BACKEND}/tags`);
 
@@ -50,11 +49,11 @@ const SignupInterests: React.FC = () => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         <View style={styles.containerTitle}>
-          <TouchableOpacity style={styles.backButton} onPress={backButtonRouter}>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.push({ pathname: backRoute as any })}>
             <MaterialIcons name="keyboard-arrow-left" size={35} color="#FF914B" />
           </TouchableOpacity>
           <Text style={styles.titleText}>
-            {screenTitle || 'Conte-nos seus interesses'}
+            { screenTitle || 'Conte-nos seus interesses' }
           </Text>
         </View>
 

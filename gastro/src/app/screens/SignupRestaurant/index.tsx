@@ -148,9 +148,9 @@ const SignupRestaurant = () => {
         UserType: formatedUserType,
       };
 
-      await getRestaurant(restaurantData);
+      // await getRestaurant(restaurantData);
       Alert.alert('Sucesso', 'Restaurante cadastrado com sucesso!');
-      router.push('/screens/SignupInterestsScreen?screenTitle=Selecione as categorias do seu restaurante');
+      router.push({ pathname: "/screens/SignupInterestsScreen", params: { screenTitle: "Selecione as categorias do seu restaurante", backRoute: "/screens/SignupRestaurant"} });
     } catch (err) {
       console.error('Submit Error:', err);
       Alert.alert('Erro', err instanceof Error ? err.message : 'Ocorreu um erro inesperado');
