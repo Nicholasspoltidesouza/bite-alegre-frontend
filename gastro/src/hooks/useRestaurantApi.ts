@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { RestaurantDTO } from '../@types/DTO';
-import { API_URL_ANDROID } from '../constants/apiUrl';
+import { API_URL_ANDROID, API_URL_BACKEND } from '../constants/apiUrl';
 
 
 export const useRestaurantApi = () => {

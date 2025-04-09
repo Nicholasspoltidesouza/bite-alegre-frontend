@@ -11,8 +11,6 @@ interface SignupInterestsProps {
   backButtonRouter: () => void;
 }
 
-const { width: screenWidth } = Dimensions.get('window');
-
 const SignupInterests: React.FC = () => {
   const { screenTitle, backRoute } = useLocalSearchParams();
 
