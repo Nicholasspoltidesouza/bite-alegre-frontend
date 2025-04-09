@@ -6,11 +6,11 @@ import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { useCreateUser } from '@/src/hooks/useUserApi';
 import { useRouter } from "expo-router";
 import React, { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, View, Dimensions } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const { width: screenWidth } = Dimensions.get('window');
-
-const SignupScreen = () => {
+const SignupUser = () => {
+  const insets = useSafeAreaInsets();
   const [name, setName] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -18,7 +18,7 @@ const SignupScreen = () => {
   const [phone, setPhone] = useState<string>('');
   const [gender, setGender] = useState<string | null>(null);
   const [birthDate, setBirthDate] = useState('');
-  const [userType, setUserType] = useState<string | null>(null);
+  const [userType, setUserType] = useState<string | null>("Cadastro de Usuário");
   const [birthDateTouched, setBirthDateTouched] = useState<boolean>(false);
 
   const { createUser } = useCreateUser();
@@ -140,7 +140,7 @@ const SignupScreen = () => {
 
       await createUser(userData);
       Alert.alert("Sucesso", "Usuário cadastrado com sucesso!");
-      router.push("/screens/SignupInterestsScreen");
+      router.push({ pathname: "/screens/SignupInterestsScreen", params: { screenTitle: "Conte-nos seus interesses", backRoute: "/screens/SignupUser"} });
     } catch (err) {
       console.error("Submit Error:", err);
       Alert.alert(
@@ -157,13 +157,15 @@ const SignupScreen = () => {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
     >
       <SafeAreaView style={[
-      styles.safeArea,
-      Platform.OS === 'ios' && { marginTop: 0 },
-    ]}>
+        styles.safeArea,
+        { paddingTop: 0 },
+        Platform.OS === 'ios' && { marginTop: -insets.top }
+      ]}>
         <SignupHeader
           userType={userType}
           setUserType={setUserType}
           onBack={() => router.back()}
+          profileIcon={'person'}
         />
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <View style={styles.inputWrapper}>
@@ -175,6 +177,7 @@ const SignupScreen = () => {
               validation={validateName}
             />
           </View>
+          
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={nickname}
@@ -184,6 +187,7 @@ const SignupScreen = () => {
               validation={validateNickname}
             />
           </View>
+          
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={email}
@@ -195,6 +199,7 @@ const SignupScreen = () => {
               autoCapitalize="none"
             />
           </View>
+          
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={password}
@@ -205,6 +210,7 @@ const SignupScreen = () => {
               secureTextEntry
             />
           </View>
+          
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={phone}
@@ -264,7 +270,7 @@ const SignupScreen = () => {
                 ]}
                 validation={undefined}
                 keyboardType="numeric"
-                width="50%"
+                width="48%"
               />
               {birthDateTouched && validateBirthDate(birthDate) && (
                 <Text style={styles.errorText}>
@@ -343,4 +349,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignupScreen;
+export default SignupUser;

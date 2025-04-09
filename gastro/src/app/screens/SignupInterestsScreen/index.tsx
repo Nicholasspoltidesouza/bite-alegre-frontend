@@ -1,17 +1,20 @@
-import React from 'react';
-import { View, StyleSheet, Text, ScrollView, SafeAreaView, ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native';
-import Tag from '../../../components/Tag';
-import Button from '../../../components/Button';
-import useFetchTags from '../../../hooks/useFetchTags';
-import { API_URL_BACKEND } from '../../../constants/apiUrl'; 
 import { MaterialIcons } from '@expo/vector-icons';
-import { useRouter } from "expo-router";
+import { router, useLocalSearchParams, useRouter } from "expo-router";
+import React from 'react';
+import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Button from '../../../components/Button';
+import Tag from '../../../components/Tag';
+import { API_URL_ANDROID, API_URL_BACKEND } from '../../../constants/apiUrl';
+import useFetchTags from '../../../hooks/useFetchTags';
 
-const { width: screenWidth } = Dimensions.get('window');
+interface SignupInterestsProps {
+  backButtonRouter: () => void;
+}
 
 const SignupInterests: React.FC = () => {
-  const router = useRouter();
-  const { tags, loading, error }: { tags: { id: string; name: string; type: string }[]; loading: boolean; error: string | null } = useFetchTags(`${API_URL_BACKEND}/tags`);
+  const { screenTitle, backRoute } = useLocalSearchParams();
+
+  const { tags, loading, error }: { tags: { id: string; name: string; type: string }[]; loading: boolean; error: string | null } = useFetchTags(`${API_URL_ANDROID}/tags`);
 
   const filterAndChunk = (type: string) => {
     const filtered = tags.filter(tag => tag.type === type);
@@ -48,14 +51,11 @@ const SignupInterests: React.FC = () => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         <View style={styles.containerTitle}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.push("/screens/SignupScreen")}
-          >   
+          <TouchableOpacity style={styles.backButton} onPress={() => router.push({ pathname: backRoute as any })}>
             <MaterialIcons name="keyboard-arrow-left" size={35} color="#FF914B" />
           </TouchableOpacity>
           <Text style={styles.titleText}>
-            {'Conte-nos seus interesses'}
+            { screenTitle || 'Conte-nos seus interesses' }
           </Text>
         </View>
 

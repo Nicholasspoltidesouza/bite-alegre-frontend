@@ -9,5 +9,16 @@ interface UserDTO {
   birthDate?: string;
   userType: string;
 }
+interface RestaurantDTO {
+    profilePhoto?: string;
+    bannerPhoto?: string;
+    address: string;
+    restaurantName: string;
+    email: string;
+    password: string;
+    averagePrice: number;
+    phone: string;
+    restaurantType: string | null;
+}
 
-export type { UserDTO };
+export type { RestaurantDTO, UserDTO };
