@@ -14,7 +14,7 @@ const HoursSection: React.FC<Props> = ({ hours, onAdd, onPressItem }) => {
 
   const handleAddOperatingHour = () => {
     const mockHour = {
-      day: 'Quarta',
+      day: 'Feriados',
       time: '12:00 – 15:00',
     };
     setOperatingHours((prev) => [...prev, mockHour]);

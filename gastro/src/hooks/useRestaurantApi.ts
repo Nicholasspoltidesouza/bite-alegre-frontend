@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { RestaurantDTO } from '../@types/DTO';
-import { API_URL_BACKEND } from '../constants/apiUrl';
+import { API_URL_ANDROID, API_URL_BACKEND } from '../constants/apiUrl';
 
 interface Restaurant {
   id: string;
@@ -24,7 +24,7 @@ export const useRestaurantApi = () => {
 
     try {
       const response = await fetch(
-        `${API_URL_BACKEND}restaurants/${restaurantId}`,
+        `${API_URL_ANDROID}restaurants/${restaurantId}`,
         {
           method: 'GET',
           headers: {
