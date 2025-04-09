@@ -180,6 +180,7 @@ const SignupRestaurant = () => {
           userType={userType}
           setUserType={setUserType}
           profileIcon={'store'}
+          onBack={() => router.back()}
         />
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.inputWrapper}>
