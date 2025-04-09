@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SignupRestaurant = () => {
   const insets = useSafeAreaInsets();
-  const [restaurantName, setRestaurantName] = useState<string>('');
+  const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [address, setAddress] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -27,6 +27,7 @@ const SignupRestaurant = () => {
   ]);
 
   const { getRestaurant } = useRestaurantApi();
+  const { createRestaurant } = useRestaurantApi();
   const router = useRouter();
 
   const handleAddOperatingHour = () => {
@@ -88,7 +89,7 @@ const SignupRestaurant = () => {
   };
 
   const isFormValid =
-    restaurantName &&
+    name &&
     email &&
     address &&
     averagePrice &&
@@ -96,17 +97,17 @@ const SignupRestaurant = () => {
     phone &&
     description &&
     userType &&
-    !validateNameRestaurant(restaurantName) &&
+    !validateNameRestaurant(name) &&
     !validateAddress(address) &&
     !validateEmail(email) &&
-    !validateAveregePrice(averagePrice) &&
+    !validateAveregePrice(averagePrice.toString()) &&
     !validatePassword(password) &&
     !validatePhone(phone) &&
     !validateDescription(description);
 
   const handleSubmit = async () => {
     if (
-      !restaurantName ||
+      !name ||
       !email ||
       !password ||
       !phone ||
@@ -120,12 +121,12 @@ const SignupRestaurant = () => {
     }
 
     const errors = [
-      validateNameRestaurant(restaurantName),
+      validateNameRestaurant(name),
       validateAddress(address),
       validateEmail(email),
       validatePassword(password),
       validatePhone(phone),
-      validateAveregePrice(averagePrice),
+      validateAveregePrice(averagePrice.toString()),
       validateDescription(description),
     ].filter((error) => error != null);
 
@@ -139,17 +140,17 @@ const SignupRestaurant = () => {
         userType === "Cadastro de Restaurante" ? "RESTAURANTE" : "USUARIO"
 
       const restaurantData: RestaurantDTO = {
-        restaurantName,
+        name,
         description,
         address,
         email,
         password,
-        averagePrice,
+        averagePrice: parseFloat(averagePrice.replace(',', '.')),
         phone,
-        UserType: formatedUserType,
+        userType: formatedUserType,
       };
 
-      // await getRestaurant(restaurantData);
+      await createRestaurant(restaurantData);
       Alert.alert('Sucesso', 'Restaurante cadastrado com sucesso!');
       router.push({ pathname: "/screens/SignupInterestsScreen", params: { screenTitle: "Selecione as categorias do seu restaurante", backRoute: "/screens/SignupRestaurant"} });
     } catch (err) {
@@ -185,8 +186,8 @@ const SignupRestaurant = () => {
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.inputWrapper}>
             <CustomTextInput
-              value={restaurantName}
-              onChangeText={setRestaurantName}
+              value={name}
+              onChangeText={setName}
               placeholder="Nome Restaurante"
               style={styles.input}
               validation={validateNameRestaurant}

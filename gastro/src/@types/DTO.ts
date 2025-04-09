@@ -13,12 +13,13 @@ interface RestaurantDTO {
     profilePhoto?: string;
     bannerPhoto?: string;
     address: string;
-    restaurantName: string;
+    name: string;
+    description: string;
     email: string;
     password: string;
     averagePrice: number;
     phone: string;
-    restaurantType: string | null;
+    userType: string;
 }
 
 export type { RestaurantDTO, UserDTO };

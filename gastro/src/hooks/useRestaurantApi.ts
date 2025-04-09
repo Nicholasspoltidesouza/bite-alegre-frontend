@@ -2,25 +2,24 @@ import { useState } from 'react';
 import { RestaurantDTO } from '../@types/DTO';
 import { API_URL_ANDROID, API_URL_BACKEND } from '../constants/apiUrl';
 
-
 export const useRestaurantApi = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<RestaurantDTO | null>(null);
 
-  const getRestaurant = async (restaurantId: RestaurantDTO): Promise<void> => {
+  const getRestaurant = async (restaurantId: string): Promise<void> => {
     setLoading(true);
     setError(null);
 
     try {
       const response = await fetch(
-        `${API_URL_ANDROID}restaurants/${restaurantId}`,
+        `${API_URL_ANDROID}/restaurants/${restaurantId}`,
         {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
-        },
+        }
       );
 
       const responseData = await response.json();
@@ -31,7 +30,7 @@ export const useRestaurantApi = () => {
         throw new Error(
           responseData.error ||
             responseData.message ||
-            `Falha ao buscar restaurante. Status: ${response.status}`,
+            `Falha ao buscar restaurante. Status: ${response.status}`
         );
       }
     } catch (err: any) {
@@ -46,32 +45,32 @@ export const useRestaurantApi = () => {
     setError(null);
 
     try {
-        const response = await fetch (`${API_URL_ANDROID}/restaurants`, {
-            method: "POST",
-            headers: {
-                "Contend-Type": "application/json",
-            },
-            body: JSON.stringify(restaurantData),
-        });
-        const responseData = await response.json();
+      const response = await fetch(`${API_URL_ANDROID}/restaurants`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(restaurantData),
+      });
+      const responseData = await response.json();
 
-        if(response.ok) {
-            console.log("Usuário criado:", responseData);
-            setData(responseData);
-        } else {
-            throw new Error(
-                responseData.error ||
-                responseData.message ||
-                `Falha ao criar restaurante. Status: ${response.status}`,
-            );
-        }
+      if (response.ok) {
+        console.log("Restaurante criado:", responseData);
+        setData(responseData);
+      } else {
+        throw new Error(
+          responseData.error ||
+            responseData.message ||
+            `Falha ao criar restaurante. Status: ${response.status}`
+        );
+      }
     } catch (err: any) {
-        console.error("Erro ao criar restaurante:", err);
-        setError(err.message || "Erro desconhecido");
+      console.error("Erro ao criar restaurante:", err);
+      setError(err.message || "Erro desconhecido");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
   return { createRestaurant, getRestaurant, loading, error, data };
 };

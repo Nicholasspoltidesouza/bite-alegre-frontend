@@ -243,7 +243,7 @@ const SignupUser = () => {
                   "PREFIRO NÃO INFORMAR",
                 ]}
                 onSelect={setGender}
-                width="48%"
+                width="50%"
                 paddingLeft={24}
                 textColor={gender ? "#000000" : "#FF914B"}
               />
@@ -270,7 +270,7 @@ const SignupUser = () => {
                 ]}
                 validation={undefined}
                 keyboardType="numeric"
-                width="48%"
+                width="50%"
               />
               {birthDateTouched && validateBirthDate(birthDate) && (
                 <Text style={styles.errorText}>

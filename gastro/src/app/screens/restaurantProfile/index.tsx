@@ -11,7 +11,7 @@ const RestaurantProfile: React.FC = () => {
   const { getRestaurant, data: restaurant, loading, error } = useRestaurantApi();
 
   useEffect(() => {
-    getRestaurant("1");
+    getRestaurant("027d5268-b28c-47d2-aab3-45ca140cdb73");
   }, []);
 
   if (loading) {
@@ -73,7 +73,7 @@ const RestaurantProfile: React.FC = () => {
               `Quarta-Feira               18:30 às 23:00\n` +
               `Quinta-Feira               18:30 às 23:00\n` +
               `Sexta-Feira                 18:30 às 00:00\n` +
-              `Sábado                       12:00 às 00:00\n` +
+              `Sábado                        12:00 às 00:00\n` +
               `Domingo                    12:00 às 22:00`
             } 
             staticArrow={false} 
@@ -100,10 +100,10 @@ const styles = StyleSheet.create({
   },
   infos: {
     marginTop: 30,
-    paddingHorizontal: '5%', // Usar padding relativo para garantir responsividade
+    paddingHorizontal: '5%',
   },
   title: {
-    fontSize: screenWidth < 360 ? 18 : 20, // Ajustar tamanho da fonte para telas menores
+    fontSize: screenWidth < 360 ? 18 : 20, 
     fontWeight: 'bold',
     fontFamily: "Poppins-Medium",
     color: '#1F2937',
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   infoGrid: {
     marginTop: 20,
-    paddingHorizontal: '5%', // Substituir marginLeft e marginRight por padding relativo
+    paddingHorizontal: '5%',
   },
 });
 

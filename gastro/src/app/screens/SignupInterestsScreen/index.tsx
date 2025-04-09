@@ -1,7 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams, useRouter } from "expo-router";
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
 import Button from '../../../components/Button';
 import Tag from '../../../components/Tag';
 import { API_URL_ANDROID, API_URL_BACKEND } from '../../../constants/apiUrl';
@@ -10,6 +10,8 @@ import useFetchTags from '../../../hooks/useFetchTags';
 interface SignupInterestsProps {
   backButtonRouter: () => void;
 }
+
+const screenWidth = Dimensions.get('window').width;
 
 const SignupInterests: React.FC = () => {
   const { screenTitle, backRoute } = useLocalSearchParams();

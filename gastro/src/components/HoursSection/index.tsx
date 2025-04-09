@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { OperatingHoursDto } from '../../@types/OperatingHoursDto';
 
 interface Props {
@@ -8,6 +8,9 @@ interface Props {
   onAdd: () => void;
   onPressItem?: (item: OperatingHoursDto, index: number) => void;
 }
+
+const { width } = Dimensions.get('window');
+const containerWidth = width * 0.83;
 
 const HoursSection: React.FC<Props> = ({ hours, onAdd, onPressItem }) => {
   const [operatingHours, setOperatingHours] = useState<OperatingHoursDto[]>(hours);
@@ -53,10 +56,10 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFB37025',
     borderRadius: 20,
-    paddingRight: 32,
-    marginTop: 1,
-    marginBottom: 13,
-    width: 327,
+    paddingRight: '8%',
+    marginTop: '0.5%',
+    marginBottom: '3%',
+    width: containerWidth,
     height: 'auto',
     overflow: 'hidden',
   },
@@ -65,27 +68,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#FF914B',
-    padding: 10,
+    padding: '2.5%',
     borderRadius: 20,
-    width: 327,
+    width: containerWidth,
     height: 50,
   },
   title: {
     color: '#FFFFFF',
     fontSize: 16,
     fontFamily: 'Poppins-SemiBold',
-    left: 16,
+    left: '5%',
   },
   addButton: {
     backgroundColor: '#FFA552',
     borderRadius: 999,
-    padding: 4,
+    padding: '1%',
   },
   listHeader: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingTop: 10,
-    paddingHorizontal: 4,
+    paddingTop: '2.5%',
+    paddingHorizontal: '1%',
   },
   listTitle: {
     color: '#FF9500',
@@ -96,8 +99,8 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 4,
-    paddingHorizontal: 4,
+    paddingVertical: '1%',
+    paddingHorizontal: '1%',
   },
   day: {
     color: '#5B5B5B',
@@ -110,8 +113,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
   },
   flatListContainer: {
-    paddingBottom: 10,
-    paddingHorizontal: 4,
+    paddingBottom: '2.5%',
+    paddingHorizontal: '1%',
   },
 });
 
