@@ -8,8 +8,10 @@ import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SignupRestaurant = () => {
+  const insets = useSafeAreaInsets();
   const [restaurantName, setRestaurantName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [address, setAddress] = useState<string>('');
@@ -22,7 +24,6 @@ const SignupRestaurant = () => {
   const [operatingHours, setOperatingHours] = useState<OperatingHoursDto[]>([
     { day: 'Segunda', time: '11:00 – 14:00' },
     { day: 'Feriados', time: '18:30 – 23:30' },
-    { day: 'Terça', time: '11:00 – 14:00' },
   ]);
 
   const { getRestaurant } = useRestaurantApi();
@@ -170,85 +171,113 @@ const SignupRestaurant = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
     >
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={[
+        styles.safeArea,
+        { paddingTop: 0 },
+        Platform.OS === 'ios' && { marginTop: -insets.top }
+      ]}>
         <SignupHeader
           userType={userType}
           setUserType={setUserType}
           profileIcon={'store'}
         />
         <ScrollView contentContainerStyle={styles.container}>
-          <CustomTextInput
-            value={restaurantName}
-            onChangeText={setRestaurantName}
-            placeholder="Nome Restaurante"
-            style={styles.input}
-            validation={validateNameRestaurant}
-          />
-          <CustomTextInput
-            value={description}
-            onChangeText={setDescription}
-            placeholder="Descrição, link cardápio, redes sociais"
-            style={[styles.input, { height: 150 }]}
-            validation={validateDescription}
-            multiline={true}
-            numberOfLines={4}
-            textAlignVertical="top"
-          />
-          <CustomTextInput
-            value={address}
-            onChangeText={setAddress}
-            placeholder="Endereço"
-            style={styles.input}
-            validation={validateAddress}
-            autoCapitalize="none"
-          />
-          <CustomTextInput
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Email"
-            style={styles.input}
-            validation={validateEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <CustomTextInput
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Senha"
-            style={styles.input}
-            validation={validatePassword}
-            secureTextEntry
-          />
-          <CustomTextInput
-            value={averagePrice}
-            onChangeText={setAveragePrice}
-            placeholder="Preço Médio"
-            style={styles.input}
-            validation={validateAveregePrice}
-            keyboardType="number-pad"
-            autoCapitalize="none"
-          />
-          <CustomTextInput
-            value={phone}
-            onChangeText={(text) => {
-              const formatted = text
-                .replace(/\D/g, '')
-                .replace(/^(\d{2})(\d)/g, '($1) $2')
-                .replace(/(\d{5})(\d)/, '$1-$2')
-                .slice(0, 15);
-              setPhone(formatted);
-            }}
-            placeholder="Telefone"
-            style={styles.input}
-            validation={validatePhone}
-            keyboardType="phone-pad"
-            maxLength={15}
-          />
-          <HoursSection
-            hours={operatingHours}
-            onAdd={handleAddOperatingHour}
-            onPressItem={handleEditOperatingHour}
-          />
+          <View style={styles.inputWrapper}>
+            <CustomTextInput
+              value={restaurantName}
+              onChangeText={setRestaurantName}
+              placeholder="Nome Restaurante"
+              style={styles.input}
+              validation={validateNameRestaurant}
+            />
+          </View>
+          
+          <View style={styles.inputWrapper}>
+            <CustomTextInput
+              value={description}
+              onChangeText={setDescription}
+              placeholder="Descrição, link cardápio, redes sociais"
+              style={[styles.input, { height: 150 }]}
+              validation={validateDescription}
+              multiline={true}
+              numberOfLines={4}
+              textAlignVertical="top"
+            />
+          </View>
+          
+          <View style={styles.inputWrapper}>
+            <CustomTextInput
+              value={address}
+              onChangeText={setAddress}
+              placeholder="Endereço"
+              style={styles.input}
+              validation={validateAddress}
+              autoCapitalize="none"
+            />
+          </View>
+          
+          <View style={styles.inputWrapper}>
+            <CustomTextInput
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Email"
+              style={styles.input}
+              validation={validateEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+          
+          <View style={styles.inputWrapper}>
+            <CustomTextInput
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Senha"
+              style={styles.input}
+              validation={validatePassword}
+              secureTextEntry
+            />
+          </View>
+          
+          <View style={styles.inputWrapper}>
+            <CustomTextInput
+              value={averagePrice}
+              onChangeText={setAveragePrice}
+              placeholder="Preço Médio"
+              style={styles.input}
+              validation={validateAveregePrice}
+              keyboardType="number-pad"
+              autoCapitalize="none"
+            />
+          </View>
+          
+          <View style={styles.inputWrapper}>
+            <CustomTextInput
+              value={phone}
+              onChangeText={(text) => {
+                const formatted = text
+                  .replace(/\D/g, '')
+                  .replace(/^(\d{2})(\d)/g, '($1) $2')
+                  .replace(/(\d{5})(\d)/, '$1-$2')
+                  .slice(0, 15);
+                setPhone(formatted);
+              }}
+              placeholder="Telefone"
+              style={styles.input}
+              validation={validatePhone}
+              keyboardType="phone-pad"
+              maxLength={15}
+            />
+          </View>
+          
+          <View style={styles.inputWrapper}>
+            <HoursSection
+              hours={operatingHours}
+              onAdd={handleAddOperatingHour}
+              onPressItem={handleEditOperatingHour}
+            />
+          </View>
+          
           <View style={styles.buttonContainer}>
             <Button title="Avançar" type="orange" onPress={handleSubmit} disabled={!isFormValid} />
           </View>
@@ -265,28 +294,31 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: 'center',
-    padding: 16,
-    paddingBottom: 32,
+    padding: '4%',
+    paddingBottom: '8%',
+    width: '100%',
+  },
+  inputWrapper: {
+    width: '90%',
+    marginBottom: '5%',
   },
   input: {
-    width: 327,
+    width: '100%',
     height: 50,
     borderRadius: 20,
     backgroundColor: 'rgba(255, 179, 112, 0.25)',
     paddingLeft: 24,
     paddingRight: 16,
-    color: "000000",
+    color: "#000000",
     fontFamily: 'Poppins-Regular',
     fontSize: 16,
-    marginBottom: 20,
   },
   buttonContainer: {
-    marginTop: 8,
-    width: 327,
+    marginTop: '2%',
+    width: '90%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-
 });
 
 export default SignupRestaurant;

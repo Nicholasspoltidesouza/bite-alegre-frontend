@@ -4,7 +4,7 @@ import React from 'react';
 import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Button from '../../../components/Button';
 import Tag from '../../../components/Tag';
-import { API_URL_BACKEND } from '../../../constants/apiUrl';
+import { API_URL_ANDROID, API_URL_BACKEND } from '../../../constants/apiUrl';
 import useFetchTags from '../../../hooks/useFetchTags';
 
 interface SignupInterestsProps {
@@ -16,7 +16,7 @@ const { width: screenWidth } = Dimensions.get('window');
 const SignupInterests: React.FC = () => {
   const { screenTitle, backRoute } = useLocalSearchParams();
 
-  const { tags, loading, error }: { tags: { id: string; name: string; type: string }[]; loading: boolean; error: string | null } = useFetchTags(`${API_URL_BACKEND}/tags`);
+  const { tags, loading, error }: { tags: { id: string; name: string; type: string }[]; loading: boolean; error: string | null } = useFetchTags(`${API_URL_ANDROID}/tags`);
 
   const filterAndChunk = (type: string) => {
     const filtered = tags.filter(tag => tag.type === type);

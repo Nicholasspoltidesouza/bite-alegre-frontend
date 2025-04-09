@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { RestaurantDTO } from '../@types/DTO';
+import { API_URL_ANDROID } from '../constants/apiUrl';
 
-import { API_URL_BACKEND } from "../constants/apiUrl"; //cria apiUrl
-import { RestaurantDTO } from "../@types/DTO";
 
 export const useRestaurantApi = () => {
   const [loading, setLoading] = useState(false);
@@ -14,7 +14,7 @@ export const useRestaurantApi = () => {
 
     try {
       const response = await fetch(
-        `${API_URL_BACKEND}restaurants/${restaurantId}`,
+        `${API_URL_ANDROID}restaurants/${restaurantId}`,
         {
           method: 'GET',
           headers: {
@@ -46,7 +46,7 @@ export const useRestaurantApi = () => {
     setError(null);
 
     try {
-        const response = await fetch (`${API_URL_BACKEND}/restaurants`, {
+        const response = await fetch (`${API_URL_ANDROID}/restaurants`, {
             method: "POST",
             headers: {
                 "Contend-Type": "application/json",
