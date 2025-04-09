@@ -8,7 +8,7 @@ import * as Font from 'expo-font';
 export default function RootLayout() {
 
   const pathname = usePathname();
-  const hiddenRoutes = ['/screens/SignupScreen', '/screens/SignupInterestsScreen'];
+  const hiddenRoutes = ['/screens/SignupUser', '/screens/SignupRestaurant','/screens/SignupInterestsScreen'];
   const shouldHideTabBar = hiddenRoutes.includes(pathname);
 
   
@@ -137,9 +137,10 @@ export default function RootLayout() {
         )
       }}
     />
-    <Tabs.Screen name="screens/SignupScreen/index" options={{ href: null, tabBarShowLabel: false }} />
     <Tabs.Screen name="screens/SignupInterestsScreen/index" options={{ href: null, tabBarShowLabel: false }} />    
     <Tabs.Screen name="screens/restaurantProfile/index" options={{ href: null, tabBarShowLabel: false }} />
+    <Tabs.Screen name="screens/SignupRestaurant/index" options={{ href: null, tabBarShowLabel: false }} />
+    <Tabs.Screen name="screens/SignupUser/index" options={{ href: null, tabBarShowLabel: false }} />
   </Tabs>
   )
 } 
