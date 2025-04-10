@@ -5,7 +5,7 @@ import Accordion from '@/src/components/Accordion';
 import { FontAwesome, FontAwesome6, Foundation, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 
-const { width: screenWidth } = Dimensions.get('window'); // Obter a largura da tela
+const { width: screenWidth } = Dimensions.get('window'); 
 
 const RestaurantProfile: React.FC = () => {
   const { getRestaurant, data: restaurant, loading, error } = useRestaurantApi();

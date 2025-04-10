@@ -1,4 +1,3 @@
-// useLocation.ts
 import { useEffect, useState, useCallback } from "react";
 import * as Location from "expo-location";
 
