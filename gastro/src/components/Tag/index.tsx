@@ -6,6 +6,9 @@ interface TagProps {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   isSelected?: boolean; 
+  icon?: React.ReactNode;
+  iconPosition?: 'left' | 'right'; 
+  onPress?: () => void; 
 }
 
 const Tag: React.FC<TagProps> = ({ title, style, textStyle, isSelected = false }) => {
