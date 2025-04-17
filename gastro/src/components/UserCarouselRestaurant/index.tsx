@@ -129,6 +129,7 @@ export default function UserCarouselRestaurant({ variant, carouselProfileRestaur
   };
 
   return (
+    
     <FlatList
       data={data}
       renderItem={renderItem}
