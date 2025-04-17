@@ -2,6 +2,7 @@ import HeaderPerfilRestaurante from '@/src/components/HeaderPerfilRestaurante';
 import { View, StyleSheet, Text, SafeAreaView, ActivityIndicator, Dimensions } from 'react-native';
 import React, { useEffect } from 'react';
 import Accordion from '@/src/components/Accordion';
+
 import { FontAwesome, FontAwesome6, Foundation, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 
@@ -89,8 +90,12 @@ const RestaurantProfile: React.FC = () => {
           </Accordion>
         </View>
       </View>
+      
+
     </SafeAreaView>
   );
+
+  
 }
 
 const styles = StyleSheet.create({
