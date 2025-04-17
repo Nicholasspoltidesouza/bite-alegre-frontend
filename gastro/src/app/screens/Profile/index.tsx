@@ -1,23 +1,14 @@
 
 import Colors from '@/src/constants/Colors';
+import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 export default function Profile() {
   return (
-    <View style={styles.container}>
-      <Text style={{ color: Colors.icon ,fontSize: 40 }}>
-        Tela de profile
-      </Text>
+    <View>
+      <UserCarouselRestaurant />
+      
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.backgroundCustom,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+} 
