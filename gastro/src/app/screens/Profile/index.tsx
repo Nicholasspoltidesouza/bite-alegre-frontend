@@ -5,12 +5,11 @@ import { View, Text } from 'react-native';
 
 export default function Profile() {
   return (
-    <View>
+    <View style={{ paddingHorizontal: 16, paddingTop: 20 }}>
+      <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#FF914B', marginBottom: 10 }}>
+      
+      </Text>
       <UserCarouselRestaurant />
-
-     
-  
-
     </View>
   );
-} 
+}
