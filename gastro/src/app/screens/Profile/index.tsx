@@ -1,3 +1,4 @@
+import PhotoDish from '@/src/components/PhotoDish';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import React from 'react';
 import { View, Text } from 'react-native';
@@ -7,6 +8,8 @@ export default function Profile() {
     <View>
       <UserCarouselRestaurant />
 
+     
+  
 
     </View>
   );
