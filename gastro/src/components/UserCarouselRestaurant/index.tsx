@@ -129,7 +129,6 @@ export default function UserCarouselRestaurant({ variant, carouselProfileRestaur
   };
 
   return (
-    
     <FlatList
       data={data}
       renderItem={renderItem}
@@ -177,7 +176,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 3,
-
   },
   nome: {
     marginTop: 8,
