@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {View,Text,Image,StyleSheet,FlatList,TouchableOpacity,} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
-const CARD_WIDTH = 180;
+const CARD_WIDTH = 160;
 const CARD_MARGIN = 12;
 
 const restaurantes = [
