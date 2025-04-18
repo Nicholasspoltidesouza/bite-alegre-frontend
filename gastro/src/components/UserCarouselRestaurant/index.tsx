@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import {View,Text,Image,StyleSheet,FlatList,TouchableOpacity,} from 'react-native';
+import {View,Text,
+  Image,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
 const CARD_WIDTH = 170;
@@ -134,7 +139,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 3,
-
   },
   nome: {
     marginTop: 8,
