@@ -9,6 +9,7 @@ const tintColorDark = '#fff';
 export const Colors = {
 
   light: {
+    // light: {
     text: '#11181C',
     background: '#fff',
     tint: tintColorLight,
@@ -23,11 +24,11 @@ export const Colors = {
     verdeClaro: '#92FFC3',
     amareloClaro: '#FFCC92',
     laranjaVivo: '#FF7700',
-    azulClaro: '#06C1B1',
+    azulClarinho: '#06C1B1',
   },
 
   dark: {
-    
+    // dark: {
     text: '#ECEDEE',
     background: '#151718',
     tint: tintColorDark,
