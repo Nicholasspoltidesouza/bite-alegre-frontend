@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,19 +7,18 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
-  Alert, // Import Alert for placeholder action
+  Modal,
+  TextInput,
 } from "react-native";
-// Import Feather icons
-import { Feather, MaterialIcons } from "@expo/vector-icons";
+import { Feather, FontAwesome6 } from "@expo/vector-icons";
 import { router } from "expo-router";
 import Button from "@/src/components/Button";
-import Tag from "@/src/components/Tag"; // Assuming Tag component can handle an 'icon' prop
+import Tag from "@/src/components/Tag";
 import ToggleSwitch from "@/src/components/ToggleSwitch";
-import React from "react";
 
 interface FilterOptions {
   price: string;
-  distance: string[]; // Keep distance for 'Localização' filter
+  distance: string[];
   location: string[];
   category: string[];
   openNow: boolean;
@@ -27,62 +26,59 @@ interface FilterOptions {
 
 const FilterScreen = () => {
   const [filters, setFilters] = useState<FilterOptions>({
-    price: "Valor Médio",
-    distance: [], // 'Localização' will be added here if selected
+    price: "Preço Médio",
+    distance: [],
     location: [],
     category: [],
     openNow: false,
   });
 
+  const [priceModalVisible, setPriceModalVisible] = useState(false);
+  const [priceInput, setPriceInput] = useState("");
+  const [addressModalVisible, setAddressModalVisible] = useState(false);
+  const [addressInput, setAddressInput] = useState("");
+
+  const priceNumber = parseFloat(filters.price.replace(/[^\d]/g, "")) || 0;
+  const priceIsSet = priceNumber > 0;
+
+  const locationSelected = filters.distance[0] === "Localização";
+  const addressSet =
+    filters.distance.length > 0 &&
+    !locationSelected &&
+    filters.distance[0].trim().length > 0;
+
+  const addressTitle =
+    addressSet && filters.distance[0].length > 18
+      ? filters.distance[0].slice(0, 18) + "…"
+      : addressSet
+      ? filters.distance[0]
+      : "Escolha";
+
   const handleTagPress = (section: keyof FilterOptions, tag: string) => {
-    if (section === "price") {
-      setFilters((prev) => ({ ...prev, price: tag }));
-    } else {
-      setFilters((prev) => {
-        const currentTags = prev[section] as string[];
-        const tagsArray = Array.isArray(currentTags) ? currentTags : [];
-        if (tagsArray.includes(tag)) {
-          return {
-            ...prev,
-            [section]: tagsArray.filter((t) => t !== tag),
-          };
-        } else {
-          return {
-            ...prev,
-            [section]: [...tagsArray, tag],
-          };
-        }
-      });
-    }
+    setFilters((prev) => {
+      if (section === "price") return { ...prev, price: tag };
+      const list = prev[section] as string[];
+      return list.includes(tag)
+        ? { ...prev, [section]: list.filter((t) => t !== tag) }
+        : { ...prev, [section]: [...list, tag] };
+    });
   };
 
-  const handleToggleOpenNow = (value: boolean) => {
-    setFilters((prev) => ({ ...prev, openNow: value }));
-  };
+  const handleToggleOpenNow = (v: boolean) =>
+    setFilters((prev) => ({ ...prev, openNow: v }));
 
-  const handleClear = () => {
+  const handleClear = () =>
     setFilters({
-      price: "Valor Médio",
+      price: "Preço Médio",
       distance: [],
       location: [],
       category: [],
       openNow: false,
     });
-  };
 
   const handleApply = () => {
     console.log("Applied filters:", filters);
     router.back();
-  };
-
-  // Placeholder function for the "Escolha" tag action
-  const handleChooseLocation = () => {
-    // Replace with actual navigation or modal logic to choose location
-    console.log("Choose location action triggered");
-    Alert.alert(
-      "Escolher Localização",
-      "Implementar lógica para escolher localização (ex: abrir mapa).",
-    );
   };
 
   const iconColor = "#04565A";
@@ -100,18 +96,14 @@ const FilterScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Price Section */}
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Preço</Text>
           <View style={styles.tagsContainer}>
             <Tag
-              title="Valor Médio"
-              isSelected={filters.price === "Valor Médio"}
-              style={styles.tag}
+              title={filters.price}
+              isSelected={priceIsSet}
+              controlled
               icon={
                 <Feather
                   name="chevron-down"
@@ -120,117 +112,94 @@ const FilterScreen = () => {
                 />
               }
               iconPosition="right"
-              onPress={() => handleTagPress("price", "Valor Médio")}
+              onPress={() => {
+                setPriceInput(priceIsSet ? String(priceNumber) : "");
+                setPriceModalVisible(true);
+              }}
             />
           </View>
         </View>
 
-        {/* Distance Section - Modified */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Distância</Text>
           <View style={styles.tagsContainer}>
-            {/* Keep map-pin icon for Localização */}
             <Tag
               title="Localização"
-              isSelected={filters.distance.includes("Localização")}
+              isSelected={locationSelected}
+              controlled
               style={styles.tag}
               icon={
-                <Feather name="map-pin" size={iconSize} color={iconColor} />
+                <FontAwesome6
+                  name="location-dot"
+                  size={iconSize}
+                  color={iconColor}
+                />
               }
-              onPress={() => handleTagPress("distance", "Localização")}
+              onPress={() => {
+                setFilters((prev) => ({
+                  ...prev,
+                  distance: locationSelected ? [] : ["Localização"],
+                }));
+              }}
             />
-            {/* Replace ... button with Escolha Tag */}
             <Tag
-              title="Escolha"
-              isSelected={false} // This tag likely triggers an action, not a filter state
+              title={addressTitle}
+              isSelected={addressSet}
+              controlled
               style={styles.tag}
-              onPress={handleChooseLocation} // Add onPress handler for the action
-              // No icon needed unless specified
+              icon={
+                <FontAwesome6
+                  name="location-crosshairs"
+                  size={iconSize}
+                  color={iconColor}
+                />
+              }
+              onPress={() => {
+                setAddressInput(addressSet ? filters.distance[0] : "");
+                setAddressModalVisible(true);
+              }}
             />
           </View>
         </View>
 
-        {/* Location Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Local</Text>
           <View style={styles.tagsContainer}>
-            <Tag
-              title="Restaurante"
-              isSelected={filters.location.includes("Restaurante")}
-              style={styles.tag}
-              onPress={() => handleTagPress("location", "Restaurante")}
-            />
-            <Tag
-              title="Sorveteria"
-              isSelected={filters.location.includes("Sorveteria")}
-              style={styles.tag}
-              onPress={() => handleTagPress("location", "Sorveteria")}
-            />
-            <Tag
-              title="Bar"
-              isSelected={filters.location.includes("Bar")}
-              style={styles.tag}
-              onPress={() => handleTagPress("location", "Bar")}
-            />
-            <Tag
-              title="Cafeteria"
-              isSelected={filters.location.includes("Cafeteria")}
-              style={styles.tag}
-              onPress={() => handleTagPress("location", "Cafeteria")}
-            />
+            {["Restaurante", "Sorveteria", "Bar", "Cafeteria"].map((loc) => (
+              <Tag
+                key={loc}
+                title={loc}
+                isSelected={filters.location.includes(loc)}
+                style={styles.tag}
+                onPress={() => handleTagPress("location", loc)}
+              />
+            ))}
           </View>
         </View>
 
-        {/* Category Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Categoria</Text>
           <View style={styles.tagsContainer}>
-            <Tag
-              title="Churrasco"
-              isSelected={filters.category.includes("Churrasco")}
-              style={styles.tag}
-              onPress={() => handleTagPress("category", "Churrasco")}
-            />
-            <Tag
-              title="Mexicana"
-              isSelected={filters.category.includes("Mexicana")}
-              style={styles.tag}
-              onPress={() => handleTagPress("category", "Mexicana")}
-            />
-            <Tag
-              title="Pastéis"
-              isSelected={filters.category.includes("Pastéis")}
-              style={styles.tag}
-              onPress={() => handleTagPress("category", "Pastéis")}
-            />
-            <Tag
-              title="Hambúrguer"
-              isSelected={filters.category.includes("Hambúrguer")}
-              style={styles.tag}
-              onPress={() => handleTagPress("category", "Hambúrguer")}
-            />
-            <Tag
-              title="Saudável"
-              isSelected={filters.category.includes("Saudável")}
-              style={styles.tag}
-              onPress={() => handleTagPress("category", "Saudável")}
-            />
-            <Tag
-              title="Japonesa"
-              isSelected={filters.category.includes("Japonesa")}
-              style={styles.tag}
-              onPress={() => handleTagPress("category", "Japonesa")}
-            />
-            <Tag
-              title="Vegana"
-              isSelected={filters.category.includes("Vegana")}
-              style={styles.tag}
-              onPress={() => handleTagPress("category", "Vegana")}
-            />
+            {[
+              "Churrasco",
+              "Mexicana",
+              "Pastéis",
+              "Hambúrguer",
+              "Saudável",
+              "Japonesa",
+              "Vegana",
+            ].map((cat) => (
+              <Tag
+                key={cat}
+                title={cat}
+                isSelected={filters.category.includes(cat)}
+                style={styles.tag}
+                onPress={() => handleTagPress("category", cat)}
+              />
+            ))}
           </View>
         </View>
 
-        {/* Open Now Toggle */}
         <View style={styles.toggleSection}>
           <Text style={styles.sectionTitle}>Aberto agora</Text>
           <ToggleSwitch
@@ -239,7 +208,6 @@ const FilterScreen = () => {
           />
         </View>
 
-        {/* Action Buttons */}
         <View style={styles.buttonContainer}>
           <Button
             title="Limpar"
@@ -255,6 +223,95 @@ const FilterScreen = () => {
           />
         </View>
       </ScrollView>
+
+      <Modal
+        visible={priceModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setPriceModalVisible(false)}
+      >
+        <View style={modalStyles.backdrop}>
+          <View style={modalStyles.wrapper}>
+            <Text style={modalStyles.modalTitle}>Definir Preço Médio</Text>
+
+            <TextInput
+              value={priceInput}
+              onChangeText={setPriceInput}
+              keyboardType="numeric"
+              placeholder="Ex.: 50"
+              style={modalStyles.input}
+            />
+
+            <View style={modalStyles.modalButtons}>
+              <Button
+                title="Cancelar"
+                type="white"
+                style={{ flex: 1, marginRight: 10 }}
+                onPress={() => setPriceModalVisible(false)}
+              />
+              <Button
+                title="Salvar"
+                type="orange"
+                style={{ flex: 1 }}
+                onPress={() => {
+                  const num = parseFloat(priceInput);
+                  if (isNaN(num) || num <= 0) {
+                    setFilters((prev) => ({ ...prev, price: "Preço Médio" }));
+                  } else {
+                    setFilters((prev) => ({
+                      ...prev,
+                      price: `R$ ${num}`,
+                    }));
+                  }
+                  setPriceModalVisible(false);
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={addressModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setAddressModalVisible(false)}
+      >
+        <View style={modalStyles.backdrop}>
+          <View style={modalStyles.wrapper}>
+            <Text style={modalStyles.modalTitle}>Digite um endereço</Text>
+
+            <TextInput
+              value={addressInput}
+              onChangeText={setAddressInput}
+              placeholder="Rua, número, cidade"
+              style={modalStyles.input}
+            />
+
+            <View style={modalStyles.modalButtons}>
+              <Button
+                title="Cancelar"
+                type="white"
+                style={{ flex: 1, marginRight: 10 }}
+                onPress={() => setAddressModalVisible(false)}
+              />
+              <Button
+                title="Salvar"
+                type="orange"
+                style={{ flex: 1 }}
+                onPress={() => {
+                  const addr = addressInput.trim();
+                  setFilters((prev) => ({
+                    ...prev,
+                    distance: addr ? [addr] : [],
+                  }));
+                  setAddressModalVisible(false);
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -278,12 +335,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#FF914B",
   },
-  scrollView: {
-    flex: 1,
-  },
-  section: {
-    marginBottom: 20,
-  },
+  scrollView: { flex: 1 },
+  section: { marginBottom: 20 },
   sectionTitle: {
     fontFamily: "Poppins-Regular",
     fontSize: 16,
@@ -291,16 +344,8 @@ const styles = StyleSheet.create({
     color: "#FF914B",
     marginBottom: 10,
   },
-  tagsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
-  tag: {
-    // Styles for individual tags, applied via the Tag component itself
-    // or overridden here if needed.
-  },
-  // Removed moreButton style as it's no longer used
+  tagsContainer: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+  tag: {},
   toggleSection: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -313,9 +358,38 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     gap: 15,
   },
-  button: {
+  button: { flex: 1 },
+});
+
+const modalStyles = StyleSheet.create({
+  backdrop: {
     flex: 1,
+    backgroundColor: "rgba(0,0,0,0.35)",
+    justifyContent: "flex-end",
   },
+  wrapper: {
+    backgroundColor: "#F8F8F8",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+  },
+  modalTitle: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#FF914B",
+    marginBottom: 20,
+  },
+  input: {
+    height: 50,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E3E1E1",
+    paddingHorizontal: 16,
+    fontSize: 18,
+    marginBottom: 24,
+  },
+  modalButtons: { flexDirection: "row" },
 });
 
 export default FilterScreen;
