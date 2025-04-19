@@ -30,8 +30,8 @@ const mockRestaurantes: Restaurante[] = [
   {
     id: '1',
     nome: 'OutBack',
-    nota: 4.8,
-    avaliacoes: null,
+    nota: 5,
+    avaliacoes: 5,
     imagem: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=60',
     visitado: true,
   },
@@ -130,7 +130,7 @@ export default function RestauranteVisualCards({
         <Text style={styles.nome}>{item.nome}</Text>
 
         {item.visitado ? (
-  item.avaliacoes ? (
+  item.nota ? (
     <Text style={styles.avalieAqui}>
       Você avaliou com{' '}
       {'★'.repeat(Math.floor(item.nota)) + '☆'.repeat(5 - Math.floor(item.nota))}
