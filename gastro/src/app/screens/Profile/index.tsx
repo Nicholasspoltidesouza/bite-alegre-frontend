@@ -5,7 +5,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function Profile() {
   return (
-    <View >
+    <View style={styles.container}>
 
       <Header
         isProfile={true}
@@ -16,3 +16,16 @@ export default function Profile() {
   );
 }
 
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  buttons: {
+    flex: 1,
+    marginTop: 15,
+    alignItems: 'center',
+    gap: 16,
+  }
+});
