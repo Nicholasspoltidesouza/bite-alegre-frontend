@@ -21,5 +21,9 @@ interface RestaurantDTO {
     phone: string;
     userType: string;
 }
+interface CheckinDTO {
+  userId: string;
+  restaurantId: string;
+}
 
-export type { RestaurantDTO, UserDTO };
+export type { RestaurantDTO, UserDTO, CheckinDTO};

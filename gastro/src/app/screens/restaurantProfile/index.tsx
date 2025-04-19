@@ -1,17 +1,19 @@
 import HeaderPerfilRestaurante from '@/src/components/HeaderPerfilRestaurante';
-import { View, StyleSheet, Text, SafeAreaView, ActivityIndicator, Dimensions } from 'react-native';
-import React, { useEffect } from 'react';
+import { View, StyleSheet, Text, SafeAreaView, ActivityIndicator, Dimensions, Modal, TouchableWithoutFeedback } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import Accordion from '@/src/components/Accordion';
 import { FontAwesome, FontAwesome6, Foundation, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
+import Button from '@/src/components/Button';
 
 const { width: screenWidth } = Dimensions.get('window'); 
 
 const RestaurantProfile: React.FC = () => {
-  const { getRestaurant, data: restaurant, loading, error } = useRestaurantApi();
+  const { getRestaurantById, data: restaurant, loading, error } = useRestaurantApi();
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    getRestaurant("027d5268-b28c-47d2-aab3-45ca140cdb73");
+    getRestaurantById("1");
   }, []);
 
   if (loading) {
@@ -85,8 +87,40 @@ const RestaurantProfile: React.FC = () => {
             description={''}
             content={''} 
             staticArrow={true} 
-            children={<MaterialCommunityIcons name="calendar-start" size={24} color="#FF914B" />}>
+            onPressAction={() => {
+              setModalVisible(true);
+              console.log("Clicou no cabeçalho!");
+            }}
+            children={<MaterialCommunityIcons name="calendar-start" size={24} color="#FF914B" />}>            
           </Accordion>
+
+          <Modal
+            animationType="fade"
+            transparent
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <TouchableWithoutFeedback onPress={() => setModalVisible(!modalVisible)}>
+              <View style={styles.modalOverlay}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>Deseja avaliar o restaurante?</Text>
+                  <View style={styles.modalButtons}>
+                    <Button
+                      title="Sim"
+                      onPress={() => setModalVisible(!modalVisible)} 
+                      type={'orange'}
+                      style={{ marginRight: 10 }} />
+                     <Button
+                      title="Nao"
+                      onPress={() => setModalVisible(!modalVisible)} 
+                      type={'white'} />
+                  </View>                   
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </Modal>
         </View>
       </View>
     </SafeAreaView>
@@ -115,6 +149,31 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: '5%',
   },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+    backgroundColor: "rgba(0,0,0,0.2)",
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 14,
+    fontFamily:'Poppins',
+    fontWeight: 'semibold',
+    textAlign: 'center',
+    color: '#FF914B',
+    marginBottom: 10
+  },
+  modalButtons: {
+    display: 'flex',
+    flexDirection: 'row',
+  }
 });
 
 export default RestaurantProfile;
