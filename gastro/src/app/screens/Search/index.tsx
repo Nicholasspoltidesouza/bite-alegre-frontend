@@ -1,11 +1,14 @@
 import SearchInput from '@/src/components/SearchInput';
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Text, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import SearchRestaurants from '@/src/components/SearchRestaurants';
+import SearchUsers from '@/src/components/SearchUsers';
 
 const Search = () => {
   const insets = useSafeAreaInsets();
   const [search, setSearch] = useState<string>('');
+  const isUserSearch = search.trim().startsWith("@");
 
   const validateSearch = (text: string): string | null => {
     return null;
@@ -32,6 +35,48 @@ const Search = () => {
               placeholder="Pesquisar"
               style={styles.input}
             />
+              {!isUserSearch &&  (
+                <>
+                <SearchRestaurants
+                  name="Bilhar do seu Zé"
+                  averagePrice={10}
+                  note={3}
+                  location="Av. Protásio Alves"
+                />
+                <SearchRestaurants
+                  name="Maza Bar"
+                  averagePrice={10}
+                  note={4}
+                  location="Av. Bento Gonçalves"
+                />
+                <SearchRestaurants
+                  name="Restaurante da Monica"
+                  averagePrice={10}
+                  note={5}
+                  location="Rua das Hortencias"
+          />
+        </>
+      )}
+
+        {isUserSearch && (
+          <View>
+          <SearchUsers 
+          name='Joao'
+          nickname='jv'
+          profilePhoto=''
+          />
+          <SearchUsers 
+          name='Valdir'
+          nickname='John Doe'
+          profilePhoto=''
+          />
+          <SearchUsers 
+          name='Maria'
+          nickname='littleStar'
+          profilePhoto='bbbbb'
+          />
+          </View>
+        )}
           </View>
         </ScrollView>
       </SafeAreaView>
