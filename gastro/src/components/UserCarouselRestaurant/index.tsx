@@ -40,7 +40,7 @@ const mockRestaurantes: Restaurante[] = [
     nome: 'Petiskeira',
     nota: null,
     avaliacoes: null,
-    imagem: 'https://img.restaurantguru.com/r3bf-petiskeira-exterior.jpg',
+    imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
     visitado: true,
   },
   {
@@ -56,7 +56,7 @@ const mockRestaurantes: Restaurante[] = [
     nome: 'Gelson Lanches',
     nota: 3.0,
     avaliacoes: 32,
-    imagem: 'https://images.unsplash.com/photo-1600891965057-d7b1fccc8e54?auto=format&fit=crop&w=800&q=60',
+    imagem: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/1b/92/50/ambiente-de-l-unico.jpg?w=600&h=-1&s=1',
     visitado: false,
   },
   {
@@ -68,24 +68,40 @@ const mockRestaurantes: Restaurante[] = [
     visitado: true,
   },
   {
-    id: '6',
-    nome: 'Bistrô do Sol',
-    nota: 3.0,
-    avaliacoes: 21,
-    imagem: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=60',
+    id: '2',
+    nome: 'Petiskeira',
+    nota: null,
+    avaliacoes: null,
+    imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
     visitado: true,
   },
   {
-    id: '7',
-    nome: 'Bistrô do Sol',
-    nota: 3.0,
-    avaliacoes: 21,
-    imagem: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=60',
-    visitado: true,
+    id: '2',
+    nome: 'Petiskeira',
+    nota: null,
+    avaliacoes: null,
+    imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
+    visitado: false,
+  },
+  {
+    id: '2',
+    nome: 'Petiskeira',
+    nota: null,
+    avaliacoes: null,
+    imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
+    visitado: false,
+  },
+  {
+    id: '2',
+    nome: 'Petiskeira',
+    nota: null,
+    avaliacoes: null,
+    imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
+    visitado: false,
   },
 ];
 
-export default function RestauranteVisualCards({
+export default function UserCarouselRestaurant({
   mostrarVisitados = false,
   restaurantesExternos,
 }: Props) {
@@ -98,7 +114,6 @@ export default function RestauranteVisualCards({
   };
 
   const restaurantes = restaurantesExternos || mockRestaurantes;
-
   const data = restaurantes.filter((r) =>
     mostrarVisitados ? r.visitado : !r.visitado
   );
@@ -112,15 +127,9 @@ export default function RestauranteVisualCards({
           <Image source={{ uri: item.imagem }} style={styles.image} />
           {!item.visitado && (
             <TouchableOpacity
-              style={styles.pinButton}
-              onPress={() => togglePin(item.id)}
+                style={styles.pinButton} onPress={() => togglePin(item.id)}
             >
-              <AntDesign
-                name="pushpin"
-                size={16}
-                style={{
-                  transform: [{ rotate: '90deg' }],
-                  color: isSelected ? '#FF7700' : '#FF770040',
+              <AntDesign name="pushpin" size={16} style={{ transform: [{ rotate: '90deg' }], color: isSelected ? '#FF7700' : '#FF770040',
                 }}
               />
             </TouchableOpacity>
@@ -130,26 +139,25 @@ export default function RestauranteVisualCards({
         <Text style={styles.nome}>{item.nome}</Text>
 
         {item.visitado ? (
-  item.nota ? (
-    <Text style={styles.avalieAqui}>
-      Você avaliou com{' '}
-      {'★'.repeat(Math.floor(item.nota)) + '☆'.repeat(5 - Math.floor(item.nota))}
-    </Text>
-  ) : (
-    <TouchableOpacity
-      style={styles.botaoAvaliar}
-      onPress={() => console.log('Avaliar restaurante', item.nome)}
-    >
-      <Text style={styles.botaoAvaliarTexto}> Avalie aqui!</Text>
-    </TouchableOpacity>
-  )
-) : (
-  <View style={styles.avaliacaoRow}>
-    <AntDesign name="star" size={12} color="#FF914B" />
-    <Text style={styles.nota}> {item.nota.toFixed(1)}</Text>
-    <Text style={styles.avaliacoes}> ({item.avaliacoes} avaliações)</Text>
-  </View>
-)}
+          item.nota ? (
+            <Text style={styles.avalieAqui}>
+              Você avaliou com{' '}
+              {'★'.repeat(Math.floor(item.nota)) + '☆'.repeat(5 - Math.floor(item.nota))}
+            </Text>
+          ) : (
+            <TouchableOpacity
+              style={styles.botaoAvaliar} onPress={() => console.log('Avaliar restaurante', item.nome)}
+            >
+              <Text style={styles.botaoAvaliarTexto}> Avalie aqui!</Text>
+            </TouchableOpacity>
+          )
+        ) : (
+          <View style={styles.avaliacaoRow}>
+            <AntDesign name="star" size={12} color="#FF914B" />
+            <Text style={styles.nota}> {item.nota?.toFixed(1)}</Text>
+            <Text style={styles.avaliacoes}> ({item.avaliacoes ?? 0} avaliações)</Text>
+          </View>
+        )}
       </View>
     );
   };
@@ -161,16 +169,16 @@ export default function RestauranteVisualCards({
       keyExtractor={(item) => item.id}
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.container}
+      contentContainerStyle={{
+        paddingLeft: CARD_MARGIN,
+        paddingRight: CARD_MARGIN,
+        paddingTop: 20,
+      }}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: CARD_MARGIN,
-    paddingTop: 20,
-  },
   card: {
     width: CARD_WIDTH,
     marginRight: CARD_MARGIN,
