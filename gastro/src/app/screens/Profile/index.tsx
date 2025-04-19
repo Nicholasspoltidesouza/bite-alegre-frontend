@@ -5,24 +5,30 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 export default function Profile() {
   return (
     <View style={styles.container}>
-
       <View style={styles.titleRow}>
         <Text style={styles.title}>Visitados</Text>
         <TouchableOpacity>
           <Text style={styles.mostrarMais}>Mostrar mais</Text>
         </TouchableOpacity>
       </View>
+
       <UserCarouselRestaurant mostrarVisitados />
 
-      <Text style={[styles.title, { marginTop: 24 }]}>Salvos</Text>
-      <UserCarouselRestaurant mostrarVisitados = {false} />
+       <View style={styles.titleRow}>
+        <Text style={styles.title}>Salvos</Text>
+        <TouchableOpacity>
+          <Text style={styles.mostrarMais}>Mostrar mais</Text>
+        </TouchableOpacity>
+      </View>
+      <UserCarouselRestaurant mostrarVisitados={false} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 16,
+    flex: 1,
+    backgroundColor: '#FFFDFC', 
     paddingTop: 20,
   },
   titleRow: {
@@ -30,6 +36,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
+    paddingHorizontal: 16,
   },
   title: {
     fontSize: 18,
