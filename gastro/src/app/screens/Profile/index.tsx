@@ -11,8 +11,8 @@ export default function Profile() {
       </Text>
     </View>
   );
-
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

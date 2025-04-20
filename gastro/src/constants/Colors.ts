@@ -4,19 +4,23 @@
  */
 
 const Colors = {
-    text: '#11181C',
+
+    textField: {standard:'#FF914B' , research: '#FFFDFC',},
+    text: { white: '#FFFFFF', standard: '#FF914B', black:'#000000'},
+
+
     background: '#fff',
     icon: '#687076',
     tabIconDefault: '#687076',
     backgroundCustom: '#FFFDFC',
-    padrao: '#FF914B',
-    pesquisar: '#FFFDFC',
-    historico: '#EAEAE',
+    standard: '#FF914B',
+    research: '#FFFDFC',
+    history: '#EAEAE',
     icons: '#04565A',
-    verdeClaro: '#92FFC3',
-    amareloClaro: '#FFCC92',
-    laranjaVivo: '#FF7700',
-    azulClaro: '#06C1B1',
+    lightGreen: '#92FFC3',
+    lightYellow: '#FFCC92',
+    orangeBold: '#FF7700',
+    lightBlue: '#06C1B1',
   
 }; 
 export default Colors;
