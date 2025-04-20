@@ -13,7 +13,6 @@ const App: React.FC = () => {
         <Button title="Perfil Restaurante" onPress={() => router.push({ pathname: '/screens/restaurantProfile' })} type={'orange'} />
         <Button title="Cadastro Usuário" onPress={() => router.push({ pathname: '/screens/SignupUser' })} type={'orange'} />
         <Button title="Cadastro Restaurante" onPress={() => router.push({ pathname: '/screens/SignupRestaurant' })} type={'orange'} />
-        <Button title="Busca" onPress={() => router.push({ pathname: '/screens/Search' })} type={'orange'} />
       </View>
     </View>
   );

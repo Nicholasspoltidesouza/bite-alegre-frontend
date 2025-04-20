@@ -1,18 +1,14 @@
 import SearchInput from '@/src/components/SearchInput';
-import React, { useState } from 'react';
-import { Text, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import SearchRestaurants from '@/src/components/SearchRestaurants';
 import SearchUsers from '@/src/components/SearchUsers';
+import React, { useState } from 'react';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Search = () => {
   const insets = useSafeAreaInsets();
   const [search, setSearch] = useState<string>('');
   const isUserSearch = search.trim().startsWith("@");
-
-  const validateSearch = (text: string): string | null => {
-    return null;
-  };
 
   return (
     <KeyboardAvoidingView
@@ -35,18 +31,18 @@ const Search = () => {
               placeholder="Pesquisar"
               style={styles.input}
             />
-              {!isUserSearch &&  (
-                <>
+            {!isUserSearch && (
+              <>
                 <SearchRestaurants
                   name="Bilhar do seu Zé"
                   averagePrice={10}
-                  note={3}
+                  note={3.5}
                   location="Av. Protásio Alves"
                 />
                 <SearchRestaurants
                   name="Maza Bar"
                   averagePrice={10}
-                  note={4}
+                  note={4.2}
                   location="Av. Bento Gonçalves"
                 />
                 <SearchRestaurants
@@ -54,29 +50,65 @@ const Search = () => {
                   averagePrice={10}
                   note={5}
                   location="Rua das Hortencias"
-          />
-        </>
-      )}
+                />
+                <SearchRestaurants
+                  name="Maza Bar"
+                  averagePrice={10}
+                  note={4.2}
+                  location="Av. Bento Gonçalves"
+                />
+                <SearchRestaurants
+                  name="Maza Bar"
+                  averagePrice={10}
+                  note={4.2}
+                  location="Av. Bento Gonçalves"
+                />
+                <SearchRestaurants
+                  name="Maza Bar"
+                  averagePrice={10}
+                  note={4.2}
+                  location="Av. Bento Gonçalves"
+                />
+                <SearchRestaurants
+                  name="Maza Bar"
+                  averagePrice={10}
+                  note={4.2}
+                  location="Av. Bento Gonçalves"
+                />
+                <SearchRestaurants
+                  name="Maza Bar"
+                  averagePrice={10}
+                  note={4.2}
+                  location="Av. Bento Gonçalves"
+                />
+                <SearchRestaurants
+                  name="Maza Bar"
+                  averagePrice={10}
+                  note={4.2}
+                  location="Av. Bento Gonçalves"
+                />
+              </>
+            )}
 
-        {isUserSearch && (
-          <View>
-          <SearchUsers 
-          name='Joao'
-          nickname='jv'
-          profilePhoto=''
-          />
-          <SearchUsers 
-          name='Valdir'
-          nickname='John Doe'
-          profilePhoto=''
-          />
-          <SearchUsers 
-          name='Maria'
-          nickname='littleStar'
-          profilePhoto='bbbbb'
-          />
-          </View>
-        )}
+            {isUserSearch && (
+              <View>
+                <SearchUsers
+                  name='Joao'
+                  nickname='jv'
+                  profilePhoto=''
+                />
+                <SearchUsers
+                  name='Valdir'
+                  nickname='John Doe'
+                  profilePhoto=''
+                />
+                <SearchUsers
+                  name='Maria'
+                  nickname='littleStar'
+                  profilePhoto='bbbbb'
+                />
+              </View>
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>
