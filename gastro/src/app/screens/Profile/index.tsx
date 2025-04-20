@@ -9,7 +9,6 @@ export default function Profile() {
 
       <Header
         isProfile={true}
-        
       />
 
     </View>
