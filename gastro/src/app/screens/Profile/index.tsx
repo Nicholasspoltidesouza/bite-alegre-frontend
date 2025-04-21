@@ -1,10 +1,23 @@
+
+import Colors from '@/src/constants/Colors';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 export default function Profile() {
   return (
-    <View>
-      <Text>Tela de profile</Text>
+    <View style={styles.container}>
+      <Text style={{ color: Colors.icon ,fontSize: 40 }}>
+        Tela de profile
+      </Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.backgroundCustom,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
