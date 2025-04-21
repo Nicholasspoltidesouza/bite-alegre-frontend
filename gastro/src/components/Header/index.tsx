@@ -31,6 +31,12 @@ const Header: React.FC<HeaderProps> = ({
         locations={[0.45, 0.95]}
         style={styles.gradient}
       >
+        {isProfile && (
+          <TouchableOpacity style={styles.editIconButton} onPress={() => console.log('Editar perfil')}>
+          <MaterialCommunityIcons name="lead-pencil" size={24} color="white" />          
+          </TouchableOpacity>
+        )}
+
         <View style={styles.content}>
           <View style={styles.photo}>
             {profileImageUrl ? (
