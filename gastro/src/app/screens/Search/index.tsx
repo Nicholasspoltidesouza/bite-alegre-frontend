@@ -23,93 +23,55 @@ const Search = () => {
           Platform.OS === 'ios' && { marginTop: -insets.top },
         ]}
       >
-        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-          <View style={styles.inputWrapper}>
-            <SearchInput
-              value={search}
-              onChangeText={setSearch}
-              placeholder="Pesquisar"
-              style={styles.input}
-            />
-            {!isUserSearch && (
-              <>
-                <SearchRestaurants
-                  name="Bilhar do seu Zé"
-                  averagePrice={10}
-                  note={3.5}
-                  location="Av. Protásio Alves"
-                />
-                <SearchRestaurants
-                  name="Maza Bar"
-                  averagePrice={10}
-                  note={4.2}
-                  location="Av. Bento Gonçalves"
-                />
-                <SearchRestaurants
-                  name="Restaurante da Monica"
-                  averagePrice={10}
-                  note={5}
-                  location="Rua das Hortencias"
-                />
-                <SearchRestaurants
-                  name="Maza Bar"
-                  averagePrice={10}
-                  note={4.2}
-                  location="Av. Bento Gonçalves"
-                />
-                <SearchRestaurants
-                  name="Maza Bar"
-                  averagePrice={10}
-                  note={4.2}
-                  location="Av. Bento Gonçalves"
-                />
-                <SearchRestaurants
-                  name="Maza Bar"
-                  averagePrice={10}
-                  note={4.2}
-                  location="Av. Bento Gonçalves"
-                />
-                <SearchRestaurants
-                  name="Maza Bar"
-                  averagePrice={10}
-                  note={4.2}
-                  location="Av. Bento Gonçalves"
-                />
-                <SearchRestaurants
-                  name="Maza Bar"
-                  averagePrice={10}
-                  note={4.2}
-                  location="Av. Bento Gonçalves"
-                />
-                <SearchRestaurants
-                  name="Maza Bar"
-                  averagePrice={10}
-                  note={4.2}
-                  location="Av. Bento Gonçalves"
-                />
-              </>
-            )}
+        <View style={styles.fixedInputWrapper}>
+          <SearchInput
+            value={search}
+            onChangeText={setSearch}
+            placeholder="Pesquisar"
+            style={styles.input}
+          />
+        </View>
 
-            {isUserSearch && (
-              <View>
-                <SearchUsers
-                  name='Joao'
-                  nickname='jv'
-                  profilePhoto=''
+        <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+          {!isUserSearch && (
+            <>
+              <SearchRestaurants
+                name="Bilhar do seu Zé"
+                averagePrice={10}
+                note={3.5}
+                location="Av. Protásio Alves"
+              />
+              <SearchRestaurants
+                name="Maza Bar"
+                averagePrice={10}
+                note={4.2}
+                location="Av. Bento Gonçalves"
+              />
+              <SearchRestaurants
+                name="Restaurante da Monica"
+                averagePrice={10}
+                note={5}
+                location="Rua das Hortencias"
+              />
+              {[...Array(6)].map((_, index) => (
+                <SearchRestaurants
+                  key={index}
+                  name="Maza Bar"
+                  averagePrice={10}
+                  note={4.2}
+                  location="Av. Bento Gonçalves"
                 />
-                <SearchUsers
-                  name='Valdir'
-                  nickname='John Doe'
-                  profilePhoto=''
-                />
-                <SearchUsers
-                  name='Maria'
-                  nickname='littleStar'
-                  profilePhoto='bbbbb'
-                />
-              </View>
-            )}
-          </View>
+              ))}
+            </>
+          )}
+
+          {isUserSearch && (
+            <View>
+              <SearchUsers name="Joao" nickname="jv" profilePhoto="" />
+              <SearchUsers name="Valdir" nickname="John Doe" profilePhoto="" />
+              <SearchUsers name="Maria" nickname="littleStar" profilePhoto="bbbbb" />
+            </View>
+          )}
         </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
@@ -121,15 +83,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
-  container: {
-    alignItems: 'center',
-    padding: '4%',
-    paddingBottom: '8%',
-    width: '100%',
-  },
-  inputWrapper: {
+  fixedInputWrapper: {
     width: '90%',
-    marginBottom: '5%',
+    alignSelf: 'center',
+    marginTop: 16,
+    marginBottom: 12,
+  },
+  scrollContainer: {
+    alignItems: 'center',
+    paddingBottom: '8%',
+    paddingHorizontal: '4%',
+    width: '100%',
   },
   input: {
     width: '100%',
