@@ -70,6 +70,7 @@ export default function UserCarouselRestaurant({ variant, carouselProfileRestaur
 
     return (
       <View style={styles.card}>
+        
         <View style={styles.imageWrapper}>
           <Image source={{ uri: item.imagem }} style={styles.image} />
           {['visited', 'saved'].includes(variant) && (
@@ -175,6 +176,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 3,
+
   },
   nome: {
     marginTop: 8,
