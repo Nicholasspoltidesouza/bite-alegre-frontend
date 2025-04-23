@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
-import { DimensionValue, StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
+import {
+  DimensionValue,
+  StyleProp,
+  Text,
+  TextInput,
+  TextInputProps,
+  TextStyle,
+  View,
+} from 'react-native';
 
 interface CustomTextInputProps extends Omit<TextInputProps, 'style'> {
   value: string;
   onChangeText: (text: string) => void;
   placeholder: string;
-  style?: StyleProp<ViewStyle | TextStyle>;
+  style?: StyleProp<TextStyle>;
   validation?: (text: string) => string | null;
   width?: DimensionValue;
 }
@@ -39,15 +47,15 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
             textAlign: 'left',
             marginBottom: 2,
             marginLeft: 24,
-            fontFamily: 'Poppins-Regular'
+            fontFamily: 'Poppins-Regular',
           }}
         >
           {error}
         </Text>
       )}
       <TextInput
-        className="py-0 text-base font-normal text-left"
         style={[
+          style,
           {
             width: width || 327,
             height: 50,
@@ -62,7 +70,6 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
             borderWidth: error ? 2 : 0,
             borderColor: error ? 'red' : 'transparent',
           },
-          style,
         ]}
         onChangeText={handleChangeText}
         value={value}
