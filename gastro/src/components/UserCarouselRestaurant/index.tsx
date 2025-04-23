@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 3,
+
   },
   nome: {
     marginTop: 8,
