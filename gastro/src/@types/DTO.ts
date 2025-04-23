@@ -26,4 +26,11 @@ interface CheckinDTO {
   restaurantId: string;
 }
 
-export type { RestaurantDTO, UserDTO, CheckinDTO};
+interface ReviewDTO {
+  user_id: string;
+  restaurant_id: string
+  stars: number;
+  feedback?: string
+}
+
+export type { RestaurantDTO, UserDTO, CheckinDTO, ReviewDTO};

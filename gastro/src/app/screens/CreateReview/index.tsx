@@ -1,0 +1,164 @@
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
+import Button from '../../../components/Button';
+import { API_URL_ANDROID, API_URL_BACKEND } from '../../../constants/apiUrl';
+import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
+import { ReviewDTO } from '@/src/@types/DTO';
+import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
+
+const screenWidth = Dimensions.get('window').width;
+
+const CreateReview: React.FC = () => {
+  const { screenTitle, backRoute } = useLocalSearchParams();
+  const [description, setDescription] = useState<string>('');
+  const [nota, setNota] = useState(0);
+  const [userId, setUserId] = useState('');
+  const { createReview } = useRestaurantApi();
+
+  const corEstrelaSelecionada = "#FF914B";
+  const corEstrelaNaoSelecionada = "rgba(255, 179, 112, 0.25)";
+
+  const handleEstrelaPress = (estrelaSelecionada: number) => {
+    setNota(estrelaSelecionada);
+    console.log(`Nota selecionada: ${estrelaSelecionada}`);
+  };
+
+  const renderEstrelas = () => {
+    const estrelas = [];
+    for (let i = 1; i <= 5; i++) {
+      estrelas.push(
+        <TouchableOpacity key={i} onPress={() => handleEstrelaPress(i)}>
+          <FontAwesome
+            name={'star'}
+            size={24}
+            color={i <= nota ? corEstrelaSelecionada : corEstrelaNaoSelecionada}
+            style={styles.starIcon}
+          />
+        </TouchableOpacity>
+      );
+    }
+    return estrelas;
+  };
+
+  const handleSubmit = async () =>  {
+    const data: ReviewDTO = {
+      stars: nota,
+      feedback: description,
+      user_id: '1',
+      restaurant_id: '1'
+    };
+
+    createReview(data, '1');
+  }
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.container}>
+        <View style={styles.containerTitle}>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.push({ pathname: backRoute as any })}>
+            <MaterialIcons name="keyboard-arrow-left" size={35} color="#FF914B" />
+          </TouchableOpacity>
+          <Text style={styles.titleText}>
+            Esta foi sua primeira visita ao restaurante, deixe uma avaliação!
+          </Text>
+        </View>
+        <View style={styles.textUser}>
+            <View style={styles.photo}>
+                <MaterialIcons name="person" size={60} color="#fcd5b5" />
+            </View>
+            <View style={styles.textContainer}>
+                <Text style={styles.textUserName}>Nome Usuário </Text>
+                <Text>As avaliações são públicas e podem ser vistas tanto pelo restaurante, quanto por outros usuários.</Text>
+            </View>
+        </View>
+        <View style={styles.starsContainer}>
+          {renderEstrelas()}
+        </View>
+        <CustomTextInput
+            value={description}
+            onChangeText={setDescription} 
+            placeholder={'Descreva sua experiência (opcional)'}
+            multiline={true}
+            style={{marginHorizontal: '5%'}}
+            >
+        </CustomTextInput>
+        <TouchableOpacity style={styles.backButton} onPress={() => handleSubmit()}>
+          <MaterialIcons name="navigation" size={30} color="#FFB370" />
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  container: {
+    padding: '4%',
+  },
+  containerTitle: {
+    alignItems: 'center',
+    paddingVertical: '8%',
+    paddingHorizontal: '4%',
+    marginBottom: '2%',
+    position: 'relative',
+  },
+  titleText: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000000',
+    textAlign: 'center',
+    marginTop: '10%',
+  },
+  textUserName:{
+    fontFamily: 'Poppins-Regular',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000000',
+    marginBottom: 5
+  },
+  textUser:{
+    paddingTop: 40,
+    paddingLeft: 20,
+    flexDirection: 'row',
+    alignItems: 'center',    
+  },
+  photo: {
+    backgroundColor: '#FFB370',
+    borderRadius: 50,
+    height: 65,
+    width: 65,
+    alignItems: 'center',
+    marginRight: 10
+  },
+  textContainer: {
+    fontFamily: 'Poppins-Regular',
+    flex: 1,
+  },
+  starsContainer: {
+    alignSelf: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginVertical: '5%'
+  },
+  starIcon: {
+    marginHorizontal: 5,
+  },
+  notaText: {
+    marginTop: 10,
+    fontSize: 16,
+  },
+  backButton: {
+    position: 'absolute',
+    top: '50%',
+    left: '2%',
+    zIndex: 10,
+  }
+});
+
+export default CreateReview;

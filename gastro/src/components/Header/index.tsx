@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
         padding: 10,
         marginRight: 15,
     },
-        textContainer: {
+    textContainer: {
         flex: 1,
     },
     greeting: {
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     },
     locationIcon: {
         marginBottom: 2,
-      },
+    },
 });
 
 export default Header;

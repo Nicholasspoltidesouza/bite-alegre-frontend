@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckinDTO, RestaurantDTO } from '../@types/DTO';
+import { CheckinDTO, RestaurantDTO, ReviewDTO } from '../@types/DTO';
 import { API_URL_ANDROID, API_URL_BACKEND } from '../constants/apiUrl';
 
 export const useRestaurantApi = () => {
@@ -77,7 +77,7 @@ export const useRestaurantApi = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL_ANDROID}/${data.restaurantId}/add-checkin`, {
+      const response = await fetch(`${API_URL_BACKEND}/${data.restaurantId}/add-checkin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -105,5 +105,38 @@ export const useRestaurantApi = () => {
     }
   };
 
-  return { createRestaurant, getRestaurantById, createCheckin, loading, error, data };
+  const createReview = async (data: ReviewDTO, restaurantId: string): Promise<void> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`${API_URL_BACKEND}/restaurants/${restaurantId}/review`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        console.log("Review criada:", responseData);
+        setData(responseData);
+      } else {
+        throw new Error(
+          responseData.error ||
+            responseData.message ||
+            `Falha ao criar Review. Status: ${response.status}`,
+        );
+      }
+    } catch (err: any) {
+      console.error("Erro ao criar review:", err);
+      setError(err.message || "Erro desconhecido");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { createRestaurant, getRestaurantById, createCheckin, createReview, loading, error, data };
 };

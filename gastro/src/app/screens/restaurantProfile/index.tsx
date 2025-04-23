@@ -5,6 +5,7 @@ import Accordion from '@/src/components/Accordion';
 import { FontAwesome, FontAwesome6, Foundation, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import Button from '@/src/components/Button';
+import { router } from 'expo-router';
 
 const { width: screenWidth } = Dimensions.get('window'); 
 
@@ -109,12 +110,17 @@ const RestaurantProfile: React.FC = () => {
                   <View style={styles.modalButtons}>
                     <Button
                       title="Sim"
-                      onPress={() => setModalVisible(!modalVisible)} 
+                      onPress={() => {
+                        setModalVisible(!modalVisible)
+                        router.push({ pathname: '/screens/CreateReview' })
+                      }} 
                       type={'orange'}
                       style={{ marginRight: 10 }} />
                      <Button
                       title="Nao"
-                      onPress={() => setModalVisible(!modalVisible)} 
+                      onPress={() => { setModalVisible(!modalVisible)
+                        router.push({ pathname: '/screens/CreateReview' })
+                      }} 
                       type={'white'} />
                   </View>                   
                 </View>
