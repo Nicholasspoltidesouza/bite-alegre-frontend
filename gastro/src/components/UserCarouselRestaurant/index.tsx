@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
+import {View,Text,Image,StyleSheet,FlatList,TouchableOpacity,} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
-const CARD_WIDTH = 180;
+const CARD_WIDTH = 170;
 const CARD_MARGIN = 12;
 
 interface Restaurante {
@@ -26,84 +19,9 @@ interface Props {
   restaurantesExternos?: Restaurante[];
 }
 
-const mockRestaurantes: Restaurante[] = [
-  {
-    id: '1',
-    nome: 'OutBack',
-    nota: 5,
-    avaliacoes: 5,
-    imagem: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=60',
-    visitado: true,
-  },
-  {
-    id: '2',
-    nome: 'Petiskeira',
-    nota: null,
-    avaliacoes: null,
-    imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
-    visitado: true,
-  },
-  {
-    id: '3',
-    nome: 'Biskaia',
-    nota: 5,
-    avaliacoes: 43,
-    imagem: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/75/8a/f4/mesas-sob-a-figueira.jpg?w=600&h=-1&s=1',
-    visitado: false,
-  },
-  {
-    id: '4',
-    nome: 'Gelson Lanches',
-    nota: 3.0,
-    avaliacoes: 32,
-    imagem: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/1b/92/50/ambiente-de-l-unico.jpg?w=600&h=-1&s=1',
-    visitado: false,
-  },
-  {
-    id: '5',
-    nome: 'Bistrô do Sol',
-    nota: 3.0,
-    avaliacoes: null,
-    imagem: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=60',
-    visitado: true,
-  },
-  {
-    id: '2',
-    nome: 'Petiskeira',
-    nota: null,
-    avaliacoes: null,
-    imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
-    visitado: true,
-  },
-  {
-    id: '2',
-    nome: 'Petiskeira',
-    nota: null,
-    avaliacoes: null,
-    imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
-    visitado: false,
-  },
-  {
-    id: '2',
-    nome: 'Petiskeira',
-    nota: null,
-    avaliacoes: null,
-    imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
-    visitado: false,
-  },
-  {
-    id: '2',
-    nome: 'Petiskeira',
-    nota: null,
-    avaliacoes: null,
-    imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
-    visitado: false,
-  },
-];
-
 export default function UserCarouselRestaurant({
   mostrarVisitados = false,
-  restaurantesExternos,
+  restaurantesExternos = [],
 }: Props) {
   const [selectedPins, setSelectedPins] = useState<string[]>([]);
 
@@ -113,8 +31,7 @@ export default function UserCarouselRestaurant({
     );
   };
 
-  const restaurantes = restaurantesExternos || mockRestaurantes;
-  const data = restaurantes.filter((r) =>
+  const data = restaurantesExternos.filter((r) =>
     mostrarVisitados ? r.visitado : !r.visitado
   );
 
@@ -123,6 +40,7 @@ export default function UserCarouselRestaurant({
 
     return (
       <View style={styles.card}>
+        
         <View style={styles.imageWrapper}>
           <Image source={{ uri: item.imagem }} style={styles.image} />
           {!item.visitado && (
@@ -138,26 +56,34 @@ export default function UserCarouselRestaurant({
 
         <Text style={styles.nome}>{item.nome}</Text>
 
+
+
         {item.visitado ? (
-          item.nota ? (
-            <Text style={styles.avalieAqui}>
-              Você avaliou com{' '}
-              {'★'.repeat(Math.floor(item.nota)) + '☆'.repeat(5 - Math.floor(item.nota))}
-            </Text>
-          ) : (
-            <TouchableOpacity
-              style={styles.botaoAvaliar} onPress={() => console.log('Avaliar restaurante', item.nome)}
-            >
-              <Text style={styles.botaoAvaliarTexto}> Avalie aqui!</Text>
+          item.nota === null ? (
+          <TouchableOpacity
+            style={styles.botaoAvaliar} onPress={() => console.log('Avaliar restaurante', item.nome)}
+           >
+            <   Text style={styles.botaoAvaliarTexto}> Avalie aqui!</Text>
             </TouchableOpacity>
-          )
-        ) : (
-          <View style={styles.avaliacaoRow}>
-            <AntDesign name="star" size={12} color="#FF914B" />
-            <Text style={styles.nota}> {item.nota?.toFixed(1)}</Text>
-            <Text style={styles.avaliacoes}> ({item.avaliacoes ?? 0} avaliações)</Text>
-          </View>
-        )}
+            ) : (
+            <><TouchableOpacity 
+                style={styles.pinButton} onPress={() => togglePin(item.id)} >
+                <AntDesign name="pushpin" size={16} style={{
+                  transform: [{ rotate: '90deg' }], color: isSelected ? '#FF7700' : '#FF770040',
+                }} />
+
+              </TouchableOpacity><Text style={styles.avalieAqui}>
+                  Você avaliou com{' '}
+                  {'★'.repeat(Math.floor(item.nota)) + '☆'.repeat(5 - Math.floor(item.nota))}
+                </Text></>
+  )
+) : (
+  <View style={styles.avaliacaoRow}>
+    <AntDesign name="star" size={12} color="#FF914B" />
+    <Text style={styles.nota}> {item.nota?.toFixed(1)}</Text>
+    <Text style={styles.avaliacoes}> ({item.avaliacoes ?? 0} avaliações)</Text>
+  </View>
+)}
       </View>
     );
   };
@@ -208,6 +134,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 3,
+
   },
   nome: {
     marginTop: 8,
