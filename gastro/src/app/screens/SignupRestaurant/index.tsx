@@ -1,33 +1,30 @@
-import { RestaurantDTO } from '@/src/@types/DTO';
-import { OperatingHoursDto } from '@/src/@types/OperatingHoursDto';
-import Button from '@/src/components/Button';
+import React, { useState } from 'react';
+import { View, StyleSheet, Alert, SafeAreaView, ScrollView } from 'react-native';
+import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import CustomTextInput from '@/src/components/CustomTextInput';
 import HoursSection from '@/src/components/HoursSection';
+import { OperatingHoursDto } from '@/src/@types/OperatingHoursDto';
 import SignupHeader from '@/src/components/SignupHeader';
-import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { RestaurantDTO, UserDTO } from '@/src/@types/DTO';
+import Button from '@/src/components/Button';
 
-const SignupRestaurant = () => {
-  const insets = useSafeAreaInsets();
-  const [name, setName] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
+const SignupRestaurant: React.FC = ({ navigation }: any) => {
+  const [restaurantName, setRestaurantName] = useState<string>('');
   const [address, setAddress] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [averagePrice, setAveragePrice] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
-  const [userType, setUserType] = useState<string | null>("Cadastro de Restaurante");
+  const [userType, setUserType] = useState<string | null>(null);
 
   const [operatingHours, setOperatingHours] = useState<OperatingHoursDto[]>([
     { day: 'Segunda', time: '11:00 – 14:00' },
     { day: 'Feriados', time: '18:30 – 23:30' },
+    { day: 'Terça', time: '11:00 – 14:00' },
   ]);
 
   const { getRestaurant } = useRestaurantApi();
-  const { createRestaurant } = useRestaurantApi();
   const router = useRouter();
 
   const handleAddOperatingHour = () => {
@@ -35,11 +32,6 @@ const SignupRestaurant = () => {
       ...prev,
       { day: 'Quarta', startTime: '12:00', endTime: '15:00' },
     ]);
-  };
-
-  const validateDescription = (text: string): string | null => {
-    if (text.length > 200) return 'Descrição não pode ter mais de 200 caracteres';
-    return null;
   };
 
   const validateNameRestaurant = (text: string): string | null => {
@@ -79,55 +71,43 @@ const SignupRestaurant = () => {
   };
 
   const validateAveregePrice = (text: string): string | null => {
-    if (!text) return 'Preço médio é obrigatório';
+    if(!text) return 'Preço médio é obrigatório';
 
-    const number = parseFloat(text.replace(',', '.'));
-    if (isNaN(number)) return 'Preço deve ser um número válido';
-    if (number <= 0) return 'Preço deve ser maior que zero';
+    const number = parseFloat(text.replace(',','.'));
+      if(isNaN(number)) return 'Preço deve ser um número válido';
+      if(number <= 0) return 'Preço deve ser maior que zero';
 
-    return null;
+      return null;
   };
 
-  const isFormValid =
-    name &&
-    email &&
-    address &&
-    averagePrice &&
-    password &&
-    phone &&
-    description &&
-    userType &&
-    !validateNameRestaurant(name) &&
-    !validateAddress(address) &&
-    !validateEmail(email) &&
-    !validateAveregePrice(averagePrice.toString()) &&
-    !validatePassword(password) &&
-    !validatePhone(phone) &&
-    !validateDescription(description);
+  const isFormValid = 
+  restaurantName &&
+  email &&
+  address &&
+  averagePrice &&
+  password &&
+  phone &&
+  userType &&
+  !validateNameRestaurant(restaurantName) &&
+  !validateAddress(address) &&
+  !validateEmail(email) &&
+  !validateAveregePrice(averagePrice) &&
+  !validatePassword(password) &&
+  !validatePhone(phone)
 
   const handleSubmit = async () => {
-    if (
-      !name ||
-      !email ||
-      !password ||
-      !phone ||
-      !address ||
-      !averagePrice ||
-      !userType ||
-      !description
-    ) {
+    if (!restaurantName || !email || !password || !phone || !address || !averagePrice || !userType) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
 
     const errors = [
-      validateNameRestaurant(name),
+      validateNameRestaurant(restaurantName),
       validateAddress(address),
       validateEmail(email),
       validatePassword(password),
       validatePhone(phone),
-      validateAveregePrice(averagePrice.toString()),
-      validateDescription(description),
+      validateAveregePrice(averagePrice),
     ].filter((error) => error != null);
 
     if (errors.length > 0) {
@@ -136,23 +116,20 @@ const SignupRestaurant = () => {
     }
 
     try {
-      const formatedUserType =
-        userType === "Cadastro de Restaurante" ? "RESTAURANTE" : "USUARIO"
-
+      const formatedUserType = 
+      userType === "Cadastro de Restaurante" ? "RESTAURANTE" : "USUARIO"
       const restaurantData: RestaurantDTO = {
-        name,
-        description,
+        restaurantName,
         address,
         email,
         password,
-        averagePrice: parseFloat(averagePrice.replace(',', '.')),
+        averagePrice,
         phone,
-        userType: formatedUserType,
+        UserType: formatedUserType,
       };
 
-      await createRestaurant(restaurantData);
-      Alert.alert('Sucesso', 'Restaurante cadastrado com sucesso!');
-      router.push({ pathname: "/screens/SignupInterestsScreen", params: { screenTitle: "Selecione as categorias do seu restaurante", backRoute: "/screens/SignupRestaurant" } });
+      await getRestaurant(restaurantData);
+      Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
     } catch (err) {
       console.error('Submit Error:', err);
       Alert.alert('Erro', err instanceof Error ? err.message : 'Ocorreu um erro inesperado');
@@ -167,125 +144,80 @@ const SignupRestaurant = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
-    >
-      <SafeAreaView style={[
-        styles.safeArea,
-        { paddingTop: 0 },
-        Platform.OS === 'ios' && { marginTop: -insets.top }
-      ]}>
+    <SafeAreaView style={styles.safeArea}>
         <SignupHeader
-          userType={userType}
-          setUserType={setUserType}
-          profileIcon={'store'}
-          onBack={() => router.back()}
+            userType={userType}
+            setUserType={setUserType}
         />
-        <ScrollView contentContainerStyle={styles.container}>
-          <View style={styles.inputWrapper}>
-            <CustomTextInput
-              value={name}
-              onChangeText={setName}
-              placeholder="Nome Restaurante"
-              style={styles.input}
-              validation={validateNameRestaurant}
-            />
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <CustomTextInput
-              value={description}
-              onChangeText={setDescription}
-              placeholder="Descrição, link cardápio, redes sociais"
-              style={[styles.input, { height: 150 }]}
-              validation={validateDescription}
-              multiline={true}
-              numberOfLines={4}
-              textAlignVertical="top"
-            />
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <CustomTextInput
-              value={address}
-              onChangeText={setAddress}
-              placeholder="Endereço"
-              style={styles.input}
-              validation={validateAddress}
-              autoCapitalize="none"
-            />
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <CustomTextInput
-              value={email}
-              onChangeText={setEmail}
-              placeholder="Email"
-              style={styles.input}
-              validation={validateEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <CustomTextInput
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Senha"
-              style={styles.input}
-              validation={validatePassword}
-              secureTextEntry
-            />
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <CustomTextInput
-              value={averagePrice}
-              onChangeText={setAveragePrice}
-              placeholder="Preço Médio"
-              style={styles.input}
-              validation={validateAveregePrice}
-              keyboardType="number-pad"
-              autoCapitalize="none"
-            />
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <CustomTextInput
-              value={phone}
-              onChangeText={(text) => {
-                const formatted = text
-                  .replace(/\D/g, '')
-                  .replace(/^(\d{2})(\d)/g, '($1) $2')
-                  .replace(/(\d{5})(\d)/, '$1-$2')
-                  .slice(0, 15);
-                setPhone(formatted);
-              }}
-              placeholder="Telefone"
-              style={styles.input}
-              validation={validatePhone}
-              keyboardType="phone-pad"
-              maxLength={15}
-            />
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <HoursSection
-              hours={operatingHours}
-              onAdd={handleAddOperatingHour}
-              onPressItem={handleEditOperatingHour}
-            />
-          </View>
-
-          <View style={styles.buttonContainer}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <CustomTextInput
+          value={restaurantName}
+          onChangeText={setRestaurantName}
+          placeholder="Nome Restaurante"
+          style={styles.input}
+          validation={validateNameRestaurant}
+        />
+        <CustomTextInput
+          value={address}
+          onChangeText={setAddress}
+          placeholder="Endereço"
+          style={styles.input}
+          validation={validateAddress}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+         <CustomTextInput
+          value={email}
+          onChangeText={setEmail}
+          placeholder="Email"
+          style={styles.input}
+          validation={validateEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <CustomTextInput
+          value={password}
+          onChangeText={setPassword}
+          placeholder="Senha"
+          style={styles.input}
+          validation={validatePassword}
+          secureTextEntry
+        />
+         <CustomTextInput
+          value={averagePrice}
+          onChangeText={setAveragePrice}
+          placeholder="Preço Médio"
+          style={styles.input}
+          validation={validateAveregePrice}
+          keyboardType="number-pad"
+          autoCapitalize="none"
+        />
+        <CustomTextInput
+          value={phone}
+          onChangeText={(text) => {
+            const formatted = text
+              .replace(/\D/g, '')
+              .replace(/^(\d{2})(\d)/g, '($1) $2')
+              .replace(/(\d{5})(\d)/, '$1-$2')
+              .slice(0, 15);
+            setPhone(formatted);
+          }}
+          placeholder="Telefone"
+          style={styles.input}
+          validation={validatePhone}
+          keyboardType="phone-pad"
+          maxLength={15}
+        />
+        <HoursSection
+          hours={operatingHours}
+          onAdd={handleAddOperatingHour}
+          onPressItem={handleEditOperatingHour}
+        />
+      </ScrollView>
+      <View style={styles.buttonContainer}>
             <Button title="Avançar" type="orange" onPress={handleSubmit} disabled={!isFormValid} />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+        </View>
+    </SafeAreaView>
   );
 };
 
@@ -296,31 +228,28 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: 'center',
-    padding: '4%',
-    paddingBottom: '8%',
-    width: '100%',
-  },
-  inputWrapper: {
-    width: '90%',
-    marginBottom: '5%',
+    padding: 16,
+    paddingBottom: 32,
   },
   input: {
-    width: '100%',
+    width: 327,
     height: 50,
     borderRadius: 20,
     backgroundColor: 'rgba(255, 179, 112, 0.25)',
     paddingLeft: 24,
     paddingRight: 16,
-    color: "#000000",
+    color: 'black',
     fontFamily: 'Poppins-Regular',
     fontSize: 16,
+    marginBottom: 20,
   },
   buttonContainer: {
-    marginTop: '2%',
-    width: '90%',
+    marginTop: 8,
+    width: 327,
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
+
 });
 
 export default SignupRestaurant;

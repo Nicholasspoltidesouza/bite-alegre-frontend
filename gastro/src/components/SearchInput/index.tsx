@@ -42,11 +42,15 @@ const styles = StyleSheet.create({
   container: {
     position: 'relative',
     justifyContent: 'center',
+    paddingLeft: 20,
   },
   leftIcon: {
     position: 'absolute',
+    justifyContent: 'space-between',
     left: 16,
     zIndex: 1,
+    paddingRight: 30,
+    paddingLeft: 10,
   },
   rightIcon: {
     position: 'absolute',
