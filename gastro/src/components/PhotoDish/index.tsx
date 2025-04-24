@@ -9,62 +9,22 @@ interface PhotoDishProps {
     showStar?: boolean;
 }
 
-const PhotoDish: React.FC<PhotoDishProps> = ({ urlFotoPrato, descricao, size = 200, showStar = false }) => {
-    const flipAnim = useRef(new Animated.Value(0)).current;
-    let isFlipped = false;
+const CARD_WIDTH = 153;
+const CARD_HEIGHT = 156;
+const CARD_MARGIN = 12;
 
-    const styles = StyleSheet.create({
-        container: {
-            borderRadius: 20,
-            overflow: 'hidden',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 5,
-            elevation: 5,
-            position: 'relative',
-        },
-        card: {
-            width: size,
-            height: size,
-            backfaceVisibility: 'hidden',
-        },
-        image: {
-            borderRadius: 20,
-            resizeMode: 'cover',
-        },
-        backCard: {
-            position: 'absolute',
-            top: 0,
-            width: '100%',
-            height: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#f8f8f8',
-            borderRadius: 20,
-            padding: 15,
-        },
-        descriptionText: {
-            fontSize: 16,
-            textAlign: 'center',
-            color: '#333',
-        },
-        starIcon: {
-            position: 'absolute',
-            top: 10,
-            left: 10,
-            zIndex: 1,
-        },
-    });
+const PhotoDish: React.FC<PhotoDishProps> = ({ urlFotoPrato, descricao, size = CARD_WIDTH, showStar = false }) => {
+    const flipAnim = useRef(new Animated.Value(0)).current;
+    const isFlippedRef = useRef(false);
 
     const flipCard = () => {
         Animated.spring(flipAnim, {
-            toValue: isFlipped ? 0 : 180,
+            toValue: isFlippedRef.current ? 0 : 180,
             friction: 8,
             tension: 10,
             useNativeDriver: true,
         }).start(() => {
-            isFlipped = !isFlipped;
+            isFlippedRef.current = !isFlippedRef.current;
         });
     };
 
@@ -88,25 +48,73 @@ const PhotoDish: React.FC<PhotoDishProps> = ({ urlFotoPrato, descricao, size = 2
 
     return (
         <TouchableOpacity activeOpacity={0.9} onPress={flipCard}>
-            <View style={[styles.container, { width: size, height: size }]}>
+            <View style={styles.card}>
                 {showStar && (
                     <View style={styles.starIcon}>
                         <Foundation name="star" size={24} color="#FF914B" />
                     </View>
                 )}
-                <Animated.View style={[styles.card, frontAnimatedStyle]}>
+
+                <Animated.View style={[styles.imageWrapper, frontAnimatedStyle]}>
                     <Image 
                         source={{ uri: urlFotoPrato }} 
-                        style={[styles.image, { width: size, height: size }]} 
+                        style={styles.image} 
                     />
                 </Animated.View>
-                
-                <Animated.View style={[styles.card, styles.backCard, backAnimatedStyle]}>
+
+                <Animated.View style={[styles.imageWrapper, styles.backCard, backAnimatedStyle]}>
                     <Text style={styles.descriptionText}>{descricao}</Text>
                 </Animated.View>
             </View>
         </TouchableOpacity>
     );
 };
+
+const styles = StyleSheet.create({
+    card: {
+        width: CARD_WIDTH,
+        height: CARD_HEIGHT,
+        marginRight: CARD_MARGIN,
+        borderRadius: 16,
+        overflow: 'hidden',
+        backgroundColor: '#fff',
+        elevation: 4,
+        position: 'relative',
+        
+    },
+    imageWrapper: {
+        width: '100%',
+        height: 120,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backfaceVisibility: 'hidden',
+    },
+    image: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 16,
+        resizeMode: 'cover',
+    },
+    backCard: {
+        position: 'absolute',
+        top: 0,
+        backgroundColor: '#f8f8f8',
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    descriptionText: {
+        fontSize: 14,
+        textAlign: 'center',
+        color: '#1F2937',
+        fontWeight: '500',
+    },
+    starIcon: {
+        position: 'absolute',
+        top: 8,
+        left: 8,
+        zIndex: 1,
+    },
+});
 
 export default PhotoDish;
