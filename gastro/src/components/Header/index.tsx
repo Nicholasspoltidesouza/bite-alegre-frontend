@@ -2,8 +2,9 @@ import useLocation from "@/src/hooks/useLocation";
 import React from "react";
 import {View,StyleSheet,Text,StatusBar,TouchableOpacity,Image,} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { MaterialIcons, Feather } from "@expo/vector-icons"; 
+import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 interface HeaderProps {
   isProfile?: boolean;
   name: string;
@@ -24,17 +25,12 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#FF914B" translucent={false} />
+      
       <LinearGradient
         colors={["#FF914B", "#FFFDFC"]}
         locations={[0.45, 0.95]}
         style={styles.gradient}
       >
-        {isProfile && (
-          <TouchableOpacity style={styles.editIconButton} onPress={() => console.log('Editar perfil')}>
-          <MaterialCommunityIcons name="lead-pencil" size={24} color="white" />          
-          </TouchableOpacity>
-        )}
-
         <View style={styles.content}>
           <View style={styles.photo}>
             {profileImageUrl ? (
@@ -47,7 +43,7 @@ const Header: React.FC<HeaderProps> = ({
           <View style={styles.textContainer}>
             <Text style={styles.name}>{name}</Text>
             {isProfile && (
-              <Text style={styles.username}>@{name.toLowerCase()}</Text>
+              <Text style={styles.username}>@{nickName}</Text>
             )}
             {!isProfile && showGreeting && (
               <Text style={styles.greeting}>
@@ -57,7 +53,12 @@ const Header: React.FC<HeaderProps> = ({
 
             <TouchableOpacity onPress={refreshLocation}>
               <View style={styles.row}>
-                <MaterialIcons name="location-on" size={16} color="#fff" style={styles.icon} />
+                <MaterialIcons
+                  name="location-on"
+                  size={16}
+                  color="#fff"
+                  style={styles.icon}
+                />
                 <Text style={styles.infoText}>
                   {subregion?.trim()?.length ? subregion : "Localização"}
                 </Text>
@@ -65,6 +66,15 @@ const Header: React.FC<HeaderProps> = ({
             </TouchableOpacity>
           </View>
         </View>
+
+        {isProfile && (
+          <TouchableOpacity
+            style={styles.editIconButton}
+            onPress={() => console.log("Editar perfil")}
+          >
+            <MaterialCommunityIcons name="lead-pencil" size={22} color="#fff" />
+          </TouchableOpacity>
+        )}
       </LinearGradient>
     </View>
   );
@@ -75,6 +85,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 200,
     borderBottomEndRadius: 20,
+    overflow: "hidden",
   },
   gradient: {
     flex: 1,
@@ -83,15 +94,20 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     position: "relative",
   },
-  editIconButton: {
-    position: "absolute",
-    top: 42,
-    right: 20,
-    padding: 5,
-  },
   content: {
     flexDirection: "row",
     alignItems: "center",
+    zIndex: 1,
+  },
+  editIconButton: {
+    position: "absolute",
+    top: 40,
+    right: 20,
+    backgroundColor: "#FF914B",
+    padding: 6,
+    borderRadius: 20,
+    zIndex: 10,
+    elevation: 5,
   },
   photo: {
     backgroundColor: "#ffffff40",

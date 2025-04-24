@@ -7,10 +7,9 @@ export default function Profile() {
   return (
     <View style={styles.container}>
 
-      <Header
-        isProfile={true}
-      />
+      <Header isProfile={true}/>
 
+      
     </View>
   );
 }
