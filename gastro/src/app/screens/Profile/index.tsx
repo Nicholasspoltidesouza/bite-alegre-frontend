@@ -1,32 +1,35 @@
+import UserCarousel from '@/src/components/UserCarouselRestaurant';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 
 export default function Profile() {
   return (
-    <View style={styles.container}>
-    
-      <View style={styles.section}>
-        <View style={styles.titleRow}>
-          <Text style={styles.title}>Visitados</Text>
-          <TouchableOpacity>
-            <Text style={styles.mostrarMais}>Mostrar mais</Text>
-          </TouchableOpacity>
+  <ScrollView>
+      <View style={styles.container}>
+      
+        <View style={styles.section}>
+          <View style={styles.titleRow}>
+            <Text style={styles.title}>Visitados</Text>
+            <TouchableOpacity>
+              <Text style={styles.mostrarMais}>Mostrar mais</Text>
+            </TouchableOpacity>
+          </View>
+          <UserCarouselRestaurant variant="visitados"/>
         </View>
-        <UserCarouselRestaurant mostrarVisitados />
-      </View>
-
-      <View style={styles.section}>
-        <View style={styles.titleRow}>
-          <Text style={styles.title}>Salvos</Text>
-          <TouchableOpacity>
-            <Text style={styles.mostrarMais}>Mostrar mais</Text>
-          </TouchableOpacity>
+  
+        <View style={styles.section}>
+          <View style={styles.titleRow}>
+            <Text style={styles.title}>Salvos</Text>
+            <TouchableOpacity>
+              <Text style={styles.mostrarMais}>Mostrar mais</Text>
+            </TouchableOpacity>
+          </View>
+          <UserCarouselRestaurant variant="salvos"/>
         </View>
-        <UserCarouselRestaurant mostrarVisitados={false} />
       </View>
-    </View>
-  );
+      </ScrollView>
+    );
 }
 
 const styles = StyleSheet.create({
