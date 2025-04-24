@@ -1,3 +1,4 @@
+import UserCarousel from '@/src/components/UserCarouselRestaurant';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
