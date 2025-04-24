@@ -25,18 +25,11 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#FF914B" translucent={false} />
-
       <LinearGradient
         colors={["#FF914B", "#FFFDFC"]}
         locations={[0.45, 0.95]}
         style={styles.gradient}
       >
-        {isProfile && (
-          <TouchableOpacity style={styles.editIconButton} onPress={() => console.log('Editar perfil')}>
-          <MaterialCommunityIcons name="lead-pencil" size={24} color="white" />          
-          </TouchableOpacity>
-        )}
-
         <View style={styles.content}>
           <View style={styles.photo}>
             {profileImageUrl ? (
