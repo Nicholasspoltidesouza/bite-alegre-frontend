@@ -15,6 +15,7 @@ const CreateReview: React.FC = () => {
   const [description, setDescription] = useState<string>('');
   const [nota, setNota] = useState(0);
   const [userId, setUserId] = useState('');
+  const [imputHeight, setImputHeight] = useState(0);
   const { createReview } = useRestaurantApi();
 
   const corEstrelaSelecionada = "#FF914B";
@@ -81,11 +82,12 @@ const CreateReview: React.FC = () => {
             onChangeText={setDescription} 
             placeholder={'Descreva sua experiência (opcional)'}
             multiline={true}
-            style={{marginHorizontal: '5%'}}
+            style={{marginHorizontal: '5%', height: imputHeight > 50 ? imputHeight : 50}}
+            onContentSizeChange={(e) => setImputHeight(e.nativeEvent.contentSize.height)}
             >
         </CustomTextInput>
-        <TouchableOpacity style={styles.backButton} onPress={() => handleSubmit()}>
-          <MaterialIcons name="navigation" size={30} color="#FFB370" />
+        <TouchableOpacity style={{ alignItems: 'flex-end'}} onPress={() => handleSubmit()}>
+          <MaterialIcons name="navigation" size={30} color="#FFB370" style={{ width: 0,transform: [{ rotate: '90deg' }]}}/>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -153,6 +155,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
   },
+
   backButton: {
     position: 'absolute',
     top: '50%',

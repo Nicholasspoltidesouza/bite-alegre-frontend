@@ -22,8 +22,8 @@ interface RestaurantDTO {
     userType: string;
 }
 interface CheckinDTO {
-  userId: string;
-  restaurantId: string;
+  user_id: string;
+  restaurant_id: string;
 }
 
 interface ReviewDTO {

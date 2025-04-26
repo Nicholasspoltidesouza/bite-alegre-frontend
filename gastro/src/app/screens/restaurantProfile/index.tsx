@@ -6,11 +6,12 @@ import { FontAwesome, FontAwesome6, Foundation, Ionicons, MaterialCommunityIcons
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import Button from '@/src/components/Button';
 import { router } from 'expo-router';
+import { CheckinDTO } from '@/src/@types/DTO';
 
 const { width: screenWidth } = Dimensions.get('window'); 
 
 const RestaurantProfile: React.FC = () => {
-  const { getRestaurantById, data: restaurant, loading, error } = useRestaurantApi();
+  const { getRestaurantById, createCheckin, data: restaurant, loading, error } = useRestaurantApi();
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -118,9 +119,14 @@ const RestaurantProfile: React.FC = () => {
                       style={{ marginRight: 10 }} />
                      <Button
                       title="Nao"
-                      onPress={() => { setModalVisible(!modalVisible)
-                        router.push({ pathname: '/screens/CreateReview' })
-                      }} 
+                      onPress={() => { 
+                        setModalVisible(!modalVisible)
+                        const checkinData: CheckinDTO = {
+                          user_id: "1",
+                          restaurant_id: "1"
+                        };
+                        createCheckin(checkinData);
+                      }}
                       type={'white'} />
                   </View>                   
                 </View>
