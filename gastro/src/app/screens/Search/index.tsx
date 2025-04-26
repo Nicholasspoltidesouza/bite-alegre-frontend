@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 16,
     marginBottom: 12,
+    color: '#000000',
   },
   scrollContainer: {
     alignItems: 'center',

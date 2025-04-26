@@ -55,7 +55,6 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
       )}
       <TextInput
         style={[
-          style,
           {
             width: width || 327,
             height: 50,
@@ -70,6 +69,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
             borderWidth: error ? 2 : 0,
             borderColor: error ? 'red' : 'transparent',
           },
+          style,
         ]}
         onChangeText={handleChangeText}
         value={value}
