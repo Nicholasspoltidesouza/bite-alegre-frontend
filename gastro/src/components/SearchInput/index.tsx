@@ -13,7 +13,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChangeText, placehol
   const iconSize = 20;
   const iconLeft = 16;
   const iconRight = 16;
-  const spacing = 8;
+  const spacing = 12;
 
   const dynamicPaddingLeft = iconLeft + iconSize + spacing;
   const dynamicPaddingRight = iconRight + iconSize + spacing;
@@ -29,6 +29,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChangeText, placehol
         style={{
           paddingLeft: dynamicPaddingLeft,
           paddingRight: dynamicPaddingRight,
+          marginLeft: '70%',
+          marginRight: '70%',
         }}
         {...props}
       />
@@ -42,15 +44,14 @@ const styles = StyleSheet.create({
   container: {
     position: 'relative',
     justifyContent: 'center',
-    paddingLeft: 20,
+    paddingLeft: 52,
   },
   leftIcon: {
     position: 'absolute',
     justifyContent: 'space-between',
-    left: 16,
+    left: '8%',
+    paddingLeft: '8%',
     zIndex: 1,
-    paddingRight: 30,
-    paddingLeft: 10,
   },
   rightIcon: {
     position: 'absolute',
