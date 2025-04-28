@@ -1,4 +1,3 @@
-import UserCarousel from '@/src/components/UserCarouselRestaurant';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
@@ -15,7 +14,7 @@ export default function Profile() {
               <Text style={styles.mostrarMais}>Mostrar mais</Text>
             </TouchableOpacity>
           </View>
-          <UserCarouselRestaurant variant="visitados"/>
+          <UserCarouselRestaurant variant="visited" restaurantsExternal={[]}/>
         </View>
   
         <View style={styles.section}>
@@ -25,7 +24,7 @@ export default function Profile() {
               <Text style={styles.mostrarMais}>Mostrar mais</Text>
             </TouchableOpacity>
           </View>
-          <UserCarouselRestaurant variant="salvos"/>
+          <UserCarouselRestaurant variant="saved" restaurantsExternal={[]}/>
         </View>
       </View>
       </ScrollView>
