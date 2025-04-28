@@ -150,7 +150,6 @@ const styles = StyleSheet.create({
     height: CARD_HEIGHT,
     marginRight: CARD_MARGIN,
     alignItems: 'flex-start',
-  
   },
   imageWrapper: {
     width: '100%',
