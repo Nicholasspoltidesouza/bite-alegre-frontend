@@ -1,25 +1,24 @@
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions, ActivityIndicator } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions, ActivityIndicator, Image } from 'react-native';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { ReviewDTO } from '@/src/@types/DTO';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import { useCreateUser } from '@/src/hooks/useUserApi';
+import Colors from '@/src/constants/Colors';
 
 const screenWidth = Dimensions.get('window').width;
 
 const CreateReview: React.FC = () => {
   const { screenTitle, backRoute } = useLocalSearchParams();    
   const { createReview } = useRestaurantApi();
-  const { getUserById, data: user, loading, error } = useCreateUser();
+  const { getUserById, loading, error, data: userData} = useCreateUser();
 
   const [description, setDescription] = useState<string>('');
   const [nota, setNota] = useState(0);
-  const [userId, setUserId] = useState('');
   const [imputHeight, setImputHeight] = useState(0);
 
-  const corEstrelaSelecionada = "#FF914B";
   const corEstrelaNaoSelecionada = "rgba(255, 179, 112, 0.25)";
 
   useEffect(() => {
@@ -55,7 +54,7 @@ const CreateReview: React.FC = () => {
           <FontAwesome
             name={'star'}
             size={24}
-            color={i <= nota ? corEstrelaSelecionada : corEstrelaNaoSelecionada}
+            color={i <= nota ? Colors.orange.orangeStandard : corEstrelaNaoSelecionada}
             style={styles.starIcon}
           />
         </TouchableOpacity>
@@ -88,10 +87,14 @@ const CreateReview: React.FC = () => {
         </View>
         <View style={styles.textUser}>
             <View style={styles.photo}>
-                <MaterialIcons name="person" size={60} color="#fcd5b5" />
+              {userData?.profilePhoto ? (
+                  <Image source={{ uri: userData.profilePhoto }} />
+                ) : (
+                  <MaterialIcons name="person" size={60} color="#fcd5b5" />
+                )}               
             </View>
             <View style={styles.textContainer}>
-                <Text style={styles.textUserName}>Nome Usuário </Text>
+                <Text style={styles.textUserName}>{userData?.name}</Text>                
                 <Text>As avaliações são públicas e podem ser vistas tanto pelo restaurante, quanto por outros usuários.</Text>
             </View>
         </View>
@@ -118,7 +121,7 @@ const CreateReview: React.FC = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.background
   },
   container: {
     padding: '4%',
@@ -134,7 +137,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#000000',
+    color: Colors.text.black,
     textAlign: 'center',
     marginTop: '10%',
   },
@@ -142,7 +145,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#000000',
+    color: Colors.text.black,
     marginBottom: 5
   },
   textUser:{

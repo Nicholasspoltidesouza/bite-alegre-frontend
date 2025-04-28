@@ -5,7 +5,7 @@ import { API_URL_ANDROID, API_URL_BACKEND } from "../constants/apiUrl";
 export const useCreateUser = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<UserDTO | null>(null);
 
   const createUser = async (userData: UserDTO): Promise<void> => {
     setLoading(true);
