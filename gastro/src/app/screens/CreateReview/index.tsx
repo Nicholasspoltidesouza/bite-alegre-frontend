@@ -1,25 +1,46 @@
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
-import Button from '../../../components/Button';
-import { API_URL_ANDROID, API_URL_BACKEND } from '../../../constants/apiUrl';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions, ActivityIndicator } from 'react-native';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { ReviewDTO } from '@/src/@types/DTO';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
+import { useCreateUser } from '@/src/hooks/useUserApi';
 
 const screenWidth = Dimensions.get('window').width;
 
 const CreateReview: React.FC = () => {
-  const { screenTitle, backRoute } = useLocalSearchParams();
+  const { screenTitle, backRoute } = useLocalSearchParams();    
+  const { createReview } = useRestaurantApi();
+  const { getUserById, data: user, loading, error } = useCreateUser();
+
   const [description, setDescription] = useState<string>('');
   const [nota, setNota] = useState(0);
   const [userId, setUserId] = useState('');
   const [imputHeight, setImputHeight] = useState(0);
-  const { createReview } = useRestaurantApi();
 
   const corEstrelaSelecionada = "#FF914B";
   const corEstrelaNaoSelecionada = "rgba(255, 179, 112, 0.25)";
+
+  useEffect(() => {
+    getUserById("1");
+  }, []);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="#FF914B" style={{ marginTop: 50 }} />
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>{error}</Text>
+      </SafeAreaView>
+    );
+  }
 
   const handleEstrelaPress = (estrelaSelecionada: number) => {
     setNota(estrelaSelecionada);
@@ -125,10 +146,8 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   textUser:{
-    paddingTop: 40,
-    paddingLeft: 20,
     flexDirection: 'row',
-    alignItems: 'center',    
+    alignItems: 'center',
   },
   photo: {
     backgroundColor: '#FFB370',
@@ -136,7 +155,7 @@ const styles = StyleSheet.create({
     height: 65,
     width: 65,
     alignItems: 'center',
-    marginRight: 10
+    marginRight: '5%'
   },
   textContainer: {
     fontFamily: 'Poppins-Regular',
@@ -152,10 +171,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   notaText: {
-    marginTop: 10,
+    marginTop: '10%',
     fontSize: 16,
   },
-
   backButton: {
     position: 'absolute',
     top: '50%',
@@ -165,3 +183,7 @@ const styles = StyleSheet.create({
 });
 
 export default CreateReview;
+function useUserApi(): { getUserById: any; data: any; loading: any; error: any; } {
+  throw new Error('Function not implemented.');
+}
+

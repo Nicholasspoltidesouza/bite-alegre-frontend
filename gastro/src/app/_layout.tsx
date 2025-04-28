@@ -27,6 +27,7 @@ export default function RootLayout() {
       tabBarActiveTintColor: '#FF914B', 
       tabBarInactiveTintColor: '#FF914B',
       headerShown: false,
+      tabBarHideOnKeyboard: true,
       tabBarStyle: {
         display: shouldHideTabBar ? 'none' : 'flex',
         height: 66,

@@ -175,16 +175,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalText: {
-    fontSize: 14,
-    fontFamily:'Poppins',
-    fontWeight: 'semibold',
+    fontSize: 20,
+    fontFamily:'Poppins-Regular',
+    fontWeight: 'bold',
     textAlign: 'center',
     color: '#FF914B',
-    marginBottom: 10
+    marginBottom: 20
   },
   modalButtons: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'row',    
   }
 });
 

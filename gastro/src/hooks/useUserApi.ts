@@ -12,7 +12,7 @@ export const useCreateUser = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL_ANDROID}/users`, {
+      const response = await fetch(`${API_URL_BACKEND}/users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,5 +40,38 @@ export const useCreateUser = () => {
     }
   };
 
-  return { createUser, loading, error, data };
+  const getUserById = async (userId: string): Promise<void> => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(
+        `${API_URL_BACKEND}/users/${userId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        setData(responseData);
+      } else {
+        throw new Error(
+          responseData.error ||
+            responseData.message ||
+            `Falha ao buscar usuário. Status: ${response.status}`
+        );
+      }
+    } catch (err: any) {
+      setError(err.message || 'Erro desconhecido');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { createUser, getUserById, loading, error, data };
 };
