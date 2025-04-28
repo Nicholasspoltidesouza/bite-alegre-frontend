@@ -59,7 +59,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
             width: width || 327,
             height: 50,
             borderRadius: 20,
-            backgroundColor: 'rgba(255, 179, 112, 0.25)',
+            // backgroundColor: 'rgba(255, 179, 112, 0.25)',
             paddingLeft: 24,
             paddingRight: 16,
             color: '#FF914B',
