@@ -1,9 +1,9 @@
 import useLocation from "@/src/hooks/useLocation";
 import React from "react";
-import {View,StyleSheet,Text,StatusBar,TouchableOpacity,Image,} from "react-native";
+import { View, StyleSheet, Text, StatusBar, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 interface HeaderProps {
   isProfile?: boolean;
@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#FF914B" translucent={false} />
-      
+
       <LinearGradient
         colors={["#FF914B", "#FFFDFC"]}
         locations={[0.45, 0.95]}
@@ -41,15 +41,18 @@ const Header: React.FC<HeaderProps> = ({
           </View>
 
           <View style={styles.textContainer}>
-            <Text style={styles.name}>{name}</Text>
-            {isProfile && (
-              <Text style={styles.username}>@{nickName}</Text>
-            )}
             {!isProfile && showGreeting && (
-              <Text style={styles.greeting}>
-                Olá, <Text style={styles.bold}>{name}!</Text> Bora jantar?
-              </Text>
-            )}
+          <Text style={styles.greeting}>
+              Olá, <Text style={styles.bold}>{name}!</Text> Bora jantar?
+            </Text>
+)}
+
+        {isProfile && (
+            <>
+    <Text style={styles.name}>{name}</Text> 
+    <Text style={styles.username}>@{nickName}</Text> 
+  </>
+      )}
 
             <TouchableOpacity onPress={refreshLocation}>
               <View style={styles.row}>
@@ -60,7 +63,7 @@ const Header: React.FC<HeaderProps> = ({
                   style={styles.icon}
                 />
                 <Text style={styles.infoText}>
-                  {subregion?.trim()?.length ? subregion : "Localização"}
+                  {subregion?.trim()?.length ? subregion : "Location"}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -70,7 +73,7 @@ const Header: React.FC<HeaderProps> = ({
         {isProfile && (
           <TouchableOpacity
             style={styles.editIconButton}
-            onPress={() => console.log("Editar perfil")}
+            onPress={() => console.log("Edit Profile")}
           >
             <MaterialCommunityIcons name="lead-pencil" size={22} color="#fff" />
           </TouchableOpacity>
@@ -129,20 +132,19 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "Poppins-Medium",
     color: "#fff",
-    fontFamily: "Poppins-Bold",
   },
   username: {
     fontSize: 14,
     color: "#ffffffcc",
-    fontFamily: "Poppins-Regular",
+    fontFamily: "Poppins-Medium",
     marginBottom: 5,
   },
   greeting: {
-    fontSize: 16,
+    fontSize: 22, 
+    fontFamily: "Poppins-Medium", 
     color: "#fff",
-    fontFamily: "Poppins-Regular",
     marginBottom: 5,
   },
   bold: {
