@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 50,
     borderRadius: 20,
-    backgroundColor: 'rgba(255, 179, 112, 0.25)',
     paddingLeft: 24,
     paddingRight: 16,
     color: '#000000',

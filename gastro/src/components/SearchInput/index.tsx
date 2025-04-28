@@ -11,12 +11,8 @@ interface SearchInputProps extends TextInputProps {
 
 const SearchInput: React.FC<SearchInputProps> = ({ value, onChangeText, placeholder = 'Pesquisar', ...props }) => {
   const iconSize = 20;
-  const iconLeft = 16;
-  const iconRight = 16;
   const spacing = 12;
-
-  const dynamicPaddingLeft = iconLeft + iconSize + spacing;
-  const dynamicPaddingRight = iconRight + iconSize + spacing;
+  const iconPadding = iconSize + spacing;
 
   return (
     <View style={styles.container}>
@@ -26,12 +22,13 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChangeText, placehol
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        style={{
-          paddingLeft: dynamicPaddingLeft,
-          paddingRight: dynamicPaddingRight,
-          marginLeft: '70%',
-          marginRight: '70%',
-        }}
+        style={[
+          styles.input,
+          {
+            paddingLeft: iconPadding + 12,
+            paddingRight: iconPadding + 12,
+          },
+        ]}
         {...props}
       />
 
@@ -42,15 +39,20 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChangeText, placehol
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 179, 112, 0.25)',
+    borderRadius: 24,
+    paddingHorizontal: 12,
+    width: '100%',
     position: 'relative',
-    justifyContent: 'center',
-    paddingLeft: 52,
+  },
+  input: {
+    flex: 1,
+    color: '#000',
   },
   leftIcon: {
     position: 'absolute',
-    justifyContent: 'space-between',
-    left: '8%',
-    paddingLeft: '8%',
     zIndex: 1,
   },
   rightIcon: {
