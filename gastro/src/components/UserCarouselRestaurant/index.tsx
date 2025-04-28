@@ -1,10 +1,5 @@
-import React, { useState } from 'react';
-import {View,Text,
-  Image,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
+import React, { useMemo, useState } from 'react';
+import {View,Text,Image,StyleSheet,FlatList,TouchableOpacity,} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import PhotoDish from '@/src/components/PhotoDish';
 
