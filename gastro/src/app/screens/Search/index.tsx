@@ -27,7 +27,6 @@ const Search = () => {
           <SearchInput
             value={search}
             onChangeText={setSearch}
-            placeholder="Pesquisar"
             style={styles.input}
           />
         </View>
@@ -97,11 +96,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   input: {
-    width: '100%',
     height: 50,
     borderRadius: 20,
-    paddingLeft: 24,
-    paddingRight: 16,
     color: '#000000',
     fontFamily: 'Poppins-Regular',
     fontSize: 16,

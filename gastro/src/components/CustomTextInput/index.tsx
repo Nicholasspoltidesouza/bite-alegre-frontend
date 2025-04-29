@@ -6,7 +6,6 @@ import {
   TextInput,
   TextInputProps,
   TextStyle,
-  View,
 } from 'react-native';
 
 interface CustomTextInputProps extends Omit<TextInputProps, 'style'> {
@@ -38,7 +37,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
   };
 
   return (
-    <View>
+    <>
       {error && (
         <Text
           style={{
@@ -56,11 +55,6 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
       <TextInput
         style={[
           {
-            width: width || 327,
-            height: 50,
-            borderRadius: 20,
-            // backgroundColor: 'rgba(255, 179, 112, 0.25)',
-            backgroundColor: "red",
             paddingLeft: 24,
             paddingRight: 16,
             color: '#FF914B',
@@ -77,8 +71,8 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
         placeholder={placeholder}
         placeholderTextColor="#FF914B"
         {...props}
-      >fsdfsdfsdf</TextInput>
-    </View>
+      />
+    </>
   );
 };
 
