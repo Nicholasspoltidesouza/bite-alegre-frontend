@@ -3,6 +3,7 @@ import { View, StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, Text 
 import { Ionicons } from '@expo/vector-icons';
 import Header from '@/src/components/Header';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
+import Colors from '@/src/constants/Colors';
 
 export default function TextFieldWithFilter() {
   return (
@@ -33,13 +34,13 @@ export default function TextFieldWithFilter() {
         </TouchableOpacity>
       </View>
       
-      <Text style={styles.sectionTitle}>Em alta com nossos influencers</Text>
+      <Text style={styles.title}>Em alta com nossos influencers</Text>
 
       <UserCarouselRestaurant variant="influencers" />
 
-      <Text style={styles.sectionTitle}>Restaurantes perto de você</Text>
+      <Text style={styles.title}>Restaurantes perto de você</Text>
 
-      <UserCarouselRestaurant variant="saved" />
+      <UserCarouselRestaurant variant="closeToYou" />
 
     </View>
     </ScrollView>
@@ -66,8 +67,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 18,
-    color: '#FF914B',
-    fontFamily: 'Poppins-Regular',
+    color: Colors.orange.orangeBold,
+    fontFamily: 'Poppins-Medium',
   },
   iconButton: {
     marginLeft: -50,
@@ -87,11 +88,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  sectionTitle: {
-    fontSize: 16,
-    fontFamily: 'Poppins-Bold',
-    color: '#FF914B',
-    marginTop: 8,
-    marginLeft: 20,
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.orange.orangeBold,
   },
+
 });

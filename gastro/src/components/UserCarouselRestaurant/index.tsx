@@ -9,7 +9,7 @@ const CARD_MARGIN = 12;
 
 interface Restaurante {
   id: string;
-  nome: string;
+  nome: string | null;
   nota: number | null;
   avaliacoes: number | null;
   imagem: string;
@@ -18,12 +18,12 @@ interface Restaurante {
 }
 
 interface Props {
-  variant: 'visited' | 'saved' | 'menu' | 'influencers';
+  variant: 'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYou';
   carouselProfileRestaurant?: boolean;
-  restaurantsExternal?: Restaurante[]; // Agora opcional
+  restaurantsExternal?: Restaurante[];
 }
 
-const mockData: Record<Props['variant'], Restaurante[]> = {
+const mockData: Record<'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYou', Restaurante[]> = {
   visited: [
     {
       id: '1',
@@ -41,8 +41,25 @@ const mockData: Record<Props['variant'], Restaurante[]> = {
       imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD4dJ6EDJ7UQzZ9KFDmon5aHLRm5KIBHinxQ&s',
       visitado: true,
     },
+  {
+      id: '3',
+      nome: 'OutBack',
+      nota: null,
+      avaliacoes: null,
+      imagem: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/43/de/6d/outback-steakhouse.jpg?w=900&h=500&s=1',
+      visitado: true,
+    },
+  {
+      id: '4',
+      nome: 'Hamburgueria do Bairro',
+      nota: null,
+      avaliacoes: null,
+      imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYj3Xx7aJ7q1s8n8f2b0Gm5uGg0N1h2g6z6A&s',
+      visitado: true,
+    },
+
   ],
-  saved: [
+  closeToYou: [
     {
       id: '3',
       nome: 'OutBack',
@@ -51,6 +68,63 @@ const mockData: Record<Props['variant'], Restaurante[]> = {
       imagem: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/43/de/6d/outback-steakhouse.jpg?w=900&h=500&s=1',
       visitado: false,
     },
+    {
+      id: '4',
+      nome: 'Hamburgueria do Bairro',
+      nota: 4.5,
+      avaliacoes: 25,
+      imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
+      visitado: false,
+    },
+  {
+      id: '5',
+      nome: 'Pizzaria do Bairro',
+      nota: 4.2,
+      avaliacoes: 15,
+      imagem: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/1b/92/50/ambiente-de-l-unico.jpg?w=600&h=-1&s=1',
+      visitado: false,
+    },
+  {
+      id: '6',
+      nome: 'Sushi do Bairro',
+      nota: 4.8,
+      avaliacoes: 30,
+      imagem: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/75/8a/f4/mesas-sob-a-figueira.jpg?w=600&h=-1&s=1',
+      visitado: false,
+    },
+  {
+      id: '7',
+      nome: 'Churrascaria do Bairro',
+      nota: 4.6,
+      avaliacoes: 20,
+      imagem: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=60',
+      visitado: false,
+    },
+  {
+      id: '8',
+      nome: 'Cozinha do Bairro',
+      nota: 4.3,
+      avaliacoes: 18,
+      imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
+      visitado: false,
+    },
+  {
+      id: '9',
+      nome: 'Sorveteria do Bairro',
+      nota: 4.1,
+      avaliacoes: 10,
+      imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
+      visitado: false,
+    },
+  {
+      id: '10',
+      nome: 'Doceria do Bairro',
+      nota: 0,
+      avaliacoes: 0,
+      imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
+      visitado: false,
+    },
+
   ],
   menu: [
     {
@@ -69,6 +143,57 @@ const mockData: Record<Props['variant'], Restaurante[]> = {
       nota: null,
       avaliacoes: null,
       imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjvPy-dEH8DVe1RUAf5Tl2e2kF89IATkpPaw&s',
+    },
+    {
+      id: '6',
+      nome: 'Gastro',
+      nota: null,
+      avaliacoes: null,
+      imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxFmep4l3APAJdWuT3wx14qcfOUIGq0ni13w&s',
+    },
+    {
+      id: '7',
+      nome: 'Chef do Bairro',
+      nota: null,
+      avaliacoes: null,
+      imagem: 'https://uploads.metroimg.com/wp-content/uploads/2021/09/01163754/Chef-Cadu-Moura.jpg',
+    },
+    {
+      id: '8',
+      nome: 'Cozinheiro do Bairro',
+      nota: null,
+      avaliacoes: null,
+      imagem: 'https://influency.me/wp-content/uploads/2023/10/FGC_125725-1-edited.jpg',
+    },
+    {
+      id: '9',
+      nome: null,
+      nota: null,
+      avaliacoes: null,
+      imagem: 'https://influency.me/wp-content/uploads/2023/10/FGC_125725-1-edited.jpg',
+    },
+    {
+      id: '10',
+      nome: 'Sorveteiro do Bairro',
+      nota: null,
+      avaliacoes: null,
+      imagem: 'https://influency.me/wp-content/uploads/2023/10/FGC_125725-1-edited.jpg',
+    },
+  ],
+  saved: [
+    {
+      id: '11',
+      nome: 'Restaurante do Bairro',
+      nota: 4.5,
+      avaliacoes: 20,
+      imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYj3Xx7aJ7q1s8n8f2b0Gm5uGg0N1h2g6z6A&s',
+    },
+    {
+      id: '12',
+      nome: 'Pizzaria do Bairro',
+      nota: 4.2,
+      avaliacoes: 15,
+      imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYj3Xx7aJ7q1s8n8f2b0Gm5uGg0N1h2g6z6A&s',
     },
   ],
 };
@@ -107,22 +232,45 @@ export default function UserCarouselRestaurant({
   const renderItem = ({ item }: { item: Restaurante }) => {
     const isSelected = selectedPins.includes(item.id);
 
+    
+    if (variant === 'influencers') {
+      return (
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => console.log(`Clicou em ${item.nome}`)}
+          activeOpacity={0.8}
+        >
+          <View style={styles.imageWrapper}>
+            <Image source={{ uri: item.imagem }} style={styles.image} />
+          </View>
+          <Text style={styles.nome}>{item.nome}</Text>
+        </TouchableOpacity>
+      );
+    }
+
     if (variant === 'menu') {
       return (
         <PhotoDish
           urlFotoPrato={item.imagem}
-          descricao={item.nome}
+          descricao={item.nome ?? ''}
           showStar={item.favorito}
         />
       );
     }
 
     return (
-      <View style={styles.card}>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => console.log(`Clicou em ${item.nome}`)}
+        activeOpacity={0.8}
+      >
         <View style={styles.imageWrapper}>
           <Image source={{ uri: item.imagem }} style={styles.image} />
-          {['visited', 'saved'].includes(variant) && (
-            <TouchableOpacity style={styles.pinButton} onPress={() => togglePin(item.id)}>
+          {['visited', 'saved', 'closeToYou'].includes(variant) && (
+            <TouchableOpacity
+              style={styles.pinButton}
+              onPress={() => togglePin(item.id)}
+            >
               <AntDesign
                 name="pushpin"
                 size={16}
@@ -165,14 +313,14 @@ export default function UserCarouselRestaurant({
           </View>
         )}
 
-        {variant === 'saved' && item.nota !== null && (
+        {['saved', 'closeToYou'].includes(variant) && item.nota !== null && (
           <View style={styles.avaliacaoRow}>
             <AntDesign name="star" size={12} color="#FF914B" />
             <Text style={styles.nota}> {item.nota?.toFixed(1)}</Text>
             <Text style={styles.avaliacoes}> ({item.avaliacoes ?? 0} avaliações)</Text>
           </View>
         )}
-      </View>
+      </TouchableOpacity>
     );
   };
 
