@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import {View,Text,Image,StyleSheet,FlatList,TouchableOpacity,} from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import PhotoDish from '@/src/components/PhotoDish';
 
@@ -20,10 +20,64 @@ interface Restaurante {
 interface Props {
   variant: 'visited' | 'saved' | 'menu' | 'influencers';
   carouselProfileRestaurant?: boolean;
-  restaurantsExternal: Restaurante[];
+  restaurantsExternal?: Restaurante[]; // Agora opcional
 }
 
-export default function UserCarouselRestaurant({ variant, carouselProfileRestaurant = false, restaurantsExternal }: Props) {
+const mockData: Record<Props['variant'], Restaurante[]> = {
+  visited: [
+    {
+      id: '1',
+      nome: 'Biskaia',
+      nota: null,
+      avaliacoes: null,
+      imagem: 'https://esa-cdn.cardapio.menu/storage/media/company_gallery/52529901/conversions/contribution_gallery.jpg',
+      visitado: true,
+    },
+    {
+      id: '2',
+      nome: 'Gelson Lanches',
+      nota: 3,
+      avaliacoes: 12,
+      imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD4dJ6EDJ7UQzZ9KFDmon5aHLRm5KIBHinxQ&s',
+      visitado: true,
+    },
+  ],
+  saved: [
+    {
+      id: '3',
+      nome: 'OutBack',
+      nota: 4.7,
+      avaliacoes: 57,
+      imagem: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/43/de/6d/outback-steakhouse.jpg?w=900&h=500&s=1',
+      visitado: false,
+    },
+  ],
+  menu: [
+    {
+      id: '4',
+      nome: 'Hambúrguer',
+      nota: null,
+      avaliacoes: null,
+      imagem: 'https://www.estadao.com.br/resizer/v2/77XTHHCCLBEXLC2Y5RK4PN37CE.jpg?quality=80&width=720&height=503',
+      favorito: true,
+    },
+  ],
+  influencers: [
+    {
+      id: '5',
+      nome: 'Mustacha',
+      nota: null,
+      avaliacoes: null,
+      imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjvPy-dEH8DVe1RUAf5Tl2e2kF89IATkpPaw&s',
+    },
+  ],
+};
+
+export default function UserCarouselRestaurant({
+  variant,
+  carouselProfileRestaurant = false,
+  restaurantsExternal,
+}: Props) {
   const [selectedPins, setSelectedPins] = useState<string[]>([]);
 
   const togglePin = (id: string) => {
@@ -33,7 +87,7 @@ export default function UserCarouselRestaurant({ variant, carouselProfileRestaur
   };
 
   const data = useMemo(() => {
-    let baseData = [...restaurantsExternal];
+    let baseData = [...(restaurantsExternal ?? mockData[variant])];
 
     if (variant === 'visited' && carouselProfileRestaurant) {
       baseData.sort((a, b) => {
