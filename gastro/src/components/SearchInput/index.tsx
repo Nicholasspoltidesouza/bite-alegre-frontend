@@ -15,6 +15,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChangeText, placehol
   const iconPadding = iconSize + spacing;
 
   return (
+    // solução: transformar essa view no input inteiro, pois engloba o input e os dois ícone.
+    // 
     <View style={styles.container}>
       <MaterialIcons name="search" size={iconSize} color="#FF914B" style={styles.leftIcon} />
 
@@ -22,6 +24,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChangeText, placehol
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
+        width={900}
         style={[
           styles.input,
           {
@@ -41,7 +44,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 179, 112, 0.25)',
+    // backgroundColor: 'rgba(255, 179, 112, 0.25)',
+    backgroundColor: "blue",
     borderRadius: 24,
     paddingHorizontal: 12,
     width: '100%',
