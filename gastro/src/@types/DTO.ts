@@ -8,6 +8,7 @@ interface UserDTO {
   gender: string | null;
   birthDate?: string;
   userType: string;
+  id: string;
 }
 interface RestaurantDTO {
     profilePhoto?: string;
@@ -21,6 +22,7 @@ interface RestaurantDTO {
     phone: string;
     userType: string;
 }
+
 interface CheckinDTO {
   user_id: string;
   restaurant_id: string;

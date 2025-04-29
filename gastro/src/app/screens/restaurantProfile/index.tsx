@@ -1,5 +1,5 @@
 import HeaderPerfilRestaurante from '@/src/components/HeaderPerfilRestaurante';
-import { View, StyleSheet, Text, SafeAreaView, ActivityIndicator, Dimensions, Modal, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, Text, SafeAreaView, ActivityIndicator, Dimensions, Modal, TouchableWithoutFeedback, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Accordion from '@/src/components/Accordion';
 import { FontAwesome, FontAwesome6, Foundation, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -32,6 +32,21 @@ const RestaurantProfile: React.FC = () => {
         <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>{error}</Text>
       </SafeAreaView>
     );
+  }
+
+  const handleCheckin = async () =>  {
+    try {      
+      const checkinData: CheckinDTO = {
+        user_id: '1',
+        restaurant_id: '1'
+      };
+
+      await createCheckin(checkinData);
+      Alert.alert('Sucesso', 'Checkin feito feito com sucesso!');
+    } catch (err) {
+      console.error('Submit Error:', err);
+      Alert.alert('Erro', err instanceof Error ? err.message : 'Ocorreu um erro inesperado');
+    }    
   }
 
   return (
@@ -89,10 +104,7 @@ const RestaurantProfile: React.FC = () => {
             description={''}
             content={''} 
             staticArrow={true} 
-            onPressAction={() => {
-              setModalVisible(true);
-              console.log("Clicou no cabeçalho!");
-            }}
+            onPressAction={() => setModalVisible(true)}
             children={<MaterialCommunityIcons name="calendar-start" size={24} color="#FF914B" />}>            
           </Accordion>
 
@@ -121,11 +133,7 @@ const RestaurantProfile: React.FC = () => {
                       title="Nao"
                       onPress={() => { 
                         setModalVisible(!modalVisible)
-                        const checkinData: CheckinDTO = {
-                          user_id: "1",
-                          restaurant_id: "1"
-                        };
-                        createCheckin(checkinData);
+                        handleCheckin();
                       }}
                       type={'white'} />
                   </View>                   
@@ -165,7 +173,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
     backgroundColor: "rgba(0,0,0,0.2)",
   },
   modalView: {

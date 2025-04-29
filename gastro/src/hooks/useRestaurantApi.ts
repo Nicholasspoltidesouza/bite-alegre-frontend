@@ -7,15 +7,13 @@ export const useRestaurantApi = () => {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<RestaurantDTO | null>(null);
 
-  const URL_API = API_URL_ANDROID;
-
   const getRestaurantById = async (restaurantId: string): Promise<void> => {
     setLoading(true);
     setError(null);
 
     try {
       const response = await fetch(
-        `${URL_API}/restaurants/${restaurantId}`,
+        `${API_URL_ANDROID}/restaurants/${restaurantId}`,
         {
           method: 'GET',
           headers: {
@@ -47,7 +45,7 @@ export const useRestaurantApi = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${URL_API}/restaurants`, {
+      const response = await fetch(`${API_URL_ANDROID}/restaurants`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +77,7 @@ export const useRestaurantApi = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${URL_API}/restaurants/${data.restaurant_id}/checkin`, {
+      const response = await fetch(`${API_URL_ANDROID}/restaurants/${data.restaurant_id}/checkin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

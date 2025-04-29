@@ -1,25 +1,20 @@
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions, ActivityIndicator, Image } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions, ActivityIndicator, Image, Alert } from 'react-native';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { ReviewDTO } from '@/src/@types/DTO';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import { useCreateUser } from '@/src/hooks/useUserApi';
 import Colors from '@/src/constants/Colors';
 
-const screenWidth = Dimensions.get('window').width;
-
 const CreateReview: React.FC = () => {
-  const { screenTitle, backRoute } = useLocalSearchParams();    
   const { createReview } = useRestaurantApi();
   const { getUserById, loading, error, data: userData} = useCreateUser();
 
   const [description, setDescription] = useState<string>('');
   const [nota, setNota] = useState(0);
   const [imputHeight, setImputHeight] = useState(0);
-
-  const corEstrelaNaoSelecionada = "rgba(255, 179, 112, 0.25)";
 
   useEffect(() => {
     getUserById("1");
@@ -54,7 +49,7 @@ const CreateReview: React.FC = () => {
           <FontAwesome
             name={'star'}
             size={24}
-            color={i <= nota ? Colors.orange.orangeStandard : corEstrelaNaoSelecionada}
+            color={i <= nota ? Colors.orange.orangeStandard : 'rgba(255, 179, 112, 0.25)'}
             style={styles.starIcon}
           />
         </TouchableOpacity>
@@ -64,21 +59,28 @@ const CreateReview: React.FC = () => {
   };
 
   const handleSubmit = async () =>  {
-    const data: ReviewDTO = {
-      stars: nota,
-      feedback: description,
-      user_id: '1',
-      restaurant_id: '1'
-    };
+    try {      
+      const data: ReviewDTO = {
+        stars: nota,
+        feedback: description,
+        user_id: userData!.id!,
+        restaurant_id: '1'
+      };
 
-    createReview(data, '1');
+      await createReview(data, '1');
+      Alert.alert('Sucesso', 'Avaliação feita com sucesso!');
+      router.push({ pathname: "/screens/restaurantProfile" });
+    } catch (err) {
+      console.error('Submit Error:', err);
+      Alert.alert('Erro', err instanceof Error ? err.message : 'Ocorreu um erro inesperado');
+    }    
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         <View style={styles.containerTitle}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.push({ pathname: backRoute as any })}>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.push({ pathname: "/screens/restaurantProfile" })}>
             <MaterialIcons name="keyboard-arrow-left" size={35} color="#FF914B" />
           </TouchableOpacity>
           <Text style={styles.titleText}>
@@ -111,7 +113,7 @@ const CreateReview: React.FC = () => {
             >
         </CustomTextInput>
         <TouchableOpacity style={{ alignItems: 'flex-end'}} onPress={() => handleSubmit()}>
-          <MaterialIcons name="navigation" size={30} color="#FFB370" style={{ width: 0,transform: [{ rotate: '90deg' }]}}/>
+          <MaterialIcons name="navigation" size={40} color="#FFB370" style={{ margin: '5%' ,transform: [{ rotate: '90deg' }]}}/>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -186,7 +188,3 @@ const styles = StyleSheet.create({
 });
 
 export default CreateReview;
-function useUserApi(): { getUserById: any; data: any; loading: any; error: any; } {
-  throw new Error('Function not implemented.');
-}
-
