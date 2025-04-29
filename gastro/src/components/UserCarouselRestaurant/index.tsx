@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import {View,Text,Image,StyleSheet,FlatList,TouchableOpacity,} from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import PhotoDish from '@/src/components/PhotoDish';
 
@@ -20,8 +20,71 @@ interface Restaurante {
 interface Props {
   variant: 'visited' | 'saved' | 'menu' | 'influencers';
   carouselProfileRestaurant?: boolean;
-  restaurantsExternal: Restaurante[];
+  restaurantsExternal?: Restaurante[];
 }
+
+const mockData: Record<Props['variant'], Restaurante[]> = {
+  visited: [
+    {
+      id: '1',
+      nome: 'Biskaia',
+      nota: 5,
+      avaliacoes: 123,
+      imagem: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=60',
+      visitado: true,
+    },
+    {
+      id: '2',
+      nome: 'Gelson Lanches',
+      nota: 3.8,
+      avaliacoes: 85,
+      imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
+      visitado: true,
+    },
+  {
+      id: '3',
+      nome: 'OutBack',
+      nota: null,
+      avaliacoes: null,
+      imagem: 'https://example.com/outback.jpg',
+      visitado: true,
+    },
+    {
+      id: '4',
+      nome: 'Petiskeira',
+      nota: null,
+      avaliacoes: null,
+      imagem: 'https://example.com/petiskeira.jpg',
+      visitado: true,
+    },
+    {
+      id: '5',
+      nome: 'Petiskeira', 
+      nota: null,
+      avaliacoes: null,
+      imagem: 'https://example.com/petiskeira.jpg',
+      visitado: true,
+    },
+  ],
+  saved: [
+    {
+      id: '3',
+      nome: 'OutBack',
+      nota: 4.7,
+      avaliacoes: 57,
+      imagem: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/75/8a/f4/mesas-sob-a-figueira.jpg?w=600&h=-1&s=1',
+    },
+    {
+      id: '4',
+      nome: 'Petiskeira',
+      nota: 4.6,
+      avaliacoes: 105,
+      imagem: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/1b/92/50/ambiente-de-l-unico.jpg?w=600&h=-1&s=1',
+    },
+  ],
+  menu: [],
+  influencers: [],
+};
 
 export default function UserCarouselRestaurant({ variant, carouselProfileRestaurant = false, restaurantsExternal }: Props) {
   const [selectedPins, setSelectedPins] = useState<string[]>([]);
@@ -33,7 +96,7 @@ export default function UserCarouselRestaurant({ variant, carouselProfileRestaur
   };
 
   const data = useMemo(() => {
-    let baseData = [...restaurantsExternal];
+    let baseData = restaurantsExternal?.length ? [...restaurantsExternal] : [...mockData[variant]];
 
     if (variant === 'visited' && carouselProfileRestaurant) {
       baseData.sort((a, b) => {
