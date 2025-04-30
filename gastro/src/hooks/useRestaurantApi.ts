@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { RestaurantDTO } from '../@types/DTO';
+import { CheckinDTO, RestaurantDTO, ReviewDTO } from '../@types/DTO';
 import { API_URL_ANDROID, API_URL_BACKEND } from '../constants/apiUrl';
 
 export const useRestaurantApi = () => {
@@ -7,7 +7,7 @@ export const useRestaurantApi = () => {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<RestaurantDTO | null>(null);
 
-  const getRestaurant = async (restaurantId: string): Promise<void> => {
+  const getRestaurantById = async (restaurantId: string): Promise<void> => {
     setLoading(true);
     setError(null);
 
@@ -72,5 +72,71 @@ export const useRestaurantApi = () => {
     }
   };
 
-  return { createRestaurant, getRestaurant, loading, error, data };
+  const createCheckin = async (data: CheckinDTO): Promise<void> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`${API_URL_ANDROID}/restaurants/${data.restaurant_id}/checkin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        console.log("Checkin criado:", responseData);
+        setData(responseData);
+      } else {
+        throw new Error(
+          responseData.error ||
+            responseData.message ||
+            `Falha ao criar checkin. Status: ${response.status}`,
+        );
+      }
+    } catch (err: any) {
+      console.error("Erro ao criar checkin:", err);
+      setError(err.message || "Erro desconhecido");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createReview = async (data: ReviewDTO, restaurantId: string): Promise<void> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`${API_URL_ANDROID}/restaurants/${restaurantId}/review`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        console.log("Review criada:", responseData);
+        setData(responseData);
+      } else {
+        throw new Error(
+          responseData.error ||
+            responseData.message ||
+            `Falha ao criar Review. Status: ${response.status}`,
+        );
+      }
+    } catch (err: any) {
+      console.error("Erro ao criar review:", err);
+      setError(err.message || "Erro desconhecido");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { createRestaurant, getRestaurantById, createCheckin, createReview, loading, error, data };
 };

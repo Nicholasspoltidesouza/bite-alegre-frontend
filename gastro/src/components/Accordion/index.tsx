@@ -7,17 +7,25 @@ interface AccordionProps {
   description: string;
   content: string;
   staticArrow: boolean;
-  children: React.ReactNode; 
+  children: React.ReactNode;
+  onPressAction?: () => void; 
 }
 
-const Accordion: React.FC<AccordionProps> = ({ title, description, content, staticArrow, children }) => {
+const Accordion: React.FC<AccordionProps> = ({ title, description, content, staticArrow, children, onPressAction}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleAccordion = () => setIsOpen(!isOpen);
 
+  const handleHeaderPress = () => {
+    if (onPressAction) {
+      return onPressAction();
+    } 
+    toggleAccordion();
+  };
+
   return (
     <View>
-      <TouchableOpacity style={styles.header} onPress={toggleAccordion}>
+      <TouchableOpacity style={styles.header} onPress={handleHeaderPress}>
         <View style={styles.leftItens}>
           <View style={styles.icon} >{children}</View>                  
           <Text style={styles.title}>{title}</Text>
