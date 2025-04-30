@@ -6,9 +6,12 @@ import Colors from '@/src/constants/Colors';
 
 export default function Profile() {
   return (
-    <ScrollView>
-      <Header isProfile={true} />
       <View style={styles.container}>
+    <ScrollView>
+      
+      <Header isProfile={true}/>
+  
+        
         <View style={styles.section}>
           <View style={styles.titleRow}>
             <Text style={styles.title}>Visitados</Text>
@@ -16,7 +19,8 @@ export default function Profile() {
               <Text style={styles.mostrarMais}>Mostrar mais</Text>
             </TouchableOpacity>
           </View>
-          <UserCarouselRestaurant variant="visited" restaurantsExternal={[]} />
+          <UserCarouselRestaurant variant="visited"/>
+          
         </View>
 
         <View style={styles.section}>
@@ -26,18 +30,19 @@ export default function Profile() {
               <Text style={styles.mostrarMais}>Mostrar mais</Text>
             </TouchableOpacity>
           </View>
-          <UserCarouselRestaurant variant="saved" restaurantsExternal={[]} />
+          <UserCarouselRestaurant variant="saved"  />
         </View>
-      </View>
+
     </ScrollView>
+      </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFDFC',
-    paddingTop: 24,
+    backgroundColor: Colors.background,
+    
   },
   section: {
     marginTop: 24,
@@ -50,6 +55,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   title: {
+    paddingLeft: 1,
     fontSize: 18,
     fontWeight: 'bold',
     color: Colors.orange.orangeBold,
