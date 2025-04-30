@@ -68,7 +68,7 @@ const Search = () => {
             <View>
               <SearchUsers name="Joao" nickname="jv" profilePhoto="" />
               <SearchUsers name="Valdir" nickname="John Doe" profilePhoto="" />
-              <SearchUsers name="Maria" nickname="littleStar" profilePhoto="bbbbb" />
+              <SearchUsers name="Maria" nickname="littleStar" profilePhoto="" />
             </View>
           )}
         </ScrollView>

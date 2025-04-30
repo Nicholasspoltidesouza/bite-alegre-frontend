@@ -1,8 +1,8 @@
 import { UserDTO } from '@/src/@types/DTO';
 import Button from '@/src/components/Button';
-import CustomTextInput from '@/src/components/CustomTextInput';
 import Dropdown from '@/src/components/Dropdown';
 import SignupHeader from '@/src/components/SignupHeader';
+import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { useCreateUser } from '@/src/hooks/useUserApi';
 import { useRouter } from "expo-router";
 import React, { useState } from 'react';

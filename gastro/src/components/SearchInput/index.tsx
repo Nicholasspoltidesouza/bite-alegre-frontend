@@ -1,7 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, TextInputProps, View } from 'react-native';
-import CustomTextInput from '../CustomTextInput';
+import CustomTextInput from '../TextFieldCadastroUsuario';
 
 interface SearchInputProps extends TextInputProps {
   value: string;
