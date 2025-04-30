@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Alert, SafeAreaView, ScrollView } from 'react-native';
-import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
+import { RestaurantDTO } from '@/src/@types/DTO';
+import { OperatingHoursDto } from '@/src/@types/OperatingHoursDto';
+import Button from '@/src/components/Button';
 import CustomTextInput from '@/src/components/CustomTextInput';
 import HoursSection from '@/src/components/HoursSection';
-import { OperatingHoursDto } from '@/src/@types/OperatingHoursDto';
 import SignupHeader from '@/src/components/SignupHeader';
+import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import { useRouter } from 'expo-router';
-import { RestaurantDTO, UserDTO } from '@/src/@types/DTO';
-import Button from '@/src/components/Button';
+import React, { useState } from 'react';
+import { Alert, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 const SignupRestaurant: React.FC = ({ navigation }: any) => {
   const [restaurantName, setRestaurantName] = useState<string>('');
@@ -24,7 +24,8 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
     { day: 'Terça', time: '11:00 – 14:00' },
   ]);
 
-  const { getRestaurant } = useRestaurantApi();
+  const { getRestaurantById } = useRestaurantApi();
+  const { createRestaurant } = useRestaurantApi();
   const router = useRouter();
 
   const handleAddOperatingHour = () => {
@@ -71,29 +72,29 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
   };
 
   const validateAveregePrice = (text: string): string | null => {
-    if(!text) return 'Preço médio é obrigatório';
+    if (!text) return 'Preço médio é obrigatório';
 
-    const number = parseFloat(text.replace(',','.'));
-      if(isNaN(number)) return 'Preço deve ser um número válido';
-      if(number <= 0) return 'Preço deve ser maior que zero';
+    const number = parseFloat(text.replace(',', '.'));
+    if (isNaN(number)) return 'Preço deve ser um número válido';
+    if (number <= 0) return 'Preço deve ser maior que zero';
 
-      return null;
+    return null;
   };
 
-  const isFormValid = 
-  restaurantName &&
-  email &&
-  address &&
-  averagePrice &&
-  password &&
-  phone &&
-  userType &&
-  !validateNameRestaurant(restaurantName) &&
-  !validateAddress(address) &&
-  !validateEmail(email) &&
-  !validateAveregePrice(averagePrice) &&
-  !validatePassword(password) &&
-  !validatePhone(phone)
+  const isFormValid =
+    restaurantName &&
+    email &&
+    address &&
+    averagePrice &&
+    password &&
+    phone &&
+    userType &&
+    !validateNameRestaurant(restaurantName) &&
+    !validateAddress(address) &&
+    !validateEmail(email) &&
+    !validateAveregePrice(averagePrice) &&
+    !validatePassword(password) &&
+    !validatePhone(phone)
 
   const handleSubmit = async () => {
     if (!restaurantName || !email || !password || !phone || !address || !averagePrice || !userType) {
@@ -116,8 +117,8 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
     }
 
     try {
-      const formatedUserType = 
-      userType === "Cadastro de Restaurante" ? "RESTAURANTE" : "USUARIO"
+      const formatedUserType =
+        userType === "Cadastro de Restaurante" ? "RESTAURANTE" : "USUARIO"
       const restaurantData: RestaurantDTO = {
         restaurantName,
         address,
@@ -145,10 +146,10 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-        <SignupHeader
-            userType={userType}
-            setUserType={setUserType}
-        />
+      <SignupHeader
+        userType={userType}
+        setUserType={setUserType}
+      />
       <ScrollView contentContainerStyle={styles.container}>
         <CustomTextInput
           value={restaurantName}
@@ -166,7 +167,7 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
           keyboardType="email-address"
           autoCapitalize="none"
         />
-         <CustomTextInput
+        <CustomTextInput
           value={email}
           onChangeText={setEmail}
           placeholder="Email"
@@ -183,7 +184,7 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
           validation={validatePassword}
           secureTextEntry
         />
-         <CustomTextInput
+        <CustomTextInput
           value={averagePrice}
           onChangeText={setAveragePrice}
           placeholder="Preço Médio"
@@ -215,8 +216,8 @@ const SignupRestaurant: React.FC = ({ navigation }: any) => {
         />
       </ScrollView>
       <View style={styles.buttonContainer}>
-            <Button title="Avançar" type="orange" onPress={handleSubmit} disabled={!isFormValid} />
-        </View>
+        <Button title="Avançar" type="orange" onPress={handleSubmit} disabled={!isFormValid} />
+      </View>
     </SafeAreaView>
   );
 };
