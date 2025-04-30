@@ -26,7 +26,7 @@ const SignupRestaurant = () => {
     { day: 'Feriados', time: '18:30 – 23:30' },
   ]);
 
-  const { getRestaurant } = useRestaurantApi();
+  const { getRestaurantById } = useRestaurantApi();
   const { createRestaurant } = useRestaurantApi();
   const router = useRouter();
 
