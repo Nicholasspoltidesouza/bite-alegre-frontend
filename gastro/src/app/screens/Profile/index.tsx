@@ -1,23 +1,60 @@
-
-import Colors from '@/src/constants/Colors';
+import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 
 export default function Profile() {
   return (
-    <View style={styles.container}>
-      <Text style={{ color: Colors.icon ,fontSize: 40 }}>
-        Tela de profile
-      </Text>
-    </View>
-  );
+  <ScrollView>
+      <View style={styles.container}>
+      
+        <View style={styles.section}>
+          <View style={styles.titleRow}>
+            <Text style={styles.title}>Visitados</Text>
+            <TouchableOpacity>
+              <Text style={styles.mostrarMais}>Mostrar mais</Text>
+            </TouchableOpacity>
+          </View>
+          <UserCarouselRestaurant variant="visited" restaurantsExternal={[]}/>
+        </View>
+  
+        <View style={styles.section}>
+          <View style={styles.titleRow}>
+            <Text style={styles.title}>Salvos</Text>
+            <TouchableOpacity>
+              <Text style={styles.mostrarMais}>Mostrar mais</Text>
+            </TouchableOpacity>
+          </View>
+          <UserCarouselRestaurant variant="saved" restaurantsExternal={[]}/>
+        </View>
+      </View>
+      </ScrollView>
+    );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.backgroundCustom,
+    backgroundColor: '#FFFDFC',
+    paddingTop: 200,
+  },
+  section: {
+    marginTop: 24, 
+  },
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
+    marginBottom: 8,
+    paddingHorizontal: 16,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FF9xw14B',
+  },
+  mostrarMais: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#FF914B',
   },
 });

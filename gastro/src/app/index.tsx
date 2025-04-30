@@ -8,11 +8,12 @@ const App: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Header />
+      <Header/>
       <View style={styles.buttons}>
         <Button title="Perfil Restaurante" onPress={() => router.push({ pathname: '/screens/restaurantProfile' })} type={'orange'} />
         <Button title="Cadastro Usuário" onPress={() => router.push({ pathname: '/screens/SignupUser' })} type={'orange'} />
         <Button title="Cadastro Restaurante" onPress={() => router.push({ pathname: '/screens/SignupRestaurant' })} type={'orange'} />
+        <Button title="Úsuario" onPress={() => router.push({ pathname: '/screens/Profile' })} type={'orange'} />
       </View>
     </View>
   );

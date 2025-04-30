@@ -2,6 +2,7 @@ import HeaderPerfilRestaurante from '@/src/components/HeaderPerfilRestaurante';
 import { View, StyleSheet, Text, SafeAreaView, ActivityIndicator, Dimensions, Modal, TouchableWithoutFeedback, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Accordion from '@/src/components/Accordion';
+
 import { FontAwesome, FontAwesome6, Foundation, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import Button from '@/src/components/Button';
@@ -143,8 +144,12 @@ const RestaurantProfile: React.FC = () => {
           </Modal>
         </View>
       </View>
+      
+
     </SafeAreaView>
   );
+
+  
 }
 
 const styles = StyleSheet.create({
