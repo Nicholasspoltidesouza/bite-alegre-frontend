@@ -8,6 +8,7 @@ interface UserDTO {
   gender: string | null;
   birthDate?: string;
   userType: string;
+  id?: string;
 }
 interface RestaurantDTO {
     profilePhoto?: string;
@@ -22,4 +23,16 @@ interface RestaurantDTO {
     userType: string;
 }
 
-export type { RestaurantDTO, UserDTO };
+interface CheckinDTO {
+  user_id: string;
+  restaurant_id: string;
+}
+
+interface ReviewDTO {
+  user_id: string;
+  restaurant_id: string
+  stars: number;
+  feedback?: string
+}
+
+export type { RestaurantDTO, UserDTO, CheckinDTO, ReviewDTO};

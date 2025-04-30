@@ -6,12 +6,10 @@ import React, { useEffect, useState } from "react";
 import * as Font from 'expo-font';
 
 export default function RootLayout() {
-
   const pathname = usePathname();
   const hiddenRoutes = ['/screens/SignupUser', '/screens/SignupRestaurant','/screens/SignupInterestsScreen'];
   const shouldHideTabBar = hiddenRoutes.includes(pathname);
 
-  
   const [fontsLoaded, setFontsLoaded] = useState(false);
   
   useEffect(() => {
@@ -27,6 +25,7 @@ export default function RootLayout() {
       tabBarActiveTintColor: '#FF914B', 
       tabBarInactiveTintColor: '#FF914B',
       headerShown: false,
+      tabBarHideOnKeyboard: true,
       tabBarStyle: {
         display: shouldHideTabBar ? 'none' : 'flex',
         height: 66,
@@ -141,6 +140,8 @@ export default function RootLayout() {
     <Tabs.Screen name="screens/restaurantProfile/index" options={{ href: null, tabBarShowLabel: false }} />
     <Tabs.Screen name="screens/SignupRestaurant/index" options={{ href: null, tabBarShowLabel: false }} />
     <Tabs.Screen name="screens/SignupUser/index" options={{ href: null, tabBarShowLabel: false }} />
+    <Tabs.Screen name="screens/CreateReview/index" options={{ href: null, tabBarShowLabel: false }} />
+    <Tabs.Screen name="screens/FilterScreen/index" options={{ href: null, tabBarShowLabel: false }} />
   </Tabs>
   )
 } 
