@@ -11,7 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SignupUser = () => {
   const router = useRouter();
-  const { userData } = useLocalSearchParams(); // Recebe os dados do usuário como parâmetro
+  const { userData } = useLocalSearchParams();
 
   const [name, setName] = useState<string>(userData ? JSON.parse(userData as string).name : '');
   const [nickname, setNickname] = useState<string>(userData ? JSON.parse(userData as string).nickname : '');
@@ -141,7 +141,6 @@ const SignupUser = () => {
       userType: formattedUserType,
     };
 
-    // Redireciona para a tela de interesses com os dados do usuário
     router.push({
       pathname: "/screens/SignupInterestsScreen",
       params: { userData: JSON.stringify(userData) },
