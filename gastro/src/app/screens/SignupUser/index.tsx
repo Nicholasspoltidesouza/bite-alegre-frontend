@@ -4,25 +4,29 @@ import Dropdown from '@/src/components/Dropdown';
 import SignupHeader from '@/src/components/SignupHeader';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { useCreateUser } from '@/src/hooks/useUserApi';
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import React, { useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SignupUser = () => {
-  const insets = useSafeAreaInsets();
-  const [name, setName] = useState<string>('');
-  const [nickname, setNickname] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
-  const [gender, setGender] = useState<string | null>(null);
-  const [birthDate, setBirthDate] = useState('');
-  const [userType, setUserType] = useState<string | null>("Cadastro de Usuário");
+  const router = useRouter();
+  const { userData } = useLocalSearchParams(); // Recebe os dados do usuário como parâmetro
+
+  const [name, setName] = useState<string>(userData ? JSON.parse(userData as string).name : '');
+  const [nickname, setNickname] = useState<string>(userData ? JSON.parse(userData as string).nickname : '');
+  const [email, setEmail] = useState<string>(userData ? JSON.parse(userData as string).email : '');
+  const [password, setPassword] = useState<string>(userData ? JSON.parse(userData as string).password : '');
+  const [phone, setPhone] = useState<string>(userData ? JSON.parse(userData as string).phone : '');
+  const [gender, setGender] = useState<string | null>(userData ? JSON.parse(userData as string).gender : null);
+  const [birthDate, setBirthDate] = useState<string>(userData ? JSON.parse(userData as string).birthDate : '');
+  const [userType, setUserType] = useState<string | null>(userData ? JSON.parse(userData as string).userType : "Cadastro de Usuário");
+
   const [birthDateTouched, setBirthDateTouched] = useState<boolean>(false);
 
   const { createUser } = useCreateUser();
-  const router = useRouter();
+
+  const insets = useSafeAreaInsets();
 
   const validateName = (text: string): string | null => {
     if (text.length < 2) return "Nome deve ter no mínimo 2 caracteres";
@@ -90,7 +94,7 @@ const SignupUser = () => {
     !validateBirthDate(birthDate);
 
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (
       !name ||
       !nickname ||
@@ -119,35 +123,29 @@ const SignupUser = () => {
       return;
     }
 
-    try {
-      const [day, month, year] = birthDate.split("/");
-      const isoBirthDate = `${year}-${month}-${day}T00:00:00Z`;
-      const formattedGender =
-        gender === "PREFIRO NÃO INFORMAR" ? "NAO_QUERO_INFORMAR" : gender;
-      const formattedUserType =
-        userType === "Cadastro de Restaurante" ? "RESTAURANTE" : "USUARIO";
+    const [day, month, year] = birthDate.split("/");
+    const isoBirthDate = `${year}-${month}-${day}T00:00:00Z`;
+    const formattedGender =
+      gender === "PREFIRO NÃO INFORMAR" ? "NAO_QUERO_INFORMAR" : gender;
+    const formattedUserType =
+      userType === "Cadastro de Restaurante" ? "RESTAURANTE" : "USUARIO";
 
-      const userData: UserDTO = {
-        name,
-        nickname,
-        email,
-        password,
-        phone,
-        gender: formattedGender,
-        birthDate: isoBirthDate,
-        userType: formattedUserType,
-      };
+    const userData = {
+      name,
+      nickname,
+      email,
+      password,
+      phone,
+      gender: formattedGender,
+      birthDate: isoBirthDate,
+      userType: formattedUserType,
+    };
 
-      await createUser(userData);
-      Alert.alert("Sucesso", "Usuário cadastrado com sucesso!");
-      router.push({ pathname: "/screens/SignupInterestsScreen", params: { screenTitle: "Conte-nos seus interesses", backRoute: "/screens/SignupUser"} });
-    } catch (err) {
-      console.error("Submit Error:", err);
-      Alert.alert(
-        "Erro",
-        err instanceof Error ? err.message : "Ocorreu um erro inesperado."
-      );
-    }
+    // Redireciona para a tela de interesses com os dados do usuário
+    router.push({
+      pathname: "/screens/SignupInterestsScreen",
+      params: { userData: JSON.stringify(userData) },
+    });
   };
 
   return (
@@ -217,7 +215,7 @@ const SignupUser = () => {
               onChangeText={(text) => {
                 const formatted = text
                   .replace(/\D/g, "")
-                  .replace(/^(\d{2})(\d)/g, "($1) $2")
+                  .replace(/^(\d{2})(\d)/, "($1) $2")
                   .replace(/(\d{5})(\d)/, "$1-$2")
                   .slice(0, 15);
                 setPhone(formatted);

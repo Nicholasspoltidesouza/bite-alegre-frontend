@@ -1,11 +1,12 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams, useRouter } from "expo-router";
-import React from 'react';
-import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { ActivityIndicator, Alert, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
 import Button from '../../../components/Button';
 import Tag from '../../../components/Tag';
 import { API_URL_ANDROID, API_URL_BACKEND } from '../../../constants/apiUrl';
 import useFetchTags from '../../../hooks/useFetchTags';
+import { useCreateUser } from '../../../hooks/useUserApi';
 
 interface SignupInterestsProps {
   backButtonRouter: () => void;
@@ -14,14 +15,47 @@ interface SignupInterestsProps {
 const screenWidth = Dimensions.get('window').width;
 
 const SignupInterests: React.FC = () => {
-  const { screenTitle, backRoute } = useLocalSearchParams();
+  const { userData } = useLocalSearchParams();
+  const router = useRouter();
+  const { createUser, loading } = useCreateUser();
 
-  const { tags, loading, error }: { tags: { id: string; name: string; type: string }[]; loading: boolean; error: string | null } = useFetchTags(`${API_URL_ANDROID}/tags`);
+  const parsedUserData = userData ? JSON.parse(userData as string) : null;
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const { tags, loading: tagsLoading, error } = useFetchTags(`${API_URL_ANDROID}/tags`);
+
+  const toggleTagSelection = (tagId: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId]
+    );
+  };
+
+  const handleConclude = async () => {
+    if (selectedTags.length === 0) {
+      Alert.alert("Erro", "Por favor, selecione pelo menos uma tag.");
+      return;
+    }
+
+    try {
+      const payload = {
+        ...parsedUserData,
+        tagIds: selectedTags,
+      };
+
+      await createUser(payload);
+
+      console.log("Usuário criado:", payload);
+
+      Alert.alert("Sucesso", "Usuário cadastrado com sucesso!");
+      router.push("/screens/Profile");
+    } catch (err) {
+      Alert.alert("Erro", "Falha ao cadastrar usuário.");
+    }
+  };
 
   const filterAndChunk = (type: string) => {
     const filtered = tags.filter(tag => tag.type === type);
     const itemsPerRow = screenWidth >= 768 ? 4 : 3;
-    
     const result: { id: string; name: string; type: string }[][] = [];
     for (let i = 0; i < filtered.length; i += itemsPerRow) {
       result.push(filtered.slice(i, i + itemsPerRow));
@@ -33,7 +67,7 @@ const SignupInterests: React.FC = () => {
   const chunkedCategories = filterAndChunk('CATEGORIA');
   const chunkedOcasion = filterAndChunk('OCASIAO');
 
-  if (loading) {
+  if (tagsLoading) {
     return (
       <SafeAreaView style={styles.safeArea}>
         <ActivityIndicator size="large" color="#FF914B" style={{ marginTop: 50 }} />
@@ -53,12 +87,18 @@ const SignupInterests: React.FC = () => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         <View style={styles.containerTitle}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.push({ pathname: backRoute as any })}>
-            <MaterialIcons name="keyboard-arrow-left" size={35} color="#FF914B" />
-          </TouchableOpacity>
-          <Text style={styles.titleText}>
-            { screenTitle || 'Conte-nos seus interesses' }
-          </Text>
+          <TouchableOpacity
+  style={styles.backButton}
+  onPress={() => {
+    router.push({
+      pathname: "/screens/SignupUser",
+      params: { userData: JSON.stringify(parsedUserData) }, 
+    });
+  }}
+>
+  <MaterialIcons name="keyboard-arrow-left" size={35} color="#FF914B" />
+</TouchableOpacity>
+          <Text style={styles.titleText}>Conte-nos seus interesses</Text>
         </View>
 
         <View style={styles.interestsContainer}>
@@ -66,15 +106,13 @@ const SignupInterests: React.FC = () => {
           {chunkedLocals.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
               {row.map(tag => (
-                <View key={tag.id} style={styles.tagWrapper}>
-                  <Tag title={tag.name} />
-                </View>
+                <Tag
+                  key={tag.id}
+                  title={tag.name}
+                  isSelected={selectedTags.includes(tag.id)}
+                  onPress={() => toggleTagSelection(tag.id)}
+                />
               ))}
-              {row.length < (screenWidth >= 768 ? 4 : 3) && 
-                Array(screenWidth >= 768 ? 4 - row.length : 3 - row.length)
-                  .fill(null)
-                  .map((_, i) => <View key={`empty-${i}`} style={styles.emptyTag} />)
-              }
             </View>
           ))}
         </View>
@@ -84,16 +122,13 @@ const SignupInterests: React.FC = () => {
           {chunkedCategories.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
               {row.map(tag => (
-                <View key={tag.id} style={styles.tagWrapper}>
-                  <Tag title={tag.name} />
-                </View>
+                <Tag
+                  key={tag.id}
+                  title={tag.name}
+                  isSelected={selectedTags.includes(tag.id)}
+                  onPress={() => toggleTagSelection(tag.id)}
+                />
               ))}
-              {/* Preencher espaços vazios para manter o layout */}
-              {row.length < (screenWidth >= 768 ? 4 : 3) && 
-                Array(screenWidth >= 768 ? 4 - row.length : 3 - row.length)
-                  .fill(null)
-                  .map((_, i) => <View key={`empty-${i}`} style={styles.emptyTag} />)
-              }
             </View>
           ))}
         </View>
@@ -103,22 +138,24 @@ const SignupInterests: React.FC = () => {
           {chunkedOcasion.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
               {row.map(tag => (
-                <View key={tag.id} style={styles.tagWrapper}>
-                  <Tag title={tag.name} />
-                </View>
+                <Tag
+                  key={tag.id}
+                  title={tag.name}
+                  isSelected={selectedTags.includes(tag.id)}
+                  onPress={() => toggleTagSelection(tag.id)}
+                />
               ))}
-              {/* Preencher espaços vazios para manter o layout */}
-              {row.length < (screenWidth >= 768 ? 4 : 3) && 
-                Array(screenWidth >= 768 ? 4 - row.length : 3 - row.length)
-                  .fill(null)
-                  .map((_, i) => <View key={`empty-${i}`} style={styles.emptyTag} />)
-              }
             </View>
           ))}
         </View>
 
         <View style={styles.buttonContainer}>
-          <Button title='Concluir' onPress={() => console.log('Botão pressionado')} type={'orange'} />
+          <Button
+            title={loading ? "Cadastrando..." : "Concluir"}
+            onPress={handleConclude}
+            type="orange"
+            disabled={loading || selectedTags.length === 0} 
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
