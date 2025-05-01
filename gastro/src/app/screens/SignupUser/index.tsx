@@ -174,7 +174,7 @@ const SignupUser = () => {
               validation={validateName}
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={nickname}
@@ -184,7 +184,7 @@ const SignupUser = () => {
               validation={validateNickname}
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={email}
@@ -196,7 +196,7 @@ const SignupUser = () => {
               autoCapitalize="none"
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={password}
@@ -207,7 +207,7 @@ const SignupUser = () => {
               secureTextEntry
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={phone}

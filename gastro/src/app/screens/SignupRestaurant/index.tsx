@@ -152,7 +152,7 @@ const SignupRestaurant = () => {
 
       await createRestaurant(restaurantData);
       Alert.alert('Sucesso', 'Restaurante cadastrado com sucesso!');
-      router.push({ pathname: "/screens/SignupInterestsScreen", params: { screenTitle: "Selecione as categorias do seu restaurante", backRoute: "/screens/SignupRestaurant"} });
+      router.push({ pathname: "/screens/SignupInterestsScreen", params: { screenTitle: "Selecione as categorias do seu restaurante", backRoute: "/screens/SignupRestaurant" } });
     } catch (err) {
       console.error('Submit Error:', err);
       Alert.alert('Erro', err instanceof Error ? err.message : 'Ocorreu um erro inesperado');
@@ -193,7 +193,7 @@ const SignupRestaurant = () => {
               validation={validateNameRestaurant}
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={description}
@@ -206,7 +206,7 @@ const SignupRestaurant = () => {
               textAlignVertical="top"
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={address}
@@ -217,7 +217,7 @@ const SignupRestaurant = () => {
               autoCapitalize="none"
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={email}
@@ -229,7 +229,7 @@ const SignupRestaurant = () => {
               autoCapitalize="none"
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={password}
@@ -240,7 +240,7 @@ const SignupRestaurant = () => {
               secureTextEntry
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={averagePrice}
@@ -252,11 +252,11 @@ const SignupRestaurant = () => {
               autoCapitalize="none"
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={phone}
-              onChangeText={(text) => {
+              onChangeText={(text: string) => {
                 const formatted = text
                   .replace(/\D/g, '')
                   .replace(/^(\d{2})(\d)/g, '($1) $2')
@@ -271,7 +271,7 @@ const SignupRestaurant = () => {
               maxLength={15}
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <HoursSection
               hours={operatingHours}
@@ -279,7 +279,7 @@ const SignupRestaurant = () => {
               onPressItem={handleEditOperatingHour}
             />
           </View>
-          
+
           <View style={styles.buttonContainer}>
             <Button title="Avançar" type="orange" onPress={handleSubmit} disabled={!isFormValid} />
           </View>
