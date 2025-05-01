@@ -1,16 +1,16 @@
+import { ReviewDTO } from '@/src/@types/DTO';
+import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
+import Colors from '@/src/constants/Colors';
+import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
+import { useCreateUser } from '@/src/hooks/useUserApi';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { router } from "expo-router";
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions, ActivityIndicator, Image, Alert } from 'react-native';
-import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
-import { ReviewDTO } from '@/src/@types/DTO';
-import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
-import { useCreateUser } from '@/src/hooks/useUserApi';
-import Colors from '@/src/constants/Colors';
+import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const CreateReview: React.FC = () => {
   const { createReview } = useRestaurantApi();
-  const { getUserById, loading, error, data: userData} = useCreateUser();
+  const { getUserById, loading, error, data: userData } = useCreateUser();
 
   const [description, setDescription] = useState<string>('');
   const [nota, setNota] = useState(0);
@@ -58,8 +58,8 @@ const CreateReview: React.FC = () => {
     return estrelas;
   };
 
-  const handleSubmit = async () =>  {
-    try {      
+  const handleSubmit = async () => {
+    try {
       const data: ReviewDTO = {
         stars: nota,
         feedback: description,
@@ -73,7 +73,7 @@ const CreateReview: React.FC = () => {
     } catch (err) {
       console.error('Submit Error:', err);
       Alert.alert('Erro', err instanceof Error ? err.message : 'Ocorreu um erro inesperado');
-    }    
+    }
   }
 
   return (
@@ -88,32 +88,32 @@ const CreateReview: React.FC = () => {
           </Text>
         </View>
         <View style={styles.textUser}>
-            <View style={styles.photo}>
-              {userData?.profilePhoto ? (
-                  <Image source={{ uri: userData.profilePhoto }} />
-                ) : (
-                  <MaterialIcons name="person" size={60} color="#fcd5b5" />
-                )}               
-            </View>
-            <View style={styles.textContainer}>
-                <Text style={styles.textUserName}>{userData?.name}</Text>                
-                <Text>As avaliações são públicas e podem ser vistas tanto pelo restaurante, quanto por outros usuários.</Text>
-            </View>
+          <View style={styles.photo}>
+            {userData?.profilePhoto ? (
+              <Image source={{ uri: userData.profilePhoto }} />
+            ) : (
+              <MaterialIcons name="person" size={60} color="#fcd5b5" />
+            )}
+          </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.textUserName}>{userData?.name}</Text>
+            <Text>As avaliações são públicas e podem ser vistas tanto pelo restaurante, quanto por outros usuários.</Text>
+          </View>
         </View>
         <View style={styles.starsContainer}>
           {renderEstrelas()}
         </View>
         <CustomTextInput
-            value={description}
-            onChangeText={setDescription} 
-            placeholder={'Descreva sua experiência (opcional)'}
-            multiline={true}
-            style={{marginHorizontal: '5%', height: imputHeight > 50 ? imputHeight : 50}}
-            onContentSizeChange={(e) => setImputHeight(e.nativeEvent.contentSize.height)}
-            >
+          value={description}
+          onChangeText={setDescription}
+          placeholder={'Descreva sua experiência (opcional)'}
+          multiline={true}
+          style={{ marginHorizontal: '5%', height: imputHeight > 50 ? imputHeight : 50 }}
+          onContentSizeChange={(e) => setImputHeight(e.nativeEvent.contentSize.height)}
+        >
         </CustomTextInput>
-        <TouchableOpacity style={{ alignItems: 'flex-end'}} onPress={() => handleSubmit()}>
-          <MaterialIcons name="navigation" size={40} color="#FFB370" style={{ margin: '5%' ,transform: [{ rotate: '90deg' }]}}/>
+        <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={() => handleSubmit()}>
+          <MaterialIcons name="navigation" size={40} color="#FFB370" style={{ margin: '5%', transform: [{ rotate: '90deg' }] }} />
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -143,14 +143,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: '10%',
   },
-  textUserName:{
+  textUserName: {
     fontFamily: 'Poppins-Regular',
     fontSize: 20,
     fontWeight: 'bold',
     color: Colors.text.black,
     marginBottom: 5
   },
-  textUser:{
+  textUser: {
     flexDirection: 'row',
     alignItems: 'center',
   },
