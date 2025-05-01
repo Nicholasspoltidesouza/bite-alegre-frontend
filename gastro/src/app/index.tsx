@@ -8,7 +8,7 @@ const App: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Header/>
+      <Header name={''} nickName={''}/>
       <View style={styles.buttons}>
         <Button title="Profile" onPress={() => router.push({ pathname: '/screens/Profile' })} type={'orange'} />
         <Button title="Perfil Restaurante" onPress={() => router.push({ pathname: '/screens/restaurantProfile' })} type={'orange'} />

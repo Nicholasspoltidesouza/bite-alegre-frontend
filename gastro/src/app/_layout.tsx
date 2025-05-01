@@ -141,6 +141,7 @@ export default function RootLayout() {
     <Tabs.Screen name="screens/restaurantProfile/index" options={{ href: null, tabBarShowLabel: false }} />
     <Tabs.Screen name="screens/SignupRestaurant/index" options={{ href: null, tabBarShowLabel: false }} />
     <Tabs.Screen name="screens/SignupUser/index" options={{ href: null, tabBarShowLabel: false }} />
+    <Tabs.Screen name="screens/Feed/index" options={{ href: null, tabBarShowLabel: false }} />
   </Tabs>
   )
 } 
