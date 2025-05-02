@@ -104,16 +104,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   rouletteCard: {
+    width: '100%',
+    height: 180,
     borderRadius: 20,
     shadowColor: '#000',
     shadowOffset: { width: 2, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
-  },
-  roulleteIcon: {
-    width: 30,
-    height: 30,
   },
   
   title: {
