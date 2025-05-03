@@ -337,7 +337,7 @@ export default function UserCarouselRestaurant({
           <View style={styles.avaliacaoRow}>
             <AntDesign name="star" size={12} color="#FF914B" />
             <Text style={styles.nota}> {item.averagePrice?.toFixed(1)}</Text>
-            <Text style={styles.avaliacoes}> ({item.rate ?? 0} avaliações)</Text>
+            <Text style={styles.avaliacoes}> (0 avaliações)</Text>
           </View>
         )}
       </TouchableOpacity>
