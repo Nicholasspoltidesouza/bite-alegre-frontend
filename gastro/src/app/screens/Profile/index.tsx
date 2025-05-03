@@ -41,9 +41,9 @@ export default function Profile() {
   function mapCheckinToRestaurant(checkin: CheckinDTO): RestaurantDTO {
     return {
       id: checkin.restaurant_id ?? "",
-      profilePhoto: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/43/de/6d/outback-steakhouse.jpg?w=900&h=500&s=1',
+      profilePhoto: checkin.restaurantProfilePhoto,
       address: '',
-      name: 'OutBack',
+      name: checkin.restaurantName,
       description: '',
       email: '',
       password: '',
@@ -54,12 +54,13 @@ export default function Profile() {
   }
 
   function mapRestaurantToReview(review: ReviewDTO): RestaurantDTO {
+    console.log('REVIEW', review)
     return {
       id: review.restaurant_id ?? "",
       stars: review.stars ?? 0,
-      profilePhoto: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/43/de/6d/outback-steakhouse.jpg?w=900&h=500&s=1',     
+      profilePhoto: review.restaurantProfilePhoto,     
       address: '',
-      name: 'Resutaurante',
+      name: review.restaurantName,
       description: '',
       email: '',
       password: '',
@@ -89,27 +90,25 @@ export default function Profile() {
       <View style={styles.container}>
     <ScrollView>
       
-      <Header isProfile={true} name={userData?.name ?? '-'} nickName={userData?.nickname ?? '-' } />
-        
-        <View style={styles.section}>
-          <View style={styles.titleRow}>
-            <Text style={styles.title}>Visitados</Text>
-            <TouchableOpacity>
-              <Text style={styles.mostrarMais}>Mostrar mais</Text>
-            </TouchableOpacity>            
-          </View>
-          <UserCarouselRestaurant variant={'visited'} carouselProfileRestaurant={true} restaurantsExternal={visitedRestaurants ?? []}/>
-        </View>
+      <Header isProfile={true} name={userData?.name ?? '-'} nickName={userData?.nickname ?? '-' } />       
 
-        <View style={styles.section}>
-          <View style={styles.titleRow}>
-            <Text style={styles.title}>Salvos</Text>
-            <TouchableOpacity>
-              <Text style={styles.mostrarMais}>Mostrar mais</Text>
-            </TouchableOpacity>
-          </View>
-          <UserCarouselRestaurant variant={'visited'} restaurantsExternal={[]}/>
+      <View style={styles.titleRow}>
+        <Text style={styles.title}>Visitados</Text>
+        <TouchableOpacity>
+          <Text style={styles.mostrarMais}>Mostrar mais</Text>
+        </TouchableOpacity>            
+      </View>          
+
+        <UserCarouselRestaurant variant={'visited'} carouselProfileRestaurant={true} restaurantsExternal={visitedRestaurants ?? []}/>
+
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>Salvos</Text>
+          <TouchableOpacity>
+            <Text style={styles.mostrarMais}>Mostrar mais</Text>
+          </TouchableOpacity>
         </View>
+        <UserCarouselRestaurant variant={'visited'} restaurantsExternal={[]}/>
+
 
     </ScrollView>
       </View>
@@ -122,10 +121,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     
   },
-  section: {
-    marginTop: 24,
-  },
   titleRow: {
+    marginTop: 24,
+    marginHorizontal: '3%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
