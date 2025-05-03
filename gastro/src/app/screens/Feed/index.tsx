@@ -1,53 +1,28 @@
-import React, { useRef } from 'react';
-import {View,StyleSheet,TextInput,TouchableOpacity,ScrollView,Image,Text,Animated,NativeSyntheticEvent,NativeScrollEvent, SafeAreaView} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { View, StyleSheet,TouchableOpacity, ScrollView, Image,Text, SafeAreaView, Pressable } from 'react-native';
 import Header from '@/src/components/Header';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import Colors from '@/src/constants/Colors';
+import SearchInput from '@/src/components/SearchInput';
+import { router } from 'expo-router';
 
 export default function TextFieldWithFilter() {
-  const fadeAnim = useRef(new Animated.Value(1)).current;
-  const isHidden = useRef(false);
-
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const yOffset = event.nativeEvent.contentOffset.y;
-
-    if (yOffset > 50 && !isHidden.current) {
-      // fade out
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-      isHidden.current = true;
-    } else if (yOffset <= 50 && isHidden.current) {
-      // fade in
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-      isHidden.current = false;
-    }
-  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView onScroll={handleScroll} scrollEventThrottle={16}>
+      <ScrollView >
           <Header name={'Isabella'} nickName={''} />
-            <View style={styles.inputWrapper}>
-              <TextInput
-                placeholder="Pesquisar"
-                placeholderTextColor="#FF914B"
-                style={styles.input}
-              />              
-              <TouchableOpacity style={styles.iconButton}>
-                <Ionicons name="options" size={20} color="#FF914B" />
-              </TouchableOpacity>
+            <View style={{ marginHorizontal: '3%' }}>              
+              <Pressable  onPress={() => router.push({ pathname: "/screens/Search" })}>
+                <SearchInput   
+                  value={''}
+                  editable={false}
+                  onChangeText={() => {}}/>
+              </Pressable >
             </View>
 
           {/*Banner*/}
-          <Animated.View style={[styles.rouletteCardContainer, { opacity: fadeAnim },{height:fadeAnim.interpolate({inputRange:[0,1],outputRange:[0,200]})}]}>
+          <View style={[styles.rouletteCardContainer]}>
             <TouchableOpacity onPress={() => console.log('Card pressionado')}>
               <Image
                 source={require('@/assets/images/card-roulette.png')}
@@ -55,7 +30,7 @@ export default function TextFieldWithFilter() {
                 resizeMode="contain"
               />
             </TouchableOpacity>
-          </Animated.View>
+          </View>
 
           <Text style={styles.title}>Em alta com nossos influencers</Text>
           <UserCarouselRestaurant variant="influencers" />
@@ -102,19 +77,20 @@ const styles = StyleSheet.create({
   },
   rouletteCardContainer: {
     marginTop: 20,
+    marginHorizontal: '3%'
   },
   rouletteCard: {
     width: '100%',
     height: 180,
     borderRadius: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 2, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.06,
+    shadowRadius: 30,
+    elevation: 10,
+  },  
   title: {
+    fontFamily:'Poppins-regular',
     fontSize: 18,
     fontWeight: 'bold',
     color: Colors.orange.orangeBold,
