@@ -58,7 +58,7 @@ const Search = () => {
             <SearchRestaurants
               name={restaurant.name}
               averagePrice={restaurant.averagePrice}
-              note={restaurant.averagePrice}
+              note={4.8}
               location={restaurant.address}
             />
           ))}
