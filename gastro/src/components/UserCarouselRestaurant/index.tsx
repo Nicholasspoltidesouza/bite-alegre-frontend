@@ -293,7 +293,7 @@ export default function UserCarouselRestaurant({
     return (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => router.push({ pathname:'/screens/restaurantProfile'})}
+        onPress={() => router.push({ pathname:'/screens/restaurantProfile'})} //TALVEZ TENHA QUE MUDAR !
         activeOpacity={0.8}
       >
         <View style={styles.imageWrapper}>
