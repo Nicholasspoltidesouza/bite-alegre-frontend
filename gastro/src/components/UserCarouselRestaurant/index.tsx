@@ -4,6 +4,7 @@ import { AntDesign } from '@expo/vector-icons';
 import PhotoDish from '@/src/components/PhotoDish';
 import Colors from '@/src/constants/Colors';
 import { RestaurantDTO } from '@/src/@types/DTO';
+import { router } from 'expo-router';
 
 const CARD_WIDTH = 153;
 const CARD_HEIGHT = 156;
@@ -281,7 +282,7 @@ export default function UserCarouselRestaurant({
     return (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => console.log(`Clicou em ${item.name}`)}
+        onPress={() => router.push({ pathname:'/screens/restaurantProfile'})} //TALVEZ TENHA QUE MUDAR !
         activeOpacity={0.8}
       >
         <View style={styles.imageWrapper}>

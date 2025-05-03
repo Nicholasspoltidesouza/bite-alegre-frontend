@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { UserDTO } from "../@types/DTO";
-import { API_URL_ANDROID, API_URL_BACKEND } from "../constants/apiUrl";
+import { useState } from 'react';
+import { UserDTO } from '../@types/DTO';
+import { API_URL_BACKEND } from '../constants/apiUrl';
 
 export const useCreateUser = () => {
   const [loading, setLoading] = useState(false);
@@ -13,9 +13,9 @@ export const useCreateUser = () => {
 
     try {
       const response = await fetch(`${API_URL_BACKEND}/users`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(userData),
       });
@@ -23,7 +23,7 @@ export const useCreateUser = () => {
       const responseData = await response.json();
 
       if (response.ok) {
-        console.log("Usuário criado:", responseData);
+        console.log('Usuário criado:', responseData);
         setData(responseData);
       } else {
         throw new Error(
@@ -33,8 +33,8 @@ export const useCreateUser = () => {
         );
       }
     } catch (err: any) {
-      console.error("Erro ao criar usuário:", err);
-      setError(err.message || "Erro desconhecido");
+      console.error('Erro ao criar usuário:', err);
+      setError(err.message || 'Erro desconhecido');
     } finally {
       setLoading(false);
     }
@@ -43,7 +43,7 @@ export const useCreateUser = () => {
   const getUserById = async (userId: string): Promise<void> => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(
         `${API_URL_BACKEND}/users/${userId}`,
@@ -63,7 +63,7 @@ export const useCreateUser = () => {
         throw new Error(
           responseData.error ||
             responseData.message ||
-            `Falha ao buscar usuário. Status: ${response.status}`
+            `Falha ao buscar usuário. Status: ${response.status}`,
         );
       }
     } catch (err: any) {

@@ -1,10 +1,10 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from "expo-router";
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
+import { ActivityIndicator, Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Button from '../../../components/Button';
 import Tag from '../../../components/Tag';
-import { API_URL_ANDROID, API_URL_BACKEND } from '../../../constants/apiUrl';
+import { API_URL_BACKEND } from '../../../constants/apiUrl';
 import useFetchTags from '../../../hooks/useFetchTags';
 
 interface SignupInterestsProps {
@@ -16,12 +16,12 @@ const screenWidth = Dimensions.get('window').width;
 const SignupInterests: React.FC = () => {
   const { screenTitle, backRoute } = useLocalSearchParams();
 
-  const { tags, loading, error }: { tags: { id: string; name: string; type: string }[]; loading: boolean; error: string | null } = useFetchTags(`${API_URL_ANDROID}/tags`);
+  const { tags, loading, error }: { tags: { id: string; name: string; type: string }[]; loading: boolean; error: string | null } = useFetchTags(`${API_URL_BACKEND}/tags`);
 
   const filterAndChunk = (type: string) => {
     const filtered = tags.filter(tag => tag.type === type);
     const itemsPerRow = screenWidth >= 768 ? 4 : 3;
-    
+
     const result: { id: string; name: string; type: string }[][] = [];
     for (let i = 0; i < filtered.length; i += itemsPerRow) {
       result.push(filtered.slice(i, i + itemsPerRow));
@@ -57,7 +57,7 @@ const SignupInterests: React.FC = () => {
             <MaterialIcons name="keyboard-arrow-left" size={35} color="#FF914B" />
           </TouchableOpacity>
           <Text style={styles.titleText}>
-            { screenTitle || 'Conte-nos seus interesses' }
+            {screenTitle || 'Conte-nos seus interesses'}
           </Text>
         </View>
 
@@ -70,7 +70,7 @@ const SignupInterests: React.FC = () => {
                   <Tag title={tag.name} />
                 </View>
               ))}
-              {row.length < (screenWidth >= 768 ? 4 : 3) && 
+              {row.length < (screenWidth >= 768 ? 4 : 3) &&
                 Array(screenWidth >= 768 ? 4 - row.length : 3 - row.length)
                   .fill(null)
                   .map((_, i) => <View key={`empty-${i}`} style={styles.emptyTag} />)
@@ -89,7 +89,7 @@ const SignupInterests: React.FC = () => {
                 </View>
               ))}
               {/* Preencher espaços vazios para manter o layout */}
-              {row.length < (screenWidth >= 768 ? 4 : 3) && 
+              {row.length < (screenWidth >= 768 ? 4 : 3) &&
                 Array(screenWidth >= 768 ? 4 - row.length : 3 - row.length)
                   .fill(null)
                   .map((_, i) => <View key={`empty-${i}`} style={styles.emptyTag} />)
@@ -108,7 +108,7 @@ const SignupInterests: React.FC = () => {
                 </View>
               ))}
               {/* Preencher espaços vazios para manter o layout */}
-              {row.length < (screenWidth >= 768 ? 4 : 3) && 
+              {row.length < (screenWidth >= 768 ? 4 : 3) &&
                 Array(screenWidth >= 768 ? 4 - row.length : 3 - row.length)
                   .fill(null)
                   .map((_, i) => <View key={`empty-${i}`} style={styles.emptyTag} />)

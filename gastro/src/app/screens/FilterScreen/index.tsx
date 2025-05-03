@@ -1,23 +1,23 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  SafeAreaView,
-  StatusBar,
-  Modal,
-  TextInput,
-  ActivityIndicator,
-} from "react-native";
-import { Feather, FontAwesome6 } from "@expo/vector-icons";
-import { router } from "expo-router";
 import Button from "@/src/components/Button";
 import Tag from "@/src/components/Tag";
 import ToggleSwitch from "@/src/components/ToggleSwitch";
+import { API_URL_BACKEND } from "@/src/constants/apiUrl";
 import useFetchTags from "@/src/hooks/useFetchTags";
-import { API_URL_ANDROID } from "@/src/constants/apiUrl";
+import { Feather, FontAwesome6 } from "@expo/vector-icons";
+import { router } from "expo-router";
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  Modal,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface FilterOptions {
   price: string;
@@ -48,7 +48,7 @@ const FilterScreen: React.FC = () => {
     loading: tagsLoading,
     error: tagsError,
   } = useFetchTags(
-    `${API_URL_ANDROID}/tags`
+    `${API_URL_BACKEND}/tags`
   );
 
   // Preço
