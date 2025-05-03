@@ -12,7 +12,7 @@ export const useCreateUser = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL_ANDROID}/users`, {
+      const response = await fetch(`${API_URL_BACKEND}/users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,7 +46,7 @@ export const useCreateUser = () => {
     
     try {
       const response = await fetch(
-        `${API_URL_ANDROID}/users/${userId}`,
+        `${API_URL_BACKEND}/users/${userId}`,
         {
           method: 'GET',
           headers: {

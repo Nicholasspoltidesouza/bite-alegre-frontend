@@ -9,8 +9,11 @@ interface UserDTO {
   birthDate?: string;
   userType: string;
   id?: string;
+  reviews?: ReviewDTO[];
+  checkinsWithoutReview?: CheckinDTO[]; 
 }
 interface RestaurantDTO {
+    id?: string;
     profilePhoto?: string;
     bannerPhoto?: string;
     address: string;
@@ -20,12 +23,14 @@ interface RestaurantDTO {
     password: string;
     averagePrice: number;
     phone: string;
-    userType: string;
+    userType: string;   
+    stars?: number;
 }
 
 interface CheckinDTO {
   user_id: string;
   restaurant_id: string;
+  profilePhoto?: string
 }
 
 interface ReviewDTO {
@@ -33,6 +38,7 @@ interface ReviewDTO {
   restaurant_id: string
   stars: number;
   feedback?: string
+  profilePhoto?: string
 }
 
 export type { RestaurantDTO, UserDTO, CheckinDTO, ReviewDTO};
