@@ -44,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({
           <Text style={styles.greeting}>
               Olá, <Text style={styles.bold}>{name}!</Text> Bora jantar?
             </Text>
-)}
+      )}
 
         {isProfile && (
             <>
@@ -52,7 +52,6 @@ const Header: React.FC<HeaderProps> = ({
     <Text style={styles.username}>@{nickName}</Text> 
   </>
       )}
-
             <TouchableOpacity onPress={refreshLocation}>
               <View style={styles.row}>
                 <MaterialIcons
@@ -86,12 +85,14 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: 200,
-    borderBottomEndRadius: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
     overflow: "hidden",
   },
   gradient: {
     flex: 1,
-    borderBottomEndRadius: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
     paddingHorizontal: 20,
     paddingTop: 40,
     position: "relative",

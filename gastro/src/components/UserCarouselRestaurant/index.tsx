@@ -2,6 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import PhotoDish from '@/src/components/PhotoDish';
+import Colors from '@/src/constants/Colors';
+import { router } from 'expo-router';
 
 const CARD_WIDTH = 153;
 const CARD_HEIGHT = 156;
@@ -26,40 +28,71 @@ interface Props {
 const mockData: Record<'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYou', Restaurante[]> = {
   visited: [
     {
-      id: '1',
-      nome: 'Biskaia',
-      nota: null,
-      avaliacoes: null,
-      imagem: 'https://esa-cdn.cardapio.menu/storage/media/company_gallery/52529901/conversions/contribution_gallery.jpg',
-      visitado: true,
-    },
-    {
-      id: '2',
-      nome: 'Gelson Lanches',
-      nota: 3,
-      avaliacoes: 12,
-      imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD4dJ6EDJ7UQzZ9KFDmon5aHLRm5KIBHinxQ&s',
-      visitado: true,
-    },
-  {
       id: '3',
       nome: 'OutBack',
-      nota: null,
-      avaliacoes: null,
+      nota: 4.7,
+      avaliacoes: 57,
       imagem: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/43/de/6d/outback-steakhouse.jpg?w=900&h=500&s=1',
-      visitado: true,
+      visitado: false,
     },
-  {
+    {
       id: '4',
       nome: 'Hamburgueria do Bairro',
-      nota: null,
-      avaliacoes: null,
-      imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYj3Xx7aJ7q1s8n8f2b0Gm5uGg0N1h2g6z6A&s',
-      visitado: true,
+      nota: 4.5,
+      avaliacoes: 25,
+      imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
+      visitado: false,
     },
-
+  {
+      id: '5',
+      nome: 'Pizzaria do Bairro',
+      nota: 4.2,
+      avaliacoes: 15,
+      imagem: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/1b/92/50/ambiente-de-l-unico.jpg?w=600&h=-1&s=1',
+      visitado: false,
+    },
+  {
+      id: '6',
+      nome: 'Sushi do Bairro',
+      nota: 4.8,
+      avaliacoes: 30,
+      imagem: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/75/8a/f4/mesas-sob-a-figueira.jpg?w=600&h=-1&s=1',
+      visitado: false,
+    },
+  {
+      id: '7',
+      nome: 'Churrascaria do Bairro',
+      nota: 4.6,
+      avaliacoes: 20,
+      imagem: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=60',
+      visitado: false,
+    },
+  {
+      id: '8',
+      nome: 'Cozinha do Bairro',
+      nota: 4.3,
+      avaliacoes: 18,
+      imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
+      visitado: false,
+    },
+  {
+      id: '9',
+      nome: 'Sorveteria do Bairro',
+      nota: 4.1,
+      avaliacoes: 10,
+      imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
+      visitado: false,
+    },
+  {
+      id: '10',
+      nome: 'Doceria do Bairro',
+      nota: 0,
+      avaliacoes: 0,
+      imagem: 'https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D',
+      visitado: false,
+    },
   ],
-  closeToYou: [
+  saved: [
     {
       id: '3',
       nome: 'OutBack',
@@ -180,21 +213,8 @@ const mockData: Record<'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYo
       imagem: 'https://influency.me/wp-content/uploads/2023/10/FGC_125725-1-edited.jpg',
     },
   ],
-  saved: [
-    {
-      id: '11',
-      nome: 'Restaurante do Bairro',
-      nota: 4.5,
-      avaliacoes: 20,
-      imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYj3Xx7aJ7q1s8n8f2b0Gm5uGg0N1h2g6z6A&s',
-    },
-    {
-      id: '12',
-      nome: 'Pizzaria do Bairro',
-      nota: 4.2,
-      avaliacoes: 15,
-      imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYj3Xx7aJ7q1s8n8f2b0Gm5uGg0N1h2g6z6A&s',
-    },
+  closeToYou: [
+    
   ],
 };
 
@@ -227,12 +247,24 @@ export default function UserCarouselRestaurant({
     }
 
     return baseData;
-  }, [variant, carouselProfileRestaurant, selectedPins, restaurantsExternal]);
+     }, [variant, carouselProfileRestaurant, selectedPins, restaurantsExternal]);
+
+      if ((variant === 'visited' || variant === 'saved') && data.length === 0) {
+    return (
+      <View style={{ padding: 16 }}>
+        <Text style={styles.avisoTexto}>
+          {variant === 'visited'
+            ? 'Você ainda não visitou nenhum restaurante. Que tal começar agora?'
+            : 'Nenhum restaurante nos seus Salvos. Explore e salve lugares que você quer conhecer!'}
+        </Text>
+      </View>
+    );
+  }
+
 
   const renderItem = ({ item }: { item: Restaurante }) => {
     const isSelected = selectedPins.includes(item.id);
 
-    
     if (variant === 'influencers') {
       return (
         <TouchableOpacity
@@ -261,7 +293,7 @@ export default function UserCarouselRestaurant({
     return (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => console.log(`Clicou em ${item.nome}`)}
+        onPress={() => router.push({ pathname:'/screens/restaurantProfile'})}
         activeOpacity={0.8}
       >
         <View style={styles.imageWrapper}>
@@ -408,5 +440,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#FF914B',
     fontWeight: 'bold',
+  },
+  avisoTexto: {
+    paddingLeft: 1,
+    textAlign: 'left',
+    fontSize: 13,
+    color : Colors.black,
+    paddingHorizontal: 16,
+    marginTop: 8,
   },
 });
