@@ -1,26 +1,51 @@
-import { UserDTO } from '@/src/@types/DTO';
-import Button from '@/src/components/Button';
-import Dropdown from '@/src/components/Dropdown';
-import SignupHeader from '@/src/components/SignupHeader';
-import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
-import { useCreateUser } from '@/src/hooks/useUserApi';
+import { UserDTO } from "@/src/@types/DTO";
+import Button from "@/src/components/Button";
+import Dropdown from "@/src/components/Dropdown";
+import SignupHeader from "@/src/components/SignupHeader";
+import CustomTextInput from "@/src/components/TextFieldCadastroUsuario";
+import { useCreateUser } from "@/src/hooks/useUserApi";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import React, { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useState } from "react";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const SignupUser = () => {
   const router = useRouter();
   const { userData } = useLocalSearchParams();
 
-  const [name, setName] = useState<string>(userData ? JSON.parse(userData as string).name : '');
-  const [nickname, setNickname] = useState<string>(userData ? JSON.parse(userData as string).nickname : '');
-  const [email, setEmail] = useState<string>(userData ? JSON.parse(userData as string).email : '');
-  const [password, setPassword] = useState<string>(userData ? JSON.parse(userData as string).password : '');
-  const [phone, setPhone] = useState<string>(userData ? JSON.parse(userData as string).phone : '');
-  const [gender, setGender] = useState<string | null>(userData ? JSON.parse(userData as string).gender : null);
-  const [birthDate, setBirthDate] = useState<string>(userData ? JSON.parse(userData as string).birthDate : '');
-  const [userType, setUserType] = useState<string | null>(userData ? JSON.parse(userData as string).userType : "Cadastro de Usuário");
+  const [name, setName] = useState<string>(
+    userData ? JSON.parse(userData as string).name : ""
+  );
+  const [nickname, setNickname] = useState<string>(
+    userData ? JSON.parse(userData as string).nickname : ""
+  );
+  const [email, setEmail] = useState<string>(
+    userData ? JSON.parse(userData as string).email : ""
+  );
+  const [password, setPassword] = useState<string>(
+    userData ? JSON.parse(userData as string).password : ""
+  );
+  const [phone, setPhone] = useState<string>(
+    userData ? JSON.parse(userData as string).phone : ""
+  );
+  const [gender, setGender] = useState<string | null>(
+    userData ? JSON.parse(userData as string).gender : null
+  );
+  const [birthDate, setBirthDate] = useState<string>(
+    userData ? JSON.parse(userData as string).birthDate : ""
+  );
+  const [userType, setUserType] = useState<string | null>(
+    userData ? JSON.parse(userData as string).userType : "Cadastro de Usuário"
+  );
 
   const [birthDateTouched, setBirthDateTouched] = useState<boolean>(false);
 
@@ -93,7 +118,6 @@ const SignupUser = () => {
     !validatePhone(phone) &&
     !validateBirthDate(birthDate);
 
-
   const handleSubmit = () => {
     if (
       !name ||
@@ -143,28 +167,36 @@ const SignupUser = () => {
 
     router.push({
       pathname: "/screens/SignupInterestsScreen",
-      params: { userData: JSON.stringify(userData) },
+      params: {
+        userData: JSON.stringify(userData),
+        screenTitle: "Conte-nos seus interesses",
+      },
     });
   };
 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
     >
-      <SafeAreaView style={[
-        styles.safeArea,
-        { paddingTop: 0 },
-        Platform.OS === 'ios' && { marginTop: -insets.top }
-      ]}>
+      <SafeAreaView
+        style={[
+          styles.safeArea,
+          { paddingTop: 0 },
+          Platform.OS === "ios" && { marginTop: -insets.top },
+        ]}
+      >
         <SignupHeader
           userType={userType}
           setUserType={setUserType}
           onBack={() => router.back()}
-          profileIcon={'person'}
+          profileIcon={"person"}
         />
-        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+        >
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={name}
@@ -260,10 +292,11 @@ const SignupUser = () => {
                 placeholder="Nascimento"
                 style={[
                   styles.birthDateInput,
-                  birthDateTouched && validateBirthDate(birthDate) && {
-                    borderWidth: 2,
-                    borderColor: 'red',
-                  }
+                  birthDateTouched &&
+                    validateBirthDate(birthDate) && {
+                      borderWidth: 2,
+                      borderColor: "red",
+                    },
                 ]}
                 validation={undefined}
                 keyboardType="numeric"
@@ -277,7 +310,12 @@ const SignupUser = () => {
             </View>
           </View>
           <View style={styles.buttonContainer}>
-            <Button title="Avançar" type="orange" onPress={handleSubmit} disabled={!isFormValid} />
+            <Button
+              title="Avançar"
+              type="orange"
+              onPress={handleSubmit}
+              disabled={!isFormValid}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -292,16 +330,16 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
-    padding: '4%',
-    paddingBottom: '8%',
-    width: '100%',
+    padding: "4%",
+    paddingBottom: "8%",
+    width: "100%",
   },
   inputWrapper: {
-    width: '90%',
-    marginBottom: '5%',
+    width: "90%",
+    marginBottom: "5%",
   },
   input: {
-    width: '100%',
+    width: "100%",
     height: 50,
     borderRadius: 20,
     backgroundColor: "rgba(255, 179, 112, 0.25)",
@@ -314,15 +352,15 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: '90%',
-    marginBottom: '5%',
+    width: "90%",
+    marginBottom: "5%",
   },
   halfInputWrapper: {
-    width: '48%',
+    width: "48%",
   },
   birthDateInput: {
     height: 50,
-    width: '100%',
+    width: "100%",
     borderRadius: 20,
     backgroundColor: "rgba(255, 179, 112, 0.25)",
     paddingLeft: 24,
@@ -332,17 +370,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   errorText: {
-    color: 'red',
+    color: "red",
     fontSize: 12,
     marginTop: 4,
     marginLeft: 24,
-    fontFamily: 'Poppins-Regular',
+    fontFamily: "Poppins-Regular",
   },
   buttonContainer: {
-    marginTop: '2%',
-    width: '90%',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    marginTop: "2%",
+    width: "90%",
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
 });
 

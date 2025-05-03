@@ -1,20 +1,21 @@
 interface UserDTO {
-  profilePhoto?: string;
-  name: string;
-  nickname: string;
-  email: string;
-  password: string;
-  phone: string;
-  gender: string | null;
-  birthDate?: string;
-  userType: string;
-  id?: string;
+    profilePhoto?: string;
+    name: string;
+    nickname: string;
+    email: string;
+    password: string;
+    phone: string;
+    gender: string | null;
+    birthDate?: string;
+    userType: string;
+    id?: string;
 }
 interface RestaurantDTO {
     profilePhoto?: string;
     bannerPhoto?: string;
     address: string;
     name: string;
+    cnpj: string;
     description: string;
     email: string;
     password: string;
@@ -24,15 +25,15 @@ interface RestaurantDTO {
 }
 
 interface CheckinDTO {
-  user_id: string;
-  restaurant_id: string;
+    user_id: string;
+    restaurant_id: string;
 }
 
 interface ReviewDTO {
-  user_id: string;
-  restaurant_id: string
-  stars: number;
-  feedback?: string
+    user_id: string;
+    restaurant_id: string
+    stars: number;
+    feedback?: string
 }
 
-export type { RestaurantDTO, UserDTO, CheckinDTO, ReviewDTO};
+export type { RestaurantDTO, UserDTO, CheckinDTO, ReviewDTO };
