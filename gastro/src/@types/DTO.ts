@@ -19,8 +19,10 @@ interface RestaurantDTO {
     email: string;
     password: string;
     averagePrice: number;
+    averageScore?: number | null;
     phone: string;
     userType: string;
+    reviews: ReviewDTO[];
 }
 
 interface CheckinDTO {
