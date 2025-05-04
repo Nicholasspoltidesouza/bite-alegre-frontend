@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CheckinDTO, RestaurantDTO, ReviewDTO } from '../@types/DTO';
-import { API_URL_ANDROID } from '../constants/apiUrl';
+import { API_URL_BACKEND, API_URL_ANDROID } from '../constants/apiUrl';
 
 export const useRestaurantApi = () => {
   const [loading, setLoading] = useState(false);
@@ -8,7 +8,7 @@ export const useRestaurantApi = () => {
   const [data, setData] = useState<RestaurantDTO | null>(null);
 
   const getRestaurantById = async (
-    restaurantId: RestaurantDTO,
+    restaurantId: string,
   ): Promise<void> => {
     setLoading(true);
     setError(null);

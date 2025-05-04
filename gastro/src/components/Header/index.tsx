@@ -15,8 +15,8 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({
   isProfile = false,
-  name = "Manu",
-  nickName = "manu",
+  name,
+  nickName,
   showGreeting = true,
   profileImageUrl,
 }) => {
@@ -41,18 +41,17 @@ const Header: React.FC<HeaderProps> = ({
 
           <View style={styles.textContainer}>
             {!isProfile && showGreeting && (
-          <Text style={styles.greeting}>
-              Olá, <Text style={styles.bold}>{name}!</Text> Bora jantar?
+            <Text style={styles.greeting}>
+                Olá, <Text style={styles.bold}>{name}!</Text> Bora jantar?
             </Text>
-)}
+            )}
 
-        {isProfile && (
+              {isProfile && (
             <>
-    <Text style={styles.name}>{name}</Text> 
-    <Text style={styles.username}>@{nickName}</Text> 
-  </>
-      )}
-
+              <Text style={styles.name}>{name}</Text> 
+              <Text style={styles.username}>@{nickName}</Text> 
+            </>
+             )}
             <TouchableOpacity onPress={refreshLocation}>
               <View style={styles.row}>
                 <MaterialIcons
@@ -86,12 +85,14 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: 200,
-    borderBottomEndRadius: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
     overflow: "hidden",
   },
   gradient: {
     flex: 1,
-    borderBottomEndRadius: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
     paddingHorizontal: 20,
     paddingTop: 40,
     position: "relative",
@@ -138,13 +139,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#ffffffcc",
     fontFamily: "Poppins-Medium",
-    marginBottom: 5,
   },
   greeting: {
     fontSize: 22, 
     fontFamily: "Poppins-Medium", 
     color: "#fff",
-    marginBottom: 5,
   },
   bold: {
     fontWeight: "bold",
@@ -152,7 +151,6 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 4,
   },
   icon: {
     marginRight: 6,

@@ -1,29 +1,26 @@
 import React, { useMemo, useState } from 'react';
-import {View,Text,Image,StyleSheet,FlatList,TouchableOpacity,} from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import PhotoDish from '@/src/components/PhotoDish';
+import Colors from '@/src/constants/Colors';
+import { RestaurantDTO } from '@/src/@types/DTO';
+import { router } from 'expo-router';
 
 const CARD_WIDTH = 153;
 const CARD_HEIGHT = 156;
-const CARD_MARGIN = 12;
-
-interface Restaurante {
-  id: string;
-  nome: string;
-  nota: number | null;
-  avaliacoes: number | null;
-  imagem: string;
-  visitado?: boolean;
-  favorito?: boolean;
-}
+const CARD_MARGIN = '3%';
 
 interface Props {
-  variant: 'visited' | 'saved' | 'menu' | 'influencers';
+  variant: 'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYou';
   carouselProfileRestaurant?: boolean;
-  restaurantsExternal: Restaurante[];
+  restaurantsExternal: RestaurantDTO[];
 }
 
-export default function UserCarouselRestaurant({ variant, carouselProfileRestaurant = false, restaurantsExternal }: Props) {
+export default function UserCarouselRestaurant({
+  variant,
+  carouselProfileRestaurant = false,
+  restaurantsExternal,
+}: Props) {
   const [selectedPins, setSelectedPins] = useState<string[]>([]);
 
   const togglePin = (id: string) => {
@@ -31,44 +28,77 @@ export default function UserCarouselRestaurant({ variant, carouselProfileRestaur
       prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
     );
   };
-
   const data = useMemo(() => {
-    let baseData = [...restaurantsExternal];
-
     if (variant === 'visited' && carouselProfileRestaurant) {
-      baseData.sort((a, b) => {
-        const aPressed = selectedPins.includes(a.id) ? 0 : 1;
-        const bPressed = selectedPins.includes(b.id) ? 0 : 1;
+      restaurantsExternal!.sort((a, b) => {
+        const aPressed = selectedPins.includes(a.id!) ? 0 : 1;
+        const bPressed = selectedPins.includes(b.id!) ? 0 : 1;
         return aPressed - bPressed;
       });
     }
 
-    if (variant === 'menu') {
-      baseData.sort((a, b) => (b.favorito ? 1 : 0) - (a.favorito ? 1 : 0));
-    }
+    // if (variant === 'menu') {
+    //   baseData.sort((a, b) => (b.favorito ? 1 : 0) - (a.favorito ? 1 : 0));
+    // }
 
-    return baseData;
-  }, [variant, carouselProfileRestaurant, selectedPins, restaurantsExternal]);
+    return restaurantsExternal!;
+     }, [variant, carouselProfileRestaurant, selectedPins, restaurantsExternal]);
 
-  const renderItem = ({ item }: { item: Restaurante }) => {
-    const isSelected = selectedPins.includes(item.id);
-
-    if (variant === 'menu') {
+    if ((variant === 'visited' || variant === 'saved') && data.length === 0) {
       return (
-        <PhotoDish
-          urlFotoPrato={item.imagem}
-          descricao={item.nome}
-          showStar={item.favorito}
-        />
+        <View style={{ padding: 16 }}>
+          <Text style={styles.avisoTexto}>
+            {variant === 'visited'
+              ? 'Você ainda não visitou nenhum restaurante. Que tal começar agora?'
+              : 'Nenhum restaurante nos seus Salvos. Explore e salve lugares que você quer conhecer!'}
+          </Text>
+        </View>
+    );
+  }
+
+
+  const renderItem = ({ item }: { item: RestaurantDTO }) => {
+    const isSelected = selectedPins.includes(item.id!);
+    const tela = '/screens/restaurantProfile?restaurantId=' + item.id!
+
+    if (variant === 'influencers') {
+      return (
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => console.log(`Clicou em ${item.name}`)}
+          activeOpacity={0.8}
+        >
+          <View style={styles.imageWrapper}>            
+            <Image source={{ uri: item.profilePhoto }} style={styles.image} />
+          </View>
+          <Text style={styles.nome}>{item.name}</Text>
+        </TouchableOpacity>
       );
     }
 
+    // if (variant === 'menu') {
+    //   return (
+    //     <PhotoDish
+    //       urlFotoPrato={item.profilePhoto}
+    //       descricao={item.name ?? ''}
+    //       showStar={item.favorito}
+    //     />
+    //   );
+    // }
+
     return (
-      <View style={styles.card}>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => router.push({ pathname: tela as any})}//TALVEZ TENHA QUE MUDAR !
+        activeOpacity={0.8}
+      >
         <View style={styles.imageWrapper}>
-          <Image source={{ uri: item.imagem }} style={styles.image} />
-          {['visited', 'saved'].includes(variant) && (
-            <TouchableOpacity style={styles.pinButton} onPress={() => togglePin(item.id)}>
+          <Image source={{ uri: item.profilePhoto }} style={styles.image} />
+          {['visited', 'saved', 'closeToYou'].includes(variant) && (
+            <TouchableOpacity
+              style={styles.pinButton}
+              onPress={() => togglePin(item.id!)}
+            >
               <AntDesign
                 name="pushpin"
                 size={16}
@@ -81,9 +111,9 @@ export default function UserCarouselRestaurant({ variant, carouselProfileRestaur
           )}
         </View>
 
-        <Text style={styles.nome}>{item.nome}</Text>
+        <Text style={styles.nome}>{item.name}</Text>
 
-        {variant === 'visited' && item.nota === null && (
+        {variant === 'visited' && !item.stars && (
           <TouchableOpacity style={styles.botaoAvaliar}>
             {Array.from({ length: 5 }, (_, i) => (
               <AntDesign
@@ -98,27 +128,27 @@ export default function UserCarouselRestaurant({ variant, carouselProfileRestaur
           </TouchableOpacity>
         )}
 
-        {variant === 'visited' && item.nota !== null && (
+        {variant === 'visited' && item.stars && (
           <View style={styles.avalieAqui}>
             {Array.from({ length: 5 }, (_, i) => (
               <AntDesign
                 key={i}
                 name="star"
                 size={12}
-                color={i < item.nota! ? '#FF914B' : '#FF914B40'}
+                color={i < item.stars! ? '#FF914B' : '#FF914B40'}
               />
             ))}
           </View>
         )}
 
-        {variant === 'saved' && item.nota !== null && (
+        {['saved', 'closeToYou'].includes(variant) && item.averagePrice !== null && (
           <View style={styles.avaliacaoRow}>
             <AntDesign name="star" size={12} color="#FF914B" />
-            <Text style={styles.nota}> {item.nota?.toFixed(1)}</Text>
-            <Text style={styles.avaliacoes}> ({item.avaliacoes ?? 0} avaliações)</Text>
+            <Text style={styles.nota}> {item.averagePrice?.toFixed(1)}</Text>
+            <Text style={styles.avaliacoes}> (0 avaliações)</Text>
           </View>
         )}
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -126,7 +156,7 @@ export default function UserCarouselRestaurant({ variant, carouselProfileRestaur
     <FlatList
       data={data}
       renderItem={renderItem}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.id!}
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{
@@ -203,8 +233,18 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   botaoAvaliarTexto: {
+    fontFamily: 'Poppins-Regular',
     fontSize: 12,
     color: '#FF914B',
     fontWeight: 'bold',
+  },
+  avisoTexto: {
+    fontFamily: 'Poppins-Regular',
+    paddingLeft: 1,
+    textAlign: 'left',
+    fontSize: 14,
+    color : Colors.black,    
+    paddingHorizontal: 16,
+    marginTop: 8,
   },
 });
