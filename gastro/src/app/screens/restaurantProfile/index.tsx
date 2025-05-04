@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback,
   Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Accordion from "@/src/components/Accordion";
 
 import {
@@ -22,7 +22,7 @@ import {
 } from "@expo/vector-icons";
 import { useRestaurantApi } from "@/src/hooks/useRestaurantApi";
 import Button from "@/src/components/Button";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { CheckinDTO } from "@/src/@types/DTO";
 
 const { width: screenWidth } = Dimensions.get("window");
@@ -36,11 +36,13 @@ const RestaurantProfile: React.FC = () => {
     error,
   } = useRestaurantApi();
   const [modalVisible, setModalVisible] = useState(false);
-  const { id } = useLocalSearchParams();
+  const { restaurantId } = useLocalSearchParams();
 
-  useEffect(() => {
-    if (typeof id === "string") getRestaurantById(id);
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      if (typeof restaurantId === "string") getRestaurantById(restaurantId.toString());
+    }, [restaurantId])
+  );
 
   if (loading) {
     return (
@@ -92,13 +94,13 @@ const RestaurantProfile: React.FC = () => {
       <View style={styles.infos}>
         <Text style={styles.title}>{restaurant?.name}</Text>
         <View style={styles.infoGrid}>
-          <Accordion
-            title={"4,5"}
-            description={"(50 avaliação)"}
-            content={``}
-            staticArrow={true}
-            children={<FontAwesome name="star" size={24} color="#FF914B" />}
-          ></Accordion>
+        <Accordion 
+          title={`${restaurant?.averageScore ?? "-"}`}
+          description={`(${restaurant?.reviews?.length ?? 0} avaliações)`}
+          content={''}          
+          staticArrow={true} 
+          children={<FontAwesome name="star" size={24} color="#FF914B" />}>
+        </Accordion>
 
           <Accordion
             title={"Descrição"}

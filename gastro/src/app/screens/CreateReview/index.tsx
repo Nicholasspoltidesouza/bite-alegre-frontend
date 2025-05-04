@@ -17,7 +17,7 @@ const CreateReview: React.FC = () => {
   const [imputHeight, setImputHeight] = useState(0);
 
   useEffect(() => {
-    getUserById("1");
+    getUserById("user-1");
   }, []);
 
   if (loading) {

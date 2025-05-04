@@ -1,14 +1,22 @@
 import SearchInput from '@/src/components/SearchInput';
 import SearchRestaurants from '@/src/components/SearchRestaurants';
 import SearchUsers from '@/src/components/SearchUsers';
-import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { useSearch } from '@/src/hooks/useSearch';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Search = () => {
   const insets = useSafeAreaInsets();
   const [search, setSearch] = useState<string>('');
-  const isUserSearch = search.trim().startsWith("@");
+
+  const { users, restaurants, loading, search: runSearch } = useSearch();
+
+  useEffect(() => {
+    runSearch(search);
+  }, [search]);
+
+  const isUserSearch = search.trim().startsWith('@');
 
   return (
     <KeyboardAvoidingView
@@ -27,50 +35,33 @@ const Search = () => {
           <SearchInput
             value={search}
             onChangeText={setSearch}
+            placeholder="Pesquisar"
             style={styles.input}
           />
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
-          {!isUserSearch && (
-            <>
-              <SearchRestaurants
-                name="Bilhar do seu Zé"
-                averagePrice={10}
-                note={3.5}
-                location="Av. Protásio Alves"
-              />
-              <SearchRestaurants
-                name="Maza Bar"
-                averagePrice={10}
-                note={4.2}
-                location="Av. Bento Gonçalves"
-              />
-              <SearchRestaurants
-                name="Restaurante da Monica"
-                averagePrice={10}
-                note={5}
-                location="Rua das Hortencias"
-              />
-              {[...Array(6)].map((_, index) => (
-                <SearchRestaurants
-                  key={index}
-                  name="Maza Bar"
-                  averagePrice={10}
-                  note={4.2}
-                  location="Av. Bento Gonçalves"
-                />
-              ))}
-            </>
+          {loading && (
+            <ActivityIndicator size="small" color="#FF914B" style={{ marginTop: 20 }} />
           )}
 
-          {isUserSearch && (
-            <View>
-              <SearchUsers name="Joao" nickname="jv" profilePhoto="" />
-              <SearchUsers name="Valdir" nickname="John Doe" profilePhoto="" />
-              <SearchUsers name="Maria" nickname="littleStar" profilePhoto="" />
-            </View>
-          )}
+          {!loading && isUserSearch && users.map((user) => (
+            <SearchUsers
+              key={user.id}
+              name={user.name}
+              nickname={user.nickname}
+              profilePhoto={user.profilePhoto || ''}
+            />
+          ))}
+
+          {!loading && !isUserSearch && restaurants.map((restaurant) => (
+            <SearchRestaurants
+              name={restaurant.name}
+              averagePrice={restaurant.averagePrice}
+              note={restaurant.averageScore ?? 0}
+              location={restaurant.address}
+            />
+          ))}
         </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
@@ -87,7 +78,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 16,
     marginBottom: 12,
-    color: '#000000',
   },
   scrollContainer: {
     alignItems: 'center',

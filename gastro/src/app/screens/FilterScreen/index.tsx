@@ -1,23 +1,26 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  SafeAreaView,
-  StatusBar,
-  Modal,
-  TextInput,
-  ActivityIndicator,
-} from "react-native";
-import { Feather, FontAwesome6 } from "@expo/vector-icons";
-import { router } from "expo-router";
 import Button from "@/src/components/Button";
 import Tag from "@/src/components/Tag";
 import ToggleSwitch from "@/src/components/ToggleSwitch";
+import { API_URL_BACKEND } from "@/src/constants/apiUrl";
+import { RestaurantFilterDTO } from "@/src/@types/DTO";
+import { useSearchFilter } from "@/src/hooks/useSearchFilter";
 import useFetchTags from "@/src/hooks/useFetchTags";
-import { API_URL_ANDROID } from "@/src/constants/apiUrl";
+import useLocation from "@/src/hooks/useLocation";
+import { Feather, FontAwesome6 } from "@expo/vector-icons";
+import { router } from "expo-router";
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  Modal,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface FilterOptions {
   price: string;
@@ -43,20 +46,21 @@ const FilterScreen: React.FC = () => {
   const [addressModalVisible, setAddressModalVisible] = useState(false);
   const [addressInput, setAddressInput] = useState("");
 
+  const { filterRestaurants, loading: filterLoading } = useSearchFilter();
+  const { latitude, longitude } = useLocation();
+
   const {
     tags,
     loading: tagsLoading,
     error: tagsError,
   } = useFetchTags(
-    `${API_URL_ANDROID}/tags`
+    `${API_URL_BACKEND}/tags`
   );
 
-  // Preço
   const priceNumber =
     parseFloat(filters.price.replace(/[^\d]/g, "")) || 0;
   const priceIsSet = priceNumber > 0;
 
-  // Distância / endereço
   const locationSelected = filters.distance[0] === "Localização";
   const addressSet =
     filters.distance.length > 0 &&
@@ -68,7 +72,6 @@ const FilterScreen: React.FC = () => {
       : filters.distance[0]
     : "Escolha";
 
-  // Função genérica de seleção de tag
   const handleTagPress = (
     section: keyof FilterOptions,
     tag: string
@@ -97,12 +100,41 @@ const FilterScreen: React.FC = () => {
       openNow: false,
     });
 
-  const handleApply = () => {
-    console.log("Applied filters:", filters);
-    router.back();
+  const handleApply = async () => {
+    const apiFilters: RestaurantFilterDTO = {};
+
+    if (priceIsSet) {
+      apiFilters.price_range = priceNumber;
+    }
+
+    const allSelectedTags = [
+      ...filters.location,
+      ...filters.category,
+      ...filters.occasion,
+    ];
+
+    if (allSelectedTags.length > 0) {
+      apiFilters.tags = allSelectedTags;
+    }
+
+    if (filters.openNow) {
+      apiFilters.open_now = true;
+    }
+
+    if (locationSelected && latitude && longitude) {
+      apiFilters.geolocation = [parseFloat(latitude), parseFloat(longitude)];
+      apiFilters.proximity = 10; 
+    }
+
+    try {
+      await filterRestaurants(apiFilters);
+      router.push({ pathname: '/screens/Search' });
+    } catch (error) {
+      console.error("Erro ao filtrar restaurantes:", error);
+    }
   };
 
-  if (tagsLoading) {
+  if (tagsLoading || filterLoading) {
     return (
       <SafeAreaView style={styles.loaderContainer}>
         <ActivityIndicator size="large" color="#FF914B" />
@@ -118,7 +150,6 @@ const FilterScreen: React.FC = () => {
     );
   }
 
-  // Filtra tags por tipo
   const localTags = tags.filter((t) => t.type === "LOCAL");
   const categoryTags = tags.filter((t) => t.type === "CATEGORIA");
   const occasionTags = tags.filter((t) => t.type === "OCASIAO");
@@ -145,7 +176,7 @@ const FilterScreen: React.FC = () => {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
-        {/* Preço */}
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Preço</Text>
           <View style={styles.tagsContainer}>
@@ -169,7 +200,6 @@ const FilterScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Distância */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Distância</Text>
           <View style={styles.tagsContainer}>
@@ -214,7 +244,6 @@ const FilterScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Local (do backend) */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Local</Text>
           <View style={styles.tagsContainer}>
@@ -232,7 +261,6 @@ const FilterScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Categoria (do backend) */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Categoria</Text>
           <View style={styles.tagsContainer}>
@@ -250,7 +278,6 @@ const FilterScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Ocasião (do backend) */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Ocasião</Text>
           <View style={styles.tagsContainer}>
@@ -268,7 +295,6 @@ const FilterScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Aberto agora */}
         <View style={styles.toggleSection}>
           <Text style={styles.sectionTitle}>Aberto agora</Text>
           <ToggleSwitch
@@ -277,7 +303,6 @@ const FilterScreen: React.FC = () => {
           />
         </View>
 
-        {/* Botões */}
         <View style={styles.buttonContainer}>
           <Button
             title="Limpar"
@@ -294,7 +319,6 @@ const FilterScreen: React.FC = () => {
         </View>
       </ScrollView>
 
-      {/* Modal de Preço */}
       <Modal
         visible={priceModalVisible}
         transparent
@@ -347,7 +371,6 @@ const FilterScreen: React.FC = () => {
         </View>
       </Modal>
 
-      {/* Modal de Endereço */}
       <Modal
         visible={addressModalVisible}
         transparent

@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { UserDTO } from "../@types/DTO";
-import { API_URL_ANDROID, API_URL_BACKEND } from "../constants/apiUrl";
+import { useState } from 'react';
+import { UserDTO } from '../@types/DTO';
+import { API_URL_BACKEND, API_URL_ANDROID} from '../constants/apiUrl';
 
 export const useCreateUser = () => {
     const [loading, setLoading] = useState(false);

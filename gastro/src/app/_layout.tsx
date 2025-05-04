@@ -142,6 +142,7 @@ export default function RootLayout() {
     <Tabs.Screen name="screens/SignupUser/index" options={{ href: null, tabBarShowLabel: false }} />
     <Tabs.Screen name="screens/CreateReview/index" options={{ href: null, tabBarShowLabel: false }} />
     <Tabs.Screen name="screens/FilterScreen/index" options={{ href: null, tabBarShowLabel: false }} />
+    <Tabs.Screen name="screens/Feed/index" options={{ href: null, tabBarShowLabel: false }} />
   </Tabs>
   )
 } 

@@ -16,8 +16,8 @@ interface ToggleSwitchProps {
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   isEnabled = false,
   onToggle,
-  activeColor = "#FF914B", // Orange color from the image
-  inactiveColor = "#E3E1E1", // Gray color from the image
+  activeColor = "#FF914B",
+  inactiveColor = "#E3E1E1",
   style,
   disabled = false,
 }) => {
@@ -41,7 +41,6 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
     }
   }
 
-  // Update animation when isEnabled prop changes
   useEffect(() => {
     if (isEnabled !== isActive) {
       setIsActive(isEnabled)
@@ -60,7 +59,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
 
   const translateXAnimation = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [2, 22], // Adjust these values based on your design
+    outputRange: [2, 22],
   })
 
   return (
