@@ -175,7 +175,6 @@ const SignupInterests: React.FC = () => {
               color="#FF914B"
             />
           </TouchableOpacity>
-          <Text style={styles.titleText}>{screenTitle}</Text>
         </View>
 
         {renderTagSection("Local", "LOCAL")}
