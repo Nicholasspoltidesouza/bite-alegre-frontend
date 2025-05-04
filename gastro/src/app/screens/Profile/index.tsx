@@ -22,19 +22,13 @@ export default function Profile() {
 
   function setVisited() {
     const visitedFromReviews: RestaurantDTO[] = userData!.reviews?.map(mapRestaurantToReview) ?? [];
-    console.log('REVIEWS - ', visitedFromReviews )
     const visitedFromCheckins: RestaurantDTO[] = userData!.checkinsWithoutReview?.map(mapCheckinToRestaurant) ?? [];
-    console.log('CHECKINS - ', visitedFromReviews )
 
     const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];
-
-    console.log('ANTES DO UNIQUE - ', combinedVisited)
 
     const uniqueVisited = Array.from(new Map(
       combinedVisited.map(item => [item.id, item])
     ).values());
-
-    console.log('DEPOIS DO UNIQUE - ', uniqueVisited)
 
     if (uniqueVisited.length > 0) {
       setVisitedRestaurants(uniqueVisited);

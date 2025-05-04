@@ -60,8 +60,6 @@ export default function UserCarouselRestaurant({
   const renderItem = ({ item }: { item: RestaurantDTO }) => {
     const isSelected = selectedPins.includes(item.id!);
     const tela = '/screens/restaurantProfile?restaurantId=' + item.id!
-    
-    console.log('ID RESTAURANTE =>', item.id)
 
     if (variant === 'influencers') {
       return (
