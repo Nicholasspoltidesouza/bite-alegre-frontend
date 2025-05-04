@@ -38,7 +38,8 @@ interface CheckinDTO {
 
 interface ReviewDTO {
   user_id: string;
-  restaurantId: string
+  restaurantId?: string
+  restaurant_id?: string
   stars: number;
   feedback?: string
   restaurantProfilePhoto?: string

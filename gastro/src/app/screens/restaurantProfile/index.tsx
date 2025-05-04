@@ -18,7 +18,6 @@ const RestaurantProfile: React.FC = () => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log("ID RESTAURANTE NA TELA DE RESTAURANTE => ", restaurantId);
       getRestaurantById(restaurantId.toString());
     }, [restaurantId])
   );

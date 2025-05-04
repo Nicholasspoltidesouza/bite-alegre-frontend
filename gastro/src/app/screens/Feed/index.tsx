@@ -1,17 +1,52 @@
-import React from 'react';
-import { View, StyleSheet,TouchableOpacity, ScrollView, Image,Text, SafeAreaView, Pressable } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet,TouchableOpacity, ScrollView, Image,Text, SafeAreaView, Pressable, ActivityIndicator } from 'react-native';
 import Header from '@/src/components/Header';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import Colors from '@/src/constants/Colors';
 import SearchInput from '@/src/components/SearchInput';
 import { router } from 'expo-router';
+import useLocation from '@/src/hooks/useLocation';
+import { useFeedApi } from '@/src/hooks/useFeedApi';
+import { RestaurantDTO } from '@/src/@types/DTO';
+import { useCreateUser } from '@/src/hooks/useUserApi';
 
-export default function TextFieldWithFilter() {
+export default function Feed() { 
 
+  const { latitude, longitude, loadingLocation } = useLocation();
+  const { getFeed, data: restaurantData, loading, error } = useFeedApi();
+  const { getUserById, data: userData } = useCreateUser();
+
+  useEffect(() => {
+    getUserById("user-1");
+  }, []);
+
+  useEffect(() => {    
+    if (latitude && longitude) {
+      getFeed("user-1", latitude, longitude);
+    }
+  }, [latitude,longitude]);
+
+  if (loading || loadingLocation) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="#FF914B" style={{ marginTop: 50 }} />
+      </SafeAreaView>
+    );
+  }
+  
+    if (error) {
+      return (
+        <SafeAreaView style={styles.container}>
+          <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>{error}</Text>
+        </SafeAreaView>
+      );
+    }
+
+    
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView >
-          <Header name={'Isabella'} nickName={''} />
+          <Header name={userData?.name ?? ' - '} nickName={userData?.nickname ?? ' - '} />
             <View style={{ marginHorizontal: '3%' }}>              
               <Pressable  onPress={() => router.push({ pathname: "/screens/Search" })}>
                 <SearchInput   
@@ -31,17 +66,10 @@ export default function TextFieldWithFilter() {
               />
             </TouchableOpacity>
           </View>
-
-          <Text style={styles.title}>Em alta com nossos influencers</Text>
-          <UserCarouselRestaurant variant="influencers" />
-
+          
           <Text style={styles.title}>Restaurantes perto de você</Text>
-          <UserCarouselRestaurant variant="closeToYou" />
-          <Text style={styles.title}>Em alta com nossos influencers</Text>
-          <UserCarouselRestaurant variant="influencers" />
+          <UserCarouselRestaurant variant="closeToYou" restaurantsExternal={restaurantData!} />
 
-          <Text style={styles.title}>Restaurantes perto de você</Text>
-          <UserCarouselRestaurant variant="closeToYou" />
       </ScrollView>
     </SafeAreaView>
   );
@@ -95,6 +123,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.orange.orangeBold,
     marginTop: 20,
-    paddingHorizontal: 20,
+    paddingHorizontal: '3%',
   },
 });
