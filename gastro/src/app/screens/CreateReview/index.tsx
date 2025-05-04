@@ -4,13 +4,14 @@ import Colors from '@/src/constants/Colors';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import { useCreateUser } from '@/src/hooks/useUserApi';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const CreateReview: React.FC = () => {
   const { createReview } = useRestaurantApi();
   const { getUserById, loading, error, data: userData } = useCreateUser();
+  const { restaurantId } = useLocalSearchParams();
 
   const [description, setDescription] = useState<string>('');
   const [nota, setNota] = useState(0);
@@ -64,10 +65,10 @@ const CreateReview: React.FC = () => {
         stars: nota,
         feedback: description,
         user_id: userData!.id!,
-        restaurant_id: '1'
+        restaurant_id: restaurantId.toString()
       };
 
-      await createReview(data, '1');
+      await createReview(data);
       Alert.alert('Sucesso', 'Avaliação feita com sucesso!');
       router.push({ pathname: "/screens/restaurantProfile" });
     } catch (err) {
@@ -108,7 +109,7 @@ const CreateReview: React.FC = () => {
           onChangeText={setDescription}
           placeholder={'Descreva sua experiência (opcional)'}
           multiline={true}
-          style={{ marginHorizontal: '5%', height: imputHeight > 50 ? imputHeight : 50 }}
+          style={{ marginHorizontal: '5%', height: imputHeight > 50 ? imputHeight : 50, borderRadius: 20, backgroundColor: "rgba(255, 179, 112, 0.25)",}}
           onContentSizeChange={(e) => setImputHeight(e.nativeEvent.contentSize.height)}
         >
         </CustomTextInput>

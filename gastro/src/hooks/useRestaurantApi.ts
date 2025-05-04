@@ -117,14 +117,13 @@ export const useRestaurantApi = () => {
 
     const createReview = async (
         data: ReviewDTO,
-        restaurantId: string,
     ): Promise<void> => {
         setLoading(true);
         setError(null);
-
+        console.log(data.restaurant_id)
         try {
             const response = await fetch(
-                `${API_URL_ANDROID}/restaurants/${restaurantId}/review`,
+                `${API_URL_ANDROID}/restaurants/${data.restaurant_id}/review`,
                 {
                     method: 'POST',
                     headers: {

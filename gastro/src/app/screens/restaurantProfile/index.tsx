@@ -178,7 +178,11 @@ const RestaurantProfile: React.FC = () => {
                       title="Sim"
                       onPress={() => {
                         setModalVisible(!modalVisible);
-                        router.push({ pathname: "/screens/CreateReview" });
+                        router.push({ 
+                          pathname: "/screens/CreateReview", 
+                          params: {
+                            restaurantId: restaurantId,
+                          },});
                       }}
                       type={"orange"}
                       style={{ marginRight: 10 }}
