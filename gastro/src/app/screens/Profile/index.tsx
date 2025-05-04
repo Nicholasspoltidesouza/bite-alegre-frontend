@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, ActivityIndicator } from 'react-native';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import Header from '@/src/components/Header';
 import Colors from '@/src/constants/Colors';
 import { useCreateUser } from '@/src/hooks/useUserApi';
 import { CheckinDTO, RestaurantDTO, ReviewDTO } from '@/src/@types/DTO';
+import { useFocusEffect } from 'expo-router';
 
 export default function Profile() {
   const { getUserById, loading, error, data: userData } = useCreateUser();
   const [visitedRestaurants, setVisitedRestaurants] = useState<RestaurantDTO[]>([]);
 
-  useEffect(() => {
-    getUserById("user-1");
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getUserById("user-1");
+    }, [])
+  );
   
   useEffect(() => {
     if (userData) {
@@ -46,7 +49,8 @@ export default function Profile() {
       password: '',
       averagePrice: 0,
       phone: '',
-      userType: ''
+      userType: '',
+      cnpj:''
     };
   }
 
@@ -62,7 +66,8 @@ export default function Profile() {
       password: '',
       averagePrice: 0,
       phone: '',
-      userType: ''
+      userType: '',
+      cnpj:''
     };
   }
 
