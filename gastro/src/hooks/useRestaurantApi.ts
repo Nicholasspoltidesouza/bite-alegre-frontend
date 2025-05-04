@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CheckinDTO, RestaurantDTO, ReviewDTO } from '../@types/DTO';
-import { API_URL_BACKEND } from '../constants/apiUrl';
+import { API_URL_BACKEND, API_URL_ANDROID } from '../constants/apiUrl';
 
 export const useRestaurantApi = () => {
   const [loading, setLoading] = useState(false);
@@ -8,14 +8,14 @@ export const useRestaurantApi = () => {
   const [data, setData] = useState<RestaurantDTO | null>(null);
 
   const getRestaurantById = async (
-    restaurantId: RestaurantDTO,
+    restaurantId: string,
   ): Promise<void> => {
     setLoading(true);
     setError(null);
 
     try {
       const response = await fetch(
-        `${API_URL_BACKEND}/restaurants/${restaurantId}`,
+        `${API_URL_ANDROID}/restaurants/${restaurantId}`,
         {
           method: 'GET',
           headers: {
@@ -49,7 +49,7 @@ export const useRestaurantApi = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL_BACKEND}/restaurants`, {
+      const response = await fetch(`${API_URL_ANDROID}/restaurants`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ export const useRestaurantApi = () => {
 
     try {
       const response = await fetch(
-        `${API_URL_BACKEND}/restaurants/${data.restaurant_id}/checkin`,
+        `${API_URL_ANDROID}/restaurants/${data.restaurant_id}/checkin`,
         {
           method: 'POST',
           headers: {
@@ -121,7 +121,7 @@ export const useRestaurantApi = () => {
 
     try {
       const response = await fetch(
-        `${API_URL_BACKEND}/restaurants/${restaurantId}/review`,
+        `${API_URL_ANDROID}/restaurants/${restaurantId}/review`,
         {
           method: 'POST',
           headers: {
