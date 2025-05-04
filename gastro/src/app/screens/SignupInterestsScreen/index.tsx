@@ -145,10 +145,7 @@ const SignupInterests: React.FC = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
-        <View style={styles.containerTitle}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.push({ pathname: backRoute as any })}>
-            <MaterialIcons name="keyboard-arrow-left" size={35} color="#FF914B" />
-          </TouchableOpacity>
+        <View style={styles.containerTitle}>          
           <Text style={styles.titleText}>
             {screenTitle || 'Conte-nos seus interesses'}
           </Text>
@@ -190,7 +187,6 @@ const SignupInterests: React.FC = () => {
             title={loading ? "Cadastrando..." : "Concluir"}
             onPress={handleConclude}
             type="orange"
-            disabled={loading || selectedTags.length === 0}
             disabled={loading || selectedTags.length === 0}
           />
         </View>
