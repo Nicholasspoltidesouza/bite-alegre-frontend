@@ -38,7 +38,7 @@ const SignupInterests: React.FC = () => {
     tags,
     loading: tagsLoading,
     error,
-  } = useFetchTags(`${API_URL_BACKEND}/tags`);
+  } = useFetchTags(`${API_URL_ANDROID}/tags`);
 
   const toggleTagSelection = (tagId: string) => {
     setSelectedTags((prev) =>

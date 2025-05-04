@@ -50,7 +50,7 @@ export const useRestaurantApi = () => {
         setError(null);
 
         try {
-            const response = await fetch(`${API_URL_BACKEND}/restaurants`, {
+            const response = await fetch(`${API_URL_ANDROID}/restaurants`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
