@@ -46,4 +46,13 @@ interface ReviewDTO {
   restaurantName?: string
 }
 
-export type { RestaurantDTO, UserDTO, CheckinDTO, ReviewDTO};
+interface RestaurantFilterDTO {
+  name?: string;
+  geolocation?: [number, number];
+  proximity?: number;
+  price_range?: number;
+  tags?: string[];
+  open_now?: boolean;
+}
+
+export type { RestaurantDTO, UserDTO, CheckinDTO, ReviewDTO, RestaurantFilterDTO };

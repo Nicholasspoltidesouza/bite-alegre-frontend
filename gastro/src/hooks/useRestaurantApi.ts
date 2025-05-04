@@ -15,7 +15,7 @@ export const useRestaurantApi = () => {
 
     try {
       const response = await fetch(
-        `${API_URL_ANDROID}/restaurants/${restaurantId}`,
+        `${API_URL_BACKEND}/restaurants/${restaurantId}`,
         {
           method: 'GET',
           headers: {
@@ -49,7 +49,7 @@ export const useRestaurantApi = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL_ANDROID}/restaurants`, {
+      const response = await fetch(`${API_URL_BACKEND}/restaurants`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ export const useRestaurantApi = () => {
 
     try {
       const response = await fetch(
-        `${API_URL_ANDROID}/restaurants/${data.restaurant_id}/checkin`,
+        `${API_URL_BACKEND}/restaurants/${data.restaurant_id}/checkin`,
         {
           method: 'POST',
           headers: {
@@ -121,7 +121,7 @@ export const useRestaurantApi = () => {
 
     try {
       const response = await fetch(
-        `${API_URL_ANDROID}/restaurants/${restaurantId}/review`,
+        `${API_URL_BACKEND}/restaurants/${restaurantId}/review`,
         {
           method: 'POST',
           headers: {

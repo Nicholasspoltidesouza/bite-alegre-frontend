@@ -1,6 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import React from 'react';
-import { StyleSheet, TextInputProps, View } from 'react-native';
+import { StyleSheet, TextInputProps, TouchableOpacity, View } from 'react-native';
 import CustomTextInput from '../TextFieldCadastroUsuario';
 
 interface SearchInputProps extends TextInputProps {
@@ -23,6 +24,10 @@ const SearchInput: React.FC<SearchInputProps> = ({
   const iconRight = 15;
   const paddingRight = iconRight + iconSize + spacingBetweenIconAndText;
 
+  const handleFilterPress = () => {
+    router.push({ pathname: '/screens/FilterScreen' });
+  };
+
   return (
     <View style={styles.container}>
       <MaterialIcons name="search" size={iconSize} color="#FF914B" style={styles.leftIcon} />
@@ -39,7 +44,9 @@ const SearchInput: React.FC<SearchInputProps> = ({
         ]}
         {...props}
       />
-      <MaterialIcons name="tune" size={iconSize} color="#FF914B" style={styles.rightIcon} />
+      <TouchableOpacity onPress={handleFilterPress} style={styles.rightIconContainer}>
+        <MaterialIcons name="tune" size={iconSize} color="#FF914B" style={styles.rightIcon} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -64,9 +71,14 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   rightIcon: {
+    zIndex: 1,
+  },
+  rightIconContainer: {
     position: 'absolute',
     right: 15,
     zIndex: 1,
+    padding: 10,
+    marginRight: -10,
   },
 });
 
