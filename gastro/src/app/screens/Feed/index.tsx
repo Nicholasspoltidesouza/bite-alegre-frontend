@@ -7,15 +7,88 @@ import SearchInput from '@/src/components/SearchInput';
 import { router } from 'expo-router';
 import useLocation from '@/src/hooks/useLocation';
 import { useFeedApi } from '@/src/hooks/useFeedApi';
+import { RestaurantDTO } from '@/src/@types/DTO';
 
 export default function Feed() {
+  const mockRestaurants: RestaurantDTO[] = [
+    {
+      id: '1',
+      profilePhoto: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=60',
+      address: '123 Rua das Flores, São Paulo, SP',
+      name: 'Sabor Brasileiro',
+      description: 'Comida típica brasileira com um toque caseiro.',
+      email: 'contato@saborbrasileiro.com',
+      password: 'hashed_password_1',
+      averagePrice: 45.00,
+      averageScore: 4.5,
+      phone: '',
+      userType: '',
+      stars: 5,
+    },
+    {
+      id: '2',
+      profilePhoto: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/75/8a/f4/mesas-sob-a-figueira.jpg?w=600&h=-1&s=1',
+      address: '456 Avenida Paulista, São Paulo, SP',
+      name: 'Sushi Zen',
+      description: '',
+      email: 'contato@sushizen.com',
+      password: 'hashed_password_2',
+      averagePrice: 80.00,
+      averageScore: 4.8,
+      phone: '',
+      userType: '',
+      stars: 5,
+    },
+    {
+      id: '3',
+      profilePhoto: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/75/8a/f4/mesas-sob-a-figueira.jpg?w=600&h=-1&s=1',
+      address: '789 Rua do Café, Campinas, SP',
+      name: 'Café & Cia',
+      description: '',
+      email: '',
+      password: '',
+      averagePrice: 30.00,
+      averageScore: 4.2,
+      phone: '',
+      userType: '',
+      stars: 4,
+    },
+    {
+      id: '4',
+      profilePhoto: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/75/8a/f4/mesas-sob-a-figueira.jpg?w=600&h=-1&s=1',
+      address: '',
+      name: 'Pizzaria Napoli',
+      description: '',
+      email: '',
+      password: '',
+      averagePrice: 60.00,
+      averageScore: 4.6,
+      phone: '',
+      userType: '',
+      stars: 5,
+    },
+    {
+      id: '5',
+      profilePhoto: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/75/8a/f4/mesas-sob-a-figueira.jpg?w=600&h=-1&s=1',
+      address: '654 Rua Gourmet, Belo Horizonte, MG',
+      name: 'Veggie Delícia',
+      description: '',
+      email: '',
+      password: '',
+      averagePrice: 50.00,
+      averageScore: 4.4,
+      phone: '',
+      userType: '',
+      stars: 4,
+    },
+  ];
 
   const { latitude, longitude } = useLocation();
   const { getFeed, data: loading, error } = useFeedApi();
 
-  useEffect(() => {
-    getFeed("user-1", latitude, longitude, 15);
-  }, []);
+  // useEffect(() => {
+  //   getFeed("user-1", latitude, longitude, 15);
+  // }, []);
 
   if (loading) {
       return (
@@ -57,17 +130,10 @@ export default function Feed() {
               />
             </TouchableOpacity>
           </View>
-
-          <Text style={styles.title}>Em alta com nossos influencers</Text>
-          <UserCarouselRestaurant variant="influencers" />
-
+          
           <Text style={styles.title}>Restaurantes perto de você</Text>
-          <UserCarouselRestaurant variant="closeToYou" />
-          <Text style={styles.title}>Em alta com nossos influencers</Text>
-          <UserCarouselRestaurant variant="influencers" />
+          <UserCarouselRestaurant variant="closeToYou" restaurantsExternal={mockRestaurants} />
 
-          <Text style={styles.title}>Restaurantes perto de você</Text>
-          <UserCarouselRestaurant variant="closeToYou" />
       </ScrollView>
     </SafeAreaView>
   );

@@ -8,7 +8,7 @@ import { router } from 'expo-router';
 
 const CARD_WIDTH = 153;
 const CARD_HEIGHT = 156;
-const CARD_MARGIN = '3%';
+const CARD_MARGIN = 10;
 
 interface Props {
   variant: 'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYou';
@@ -141,10 +141,10 @@ export default function UserCarouselRestaurant({
           </View>
         )}
 
-        {['saved', 'closeToYou'].includes(variant) && item.averagePrice !== null && (
+        {['saved', 'closeToYou'].includes(variant) && item.averageScore !== null && (
           <View style={styles.avaliacaoRow}>
             <AntDesign name="star" size={12} color="#FF914B" />
-            <Text style={styles.nota}> {item.averagePrice?.toFixed(1)}</Text>
+            <Text style={styles.nota}> {item.averageScore?.toFixed(1)}</Text>
             <Text style={styles.avaliacoes}> (0 avaliações)</Text>
           </View>
         )}
