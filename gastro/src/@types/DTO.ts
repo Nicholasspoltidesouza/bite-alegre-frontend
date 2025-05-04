@@ -25,7 +25,7 @@ interface RestaurantDTO {
     averageScore?: number | null;
     phone: string;
     userType: string;
-    reviews: ReviewDTO[];
+    reviews?: ReviewDTO[];
     stars?: number;
 }
 
