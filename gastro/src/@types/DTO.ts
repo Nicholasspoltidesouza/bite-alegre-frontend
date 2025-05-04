@@ -18,6 +18,7 @@ interface RestaurantDTO {
     bannerPhoto?: string;
     address: string;
     name: string;
+    cnpj: string;
     description: string;
     email: string;
     password: string;
