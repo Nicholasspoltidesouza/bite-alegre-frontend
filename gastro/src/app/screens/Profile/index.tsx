@@ -109,7 +109,7 @@ export default function Profile() {
             <Text style={styles.mostrarMais}>Mostrar mais</Text>
           </TouchableOpacity>
         </View>
-        <UserCarouselRestaurant variant={'visited'} restaurantsExternal={[]}/>
+        <UserCarouselRestaurant variant={'saved'} restaurantsExternal={[]}/>
 
 
     </ScrollView>
