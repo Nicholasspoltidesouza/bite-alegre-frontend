@@ -31,17 +31,16 @@ interface CheckinDTO {
   user_id: string;
   restaurant_id: string;
   restaurantProfilePhoto?: string;
-  restaurantName?: string;
+  restaurantName?: string
 }
 
 interface ReviewDTO {
-  id: string;
   user_id: string;
   restaurantId: string
   stars: number;
   feedback?: string
-  restaurantProfilePhoto?: string;
-  restaurantName?: string;
+  restaurantProfilePhoto?: string
+  restaurantName?: string
 }
 
 export type { RestaurantDTO, UserDTO, CheckinDTO, ReviewDTO};
