@@ -16,25 +16,28 @@ export default function Profile() {
   
   useEffect(() => {
     if (userData) {
-      console.log(userData)
       setVisited();
     }
   }, [userData]);
 
   function setVisited() {
     const visitedFromReviews: RestaurantDTO[] = userData!.reviews?.map(mapRestaurantToReview) ?? [];
+    console.log('REVIEWS - ', visitedFromReviews )
     const visitedFromCheckins: RestaurantDTO[] = userData!.checkinsWithoutReview?.map(mapCheckinToRestaurant) ?? [];
+    console.log('CHECKINS - ', visitedFromReviews )
 
     const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];
-    console.log('combinado', combinedVisited)
+
+    console.log('ANTES DO UNIQUE - ', combinedVisited)
 
     const uniqueVisited = Array.from(new Map(
       combinedVisited.map(item => [item.id, item])
     ).values());
 
+    console.log('DEPOIS DO UNIQUE - ', uniqueVisited)
+
     if (uniqueVisited.length > 0) {
       setVisitedRestaurants(uniqueVisited);
-      console.log('visitados', uniqueVisited)
     }    
   }
 
@@ -43,7 +46,7 @@ export default function Profile() {
       id: checkin.restaurant_id ?? "",
       profilePhoto: checkin.restaurantProfilePhoto,
       address: '',
-      name: checkin.restaurantName,
+      name: checkin.restaurantName!,
       description: '',
       email: '',
       password: '',
@@ -54,13 +57,12 @@ export default function Profile() {
   }
 
   function mapRestaurantToReview(review: ReviewDTO): RestaurantDTO {
-    console.log('REVIEW', review)
     return {
-      id: review.restaurant_id ?? "",
+      id: review.restaurantId ?? "",
       stars: review.stars ?? 0,
       profilePhoto: review.restaurantProfilePhoto,     
       address: '',
-      name: review.restaurantName,
+      name: review.restaurantName!,
       description: '',
       email: '',
       password: '',

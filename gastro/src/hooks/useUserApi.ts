@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { UserDTO } from '../@types/DTO';
-import { API_URL_BACKEND } from '../constants/apiUrl';
+import { API_URL_BACKEND, API_URL_ANDROID} from '../constants/apiUrl';
 
 export const useCreateUser = () => {
   const [loading, setLoading] = useState(false);
@@ -12,7 +12,7 @@ export const useCreateUser = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL_BACKEND}/users`, {
+      const response = await fetch(`${API_URL_ANDROID}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ export const useCreateUser = () => {
 
     try {
       const response = await fetch(
-        `${API_URL_BACKEND}/users/${userId}`,
+        `${API_URL_ANDROID}/users/${userId}`,
         {
           method: 'GET',
           headers: {

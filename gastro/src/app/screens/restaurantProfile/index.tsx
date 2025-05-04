@@ -1,12 +1,12 @@
 import HeaderPerfilRestaurante from '@/src/components/HeaderPerfilRestaurante';
 import { View, StyleSheet, Text, SafeAreaView, ActivityIndicator, Dimensions, Modal, TouchableWithoutFeedback, Alert } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Accordion from '@/src/components/Accordion';
 
 import { FontAwesome, FontAwesome6, Foundation, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import Button from '@/src/components/Button';
-import { router } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { CheckinDTO } from '@/src/@types/DTO';
 
 const { width: screenWidth } = Dimensions.get('window'); 
@@ -14,10 +14,14 @@ const { width: screenWidth } = Dimensions.get('window');
 const RestaurantProfile: React.FC = () => {
   const { getRestaurantById, createCheckin, data: restaurant, loading, error } = useRestaurantApi();
   const [modalVisible, setModalVisible] = useState(false);
+  const { restaurantId } = useLocalSearchParams();
 
-  useEffect(() => {
-    getRestaurantById("1");
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      console.log("ID RESTAURANTE NA TELA DE RESTAURANTE => ", restaurantId);
+      getRestaurantById(restaurantId.toString());
+    }, [restaurantId])
+  );
 
   if (loading) {
     return (
@@ -39,7 +43,7 @@ const RestaurantProfile: React.FC = () => {
     try {      
       const checkinData: CheckinDTO = {
         user_id: '1',
-        restaurant_id: '1'
+        restaurant_id: '1',
       };
 
       await createCheckin(checkinData);

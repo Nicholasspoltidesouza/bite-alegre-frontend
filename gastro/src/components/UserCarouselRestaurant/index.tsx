@@ -221,7 +221,6 @@ export default function UserCarouselRestaurant({
       prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
     );
   };
-  console.log('entrou', restaurantsExternal);
   const data = useMemo(() => {
     if (variant === 'visited' && carouselProfileRestaurant) {
       restaurantsExternal!.sort((a, b) => {
@@ -253,6 +252,9 @@ export default function UserCarouselRestaurant({
 
   const renderItem = ({ item }: { item: RestaurantDTO }) => {
     const isSelected = selectedPins.includes(item.id!);
+    const tela = '/screens/restaurantProfile?restaurantId=' + item.id!
+    
+    console.log('ID RESTAURANTE =>', item.id)
 
     if (variant === 'influencers') {
       return (
@@ -282,7 +284,7 @@ export default function UserCarouselRestaurant({
     return (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => router.push({ pathname:'/screens/restaurantProfile'})} //TALVEZ TENHA QUE MUDAR !
+        onPress={() => router.push({ pathname: tela as any})}//TALVEZ TENHA QUE MUDAR !
         activeOpacity={0.8}
       >
         <View style={styles.imageWrapper}>
