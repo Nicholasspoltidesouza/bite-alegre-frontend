@@ -4,6 +4,7 @@ import { View, StyleSheet, Text, StatusBar, TouchableOpacity, Image } from "reac
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useCreateUser } from "@/src/hooks/useUserApi";
 
 interface HeaderProps {
   isProfile?: boolean;
@@ -20,7 +21,7 @@ const Header: React.FC<HeaderProps> = ({
   showGreeting = true,
   profileImageUrl,
 }) => {
-  const { subregion, refreshLocation } = useLocation();
+  const { subregion, refreshLocation } = useLocation(); 
 
   return (
     <View style={styles.container}>

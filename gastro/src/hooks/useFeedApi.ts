@@ -1,29 +1,23 @@
 import { useState } from 'react';
 import { RestaurantDTO } from '../@types/DTO';
-import { API_URL_BACKEND } from '../constants/apiUrl';
+import { API_URL_BACKEND, API_URL_ANDROID } from '../constants/apiUrl';
 
 export const useFeedApi = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<RestaurantDTO | null>(null);
+  const [data, setData] = useState<RestaurantDTO[] | null>([]);
 
   const getFeed = async (
     userId: string,
     latitude: string,
     longitude: string,
-    proximity: number,
   ): Promise<void> => {
     setLoading(true);
     setError(null);
   
     try {
-      const params = new URLSearchParams();
-      params.append('geolocation', `${latitude},${longitude}`);
-      params.append('proximity', proximity.toString());
-      params.append('id', userId);
+      const url = `${API_URL_ANDROID}/feed/${userId}?geolocation=${latitude},${longitude}`;
 
-      const url = `${API_URL_BACKEND}/feed?${params.toString()}`;
-  
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -32,7 +26,6 @@ export const useFeedApi = () => {
       });
   
       const responseData = await response.json();
-  
       if (response.ok) {
         setData(responseData);
       } else {

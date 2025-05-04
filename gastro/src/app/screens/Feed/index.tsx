@@ -8,95 +8,31 @@ import { router } from 'expo-router';
 import useLocation from '@/src/hooks/useLocation';
 import { useFeedApi } from '@/src/hooks/useFeedApi';
 import { RestaurantDTO } from '@/src/@types/DTO';
+import { useCreateUser } from '@/src/hooks/useUserApi';
 
-export default function Feed() {
-  const mockRestaurants: RestaurantDTO[] = [
-    {
-      id: '1',
-      profilePhoto: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=60',
-      address: '123 Rua das Flores, São Paulo, SP',
-      name: 'Sabor Brasileiro',
-      description: 'Comida típica brasileira com um toque caseiro.',
-      email: 'contato@saborbrasileiro.com',
-      password: 'hashed_password_1',
-      averagePrice: 45.00,
-      averageScore: 4.5,
-      phone: '',
-      userType: '',
-      stars: 5,
-    },
-    {
-      id: '2',
-      profilePhoto: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/75/8a/f4/mesas-sob-a-figueira.jpg?w=600&h=-1&s=1',
-      address: '456 Avenida Paulista, São Paulo, SP',
-      name: 'Sushi Zen',
-      description: '',
-      email: 'contato@sushizen.com',
-      password: 'hashed_password_2',
-      averagePrice: 80.00,
-      averageScore: 4.8,
-      phone: '',
-      userType: '',
-      stars: 5,
-    },
-    {
-      id: '3',
-      profilePhoto: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/75/8a/f4/mesas-sob-a-figueira.jpg?w=600&h=-1&s=1',
-      address: '789 Rua do Café, Campinas, SP',
-      name: 'Café & Cia',
-      description: '',
-      email: '',
-      password: '',
-      averagePrice: 30.00,
-      averageScore: 4.2,
-      phone: '',
-      userType: '',
-      stars: 4,
-    },
-    {
-      id: '4',
-      profilePhoto: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/75/8a/f4/mesas-sob-a-figueira.jpg?w=600&h=-1&s=1',
-      address: '',
-      name: 'Pizzaria Napoli',
-      description: '',
-      email: '',
-      password: '',
-      averagePrice: 60.00,
-      averageScore: 4.6,
-      phone: '',
-      userType: '',
-      stars: 5,
-    },
-    {
-      id: '5',
-      profilePhoto: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/75/8a/f4/mesas-sob-a-figueira.jpg?w=600&h=-1&s=1',
-      address: '654 Rua Gourmet, Belo Horizonte, MG',
-      name: 'Veggie Delícia',
-      description: '',
-      email: '',
-      password: '',
-      averagePrice: 50.00,
-      averageScore: 4.4,
-      phone: '',
-      userType: '',
-      stars: 4,
-    },
-  ];
+export default function Feed() { 
 
-  const { latitude, longitude } = useLocation();
-  const { getFeed, data: loading, error } = useFeedApi();
+  const { latitude, longitude, loadingLocation } = useLocation();
+  const { getFeed, data: restaurantData, loading, error } = useFeedApi();
+  const { getUserById, data: userData } = useCreateUser();
 
-  // useEffect(() => {
-  //   getFeed("user-1", latitude, longitude, 15);
-  // }, []);
+  useEffect(() => {
+    getUserById("user-1");
+  }, []);
 
-  if (loading) {
-      return (
-        <SafeAreaView style={styles.container}>
-          <ActivityIndicator size="large" color="#FF914B" style={{ marginTop: 50 }} />
-        </SafeAreaView>
-      );
+  useEffect(() => {    
+    if (latitude && longitude) {
+      getFeed("user-1", latitude, longitude);
     }
+  }, [latitude,longitude]);
+
+  if (loading || loadingLocation) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="#FF914B" style={{ marginTop: 50 }} />
+      </SafeAreaView>
+    );
+  }
   
     if (error) {
       return (
@@ -110,7 +46,7 @@ export default function Feed() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView >
-          <Header name={'Isabella'} nickName={''} />
+          <Header name={userData?.name ?? ' - '} nickName={userData?.nickname ?? ' - '} />
             <View style={{ marginHorizontal: '3%' }}>              
               <Pressable  onPress={() => router.push({ pathname: "/screens/Search" })}>
                 <SearchInput   
@@ -132,7 +68,7 @@ export default function Feed() {
           </View>
           
           <Text style={styles.title}>Restaurantes perto de você</Text>
-          <UserCarouselRestaurant variant="closeToYou" restaurantsExternal={mockRestaurants} />
+          <UserCarouselRestaurant variant="closeToYou" restaurantsExternal={restaurantData!} />
 
       </ScrollView>
     </SafeAreaView>
@@ -187,6 +123,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.orange.orangeBold,
     marginTop: 20,
-    paddingHorizontal: 20,
+    paddingHorizontal: '3%',
   },
 });

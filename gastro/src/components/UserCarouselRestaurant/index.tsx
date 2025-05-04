@@ -16,6 +16,14 @@ interface Props {
   restaurantsExternal: RestaurantDTO[];
 }
 
+const variantMessages: Record<string, string> = {
+  visited: 'Você ainda não visitou nenhum restaurante. Que tal começar agora?',
+  saved: 'Nenhum restaurante nos seus Salvos. Explore e salve lugares que você quer conhecer!',
+  menu: 'Nenhum cardápio encontrado. Tente procurar por outro restaurante.',
+  influencers: 'Nenhuma recomendação de influenciadores por aqui ainda.',
+  closeToYou: 'Não encontramos restaurantes próximos a você no momento.',
+};
+
 export default function UserCarouselRestaurant({
   variant,
   carouselProfileRestaurant = false,
@@ -44,18 +52,15 @@ export default function UserCarouselRestaurant({
     return restaurantsExternal!;
      }, [variant, carouselProfileRestaurant, selectedPins, restaurantsExternal]);
 
-    if ((variant === 'visited' || variant === 'saved') && data.length === 0) {
+    if (['visited', 'saved', 'menu', 'influencers', 'closeToYou'].includes(variant) && data.length === 0) {
       return (
         <View style={{ padding: 16 }}>
           <Text style={styles.avisoTexto}>
-            {variant === 'visited'
-              ? 'Você ainda não visitou nenhum restaurante. Que tal começar agora?'
-              : 'Nenhum restaurante nos seus Salvos. Explore e salve lugares que você quer conhecer!'}
+            {variantMessages[variant]}
           </Text>
         </View>
-    );
-  }
-
+      );
+    }
 
   const renderItem = ({ item }: { item: RestaurantDTO }) => {
     const isSelected = selectedPins.includes(item.id!);
@@ -89,7 +94,7 @@ export default function UserCarouselRestaurant({
     return (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => router.push({ pathname: tela as any})}//TALVEZ TENHA QUE MUDAR !
+        onPress={() => router.push({ pathname: tela as any})}
         activeOpacity={0.8}
       >
         <View style={styles.imageWrapper}>
@@ -141,7 +146,7 @@ export default function UserCarouselRestaurant({
           </View>
         )}
 
-        {['saved', 'closeToYou'].includes(variant) && item.averageScore !== null && (
+        {['saved'].includes(variant) && item.averageScore !== null && (
           <View style={styles.avaliacaoRow}>
             <AntDesign name="star" size={12} color="#FF914B" />
             <Text style={styles.nota}> {item.averageScore?.toFixed(1)}</Text>
