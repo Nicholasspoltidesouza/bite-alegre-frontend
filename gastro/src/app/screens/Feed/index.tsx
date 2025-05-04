@@ -1,13 +1,39 @@
-import React from 'react';
-import { View, StyleSheet,TouchableOpacity, ScrollView, Image,Text, SafeAreaView, Pressable } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet,TouchableOpacity, ScrollView, Image,Text, SafeAreaView, Pressable, ActivityIndicator } from 'react-native';
 import Header from '@/src/components/Header';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import Colors from '@/src/constants/Colors';
 import SearchInput from '@/src/components/SearchInput';
 import { router } from 'expo-router';
+import useLocation from '@/src/hooks/useLocation';
+import { useFeedApi } from '@/src/hooks/useFeedApi';
 
-export default function TextFieldWithFilter() {
+export default function Feed() {
 
+  const { latitude, longitude } = useLocation();
+  const { getFeed, data: loading, error } = useFeedApi();
+
+  useEffect(() => {
+    getFeed("user-1", latitude, longitude, 15);
+  }, []);
+
+  if (loading) {
+      return (
+        <SafeAreaView style={styles.container}>
+          <ActivityIndicator size="large" color="#FF914B" style={{ marginTop: 50 }} />
+        </SafeAreaView>
+      );
+    }
+  
+    if (error) {
+      return (
+        <SafeAreaView style={styles.container}>
+          <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>{error}</Text>
+        </SafeAreaView>
+      );
+    }
+
+    
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView >
