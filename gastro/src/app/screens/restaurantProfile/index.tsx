@@ -64,13 +64,13 @@ const RestaurantProfile: React.FC = () => {
       <View style={styles.infos}>
         <Text style={styles.title}>{restaurant?.name}</Text>
         <View style={styles.infoGrid}>
-          <Accordion 
-            title={'4,5'}
-            description={'(50 avaliação)'}
-            content={``} 
-            staticArrow={true} 
-            children={<FontAwesome name="star" size={24} color="#FF914B" />}>
-          </Accordion>
+        <Accordion 
+          title={`${restaurant?.averageScore ?? "-"}`}
+          description={`(${restaurant?.reviews?.length ?? 0} avaliações)`}
+          content={''}          
+          staticArrow={true} 
+          children={<FontAwesome name="star" size={24} color="#FF914B" />}>
+        </Accordion>
 
           <Accordion
             title={'Descrição'}
