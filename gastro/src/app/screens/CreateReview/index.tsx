@@ -109,7 +109,7 @@ const CreateReview: React.FC = () => {
           onChangeText={setDescription}
           placeholder={'Descreva sua experiência (opcional)'}
           multiline={true}
-          style={{ marginHorizontal: '5%', height: imputHeight > 50 ? imputHeight : 50, borderRadius: 20, backgroundColor: "rgba(255, 179, 112, 0.25)",}}
+          style={{ marginHorizontal: '5%', height: imputHeight > 50 ? imputHeight : 50, borderRadius: 20, backgroundColor: "rgba(255, 179, 112, 0.25)", color: Colors.black}}
           onContentSizeChange={(e) => setImputHeight(e.nativeEvent.contentSize.height)}
         >
         </CustomTextInput>

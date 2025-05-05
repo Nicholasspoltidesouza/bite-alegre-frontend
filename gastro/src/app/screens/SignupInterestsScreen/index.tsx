@@ -67,7 +67,12 @@ const SignupInterests: React.FC = () => {
         const userCreated = await createUser(payload);
         if (userCreated) {
           Alert.alert("Sucesso", "Usuário cadastrado com sucesso!");
-          router.push("/screens/Profile");
+          router.push({
+            pathname: "/screens/Profile",
+            params: {
+              userId: userCreated.id,
+            },
+          });          
         } else {
           Alert.alert("Dados inválidos para o cadastro do seu usuário.");
         }

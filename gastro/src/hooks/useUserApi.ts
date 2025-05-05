@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { UserDTO } from '../@types/DTO';
 import { API_URL_BACKEND, API_URL_ANDROID} from '../constants/apiUrl';
+import { UserResponse } from '../@types/UserResponse';
 
 export const useCreateUser = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [data, setData] = useState<UserDTO | null>(null);
 
-    const createUser = async (userData: UserDTO): Promise<boolean> => {
+    const createUser = async (userData: UserDTO): Promise<UserResponse | null> => {
         setLoading(true);
         setError(null);
 
@@ -25,7 +26,7 @@ export const useCreateUser = () => {
             if (response.ok) {
                 console.log("Usuário criado:", responseData);
                 setData(responseData);
-                return true;
+                return responseData;
             } else {
                 throw new Error(
                     responseData.error ||
@@ -36,7 +37,7 @@ export const useCreateUser = () => {
         } catch (err: any) {
             console.error("Erro ao criar usuário:", err);
             setError(err.message || "Erro desconhecido");
-            return false;
+            return null;
         } finally {
             setLoading(false);
         }

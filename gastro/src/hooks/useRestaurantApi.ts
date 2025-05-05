@@ -120,7 +120,6 @@ export const useRestaurantApi = () => {
     ): Promise<void> => {
         setLoading(true);
         setError(null);
-        console.log(data.restaurant_id)
         try {
             const response = await fetch(
                 `${API_URL_ANDROID}/restaurants/${data.restaurant_id}/review`,
