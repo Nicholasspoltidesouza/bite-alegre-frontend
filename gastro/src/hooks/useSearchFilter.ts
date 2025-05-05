@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { RestaurantDTO, RestaurantFilterDTO } from '../@types/DTO';
-import { API_URL_BACKEND } from '../constants/apiUrl';
+import { API_URL_ANDROID, API_URL_BACKEND } from '../constants/apiUrl';
 
 export const useSearchFilter = () => {
   const [loading, setLoading] = useState(false);
@@ -34,7 +34,7 @@ export const useSearchFilter = () => {
       }
 
       const queryString = queryParams.toString();
-      const url = `${API_URL_BACKEND}/restaurants${queryString ? '?' + queryString : ''}`;
+      const url = `${API_URL_ANDROID}/restaurants${queryString ? '?' + queryString : ''}`;
       console.log('Filtrando restaurantes com a URL:', url);
 
       const response = await fetch(url, {

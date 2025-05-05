@@ -5,16 +5,18 @@ import Header from '@/src/components/Header';
 import Colors from '@/src/constants/Colors';
 import { useCreateUser } from '@/src/hooks/useUserApi';
 import { CheckinDTO, RestaurantDTO, ReviewDTO } from '@/src/@types/DTO';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 
 export default function Profile() {
   const { getUserById, loading, error, data: userData } = useCreateUser();
   const [visitedRestaurants, setVisitedRestaurants] = useState<RestaurantDTO[]>([]);
+  const { userId } = useLocalSearchParams();
 
   useFocusEffect(
     useCallback(() => {
-      getUserById("user-1");
-    }, [])
+      const id = typeof userId === "string" ? userId : "user-1";
+      getUserById(id);
+    }, [userId])
   );
   
   useEffect(() => {
@@ -27,15 +29,16 @@ export default function Profile() {
     const visitedFromReviews: RestaurantDTO[] = userData!.reviews?.map(mapRestaurantToReview) ?? [];
     const visitedFromCheckins: RestaurantDTO[] = userData!.checkinsWithoutReview?.map(mapCheckinToRestaurant) ?? [];
 
-    const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];
+    const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];    
 
     const uniqueVisited = Array.from(new Map(
       combinedVisited.map(item => [item.id, item])
     ).values());
 
     if (uniqueVisited.length > 0) {
-      setVisitedRestaurants(uniqueVisited);
-    }    
+      return setVisitedRestaurants(uniqueVisited);
+    }
+    setVisitedRestaurants([]);  
   }
 
   function mapCheckinToRestaurant(checkin: CheckinDTO): RestaurantDTO {

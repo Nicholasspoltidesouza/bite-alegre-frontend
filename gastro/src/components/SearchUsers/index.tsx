@@ -1,16 +1,23 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface SearchUsersProps {
   name: string;
   nickname: string;
   profilePhoto: string;
+  useId: string;
 }
 
-const SearchUsers: React.FC<SearchUsersProps> = ({ name, nickname, profilePhoto }) => {
+const SearchUsers: React.FC<SearchUsersProps> = ({ name, nickname, profilePhoto, useId }) => {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={() => router.push({
+      pathname: "/screens/Profile",
+      params: {
+        userId: useId,
+      },
+    })}>
       <View style={styles.imageContainer}>
         {profilePhoto ? (
           <Image source={{ uri: profilePhoto }} style={styles.image} />
@@ -27,7 +34,7 @@ const SearchUsers: React.FC<SearchUsersProps> = ({ name, nickname, profilePhoto 
         <Text style={styles.nickname}>@{nickname}</Text>
       </View>
 
-    </View>
+    </TouchableOpacity>
   );
 };
 
