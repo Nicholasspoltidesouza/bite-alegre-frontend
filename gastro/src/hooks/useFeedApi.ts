@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { RestaurantDTO } from '../@types/DTO';
-import { API_URL_BACKEND, API_URL_ANDROID } from '../constants/apiUrl';
+import { API_URL_BACKEND, API_URL_ANDROID, API_URL_AWS } from '../constants/apiUrl';
 
 export const useFeedApi = () => {
   const [loading, setLoading] = useState(false);
@@ -16,7 +16,7 @@ export const useFeedApi = () => {
     setError(null);
   
     try {
-      const url = `${API_URL_ANDROID}/feed/${userId}?geolocation=${latitude},${longitude}`;
+      const url = `${API_URL_AWS}/feed/${userId}?geolocation=${latitude},${longitude}`;
 
       const response = await fetch(url, {
         method: 'GET',
