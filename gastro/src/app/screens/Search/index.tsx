@@ -51,6 +51,7 @@ const Search = () => {
               name={user.name}
               nickname={user.nickname}
               profilePhoto={user.profilePhoto || ''}
+              useId={user.id!}
             />
           ))}
 
@@ -60,6 +61,7 @@ const Search = () => {
               averagePrice={restaurant.averagePrice}
               note={restaurant.averageScore ?? 0}
               location={restaurant.address}
+              restaurantId={restaurant.id!}
             />
           ))}
         </ScrollView>

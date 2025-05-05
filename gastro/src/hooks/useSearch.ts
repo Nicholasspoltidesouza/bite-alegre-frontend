@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { RestaurantDTO, UserDTO } from '../@types/DTO';
-import { API_URL_BACKEND } from '../constants/apiUrl';
+import { API_URL_ANDROID, API_URL_BACKEND } from '../constants/apiUrl';
 
 type SearchResults = {
   users: UserDTO[];
@@ -27,7 +27,7 @@ export const useSearch = () => {
 
     try {
       if (trimmed.startsWith('@')) {
-        const res = await fetch(`${API_URL_BACKEND}/users`, {
+        const res = await fetch(`${API_URL_ANDROID}/users`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         });
@@ -47,7 +47,7 @@ export const useSearch = () => {
           throw new Error(data.message || 'Erro ao buscar usuários');
         }
       } else {
-        const res = await fetch(`${API_URL_BACKEND}/restaurants`, {
+        const res = await fetch(`${API_URL_ANDROID}/restaurants`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         });

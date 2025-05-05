@@ -1,7 +1,7 @@
 import Button from "@/src/components/Button";
 import Tag from "@/src/components/Tag";
 import ToggleSwitch from "@/src/components/ToggleSwitch";
-import { API_URL_BACKEND } from "@/src/constants/apiUrl";
+import { API_URL_ANDROID, API_URL_BACKEND } from "@/src/constants/apiUrl";
 import { RestaurantFilterDTO } from "@/src/@types/DTO";
 import { useSearchFilter } from "@/src/hooks/useSearchFilter";
 import useFetchTags from "@/src/hooks/useFetchTags";
@@ -54,7 +54,7 @@ const FilterScreen: React.FC = () => {
     loading: tagsLoading,
     error: tagsError,
   } = useFetchTags(
-    `${API_URL_BACKEND}/tags`
+    `${API_URL_ANDROID}/tags`
   );
 
   const priceNumber =

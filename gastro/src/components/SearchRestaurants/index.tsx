@@ -1,6 +1,7 @@
 import React from "react"
-import { Image ,View, Text, StyleSheet } from "react-native";
+import { Image ,View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
+import { router } from "expo-router";
 
 
 interface SearchRestaurantsProps {
@@ -9,33 +10,39 @@ interface SearchRestaurantsProps {
     note : number;
     location : string;
     profilePhoto? : string
+    restaurantId: string
 }
 
-const SearchRestaurants: React.FC<SearchRestaurantsProps> = ({name, averagePrice, note, location, profilePhoto}) => {
+const SearchRestaurants: React.FC<SearchRestaurantsProps> = ({name, averagePrice, note, location, profilePhoto, restaurantId}) => {
     const iconSize = 24;
     
     return (
-    <View style={styles.container}>
-        <View style={styles.imageContainer}>
-            {profilePhoto ? (
-                <Image source={{ uri: profilePhoto }} style={styles.image} />
-            ): 
-            (
-                <View style={styles.placeholderPhoto}>
-                    <MaterialIcons name="image" size={32} color="#888" />
-                    </View>
-        )}
-        </View>
-
-        <View style={styles.textContainer}>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.price}>R$ {averagePrice}</Text>
-            <View style={styles.detailsContainer}>
-            <MaterialIcons name="star" size={iconSize} color="#FF914B" />
-            <Text style={styles.detailsText}> {note} | {location}</Text>
+        <TouchableOpacity style={styles.container} onPress={() => {router.push({
+            pathname: "/screens/restaurantProfile",
+            params: {
+              restaurantId: restaurantId,
+            },
+          })}} >
+            <View style={styles.imageContainer}>
+                {profilePhoto ? (
+                    <Image source={{ uri: profilePhoto }} style={styles.image} />
+                ): 
+                (
+                    <View style={styles.placeholderPhoto}>
+                        <MaterialIcons name="image" size={32} color="#888" />
+                        </View>
+            )}
             </View>
-        </View>
-    </View>
+
+            <View style={styles.textContainer}>
+                <Text style={styles.name}>{name}</Text>
+                <Text style={styles.price}>R$ {averagePrice}</Text>
+                <View style={styles.detailsContainer}>
+                <MaterialIcons name="star" size={iconSize} color="#FF914B" />
+                <Text style={styles.detailsText}> {note} | {location}</Text>
+                </View>
+            </View>
+      </TouchableOpacity>
     );
 };
 
