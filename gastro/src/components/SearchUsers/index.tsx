@@ -1,3 +1,4 @@
+import Colors from "@/src/constants/Colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginVertical: 6,
     marginHorizontal: 12,
-    shadowColor: "#000",
+    shadowColor: Colors.black,
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
@@ -82,13 +83,13 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#FF914B",
+    color: Colors.orange.orangeStandard,
     marginBottom: 4,
   },
   nickname: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#000",
+    color: Colors.black,
     marginBottom: 4,
   },
 });

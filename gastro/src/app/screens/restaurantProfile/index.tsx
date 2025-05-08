@@ -24,6 +24,7 @@ import { useRestaurantApi } from "@/src/hooks/useRestaurantApi";
 import Button from "@/src/components/Button";
 import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { CheckinDTO } from "@/src/@types/DTO";
+import Colors from "@/src/constants/Colors";
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -49,7 +50,7 @@ const RestaurantProfile: React.FC = () => {
       <SafeAreaView style={styles.container}>
         <ActivityIndicator
           size="large"
-          color="#FF914B"
+          color={Colors.orange.orangeStandard}
           style={{ marginTop: 50 }}
         />
       </SafeAreaView>
@@ -99,10 +100,10 @@ const RestaurantProfile: React.FC = () => {
           description={`(${restaurant?.reviews?.length ?? 0} avaliações)`}
           content={''}          
           staticArrow={true} 
-          children={<FontAwesome name="star" size={24} color="#FF914B" />}>
+          children={<FontAwesome name="star" size={24} color= {Colors.orange.orangeStandard} />}>
         </Accordion>
 
-          <Accordion
+          <Accordion 
             title={"Descrição"}
             description={""}
             content={restaurant?.description ?? ""}
@@ -111,7 +112,7 @@ const RestaurantProfile: React.FC = () => {
               <Ionicons
                 name="document-text-outline"
                 size={24}
-                color="#FF914B"
+                color={Colors.orange.orangeStandard}
               />
             }
           ></Accordion>
@@ -122,7 +123,7 @@ const RestaurantProfile: React.FC = () => {
             content={restaurant?.address ?? ""}
             staticArrow={false}
             children={
-              <FontAwesome6 name="location-dot" size={24} color="#FF914B" />
+              <FontAwesome6 name="location-dot" size={24} color= {Colors.orange.orangeStandard} />
             }
           ></Accordion>
 
@@ -139,7 +140,7 @@ const RestaurantProfile: React.FC = () => {
               `Domingo                    12:00 às 22:00`
             }
             staticArrow={false}
-            children={<Foundation name="clock" size={24} color="#FF914B" />}
+            children={<Foundation name="clock" size={24} color= {Colors.orange.orangeStandard} />}
           ></Accordion>
 
           <Accordion
@@ -152,7 +153,7 @@ const RestaurantProfile: React.FC = () => {
               <MaterialCommunityIcons
                 name="calendar-start"
                 size={24}
-                color="#FF914B"
+                color= {Colors.orange.orangeStandard}
               />
             }
           ></Accordion>
@@ -209,7 +210,7 @@ const RestaurantProfile: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.white,
   },
   infos: {
     marginTop: 30,
@@ -219,7 +220,7 @@ const styles = StyleSheet.create({
     fontSize: screenWidth < 360 ? 18 : 20,
     fontWeight: "bold",
     fontFamily: "Poppins-Medium",
-    color: "#1F2937",
+    color: Colors.navyBlue,
     marginBottom: 8,
     marginTop: 15,
     textAlign: "center",
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
     fontWeight: "bold",
     textAlign: "center",
-    color: "#FF914B",
+    color: Colors.orange.orangeStandard,
     marginBottom: 20,
   },
   modalButtons: {

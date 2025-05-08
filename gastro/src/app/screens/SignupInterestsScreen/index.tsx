@@ -18,6 +18,7 @@ import { API_URL_ANDROID, API_URL_BACKEND } from "../../../constants/apiUrl";
 import useFetchTags from "../../../hooks/useFetchTags";
 import { useCreateUser } from "../../../hooks/useUserApi";
 import { useRestaurantApi } from "@/src/hooks/useRestaurantApi";
+import Colors from "@/src/constants/Colors";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -130,7 +131,7 @@ const SignupInterests: React.FC = () => {
       <SafeAreaView style={styles.safeArea}>
         <ActivityIndicator
           size="large"
-          color="#FF914B"
+          color= {Colors.orange.orangeStandard}
           style={{ marginTop: 50 }}
         />
       </SafeAreaView>
@@ -177,7 +178,7 @@ const SignupInterests: React.FC = () => {
             <MaterialIcons
               name="keyboard-arrow-left"
               size={35}
-              color="#FF914B"
+              color= {Colors.orange.orangeStandard}
             />
           </TouchableOpacity>
         </View>
@@ -202,7 +203,7 @@ const SignupInterests: React.FC = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.white,
   },
   container: {
     flex: 1,
@@ -218,7 +219,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
     fontSize: screenWidth < 360 ? 18 : 20,
     fontWeight: "bold",
-    color: "#FF914B",
+    color: Colors.orange.orangeStandard,
     textAlign: "center",
     marginTop: "10%",
   },
@@ -230,7 +231,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
     fontSize: screenWidth < 360 ? 18 : 20,
     fontWeight: "500",
-    color: "#FF914B",
+    color: Colors.orange.orangeStandard,
     marginBottom: "5%",
     marginLeft: "1%",
   },

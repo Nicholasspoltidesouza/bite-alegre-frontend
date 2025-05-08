@@ -4,6 +4,7 @@ import { Image, Pressable } from 'react-native';
 import { NavBarIcon } from "../components/NavBarItem/index";
 import React, { useEffect, useState } from "react";
 import * as Font from 'expo-font';
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 export default function RootLayout() {
   const pathname = usePathname();
@@ -22,8 +23,8 @@ export default function RootLayout() {
 
   return (
     <Tabs screenOptions={{
-      tabBarActiveTintColor: '#FF914B', 
-      tabBarInactiveTintColor: '#FF914B',
+      tabBarActiveTintColor: Colors.orange.orangeStandard, 
+      tabBarInactiveTintColor: Colors.orange.orangeStandard,
       headerShown: false,
       tabBarHideOnKeyboard: true,
       tabBarStyle: {
@@ -31,7 +32,7 @@ export default function RootLayout() {
         height: 66,
         backgroundColor: 'white',
         borderTopWidth: 1.5,
-        borderColor: '#FF914B',
+        borderColor: Colors.orange.orangeStandard,
       },
       tabBarButton: (props) => <Pressable {...props} android_ripple={{ color: 'transparent' }} />
     }}>

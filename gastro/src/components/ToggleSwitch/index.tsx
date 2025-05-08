@@ -1,5 +1,6 @@
 "use client"
 
+import Colors from "@/src/constants/Colors"
 import React from "react"
 import { useState, useEffect } from "react"
 import { StyleSheet, TouchableOpacity, Animated, type ViewStyle, type StyleProp } from "react-native"
@@ -16,7 +17,7 @@ interface ToggleSwitchProps {
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   isEnabled = false,
   onToggle,
-  activeColor = "#FF914B",
+  activeColor = Colors.orange.orangeStandard,
   inactiveColor = "#E3E1E1",
   style,
   disabled = false,
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 11,
     backgroundColor: "white",
-    shadowColor: "#000",
+    shadowColor: Colors.black,
     shadowOffset: {
       width: 0,
       height: 2,

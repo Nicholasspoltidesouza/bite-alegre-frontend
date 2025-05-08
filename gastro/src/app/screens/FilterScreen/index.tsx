@@ -9,6 +9,7 @@ import useLocation from "@/src/hooks/useLocation";
 import { Feather, FontAwesome6 } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
+import Colors from "@/src/constants/Colors";
 import {
   ActivityIndicator,
   Modal,
@@ -137,7 +138,7 @@ const FilterScreen: React.FC = () => {
   if (tagsLoading || filterLoading) {
     return (
       <SafeAreaView style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#FF914B" />
+        <ActivityIndicator size="large" color= {Colors.orange.orangeStandard} />
       </SafeAreaView>
     );
   }
@@ -154,7 +155,7 @@ const FilterScreen: React.FC = () => {
   const categoryTags = tags.filter((t) => t.type === "CATEGORIA");
   const occasionTags = tags.filter((t) => t.type === "OCASIAO");
 
-  const iconColor = "#04565A";
+  const iconColor = Colors.icon;
   const dropdownIconColor = "#8F8F8F";
   const iconSize = 16;
 
@@ -162,7 +163,7 @@ const FilterScreen: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar
         barStyle="dark-content"
-        backgroundColor="#F8F8F8"
+        backgroundColor= {Colors.white}
       />
 
       <View style={styles.header}>
@@ -426,7 +427,7 @@ const styles = StyleSheet.create({
   loaderContainer: {
     flex: 1,
     justifyContent: "center",
-    backgroundColor: "#F8F8F8",
+    backgroundColor: Colors.white,
   },
   errorText: {
     color: "red",
@@ -435,7 +436,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#F8F8F8",
+    backgroundColor: Colors.white,
     paddingHorizontal: 20,
   },
   header: {
@@ -449,7 +450,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
     fontSize: 20,
     fontWeight: "bold",
-    color: "#FF914B",
+    color: Colors.orange.orangeStandard,
   },
   scrollView: { flex: 1 },
   section: { marginBottom: 20 },
@@ -457,7 +458,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
     fontSize: 16,
     fontWeight: "600",
-    color: "#FF914B",
+    color: Colors.orange.orangeStandard,
     marginBottom: 10,
   },
   tagsContainer: {
@@ -488,7 +489,7 @@ const modalStyles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   wrapper: {
-    backgroundColor: "#F8F8F8",
+    backgroundColor: Colors.white,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 24,
@@ -497,14 +498,14 @@ const modalStyles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
     fontSize: 18,
     fontWeight: "600",
-    color: "#FF914B",
+    color: Colors.orange.orangeStandard,
     marginBottom: 20,
   },
   input: {
     height: 50,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#E3E1E1",
+    borderColor: Colors.light.lightGray,
     paddingHorizontal: 16,
     fontSize: 18,
     marginBottom: 24,

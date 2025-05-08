@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 interface AccordionProps {
   title: string;
@@ -34,7 +35,7 @@ const Accordion: React.FC<AccordionProps> = ({ title, description, content, stat
         <MaterialIcons
           name={staticArrow ? "keyboard-arrow-right" : isOpen ? "keyboard-arrow-up" : "keyboard-arrow-down"}
           size={34}
-          color={'#FF914B'}
+          color={Colors.orange.orangeStandard}
         />
       </TouchableOpacity>
       {isOpen && (
@@ -61,14 +62,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Poppins-Medium",
     fontWeight: 'bold',
-    color: "#333",
+    color: Colors.gray.grayDark,
     marginLeft: 8,
     marginRight: 8
   },
   contentText: {
     fontFamily: "Poppins-Medium",
     fontSize: 12,
-    color: "#555",
+    color: Colors.gray.grayMedium,  
     paddingLeft: 27,
   },
   description: {

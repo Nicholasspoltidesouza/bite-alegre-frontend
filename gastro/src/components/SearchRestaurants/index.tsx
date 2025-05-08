@@ -2,6 +2,7 @@ import React from "react"
 import { Image ,View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
 import { router } from "expo-router";
+import Colors from "@/src/constants/Colors";
 
 
 interface SearchRestaurantsProps {
@@ -38,7 +39,7 @@ const SearchRestaurants: React.FC<SearchRestaurantsProps> = ({name, averagePrice
                 <Text style={styles.name}>{name}</Text>
                 <Text style={styles.price}>R$ {averagePrice}</Text>
                 <View style={styles.detailsContainer}>
-                <MaterialIcons name="star" size={iconSize} color="#FF914B" />
+                <MaterialIcons name="star" size={iconSize} color= {Colors.orange.orangeStandard} />
                 <Text style={styles.detailsText}> {note} | {location}</Text>
                 </View>
             </View>
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         marginVertical: 6,
         marginHorizontal: 12,
-        shadowColor: "#000",
+        shadowColor: Colors.black,
         shadowOpacity: 0.05,
         shadowOffset: { width: 0, height: 2 },
         shadowRadius: 6,
@@ -90,13 +91,13 @@ const styles = StyleSheet.create({
       name: {
         fontSize: 16,
         fontWeight: "bold",
-        color: "#FF914B",
+        color: Colors.orange.orangeStandard,
         marginBottom: 4,
       },
       price: {
         fontSize: 14,
         fontWeight: "bold",
-        color: "#000",
+        color: Colors.black,
         marginBottom: 4,
       },
       detailsContainer: {
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
       },
       detailsText: {
         fontSize: 13,
-        color: "#FF914B",
+        color: Colors.orange.orangeStandard,
         marginLeft: 4,
       },
 });

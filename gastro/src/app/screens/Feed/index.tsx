@@ -29,7 +29,7 @@ export default function Feed() {
   if (loading || loadingLocation) {
     return (
       <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color="#FF914B" style={{ marginTop: 50 }} />
+        <ActivityIndicator size="large" color={Colors.orange.orangeStandard} style={{ marginTop: 50 }} />
       </SafeAreaView>
     );
   }
@@ -78,7 +78,7 @@ export default function Feed() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
   },
   searchContainer: {
     paddingHorizontal: 20,

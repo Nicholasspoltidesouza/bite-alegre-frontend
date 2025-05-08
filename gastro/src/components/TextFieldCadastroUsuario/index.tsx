@@ -1,3 +1,4 @@
+import Colors from '@/src/constants/Colors';
 import React, { useState } from 'react';
 import {
   DimensionValue,
@@ -57,7 +58,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
           {
             paddingLeft: 24,
             paddingRight: 16,
-            color: '#FF914B',
+            color: Colors.orange.orangeStandard,
             fontFamily: 'Poppins-Regular',
             fontSize: 16,
             letterSpacing: 0,
@@ -69,7 +70,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
         onChangeText={handleChangeText}
         value={value}
         placeholder={placeholder}
-        placeholderTextColor="#FF914B"
+        placeholderTextColor= {Colors.orange.orangeStandard}
         {...props}
       />
     </>

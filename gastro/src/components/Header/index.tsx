@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useCreateUser } from "@/src/hooks/useUserApi";
+import Colors from "@/src/constants/Colors";
 
 interface HeaderProps {
   isProfile?: boolean;
@@ -25,9 +26,9 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor="#FF914B" translucent={false} />
+      <StatusBar backgroundColor= {Colors.orange.orangeStandard} translucent={false} />
       <LinearGradient
-        colors={["#FF914B", "#FFFDFC"]}
+        colors={[Colors.orange.orangeStandard, Colors.white]}
         locations={[0.45, 0.95]}
         style={styles.gradient}
       >
@@ -58,7 +59,7 @@ const Header: React.FC<HeaderProps> = ({
                 <MaterialIcons
                   name="location-on"
                   size={16}
-                  color="#fff"
+                  color= {Colors.white}
                   style={styles.icon}
                 />
                 <Text style={styles.infoText}>
@@ -74,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({
             style={styles.editIconButton}
             onPress={() => console.log("Edit Profile")}
           >
-            <MaterialCommunityIcons name="lead-pencil" size={22} color="#fff" />
+            <MaterialCommunityIcons name="lead-pencil" size={22} color={Colors.white} />
           </TouchableOpacity>
         )}
       </LinearGradient>
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 40,
     right: 20,
-    backgroundColor: "#FF914B",
+    backgroundColor: Colors.orange.orangeStandard,
     padding: 6,
     borderRadius: 20,
     zIndex: 10,
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontFamily: "Poppins-Medium",
-    color: "#fff",
+    color: Colors.white,
   },
   username: {
     fontSize: 14,
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 22, 
     fontFamily: "Poppins-Medium", 
-    color: "#fff",
+    color: Colors.white,
   },
   bold: {
     fontWeight: "bold",
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   infoText: {
-    color: "#fff",
+    color: Colors.white,
     fontSize: 14,
     fontFamily: "Poppins-Medium",
   },
