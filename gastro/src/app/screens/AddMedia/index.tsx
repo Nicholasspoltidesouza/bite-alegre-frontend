@@ -36,8 +36,15 @@ const AddMedia = () => {
 
 
   const handleAddMedia = () => {
-    // lógica para escolher se vai abrir a camera ou a galeria
-    pickImage
+    Alert.alert(
+      "Selecionar Imagem",
+      "Deseja tirar uma foto ou escolher da galeria?",
+      [
+        { text: "Câmera", onPress: openCamera },
+        { text: "Galeria", onPress: pickImage },
+        { text: "Cancelar", style: "cancel" },
+      ]
+    );
   };
 
   const pickImage = async () => {
@@ -47,17 +54,42 @@ const AddMedia = () => {
       alert('Você precisa permitir o acesso à galeria!');
       return;
     }
-  
+
+    console.log("Abrindo galeria");
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
+      allowsEditing: false,
       quality: 1,
     });
   
     if (!result.canceled) {
+      console.log("Imagem selecionada:", result.assets[0].uri);
       setImageUri(result.assets[0].uri);
+    } else {
+      console.log("Seleção cancelada");
     }
   };
+
+  const openCamera = async () => {
+  const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+  if (!permissionResult.granted) {
+    alert("Permissão para usar a câmera negada.");
+    return;
+  }
+
+  const result = await ImagePicker.launchCameraAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: false,
+    quality: 1,
+  });
+
+  if (!result.canceled) {
+    console.log("Imagem selecionada:", result.assets[0].uri);
+    setImageUri(result.assets[0].uri);
+  } else {
+    console.log("Seleção cancelada");
+  }
+};
 
   const handleCreate = () => {
     const errors = [
@@ -87,18 +119,20 @@ const AddMedia = () => {
           Platform.OS === "ios" && { marginTop: -insets.top },
         ]}
       >
+        <View style={styles.orangeHeader}>
+          <Button
+            title="+"
+            type="orange"
+            onPress={handleAddMedia}
+            style={styles.orangeButton}
+            textStyle={styles.orangeButtonText}
+          />
+        </View>
+        
         <ScrollView
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.buttonContainer}>
-            <Button
-              title="Adicionar Mídia"
-              type="orange"
-              onPress={handleAddMedia}
-            />
-          </View>
-
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={description}
@@ -198,6 +232,25 @@ const styles = StyleSheet.create({
     width: "90%",
     flexDirection: "row",
     justifyContent: "flex-end",
+  },
+  orangeHeader: {
+    width: "100%",
+    height: 400,
+    backgroundColor: "#FF914B",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  orangeButton: {
+    width: 300,
+    height: 200,
+    backgroundColor: "#d9d9d9",
+  },
+  orangeButtonText: {
+    fontSize: 45,
+    fontFamily: "Poppins-Bold",
   },
 });
 
