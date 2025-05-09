@@ -108,6 +108,7 @@ const AddMedia = () => {
   };
 
   return (
+    <View>
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -120,6 +121,9 @@ const AddMedia = () => {
         ]}
       >
         <View style={styles.orangeHeader}>
+          <View style={styles.textContainer}>
+          <Text style={styles.textCreatePublication}>Criar Publicação</Text>
+          </View>
           <Button
             title="+"
             type="orange"
@@ -182,6 +186,7 @@ const AddMedia = () => {
         </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
+    </View>
   );
 };
 
@@ -243,6 +248,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
+  textContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    textAlign: 'center',
+    fontSize: 18,
+    // position: 'relative',
+    alignItems: 'center',
+  },
+  textCreatePublication: {
+    padding: 60,
+    color: "#FFFFFF",
+    textAlign: 'center',
+    },
   orangeButton: {
     width: 300,
     height: 200,
