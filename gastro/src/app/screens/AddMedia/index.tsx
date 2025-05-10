@@ -164,6 +164,9 @@ const AddMedia = () => {
       return;
     }
 
+    setDescription("")
+    setMediaUri(null)
+    setRestaurantSearch("")
     Alert.alert("Sucesso", "Publicação criada!");
     router.back();
   };
