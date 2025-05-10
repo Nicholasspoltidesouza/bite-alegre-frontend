@@ -23,13 +23,29 @@ const AddMedia = () => {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [description, setDescription] = useState<string>("");
   const [restaurantSearch, setRestaurantSearch] = useState<string>("");
-  const [tags, setTags] = useState<string>("");
+  const [tags, setTags] = useState<string[]>([]);
 
   const validateDescription = (text: string): string | null => {
     if (text.length > 200)
       return "Descrição não pode ter mais de 200 caracteres";
     return null;
   };
+
+  const validateRestaurant = (text: string): string | null => {
+    if (text.length > 50)
+      return "Nome do restaurante não possuí mais de 50 caracteres";
+    return null
+  }
+  // validar essa lógica
+  const validateTags = (text: string): string | null => {
+  const tagsArray = text.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+
+  if (tagsArray.length < 3) {
+    return 'Você precisa adicionar no mínimo 3 tags';
+  }
+
+  return null;
+};
 
   const isFormValid = true; // se a foto ainda não foi adicionada vai ser false
 
@@ -103,12 +119,10 @@ const AddMedia = () => {
     // ajustar lógica de criação
     Alert.alert("Sucesso", "sucesso!");
     router.back();
-
-    
   };
 
   return (
-    <View>
+    <View style={styles.containerPrincipal}>
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -121,9 +135,7 @@ const AddMedia = () => {
         ]}
       >
         <View style={styles.orangeHeader}>
-          <View style={styles.textContainer}>
           <Text style={styles.textCreatePublication}>Criar Publicação</Text>
-          </View>
           <Button
             title="+"
             type="orange"
@@ -152,10 +164,11 @@ const AddMedia = () => {
 
           <View style={styles.inputWrapper}>
             <CustomTextInput
-              value={description}
+              value={restaurantSearch}
               onChangeText={setRestaurantSearch}
               placeholder="Resataurante"
               style={[styles.input]}
+              validation={validateRestaurant}
               multiline={true}
               numberOfLines={4}
               textAlignVertical="top"
@@ -165,10 +178,11 @@ const AddMedia = () => {
 
           <View style={styles.inputWrapper}>
             <CustomTextInput
-              value={description}
-              onChangeText={setTags}
+              value={tags.join(', ')}
+              onChangeText={(text) => setTags(text.split(',').map(tag => tag.trim()))}
               placeholder="Tags"
               style={[styles.input]}
+              validation={validateTags}
               multiline={true}
               numberOfLines={4}
               textAlignVertical="top"
@@ -191,9 +205,14 @@ const AddMedia = () => {
 };
 
 const styles = StyleSheet.create({
+  containerPrincipal: {
+    flexGrow: 1,
+    height: '100%',
+    width: '100%',
+  },
   safeArea: {
-    flex: 1,
     backgroundColor: "#FFFFFF",
+    flex: 1,
   },
   container: {
     alignItems: "center",
@@ -204,6 +223,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     width: "90%",
     marginBottom: "5%",
+    padding: 6,
   },
   input: {
     width: "100%",
@@ -215,6 +235,8 @@ const styles = StyleSheet.create({
     color: "#000000",
     fontFamily: "Poppins-Regular",
     fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   rowContainer: {
     flexDirection: "row",
@@ -248,23 +270,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
-  textContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    textAlign: 'center',
-    fontSize: 18,
-    // position: 'relative',
-    alignItems: 'center',
-  },
   textCreatePublication: {
-    padding: 60,
+    padding: 30,
     color: "#FFFFFF",
+    fontSize: 18,
+    fontFamily: "Poppins-Regular",
     textAlign: 'center',
+    position: 'relative'
+    
     },
   orangeButton: {
-    width: 300,
-    height: 200,
+    width: 265,
+    height: 206,
     backgroundColor: "#d9d9d9",
+    padding: 70,
   },
   orangeButtonText: {
     fontSize: 45,
