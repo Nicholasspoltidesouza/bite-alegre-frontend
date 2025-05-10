@@ -1,3 +1,4 @@
+import Colors from '@/src/constants/Colors';
 import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -20,7 +21,7 @@ const SignupHeader = ({ urlProfilePhoto, onBack, onPhotoPress, userType, setUser
     <SafeAreaView>
       <View style={styles.banner}>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <MaterialIcons name="keyboard-arrow-left" size={24} color="#FFFFFF" />
+          <MaterialIcons name="keyboard-arrow-left" size={24} color= {Colors.white} />
         </TouchableOpacity>
         <View style={styles.userTypeContainer}>
           <Text style={styles.userTypeText}>
@@ -36,7 +37,7 @@ const SignupHeader = ({ urlProfilePhoto, onBack, onPhotoPress, userType, setUser
               <MaterialIcons name={profileIcon} size={30} color="rgba(255,255,255,0.85)" />
             )}
             <View style={styles.cameraIcon}>
-              <MaterialIcons name="photo-camera" size={20} color="#FFFFFF" />
+              <MaterialIcons name="photo-camera" size={20} color= {Colors.white} />
             </View>
           </TouchableOpacity>
         </View>
@@ -48,7 +49,7 @@ const SignupHeader = ({ urlProfilePhoto, onBack, onPhotoPress, userType, setUser
 const styles = StyleSheet.create({
   banner: {
     height: 190,
-    backgroundColor: '#FF914B',
+    backgroundColor: Colors.orange.orangeStandard,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     position: 'relative',
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
   },
   userTypeText: {
     fontSize: 20,
-    color: '#FFFFFF',
+    color: Colors.white,
     fontFamily: 'Poppins-SemiBold',
     textAlign: 'center',
     marginTop: 24,
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 12,
-    color: '#FFFFFF',
+    color: Colors.white,
     fontWeight: '500',
     marginTop: 10,
   },
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 35,
-    backgroundColor: '#FFB370',
+    backgroundColor: Colors.orange.orangeMedium,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',

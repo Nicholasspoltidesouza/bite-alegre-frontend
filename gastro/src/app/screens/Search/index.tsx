@@ -1,6 +1,7 @@
 import SearchInput from '@/src/components/SearchInput';
 import SearchRestaurants from '@/src/components/SearchRestaurants';
 import SearchUsers from '@/src/components/SearchUsers';
+import Colors from '@/src/constants/Colors';
 import { useSearch } from '@/src/hooks/useSearch';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
@@ -42,7 +43,7 @@ const Search = () => {
 
         <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
           {loading && (
-            <ActivityIndicator size="small" color="#FF914B" style={{ marginTop: 20 }} />
+            <ActivityIndicator size="small" color= {Colors.orange.orangeStandard} style={{ marginTop: 20 }} />
           )}
 
           {!loading && isUserSearch && users.map((user) => (
@@ -73,7 +74,7 @@ const Search = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
   },
   fixedInputWrapper: {
     width: '90%',
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     borderRadius: 20,
-    color: '#000000',
+    color: Colors.black,
     fontFamily: 'Poppins-Regular',
     fontSize: 16,
   },

@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { View, StyleSheet, Text, Image, Animated, TouchableOpacity } from "react-native";
 import { Foundation } from '@expo/vector-icons';
+import Colors from "@/src/constants/Colors";
 
 interface PhotoDishProps {
   urlFotoPrato: string;
@@ -56,7 +57,7 @@ const PhotoDish: React.FC<PhotoDishProps> = ({
       <View style={styles.card}>
         {showStar && (
           <View style={styles.starIcon}>
-            <Foundation name="star" size={24} color="#FF914B" />
+            <Foundation name="star" size={24} color= {Colors.orange.orangeStandard} />
           </View>
         )}
         
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     borderRadius: 16,
     overflow: 'hidden',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white,
     elevation: 4,
     position: 'relative',
   },
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
   backCard: {
     position: 'absolute',
     top: 0,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: Colors.white,
     padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
   descriptionText: {
     fontSize: 14,
     textAlign: 'center',
-    color: '#1F2937',
+    color: Colors.navyBlue,
     fontWeight: '500',
   },
   starIcon: {

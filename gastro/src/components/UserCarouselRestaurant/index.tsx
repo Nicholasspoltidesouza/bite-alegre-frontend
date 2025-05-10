@@ -109,7 +109,7 @@ export default function UserCarouselRestaurant({
                 size={16}
                 style={{
                   transform: [{ rotate: '90deg' }],
-                  color: isSelected ? '#FF7700' : '#FF770040',
+                  color: isSelected ? Colors.orange.orangeBold : '#FF770040',
                 }}
               />
             </TouchableOpacity>
@@ -140,7 +140,7 @@ export default function UserCarouselRestaurant({
                 key={i}
                 name="star"
                 size={12}
-                color={i < item.stars! ? '#FF914B' : '#FF914B40'}
+                color={i < item.stars! ? Colors.orange.orangeStandard : '#FF914B40'}
               />
             ))}
           </View>
@@ -148,7 +148,7 @@ export default function UserCarouselRestaurant({
 
         {['saved'].includes(variant) && item.averageScore !== null && (
           <View style={styles.avaliacaoRow}>
-            <AntDesign name="star" size={12} color="#FF914B" />
+            <AntDesign name="star" size={12} color= {Colors.orange.orangeStandard} />
             <Text style={styles.nota}> {item.averageScore?.toFixed(1)}</Text>
             <Text style={styles.avaliacoes}> (0 avaliações)</Text>
           </View>
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 16,
     overflow: 'hidden',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white,
     elevation: 4,
   },
   image: {
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 20,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 3,
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontWeight: 'bold',
     fontSize: 14,
-    color: '#1F2937',
+    color: Colors.navyBlue,
   },
   avaliacaoRow: {
     flexDirection: 'row',
@@ -220,11 +220,11 @@ const styles = StyleSheet.create({
   nota: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: Colors.navyBlue,
   },
   avaliacoes: {
     fontSize: 11,
-    color: '#555',
+    color: Colors.gray.grayMedium,
   },
   avalieAqui: {
     flexDirection: 'row',
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   botaoAvaliarTexto: {
     fontFamily: 'Poppins-Regular',
     fontSize: 12,
-    color: '#FF914B',
+    color: Colors.orange.orangeStandard,
     fontWeight: 'bold',
   },
   avisoTexto: {

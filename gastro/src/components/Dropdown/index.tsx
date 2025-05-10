@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+  import Colors  from "../../constants/Colors";
 
 interface DropdownProps {
   label: string;
@@ -28,7 +29,7 @@ interface DropdownProps {
   backgroundColor?: string;
 }
 
-const Dropdown = ({ options, selected, placeholder, onSelect, iconSize = 20, iconColor = "#FF914B", width = 327, textColor = "#FF914B", backgroundColor = 'rgba(255, 179, 112, 0.25)', justifyContent = "space-between", paddingLeft = 16, paddingRight = 16 }: DropdownProps) => {
+const Dropdown = ({ options, selected, placeholder, onSelect, iconSize = 20, iconColor = Colors.orange.orangeStandard, width = 327, textColor = Colors.orange.orangeStandard, backgroundColor = 'rgba(255, 179, 112, 0.25)', justifyContent = "space-between", paddingLeft = 16, paddingRight = 16 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => setIsOpen((prev) => !prev);
   const closeDropdown = () => setIsOpen(false);
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     paddingRight: 16,
   },
   text: {
-    color: "#FF914B",
+    color: Colors.orange.orangeStandard,
     fontSize: 16,
     fontFamily: "Poppins-Regular",
   },
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   dropdownContainer: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.white,
     borderRadius: 16,
     borderWidth: 2,
     borderColor: "rgba(255, 179, 112, 0.75)",

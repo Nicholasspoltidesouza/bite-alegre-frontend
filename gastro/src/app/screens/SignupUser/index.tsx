@@ -3,6 +3,7 @@ import Button from "@/src/components/Button";
 import Dropdown from "@/src/components/Dropdown";
 import SignupHeader from "@/src/components/SignupHeader";
 import CustomTextInput from "@/src/components/TextFieldCadastroUsuario";
+import Colors from "@/src/constants/Colors";
 import { useCreateUser } from "@/src/hooks/useUserApi";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
@@ -274,7 +275,7 @@ const SignupUser = () => {
                 onSelect={setGender}
                 width="50%"
                 paddingLeft={24}
-                textColor={gender ? "#000000" : "#FF914B"}
+                textColor={gender ? Colors.black : Colors.orange.orangeStandard}
               />
             </View>
             <View style={styles.halfInputWrapper}>
@@ -326,7 +327,7 @@ const SignupUser = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.white,
   },
   container: {
     alignItems: "center",
@@ -345,7 +346,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 179, 112, 0.25)",
     paddingLeft: 24,
     paddingRight: 16,
-    color: "#000000",
+    color: Colors.black,
     fontFamily: "Poppins-Regular",
     fontSize: 16,
   },
@@ -365,7 +366,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 179, 112, 0.25)",
     paddingLeft: 24,
     paddingRight: 16,
-    color: "#000000",
+    color: Colors.black,
     fontFamily: "Poppins-Regular",
     fontSize: 16,
   },

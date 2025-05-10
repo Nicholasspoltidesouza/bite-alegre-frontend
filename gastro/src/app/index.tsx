@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Button from '../components/Button';
 import Header from '../components/Header';
+import Colors from '../constants/Colors';
 
 const App: React.FC = () => {
 
@@ -23,7 +24,7 @@ const App: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
   },
   buttons: {
     flex: 1,

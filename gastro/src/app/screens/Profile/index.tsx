@@ -77,7 +77,7 @@ export default function Profile() {
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color="#FF914B" style={{ marginTop: 50 }} />
+        <ActivityIndicator size="large" color= {Colors.orange.orangeStandard} style={{ marginTop: 50 }} />
       </SafeAreaView>
     );
   }

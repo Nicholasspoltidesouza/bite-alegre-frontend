@@ -24,7 +24,7 @@ const CreateReview: React.FC = () => {
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color="#FF914B" style={{ marginTop: 50 }} />
+        <ActivityIndicator size="large" color= {Colors.orange.orangeStandard} style={{ marginTop: 50 }} />
       </SafeAreaView>
     );
   }
@@ -82,7 +82,7 @@ const CreateReview: React.FC = () => {
       <ScrollView style={styles.container}>
         <View style={styles.containerTitle}>
           <TouchableOpacity style={styles.backButton} onPress={() => router.push({ pathname: "/screens/restaurantProfile" })}>
-            <MaterialIcons name="keyboard-arrow-left" size={35} color="#FF914B" />
+            <MaterialIcons name="keyboard-arrow-left" size={35} color= {Colors.orange.orangeStandard} />
           </TouchableOpacity>
           <Text style={styles.titleText}>
             Esta foi sua primeira visita ao restaurante, deixe uma avaliação!
@@ -114,7 +114,7 @@ const CreateReview: React.FC = () => {
         >
         </CustomTextInput>
         <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={() => handleSubmit()}>
-          <MaterialIcons name="navigation" size={40} color="#FFB370" style={{ margin: '5%', transform: [{ rotate: '90deg' }] }} />
+          <MaterialIcons name="navigation" size={40} color={Colors.orange.orangeMedium} style={{ margin: '5%', transform: [{ rotate: '90deg' }] }} />
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   photo: {
-    backgroundColor: '#FFB370',
+    backgroundColor: Colors.orange.orangeMedium,
     borderRadius: 50,
     height: 65,
     width: 65,

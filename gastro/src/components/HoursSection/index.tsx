@@ -2,6 +2,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { OperatingHoursDto } from '../../@types/OperatingHoursDto';
+import Colors from '@/src/constants/Colors';
 
 interface Props {
   hours: OperatingHoursDto[];
@@ -28,7 +29,7 @@ const HoursSection: React.FC<Props> = ({ hours, onAdd, onPressItem }) => {
       <View style={styles.header}>
         <Text style={styles.title}>Funcionamento</Text>
         <TouchableOpacity onPress={handleAddOperatingHour} style={styles.addButton}>
-          <MaterialCommunityIcons name="plus" size={20} color="#FFFFFF" />
+          <MaterialCommunityIcons name="plus" size={20} color= {Colors.white} />
         </TouchableOpacity>
       </View>
 
@@ -67,14 +68,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#FF914B',
+    backgroundColor: Colors.orange.orangeStandard,
     padding: '2.5%',
     borderRadius: 20,
     width: containerWidth,
     height: 50,
   },
   title: {
-    color: '#FFFFFF',
+    color: Colors.white,
     fontSize: 16,
     fontFamily: 'Poppins-SemiBold',
     left: '5%',

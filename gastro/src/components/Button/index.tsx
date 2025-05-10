@@ -1,3 +1,4 @@
+import Colors from '@/src/constants/Colors';
 import React from 'react';
 import { StyleProp, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 
@@ -27,7 +28,7 @@ const Button: React.FC<ButtonProps> = ({ title, onPress, type, style, textStyle,
                 ? '#FF914B'
                 : '#FFFFFF',
           borderWidth: type === 'white' ? 2 : 0,
-          borderColor: type === 'white' ? '#FF914B' : 'transparent',
+          borderColor: type === 'white' ? Colors.orange.orangeStandard : 'transparent',
         },
         style,
       ]}
@@ -39,7 +40,7 @@ const Button: React.FC<ButtonProps> = ({ title, onPress, type, style, textStyle,
             fontFamily: 'Poppins-Regular',
             fontSize: 16,
             fontWeight: '700',
-            color: type === 'orange' ? '#FFFFFF' : '#FF914B',
+            color: type === 'orange' ? Colors.white : Colors.orange.orangeStandard,
           },
           textStyle,
         ]}

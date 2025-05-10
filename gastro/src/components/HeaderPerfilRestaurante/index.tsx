@@ -4,6 +4,7 @@ import { AntDesign } from '@expo/vector-icons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useEffect, useState } from 'react';
 import React from 'react';
+import Colors from '@/src/constants/Colors';
 
 
 interface HeaderPerfilRestauranteProps {
@@ -34,7 +35,7 @@ const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({ urlFo
         height: 200,
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
-        backgroundColor: '#FF914B',
+        backgroundColor: Colors.orange.orangeStandard,
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
       },
@@ -54,18 +55,18 @@ const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({ urlFo
       },
       icon: {
         transform: [{ rotate: '90deg' }],
-        color: selected ? '#FF7700' : '#FF770040', 
+        color: selected ? Colors.orange.orangeBold : '#FF770040', 
       },
       profileContainer: {
         width: 90,
         height: 90,
         borderRadius: 50,
-        backgroundColor: '#FFB370',
+        backgroundColor: Colors.orange.orangeMedium,
         justifyContent: 'center',
         alignItems: 'center',
         position: 'absolute',
         bottom: -40,
-        borderColor: '#FFB370',
+        borderColor: Colors.orange.orangeMedium,
         overflow: 'hidden',
       },
       profileImage: {
@@ -90,7 +91,7 @@ const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({ urlFo
         {urlFotoPerfil ? (
           <Image source={{ uri: urlFotoPerfil }} style={styles.profileImage} />
         ) : (
-          <FontAwesome6 name="user-large" size={40} color="#FFF" style={styles.profileIcon} />
+          <FontAwesome6 name="user-large" size={40} color= {Colors.white} style={styles.profileIcon} />
         )}
       </SafeAreaView>
     </SafeAreaView>

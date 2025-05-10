@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, TextInputProps, TouchableOpacity, View } from 'react-native';
 import CustomTextInput from '../TextFieldCadastroUsuario';
+import Colors from '@/src/constants/Colors';
 
 interface SearchInputProps extends TextInputProps {
   value: string;
@@ -30,7 +31,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
   return (
     <View style={styles.container}>
-      <MaterialIcons name="search" size={iconSize} color="#FF914B" style={styles.leftIcon} />
+      <MaterialIcons name="search" size={iconSize} color= {Colors.orange.orangeStandard} style={styles.leftIcon} />
       <CustomTextInput
         value={value}
         onChangeText={onChangeText}
@@ -45,7 +46,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
         {...props}
       />
       <TouchableOpacity onPress={handleFilterPress} style={styles.rightIconContainer}>
-        <MaterialIcons name="tune" size={iconSize} color="#FF914B" style={styles.rightIcon} />
+        <MaterialIcons name="tune" size={iconSize} color= {Colors.orange.orangeStandard} style={styles.rightIcon} />
       </TouchableOpacity>
     </View>
   );
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    color: '#000',
+    color: Colors.black,
   },
   leftIcon: {
     position: 'absolute',
