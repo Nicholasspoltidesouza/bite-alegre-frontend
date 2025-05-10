@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     padding: "4%",
-    paddingTop: 55,
+    paddingTop: 20,
     paddingBottom: "8%",
     width: "100%",
   },
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 15,
     zIndex: 1,
-    paddingTop: 12,
+    paddingTop: 20,
     paddingRight: 16,
   },
   input: {
@@ -360,16 +360,17 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 57,
+    top: 33,
     left: 30,
     backgroundColor: 'rgba(255,255,255,0.4)',
     borderRadius: 100,
     padding: 10,
-    marginTop: 15,
+    marginTop: 0,
     marginLeft: 10
   },
   textCreatePublication: {
-    padding: 20,
+    padding: 50,
+    marginTop: -60,
     color: "#FFFFFF",
     fontSize: 18,
     fontFamily: "Poppins-Regular",
@@ -378,7 +379,7 @@ const styles = StyleSheet.create({
   },
   orangeButton: {
     width: 310,
-    height: 245,
+    height: 265,
     backgroundColor: "#d9d9d9",
   },
   orangeButtonText: {
