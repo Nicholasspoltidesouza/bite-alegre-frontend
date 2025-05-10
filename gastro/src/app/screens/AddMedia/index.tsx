@@ -6,15 +6,16 @@ import {
   Text,
   SafeAreaView,
   ScrollView,
-  TextInput,
   Alert,
   KeyboardAvoidingView,
   Platform,
+  TouchableOpacity
 } from "react-native";
 import Button from "@/src/components/Button";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CustomTextInput from "@/src/components/TextFieldCadastroUsuario";
+import { MaterialIcons } from '@expo/vector-icons';
 
 const AddMedia = () => {
   const router = useRouter();
@@ -23,7 +24,6 @@ const AddMedia = () => {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [description, setDescription] = useState<string>("");
   const [restaurantSearch, setRestaurantSearch] = useState<string>("");
-  const [tags, setTags] = useState<string[]>([]);
 
   const validateDescription = (text: string): string | null => {
     if (text.length > 200)
@@ -36,20 +36,8 @@ const AddMedia = () => {
       return "Nome do restaurante não possuí mais de 50 caracteres";
     return null
   }
-  // validar essa lógica
-  const validateTags = (text: string): string | null => {
-  const tagsArray = text.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
-
-  if (tagsArray.length < 3) {
-    return 'Você precisa adicionar no mínimo 3 tags';
-  }
-
-  return null;
-};
 
   const isFormValid = true; // se a foto ainda não foi adicionada vai ser false
-
-
 
   const handleAddMedia = () => {
     Alert.alert(
@@ -135,6 +123,9 @@ const AddMedia = () => {
         ]}
       >
         <View style={styles.orangeHeader}>
+          <TouchableOpacity style={styles.backButton} > 
+            <MaterialIcons name="keyboard-arrow-left" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
           <Text style={styles.textCreatePublication}>Criar Publicação</Text>
           <Button
             title="+"
@@ -166,30 +157,17 @@ const AddMedia = () => {
             <CustomTextInput
               value={restaurantSearch}
               onChangeText={setRestaurantSearch}
-              placeholder="Resataurante"
+              placeholder="Restaurante"
               style={[styles.input]}
               validation={validateRestaurant}
               multiline={true}
               numberOfLines={4}
               textAlignVertical="top"
             />
+            <MaterialIcons name="search" size={20} color="#FF914B" style={styles.searchIcon} />
           </View>
           
-
-          <View style={styles.inputWrapper}>
-            <CustomTextInput
-              value={tags.join(', ')}
-              onChangeText={(text) => setTags(text.split(',').map(tag => tag.trim()))}
-              placeholder="Tags"
-              style={[styles.input]}
-              validation={validateTags}
-              multiline={true}
-              numberOfLines={4}
-              textAlignVertical="top"
-            />
-          </View>
-
-          <View style={styles.buttonContainer}>
+          <View style={styles.buttonCreate}>
             <Button
               title="Criar"
               type="orange"
@@ -197,7 +175,7 @@ const AddMedia = () => {
               disabled={!isFormValid}
             />
           </View>
-        </ScrollView>
+        </  ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
     </View>
@@ -217,6 +195,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     padding: "4%",
+    paddingTop: 55,
     paddingBottom: "8%",
     width: "100%",
   },
@@ -224,6 +203,13 @@ const styles = StyleSheet.create({
     width: "90%",
     marginBottom: "5%",
     padding: 6,
+  },
+  searchIcon: {
+    position: 'absolute',
+    right: 15,
+    zIndex: 1,
+    paddingTop: 12,
+    paddingRight: 16,
   },
   input: {
     width: "100%",
@@ -254,11 +240,15 @@ const styles = StyleSheet.create({
     marginLeft: 24,
     fontFamily: "Poppins-Regular",
   },
-  buttonContainer: {
+  buttonCreate: {
     marginTop: "2%",
     width: "90%",
     flexDirection: "row",
     justifyContent: "flex-end",
+    paddingTop: 30,
+    paddingBottom: 26,
+    paddingRight: 27,
+    paddingLeft: 272
   },
   orangeHeader: {
     width: "100%",
@@ -269,6 +259,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 57,
+    left: 30,
+    backgroundColor: 'rgba(255,255,255,0.4)',
+    borderRadius: 100,
+    padding: 10,
+    marginTop: 15,
+    marginLeft: 10
   },
   textCreatePublication: {
     padding: 30,
