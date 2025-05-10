@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Keyboard } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import {
   View,
@@ -18,6 +19,7 @@ import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CustomTextInput from "@/src/components/TextFieldCadastroUsuario";
 import { MaterialIcons } from '@expo/vector-icons';
+import { useSearch } from "@/src/hooks/useSearch";
 
 const AddMedia = () => {
   const router = useRouter();
@@ -26,7 +28,31 @@ const AddMedia = () => {
   const [mediaUri, setMediaUri] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<"image" | "video" | null>(null);
   const [description, setDescription] = useState<string>("");
-  const [restaurantSearch, setRestaurantSearch] = useState<string>("");
+  const [restaurantSearch, setRestaurantSearch] = useState<string>('');
+  const [selectedRestaurantId, setSelectedRestaurantId] = useState<string | null>(null);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+
+  const { restaurants, search: runSearch, loading } = useSearch();
+
+  useEffect(() => {
+    if (restaurantSearch.length > 1) {
+      runSearch(restaurantSearch);
+    }
+  }, [restaurantSearch]);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      setIsKeyboardVisible(true);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setIsKeyboardVisible(false);
+    });
+  
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   const validateDescription = (text: string): string | null => {
     if (text.length > 200)
@@ -156,41 +182,43 @@ const AddMedia = () => {
             Platform.OS === "ios" && { marginTop: -insets.top },
           ]}
         >
-          <View style={styles.orangeHeader}>
-            <TouchableOpacity style={styles.backButton} onPress={() => router.back()} >
-              <MaterialIcons name="keyboard-arrow-left" size={24} color="#FFFFFF" />
-            </TouchableOpacity>
-            <Text style={styles.textCreatePublication}>Criar Publicação</Text>
+          {!isKeyboardVisible && (
+            <View style={styles.orangeHeader}>
+              <TouchableOpacity style={styles.backButton} onPress={() => router.back()} >
+                <MaterialIcons name="keyboard-arrow-left" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+              <Text style={styles.textCreatePublication}>Criar Publicação</Text>
 
-            {mediaUri ? (
-              <View style={styles.previewContainer}>
-                {mediaType === "image" ? (
-                  <Image source={{ uri: mediaUri }} style={styles.previewMedia} resizeMode="cover" />
-                ) : (
-                  <Video
-                    source={{ uri: mediaUri }}
-                    style={styles.previewMedia}
-                    useNativeControls
-                    resizeMode="cover"
-                  />
-                )}
-                <TouchableOpacity style={styles.removeMediaButton} onPress={() => {
-                  setMediaUri(null);
-                  setMediaType(null);
-                }}>
-                  <Text style={styles.removeMediaText}>Remover Mídia</Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <Button
-                title="+"
-                type="orange"
-                onPress={handleAddMedia}
-                style={styles.orangeButton}
-                textStyle={styles.orangeButtonText}
-              />
-            )}
-          </View>
+              {mediaUri ? (
+                <View style={styles.previewContainer}>
+                  {mediaType === "image" ? (
+                    <Image source={{ uri: mediaUri }} style={styles.previewMedia} resizeMode="cover" />
+                  ) : (
+                    <Video
+                      source={{ uri: mediaUri }}
+                      style={styles.previewMedia}
+                      useNativeControls
+                      resizeMode="cover"
+                    />
+                  )}
+                  <TouchableOpacity style={styles.removeMediaButton} onPress={() => {
+                    setMediaUri(null);
+                    setMediaType(null);
+                  }}>
+                    <Text style={styles.removeMediaText}>Remover Mídia</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <Button
+                  title="+"
+                  type="orange"
+                  onPress={handleAddMedia}
+                  style={styles.orangeButton}
+                  textStyle={styles.orangeButtonText}
+                />
+              )}
+            </View>
+          )}
 
           <ScrollView
             contentContainerStyle={styles.container}
@@ -212,15 +240,32 @@ const AddMedia = () => {
             <View style={styles.inputWrapper}>
               <CustomTextInput
                 value={restaurantSearch}
-                onChangeText={setRestaurantSearch}
+                onChangeText={(text) => {
+                  setRestaurantSearch(text);
+                  setSelectedRestaurantId(null); // limpa seleção anterior
+                }}
                 placeholder="Restaurante"
                 style={styles.input}
                 validation={validateRestaurant}
-                multiline={true}
-                numberOfLines={4}
-                textAlignVertical="top"
               />
               <MaterialIcons name="search" size={20} color="#FF914B" style={styles.searchIcon} />
+
+              {restaurantSearch.length > 1 && !selectedRestaurantId && restaurants.length > 0 && (
+                <View style={styles.searchResultsContainer}>
+                  {restaurants.map((restaurant) => (
+                    <TouchableOpacity
+                      key={restaurant.id}
+                      style={styles.resultItem}
+                      onPress={() => {
+                        setRestaurantSearch(restaurant.name);
+                        setSelectedRestaurantId(restaurant.id);
+                      }}
+                    >
+                      <Text style={styles.resultText}>{restaurant.name}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
             </View>
 
             <View style={styles.buttonCreate}>
@@ -366,6 +411,31 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Poppins-Regular",
   },
+  searchResultsContainer: {
+    backgroundColor: "#FFF",
+    borderRadius: 12,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    marginTop: 8,
+    zIndex: 10,
+  },
+  
+  resultItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  
+  resultText: {
+    fontSize: 16,
+    color: "#333",
+    fontFamily: "Poppins-Regular",
+  },
+  
 });
 
 export default AddMedia;
