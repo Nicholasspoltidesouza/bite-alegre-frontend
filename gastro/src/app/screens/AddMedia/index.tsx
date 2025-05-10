@@ -60,12 +60,6 @@ const AddMedia = () => {
     return null;
   };
 
-  const validateRestaurant = (text: string): string | null => {
-    if (text.length > 50)
-      return "Nome do restaurante não possuí mais de 50 caracteres";
-    return null
-  }
-
   const isFormValid = true;
 
   const handleAddMedia = () => {
@@ -159,13 +153,18 @@ const AddMedia = () => {
     const errors = [
       validateDescription(description),
     ].filter((error) => error != null);
-    if (!description || !restaurantSearch) {
-      Alert.alert("Erro", "Descrição e restaurante são obrigatórios.");
+
+    if (!description) {
+      Alert.alert("Erro", "Descrição é obrigatória.");
       return;
     }
 
-    // ajustar lógica de criação
-    Alert.alert("Sucesso", "sucesso!");
+    if(mediaUri == null){
+      Alert.alert("Erro", "Adicione uma foto ou vídeo.");
+      return;
+    }
+
+    Alert.alert("Sucesso", "Publicação criada!");
     router.back();
   };
 
@@ -246,7 +245,6 @@ const AddMedia = () => {
                 }}
                 placeholder="Restaurante"
                 style={styles.input}
-                validation={validateRestaurant}
               />
               <MaterialIcons name="search" size={20} color="#FF914B" style={styles.searchIcon} />
 
