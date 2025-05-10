@@ -123,7 +123,7 @@ const AddMedia = () => {
         ]}
       >
         <View style={styles.orangeHeader}>
-          <TouchableOpacity style={styles.backButton} > 
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()} > 
             <MaterialIcons name="keyboard-arrow-left" size={24} color="#FFFFFF" />
           </TouchableOpacity>
           <Text style={styles.textCreatePublication}>Criar Publicação</Text>
