@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+import Colors from "@/src/constants/Colors";
 
 interface AccordionProps {
   title: string;

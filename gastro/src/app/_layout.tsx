@@ -4,7 +4,7 @@ import { Image, Pressable } from 'react-native';
 import { NavBarIcon } from "../components/NavBarItem/index";
 import React, { useEffect, useState } from "react";
 import * as Font from 'expo-font';
-import { Colors } from "react-native/Libraries/NewAppScreen";
+import Colors from "../constants/Colors";
 
 export default function RootLayout() {
   const pathname = usePathname();
