@@ -9,8 +9,10 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  TouchableOpacity
+  TouchableOpacity,
+  Image,
 } from "react-native";
+import { Video } from 'expo-av';
 import Button from "@/src/components/Button";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -21,7 +23,8 @@ const AddMedia = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   
-  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [mediaUri, setMediaUri] = useState<string | null>(null);
+  const [mediaType, setMediaType] = useState<"image" | "video" | null>(null);
   const [description, setDescription] = useState<string>("");
   const [restaurantSearch, setRestaurantSearch] = useState<string>("");
 
@@ -37,15 +40,27 @@ const AddMedia = () => {
     return null
   }
 
-  const isFormValid = true; // se a foto ainda não foi adicionada vai ser false
+  const isFormValid = true;
 
   const handleAddMedia = () => {
     Alert.alert(
       "Selecionar Imagem",
       "Deseja tirar uma foto ou escolher da galeria?",
       [
-        { text: "Câmera", onPress: openCamera },
+        { text: "Câmera", onPress: handleCameraOption },
         { text: "Galeria", onPress: pickImage },
+        { text: "Cancelar", style: "cancel" },
+      ]
+    );
+  };
+
+  const handleCameraOption = () => {
+    Alert.alert(
+      "Usar Câmera",
+      "Deseja tirar uma foto ou gravar um vídeo?",
+      [
+        { text: "Foto", onPress: openCameraPhoto },
+        { text: "Vídeo", onPress: openCameraVideo },
         { text: "Cancelar", style: "cancel" },
       ]
     );
@@ -61,43 +76,62 @@ const AddMedia = () => {
 
     console.log("Abrindo galeria");
     const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false,
+      quality: 1,
+    });
+  
+    if (!result.canceled && result.assets && result.assets[0]) {
+      const asset = result.assets[0];
+      setMediaUri(asset.uri);
+      setMediaType(asset.type === "video" ? "video" : "image");
+    }
+  };
+
+  const openCameraPhoto = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permissionResult.granted) {
+      alert("Permissão para usar a câmera negada.");
+      return;
+    }
+  
+    const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
       quality: 1,
     });
   
-    if (!result.canceled) {
-      console.log("Imagem selecionada:", result.assets[0].uri);
-      setImageUri(result.assets[0].uri);
-    } else {
-      console.log("Seleção cancelada");
+    if (!result.canceled && result.assets && result.assets[0]) {
+      const asset = result.assets[0];
+      setMediaUri(asset.uri);
+      setMediaType("image");
+    }
+  };
+  
+
+  const openCameraVideo = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permissionResult.granted) {
+      alert("Permissão para usar a câmera negada.");
+      return;
+    }
+  
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+      videoMaxDuration: 120,
+      quality: 1,
+    });
+  
+    if (!result.canceled && result.assets && result.assets[0]) {
+      const asset = result.assets[0];
+      setMediaUri(asset.uri);
+      setMediaType("video");
     }
   };
 
-  const openCamera = async () => {
-  const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-  if (!permissionResult.granted) {
-    alert("Permissão para usar a câmera negada.");
-    return;
-  }
-
-  const result = await ImagePicker.launchCameraAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: false,
-    quality: 1,
-  });
-
-  if (!result.canceled) {
-    console.log("Imagem selecionada:", result.assets[0].uri);
-    setImageUri(result.assets[0].uri);
-  } else {
-    console.log("Seleção cancelada");
-  }
-};
-
   const handleCreate = () => {
     const errors = [
-        validateDescription(description),
+      validateDescription(description),
     ].filter((error) => error != null);
     if (!description || !restaurantSearch) {
       Alert.alert("Erro", "Descrição e restaurante são obrigatórios.");
@@ -111,73 +145,95 @@ const AddMedia = () => {
 
   return (
     <View style={styles.containerPrincipal}>
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
-    >
-      <SafeAreaView
-        style={[
-          styles.safeArea,
-          Platform.OS === "ios" && { marginTop: -insets.top },
-        ]}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       >
-        <View style={styles.orangeHeader}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()} > 
-            <MaterialIcons name="keyboard-arrow-left" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
-          <Text style={styles.textCreatePublication}>Criar Publicação</Text>
-          <Button
-            title="+"
-            type="orange"
-            onPress={handleAddMedia}
-            style={styles.orangeButton}
-            textStyle={styles.orangeButtonText}
-          />
-        </View>
-        
-        <ScrollView
-          contentContainerStyle={styles.container}
-          keyboardShouldPersistTaps="handled"
+        <SafeAreaView
+          style={[
+            styles.safeArea,
+            Platform.OS === "ios" && { marginTop: -insets.top },
+          ]}
         >
-          <View style={styles.inputWrapper}>
-            <CustomTextInput
-              value={description}
-              onChangeText={setDescription}
-              placeholder="Descrição"
-              style={[styles.input]}
-              validation={validateDescription}
-              multiline={true}
-              numberOfLines={4}
-              textAlignVertical="top"
-            />
+          <View style={styles.orangeHeader}>
+            <TouchableOpacity style={styles.backButton} onPress={() => router.back()} >
+              <MaterialIcons name="keyboard-arrow-left" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+            <Text style={styles.textCreatePublication}>Criar Publicação</Text>
+
+            {mediaUri ? (
+              <View style={styles.previewContainer}>
+                {mediaType === "image" ? (
+                  <Image source={{ uri: mediaUri }} style={styles.previewMedia} resizeMode="cover" />
+                ) : (
+                  <Video
+                    source={{ uri: mediaUri }}
+                    style={styles.previewMedia}
+                    useNativeControls
+                    resizeMode="cover"
+                  />
+                )}
+                <TouchableOpacity style={styles.removeMediaButton} onPress={() => {
+                  setMediaUri(null);
+                  setMediaType(null);
+                }}>
+                  <Text style={styles.removeMediaText}>Remover Mídia</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <Button
+                title="+"
+                type="orange"
+                onPress={handleAddMedia}
+                style={styles.orangeButton}
+                textStyle={styles.orangeButtonText}
+              />
+            )}
           </View>
 
-          <View style={styles.inputWrapper}>
-            <CustomTextInput
-              value={restaurantSearch}
-              onChangeText={setRestaurantSearch}
-              placeholder="Restaurante"
-              style={[styles.input]}
-              validation={validateRestaurant}
-              multiline={true}
-              numberOfLines={4}
-              textAlignVertical="top"
-            />
-            <MaterialIcons name="search" size={20} color="#FF914B" style={styles.searchIcon} />
-          </View>
-          
-          <View style={styles.buttonCreate}>
-            <Button
-              title="Criar"
-              type="orange"
-              onPress={handleCreate}
-              disabled={!isFormValid}
-            />
-          </View>
-        </  ScrollView>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+          <ScrollView
+            contentContainerStyle={styles.container}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View style={styles.inputWrapper}>
+              <CustomTextInput
+                value={description}
+                onChangeText={setDescription}
+                placeholder="Descrição"
+                style={styles.input}
+                validation={validateDescription}
+                multiline={true}
+                numberOfLines={4}
+                textAlignVertical="top"
+              />
+            </View>
+
+            <View style={styles.inputWrapper}>
+              <CustomTextInput
+                value={restaurantSearch}
+                onChangeText={setRestaurantSearch}
+                placeholder="Restaurante"
+                style={styles.input}
+                validation={validateRestaurant}
+                multiline={true}
+                numberOfLines={4}
+                textAlignVertical="top"
+              />
+              <MaterialIcons name="search" size={20} color="#FF914B" style={styles.searchIcon} />
+            </View>
+
+            <View style={styles.buttonCreate}>
+              <Button
+                title="Criar"
+                type="orange"
+                onPress={handleCreate}
+                disabled={!isFormValid}
+              />
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -248,17 +304,16 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     paddingBottom: 26,
     paddingRight: 27,
-    paddingLeft: 272
+    paddingLeft: 272,
   },
   orangeHeader: {
     width: "100%",
-    height: 400,
+    height: 430,
     backgroundColor: "#FF914B",
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20,
   },
   backButton: {
     position: 'absolute',
@@ -271,23 +326,45 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   textCreatePublication: {
-    padding: 30,
+    padding: 20,
     color: "#FFFFFF",
     fontSize: 18,
     fontFamily: "Poppins-Regular",
     textAlign: 'center',
     position: 'relative'
-    
-    },
+  },
   orangeButton: {
-    width: 265,
-    height: 206,
+    width: 310,
+    height: 245,
     backgroundColor: "#d9d9d9",
-    padding: 70,
   },
   orangeButtonText: {
     fontSize: 45,
     fontFamily: "Poppins-Bold",
+  },
+  previewMedia: {
+    width: 310,
+    height: 245,
+    borderRadius: 20,
+    backgroundColor: "#000",
+  },
+  previewContainer: {
+    alignItems: "center",
+  },
+  
+  removeMediaButton: {
+    marginTop: 10,
+    marginBottom: -45,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+  },
+  
+  removeMediaText: {
+    color: "#FF914B",
+    fontSize: 14,
+    fontFamily: "Poppins-Regular",
   },
 });
 
