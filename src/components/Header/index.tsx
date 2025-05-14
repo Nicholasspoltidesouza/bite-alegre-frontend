@@ -1,11 +1,11 @@
 import useLocation from "@/src/hooks/useLocation";
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Text, StatusBar, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { useCreateUser } from "@/src/hooks/useUserApi";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from "@/src/constants/Colors";
+import BaseModal from "@/src/components/BaseModal";
 
 interface HeaderProps {
   isProfile?: boolean;
@@ -23,6 +23,7 @@ const Header: React.FC<HeaderProps> = ({
   profileImageUrl,
 }) => {
   const { subregion, refreshLocation } = useLocation(); 
+  const [modalVisible, setModalVisible] = useState(false); 
 
   return (
     <View style={styles.container}>
@@ -72,13 +73,15 @@ const Header: React.FC<HeaderProps> = ({
 
         {isProfile && (
           <TouchableOpacity
-            style={styles.editIconButton}
-            onPress={() => console.log("Edit Profile")}
-          >
-            <MaterialCommunityIcons name="lead-pencil" size={22} color={Colors.white} />
+          style={styles.editIconButton}
+          onPress={() => setModalVisible(true)} 
+        >
+            <FontAwesome name="gear" size={24} color={Colors.white} />
           </TouchableOpacity>
         )}
       </LinearGradient>
+      <BaseModal visible={modalVisible} onClose={() => setModalVisible(false)} />
+
     </View>
   );
 };
