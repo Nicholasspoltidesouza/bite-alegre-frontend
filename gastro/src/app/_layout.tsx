@@ -180,6 +180,10 @@ export default function RootLayout() {
         name="screens/AddMedia/index"
         options={{ href: null, tabBarShowLabel: false }}
       />
+      <Tabs.Screen
+        name="screens/PublicationInfluencer/index"
+        options={{ href: null, tabBarShowLabel: false }}
+      />
     </Tabs>
   );
 }
