@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   TouchableOpacity,
   View,
@@ -6,7 +6,7 @@ import {
   StyleProp,
   ViewStyle,
   TextStyle,
-} from "react-native";
+} from 'react-native';
 
 interface TagProps {
   title: string;
@@ -14,7 +14,7 @@ interface TagProps {
   textStyle?: StyleProp<TextStyle>;
   isSelected?: boolean;
   icon?: React.ReactNode;
-  iconPosition?: "left" | "right";
+  iconPosition?: 'left' | 'right';
   onPress?: () => void;
   controlled?: boolean;
 }
@@ -25,7 +25,7 @@ const Tag: React.FC<TagProps> = ({
   textStyle,
   isSelected = false,
   icon,
-  iconPosition = "left",
+  iconPosition = 'left',
   onPress,
   controlled = false,
 }) => {
@@ -45,31 +45,29 @@ const Tag: React.FC<TagProps> = ({
           paddingHorizontal: 20,
           height: 40,
           borderRadius: 20,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
           backgroundColor: selected
-            ? "rgba(255,179,112,0.25)"
-            : "rgba(227,225,225,0.8)",
+            ? 'rgba(255,179,112,0.25)'
+            : 'rgba(227,225,225,0.8)',
           minWidth: 100,
         },
         style,
       ]}
       onPress={handlePress}
     >
-      {icon && iconPosition === "left" && (
+      {icon && iconPosition === 'left' && (
         <View style={{ marginRight: 6 }}>{icon}</View>
       )}
 
       <Text
         style={[
           {
-            fontFamily: "Poppins-Regular",
+            fontFamily: 'Poppins-Regular',
             fontSize: 16,
-            fontWeight: "400",
-            color: selected
-              ? "rgba(255,145,75,0.8)"
-              : "rgba(143,143,143,0.8)",
+            fontWeight: '400',
+            color: selected ? 'rgba(255,145,75,0.8)' : 'rgba(143,143,143,0.8)',
           },
           textStyle,
         ]}
@@ -77,7 +75,7 @@ const Tag: React.FC<TagProps> = ({
         {title}
       </Text>
 
-      {icon && iconPosition === "right" && (
+      {icon && iconPosition === 'right' && (
         <View style={{ marginLeft: 6 }}>{icon}</View>
       )}
     </TouchableOpacity>

@@ -14,7 +14,7 @@ export const useFeedApi = () => {
   ): Promise<void> => {
     setLoading(true);
     setError(null);
-  
+
     try {
       const url = `${API_URL_ANDROID}/feed/${userId}?geolocation=${latitude},${longitude}`;
 
@@ -24,7 +24,7 @@ export const useFeedApi = () => {
           'Content-Type': 'application/json',
         },
       });
-  
+
       const responseData = await response.json();
       if (response.ok) {
         setData(responseData);
@@ -41,8 +41,6 @@ export const useFeedApi = () => {
       setLoading(false);
     }
   };
-
-
 
   return {
     getFeed,

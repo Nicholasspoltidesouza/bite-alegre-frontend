@@ -1,6 +1,13 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { OperatingHoursDto } from '../../@types/OperatingHoursDto';
 import Colors from '@/src/constants/Colors';
 
@@ -14,7 +21,8 @@ const { width } = Dimensions.get('window');
 const containerWidth = width * 0.83;
 
 const HoursSection: React.FC<Props> = ({ hours, onAdd, onPressItem }) => {
-  const [operatingHours, setOperatingHours] = useState<OperatingHoursDto[]>(hours);
+  const [operatingHours, setOperatingHours] =
+    useState<OperatingHoursDto[]>(hours);
 
   const handleAddOperatingHour = () => {
     const mockHour = {
@@ -28,8 +36,11 @@ const HoursSection: React.FC<Props> = ({ hours, onAdd, onPressItem }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Funcionamento</Text>
-        <TouchableOpacity onPress={handleAddOperatingHour} style={styles.addButton}>
-          <MaterialCommunityIcons name="plus" size={20} color= {Colors.white} />
+        <TouchableOpacity
+          onPress={handleAddOperatingHour}
+          style={styles.addButton}
+        >
+          <MaterialCommunityIcons name="plus" size={20} color={Colors.white} />
         </TouchableOpacity>
       </View>
 
@@ -42,7 +53,10 @@ const HoursSection: React.FC<Props> = ({ hours, onAdd, onPressItem }) => {
         data={operatingHours}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item, index }) => (
-          <TouchableOpacity style={styles.row} onPress={() => onPressItem?.(item, index)}>
+          <TouchableOpacity
+            style={styles.row}
+            onPress={() => onPressItem?.(item, index)}
+          >
             <Text style={styles.day}>{item.day}</Text>
             <Text style={styles.time}>{item.time}</Text>
           </TouchableOpacity>

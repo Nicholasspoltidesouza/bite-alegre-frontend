@@ -1,5 +1,12 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import PhotoDish from '@/src/components/PhotoDish';
 import Colors from '@/src/constants/Colors';
@@ -18,7 +25,8 @@ interface Props {
 
 const variantMessages: Record<string, string> = {
   visited: 'Você ainda não visitou nenhum restaurante. Que tal começar agora?',
-  saved: 'Nenhum restaurante nos seus Salvos. Explore e salve lugares que você quer conhecer!',
+  saved:
+    'Nenhum restaurante nos seus Salvos. Explore e salve lugares que você quer conhecer!',
   menu: 'Nenhum cardápio encontrado. Tente procurar por outro restaurante.',
   influencers: 'Nenhuma recomendação de influenciadores por aqui ainda.',
   closeToYou: 'Não encontramos restaurantes próximos a você no momento.',
@@ -33,7 +41,7 @@ export default function UserCarouselRestaurant({
 
   const togglePin = (id: string) => {
     setSelectedPins((prev) =>
-      prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id],
     );
   };
   const data = useMemo(() => {
@@ -50,21 +58,24 @@ export default function UserCarouselRestaurant({
     // }
 
     return restaurantsExternal!;
-     }, [variant, carouselProfileRestaurant, selectedPins, restaurantsExternal]);
+  }, [variant, carouselProfileRestaurant, selectedPins, restaurantsExternal]);
 
-    if (['visited', 'saved', 'menu', 'influencers', 'closeToYou'].includes(variant) && data.length === 0) {
-      return (
-        <View style={{ padding: 16 }}>
-          <Text style={styles.avisoTexto}>
-            {variantMessages[variant]}
-          </Text>
-        </View>
-      );
-    }
+  if (
+    ['visited', 'saved', 'menu', 'influencers', 'closeToYou'].includes(
+      variant,
+    ) &&
+    data.length === 0
+  ) {
+    return (
+      <View style={{ padding: 16 }}>
+        <Text style={styles.avisoTexto}>{variantMessages[variant]}</Text>
+      </View>
+    );
+  }
 
   const renderItem = ({ item }: { item: RestaurantDTO }) => {
     const isSelected = selectedPins.includes(item.id!);
-    const tela = '/screens/restaurantProfile?restaurantId=' + item.id!
+    const tela = '/screens/restaurantProfile?restaurantId=' + item.id!;
 
     if (variant === 'influencers') {
       return (
@@ -73,7 +84,7 @@ export default function UserCarouselRestaurant({
           onPress={() => console.log(`Clicou em ${item.name}`)}
           activeOpacity={0.8}
         >
-          <View style={styles.imageWrapper}>            
+          <View style={styles.imageWrapper}>
             <Image source={{ uri: item.profilePhoto }} style={styles.image} />
           </View>
           <Text style={styles.nome}>{item.name}</Text>
@@ -94,7 +105,7 @@ export default function UserCarouselRestaurant({
     return (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => router.push({ pathname: tela as any})}
+        onPress={() => router.push({ pathname: tela as any })}
         activeOpacity={0.8}
       >
         <View style={styles.imageWrapper}>
@@ -140,7 +151,9 @@ export default function UserCarouselRestaurant({
                 key={i}
                 name="star"
                 size={12}
-                color={i < item.stars! ? Colors.orange.orangeStandard : '#FF914B40'}
+                color={
+                  i < item.stars! ? Colors.orange.orangeStandard : '#FF914B40'
+                }
               />
             ))}
           </View>
@@ -148,7 +161,11 @@ export default function UserCarouselRestaurant({
 
         {['saved'].includes(variant) && item.averageScore !== null && (
           <View style={styles.avaliacaoRow}>
-            <AntDesign name="star" size={12} color= {Colors.orange.orangeStandard} />
+            <AntDesign
+              name="star"
+              size={12}
+              color={Colors.orange.orangeStandard}
+            />
             <Text style={styles.nota}> {item.averageScore?.toFixed(1)}</Text>
             <Text style={styles.avaliacoes}> (0 avaliações)</Text>
           </View>
@@ -248,7 +265,7 @@ const styles = StyleSheet.create({
     paddingLeft: 1,
     textAlign: 'left',
     fontSize: 14,
-    color : Colors.black,    
+    color: Colors.black,
     paddingHorizontal: 16,
     marginTop: 8,
   },

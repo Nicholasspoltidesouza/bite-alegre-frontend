@@ -1,4 +1,4 @@
-import { StyleSheet , View } from "react-native";
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
 
 interface NavBarIconProps {
@@ -10,13 +10,19 @@ interface NavBarIconProps {
 }
 
 export function NavBarIcon({ children, focused, iconType }: NavBarIconProps) {
-  const isRoulette = iconType === "roleta";
+  const isRoulette = iconType === 'roleta';
 
   return (
-    <View style={focused ? [styles.active, isRoulette && styles.rouletteActive] : styles.not_active}>
+    <View
+      style={
+        focused
+          ? [styles.active, isRoulette && styles.rouletteActive]
+          : styles.not_active
+      }
+    >
       {children}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -39,4 +45,4 @@ const styles = StyleSheet.create({
     height: 63,
     width: 63,
   },
-})
+});

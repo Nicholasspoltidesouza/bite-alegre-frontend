@@ -1,7 +1,14 @@
-import React, { useRef } from "react";
-import { View, StyleSheet, Text, Image, Animated, TouchableOpacity } from "react-native";
+import React, { useRef } from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  Animated,
+  TouchableOpacity,
+} from 'react-native';
 import { Foundation } from '@expo/vector-icons';
-import Colors from "@/src/constants/Colors";
+import Colors from '@/src/constants/Colors';
 
 interface PhotoDishProps {
   urlFotoPrato: string;
@@ -57,18 +64,21 @@ const PhotoDish: React.FC<PhotoDishProps> = ({
       <View style={styles.card}>
         {showStar && (
           <View style={styles.starIcon}>
-            <Foundation name="star" size={24} color= {Colors.orange.orangeStandard} />
+            <Foundation
+              name="star"
+              size={24}
+              color={Colors.orange.orangeStandard}
+            />
           </View>
         )}
-        
+
         <Animated.View style={[styles.imageWrapper, frontAnimatedStyle]}>
-          <Image 
-            source={{ uri: urlFotoPrato }}
-            style={styles.image}
-          />
+          <Image source={{ uri: urlFotoPrato }} style={styles.image} />
         </Animated.View>
 
-        <Animated.View style={[styles.imageWrapper, styles.backCard, backAnimatedStyle]}>
+        <Animated.View
+          style={[styles.imageWrapper, styles.backCard, backAnimatedStyle]}
+        >
           <Text style={styles.descriptionText}>{descricao}</Text>
         </Animated.View>
       </View>

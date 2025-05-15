@@ -1,6 +1,12 @@
 import Colors from '@/src/constants/Colors';
 import React from 'react';
-import { StyleProp, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
+import {
+  StyleProp,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle,
+} from 'react-native';
 
 interface ButtonProps {
   title: string;
@@ -11,7 +17,14 @@ interface ButtonProps {
   disabled?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({ title, onPress, type, style, textStyle, disabled }) => {
+const Button: React.FC<ButtonProps> = ({
+  title,
+  onPress,
+  type,
+  style,
+  textStyle,
+  disabled,
+}) => {
   return (
     <TouchableOpacity
       style={[
@@ -21,14 +34,14 @@ const Button: React.FC<ButtonProps> = ({ title, onPress, type, style, textStyle,
           borderRadius: 20,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor:
-            disabled
-              ? '#FFB37080'
-              : type === 'orange'
-                ? '#FF914B'
-                : '#FFFFFF',
+          backgroundColor: disabled
+            ? '#FFB37080'
+            : type === 'orange'
+              ? '#FF914B'
+              : '#FFFFFF',
           borderWidth: type === 'white' ? 2 : 0,
-          borderColor: type === 'white' ? Colors.orange.orangeStandard : 'transparent',
+          borderColor:
+            type === 'white' ? Colors.orange.orangeStandard : 'transparent',
         },
         style,
       ]}
@@ -40,7 +53,8 @@ const Button: React.FC<ButtonProps> = ({ title, onPress, type, style, textStyle,
             fontFamily: 'Poppins-Regular',
             fontSize: 16,
             fontWeight: '700',
-            color: type === 'orange' ? Colors.white : Colors.orange.orangeStandard,
+            color:
+              type === 'orange' ? Colors.white : Colors.orange.orangeStandard,
           },
           textStyle,
         ]}

@@ -1,5 +1,5 @@
-import { MaterialIcons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import { MaterialIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
 import {
   Dimensions,
   DimensionValue,
@@ -10,8 +10,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-} from "react-native";
-  import Colors  from "../../constants/Colors";
+} from 'react-native';
+import Colors from '../../constants/Colors';
 
 interface DropdownProps {
   label: string;
@@ -24,12 +24,31 @@ interface DropdownProps {
   width?: DimensionValue;
   paddingLeft?: DimensionValue;
   paddingRight?: DimensionValue;
-  justifyContent?: "flex-start" | "flex-end" | "center" | "space-between" | "space-around" | "space-evenly";
+  justifyContent?:
+    | 'flex-start'
+    | 'flex-end'
+    | 'center'
+    | 'space-between'
+    | 'space-around'
+    | 'space-evenly';
   textColor?: string;
   backgroundColor?: string;
 }
 
-const Dropdown = ({ options, selected, placeholder, onSelect, iconSize = 20, iconColor = Colors.orange.orangeStandard, width = 327, textColor = Colors.orange.orangeStandard, backgroundColor = 'rgba(255, 179, 112, 0.25)', justifyContent = "space-between", paddingLeft = 16, paddingRight = 16 }: DropdownProps) => {
+const Dropdown = ({
+  options,
+  selected,
+  placeholder,
+  onSelect,
+  iconSize = 20,
+  iconColor = Colors.orange.orangeStandard,
+  width = 327,
+  textColor = Colors.orange.orangeStandard,
+  backgroundColor = 'rgba(255, 179, 112, 0.25)',
+  justifyContent = 'space-between',
+  paddingLeft = 16,
+  paddingRight = 16,
+}: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => setIsOpen((prev) => !prev);
   const closeDropdown = () => setIsOpen(false);
@@ -39,13 +58,16 @@ const Dropdown = ({ options, selected, placeholder, onSelect, iconSize = 20, ico
       <TouchableOpacity
         onPress={toggleDropdown}
         activeOpacity={0.7}
-        style={[styles.dropdownButton, { width, backgroundColor, justifyContent, paddingLeft, paddingRight }]}
+        style={[
+          styles.dropdownButton,
+          { width, backgroundColor, justifyContent, paddingLeft, paddingRight },
+        ]}
       >
         <Text style={[styles.text, { color: textColor }]}>
           {selected || placeholder}
         </Text>
         <MaterialIcons
-          name={isOpen ? "arrow-drop-up" : "arrow-drop-down"}
+          name={isOpen ? 'arrow-drop-up' : 'arrow-drop-down'}
           size={iconSize}
           color={iconColor}
         />
@@ -91,8 +113,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   dropdownButton: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     height: 50,
     borderRadius: 20,
     paddingLeft: 24,
@@ -101,23 +123,23 @@ const styles = StyleSheet.create({
   text: {
     color: Colors.orange.orangeStandard,
     fontSize: 16,
-    fontFamily: "Poppins-Regular",
+    fontFamily: 'Poppins-Regular',
   },
   modalOverlay: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.2)",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.2)',
     paddingHorizontal: 16,
   },
   dropdownContainer: {
     backgroundColor: Colors.white,
     borderRadius: 16,
     borderWidth: 2,
-    borderColor: "rgba(255, 179, 112, 0.75)",
+    borderColor: 'rgba(255, 179, 112, 0.75)',
     width: 327,
-    maxHeight: Dimensions.get("window").height * 0.4,
-    overflow: "hidden",
+    maxHeight: Dimensions.get('window').height * 0.4,
+    overflow: 'hidden',
   },
   optionItem: {
     paddingVertical: 16,
@@ -125,15 +147,14 @@ const styles = StyleSheet.create({
   },
   optionBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255, 179, 112, 0.75)",
+    borderBottomColor: 'rgba(255, 179, 112, 0.75)',
   },
   optionText: {
-    color: "rgba(0, 0, 0, 0.8)",
+    color: 'rgba(0, 0, 0, 0.8)',
     fontSize: 14,
-    fontFamily: "Poppins-Regular",
-    textAlign: "center",
+    fontFamily: 'Poppins-Regular',
+    textAlign: 'center',
   },
 });
-
 
 export default Dropdown;

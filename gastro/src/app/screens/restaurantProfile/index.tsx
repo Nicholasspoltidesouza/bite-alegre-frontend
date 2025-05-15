@@ -1,4 +1,4 @@
-import HeaderPerfilRestaurante from "@/src/components/HeaderPerfilRestaurante";
+import HeaderPerfilRestaurante from '@/src/components/HeaderPerfilRestaurante';
 import {
   View,
   StyleSheet,
@@ -9,9 +9,9 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Alert,
-} from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
-import Accordion from "@/src/components/Accordion";
+} from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import Accordion from '@/src/components/Accordion';
 
 import {
   FontAwesome,
@@ -19,14 +19,14 @@ import {
   Foundation,
   Ionicons,
   MaterialCommunityIcons,
-} from "@expo/vector-icons";
-import { useRestaurantApi } from "@/src/hooks/useRestaurantApi";
-import Button from "@/src/components/Button";
-import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
-import { CheckinDTO } from "@/src/@types/DTO";
-import Colors from "@/src/constants/Colors";
+} from '@expo/vector-icons';
+import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
+import Button from '@/src/components/Button';
+import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
+import { CheckinDTO } from '@/src/@types/DTO';
+import Colors from '@/src/constants/Colors';
 
-const { width: screenWidth } = Dimensions.get("window");
+const { width: screenWidth } = Dimensions.get('window');
 
 const RestaurantProfile: React.FC = () => {
   const {
@@ -41,8 +41,9 @@ const RestaurantProfile: React.FC = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (typeof restaurantId === "string") getRestaurantById(restaurantId.toString());
-    }, [restaurantId])
+      if (typeof restaurantId === 'string')
+        getRestaurantById(restaurantId.toString());
+    }, [restaurantId]),
   );
 
   if (loading) {
@@ -60,7 +61,7 @@ const RestaurantProfile: React.FC = () => {
   if (error) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={{ color: "red", textAlign: "center", marginTop: 50 }}>
+        <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>
           {error}
         </Text>
       </SafeAreaView>
@@ -70,17 +71,17 @@ const RestaurantProfile: React.FC = () => {
   const handleCheckin = async () => {
     try {
       const checkinData: CheckinDTO = {
-        user_id: "1",
-        restaurant_id: "1",
+        user_id: '1',
+        restaurant_id: '1',
       };
 
       await createCheckin(checkinData);
-      Alert.alert("Sucesso", "Checkin feito feito com sucesso!");
+      Alert.alert('Sucesso', 'Checkin feito feito com sucesso!');
     } catch (err) {
-      console.error("Submit Error:", err);
+      console.error('Submit Error:', err);
       Alert.alert(
-        "Erro",
-        err instanceof Error ? err.message : "Ocorreu um erro inesperado"
+        'Erro',
+        err instanceof Error ? err.message : 'Ocorreu um erro inesperado',
       );
     }
   };
@@ -95,18 +96,24 @@ const RestaurantProfile: React.FC = () => {
       <View style={styles.infos}>
         <Text style={styles.title}>{restaurant?.name}</Text>
         <View style={styles.infoGrid}>
-        <Accordion 
-          title={`${restaurant?.averageScore ?? "-"}`}
-          description={`(${restaurant?.reviews?.length ?? 0} avaliações)`}
-          content={''}          
-          staticArrow={true} 
-          children={<FontAwesome name="star" size={24} color= {Colors.orange.orangeStandard} />}>
-        </Accordion>
+          <Accordion
+            title={`${restaurant?.averageScore ?? '-'}`}
+            description={`(${restaurant?.reviews?.length ?? 0} avaliações)`}
+            content={''}
+            staticArrow={true}
+            children={
+              <FontAwesome
+                name="star"
+                size={24}
+                color={Colors.orange.orangeStandard}
+              />
+            }
+          ></Accordion>
 
-          <Accordion 
-            title={"Descrição"}
-            description={""}
-            content={restaurant?.description ?? ""}
+          <Accordion
+            title={'Descrição'}
+            description={''}
+            content={restaurant?.description ?? ''}
             staticArrow={false}
             children={
               <Ionicons
@@ -118,18 +125,22 @@ const RestaurantProfile: React.FC = () => {
           ></Accordion>
 
           <Accordion
-            title={"Endereço do Restaurante"}
-            description={""}
-            content={restaurant?.address ?? ""}
+            title={'Endereço do Restaurante'}
+            description={''}
+            content={restaurant?.address ?? ''}
             staticArrow={false}
             children={
-              <FontAwesome6 name="location-dot" size={24} color= {Colors.orange.orangeStandard} />
+              <FontAwesome6
+                name="location-dot"
+                size={24}
+                color={Colors.orange.orangeStandard}
+              />
             }
           ></Accordion>
 
           <Accordion
-            title={"Aberto"}
-            description={""}
+            title={'Aberto'}
+            description={''}
             content={
               `Segunda-Feira            18:30 às 23:00\n` +
               `Terça-Feira                  18:30 às 23:00\n` +
@@ -140,20 +151,26 @@ const RestaurantProfile: React.FC = () => {
               `Domingo                    12:00 às 22:00`
             }
             staticArrow={false}
-            children={<Foundation name="clock" size={24} color= {Colors.orange.orangeStandard} />}
+            children={
+              <Foundation
+                name="clock"
+                size={24}
+                color={Colors.orange.orangeStandard}
+              />
+            }
           ></Accordion>
 
           <Accordion
-            title={"Estive Aqui"}
-            description={""}
-            content={""}
+            title={'Estive Aqui'}
+            description={''}
+            content={''}
             staticArrow={true}
             onPressAction={() => setModalVisible(true)}
             children={
               <MaterialCommunityIcons
                 name="calendar-start"
                 size={24}
-                color= {Colors.orange.orangeStandard}
+                color={Colors.orange.orangeStandard}
               />
             }
           ></Accordion>
@@ -179,13 +196,14 @@ const RestaurantProfile: React.FC = () => {
                       title="Sim"
                       onPress={() => {
                         setModalVisible(!modalVisible);
-                        router.push({ 
-                          pathname: "/screens/CreateReview", 
+                        router.push({
+                          pathname: '/screens/CreateReview',
                           params: {
                             restaurantId: restaurantId,
-                          },});
+                          },
+                        });
                       }}
-                      type={"orange"}
+                      type={'orange'}
                       style={{ marginRight: 10 }}
                     />
                     <Button
@@ -194,7 +212,7 @@ const RestaurantProfile: React.FC = () => {
                         setModalVisible(!modalVisible);
                         handleCheckin();
                       }}
-                      type={"white"}
+                      type={'white'}
                     />
                   </View>
                 </View>
@@ -214,44 +232,44 @@ const styles = StyleSheet.create({
   },
   infos: {
     marginTop: 30,
-    paddingHorizontal: "5%",
+    paddingHorizontal: '5%',
   },
   title: {
     fontSize: screenWidth < 360 ? 18 : 20,
-    fontWeight: "bold",
-    fontFamily: "Poppins-Medium",
+    fontWeight: 'bold',
+    fontFamily: 'Poppins-Medium',
     color: Colors.navyBlue,
     marginBottom: 8,
     marginTop: 15,
-    textAlign: "center",
+    textAlign: 'center',
   },
   infoGrid: {
     marginTop: 20,
-    paddingHorizontal: "5%",
+    paddingHorizontal: '5%',
   },
   modalOverlay: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.2)",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.2)',
   },
   modalView: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 20,
     padding: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
   modalText: {
     fontSize: 20,
-    fontFamily: "Poppins-Regular",
-    fontWeight: "bold",
-    textAlign: "center",
+    fontFamily: 'Poppins-Regular',
+    fontWeight: 'bold',
+    textAlign: 'center',
     color: Colors.orange.orangeStandard,
     marginBottom: 20,
   },
   modalButtons: {
-    display: "flex",
-    flexDirection: "row",
+    display: 'flex',
+    flexDirection: 'row',
   },
 });
 

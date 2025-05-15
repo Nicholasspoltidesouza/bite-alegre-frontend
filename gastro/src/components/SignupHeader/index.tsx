@@ -4,7 +4,7 @@ import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-type ProfileIcon = "person" | "store";
+type ProfileIcon = 'person' | 'store';
 
 interface SignupHeaderProps {
   urlProfilePhoto?: string;
@@ -15,29 +15,51 @@ interface SignupHeaderProps {
   profileIcon: ProfileIcon;
 }
 
-const SignupHeader = ({ urlProfilePhoto, onBack, onPhotoPress, userType, setUserType, profileIcon }: SignupHeaderProps) => {
-
+const SignupHeader = ({
+  urlProfilePhoto,
+  onBack,
+  onPhotoPress,
+  userType,
+  setUserType,
+  profileIcon,
+}: SignupHeaderProps) => {
   return (
     <SafeAreaView>
       <View style={styles.banner}>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <MaterialIcons name="keyboard-arrow-left" size={24} color= {Colors.white} />
+          <MaterialIcons
+            name="keyboard-arrow-left"
+            size={24}
+            color={Colors.white}
+          />
         </TouchableOpacity>
         <View style={styles.userTypeContainer}>
-          <Text style={styles.userTypeText}>
-            {userType}
-          </Text>
+          <Text style={styles.userTypeText}>{userType}</Text>
         </View>
         <View style={styles.photoContainer}>
           <Text style={styles.title}>ESCOLHA SUA FOTO</Text>
-          <TouchableOpacity style={styles.profileContainer} onPress={onPhotoPress}>
+          <TouchableOpacity
+            style={styles.profileContainer}
+            onPress={onPhotoPress}
+          >
             {urlProfilePhoto ? (
-              <Image source={{ uri: urlProfilePhoto }} style={styles.profileImage} />
+              <Image
+                source={{ uri: urlProfilePhoto }}
+                style={styles.profileImage}
+              />
             ) : (
-              <MaterialIcons name={profileIcon} size={30} color="rgba(255,255,255,0.85)" />
+              <MaterialIcons
+                name={profileIcon}
+                size={30}
+                color="rgba(255,255,255,0.85)"
+              />
             )}
             <View style={styles.cameraIcon}>
-              <MaterialIcons name="photo-camera" size={20} color= {Colors.white} />
+              <MaterialIcons
+                name="photo-camera"
+                size={20}
+                color={Colors.white}
+              />
             </View>
           </TouchableOpacity>
         </View>
@@ -76,7 +98,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     textAlign: 'center',
     top: 40,
-    marginBottom: 20
+    marginBottom: 20,
   },
   title: {
     fontSize: 12,

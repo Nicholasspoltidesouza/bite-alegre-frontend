@@ -1,15 +1,15 @@
-import Button from "@/src/components/Button";
-import Tag from "@/src/components/Tag";
-import ToggleSwitch from "@/src/components/ToggleSwitch";
-import { API_URL_ANDROID, API_URL_BACKEND } from "@/src/constants/apiUrl";
-import { RestaurantFilterDTO } from "@/src/@types/DTO";
-import { useSearchFilter } from "@/src/hooks/useSearchFilter";
-import useFetchTags from "@/src/hooks/useFetchTags";
-import useLocation from "@/src/hooks/useLocation";
-import { Feather, FontAwesome6 } from "@expo/vector-icons";
-import { router } from "expo-router";
-import React, { useState } from "react";
-import Colors from "@/src/constants/Colors";
+import Button from '@/src/components/Button';
+import Tag from '@/src/components/Tag';
+import ToggleSwitch from '@/src/components/ToggleSwitch';
+import { API_URL_ANDROID, API_URL_BACKEND } from '@/src/constants/apiUrl';
+import { RestaurantFilterDTO } from '@/src/@types/DTO';
+import { useSearchFilter } from '@/src/hooks/useSearchFilter';
+import useFetchTags from '@/src/hooks/useFetchTags';
+import useLocation from '@/src/hooks/useLocation';
+import { Feather, FontAwesome6 } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import React, { useState } from 'react';
+import Colors from '@/src/constants/Colors';
 import {
   ActivityIndicator,
   Modal,
@@ -21,7 +21,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
+} from 'react-native';
 
 interface FilterOptions {
   price: string;
@@ -34,7 +34,7 @@ interface FilterOptions {
 
 const FilterScreen: React.FC = () => {
   const [filters, setFilters] = useState<FilterOptions>({
-    price: "Preço Médio",
+    price: 'Preço Médio',
     distance: [],
     location: [],
     category: [],
@@ -43,9 +43,9 @@ const FilterScreen: React.FC = () => {
   });
 
   const [priceModalVisible, setPriceModalVisible] = useState(false);
-  const [priceInput, setPriceInput] = useState("");
+  const [priceInput, setPriceInput] = useState('');
   const [addressModalVisible, setAddressModalVisible] = useState(false);
-  const [addressInput, setAddressInput] = useState("");
+  const [addressInput, setAddressInput] = useState('');
 
   const { filterRestaurants, loading: filterLoading } = useSearchFilter();
   const { latitude, longitude } = useLocation();
@@ -54,31 +54,25 @@ const FilterScreen: React.FC = () => {
     tags,
     loading: tagsLoading,
     error: tagsError,
-  } = useFetchTags(
-    `${API_URL_ANDROID}/tags`
-  );
+  } = useFetchTags(`${API_URL_ANDROID}/tags`);
 
-  const priceNumber =
-    parseFloat(filters.price.replace(/[^\d]/g, "")) || 0;
+  const priceNumber = parseFloat(filters.price.replace(/[^\d]/g, '')) || 0;
   const priceIsSet = priceNumber > 0;
 
-  const locationSelected = filters.distance[0] === "Localização";
+  const locationSelected = filters.distance[0] === 'Localização';
   const addressSet =
     filters.distance.length > 0 &&
     !locationSelected &&
     filters.distance[0].trim().length > 0;
   const addressTitle = addressSet
     ? filters.distance[0].length > 18
-      ? filters.distance[0].slice(0, 18) + "…"
+      ? filters.distance[0].slice(0, 18) + '…'
       : filters.distance[0]
-    : "Escolha";
+    : 'Escolha';
 
-  const handleTagPress = (
-    section: keyof FilterOptions,
-    tag: string
-  ) => {
+  const handleTagPress = (section: keyof FilterOptions, tag: string) => {
     setFilters((prev) => {
-      if (section === "price") {
+      if (section === 'price') {
         return { ...prev, price: tag };
       }
       const list = prev[section] as string[];
@@ -93,7 +87,7 @@ const FilterScreen: React.FC = () => {
 
   const handleClear = () =>
     setFilters({
-      price: "Preço Médio",
+      price: 'Preço Médio',
       distance: [],
       location: [],
       category: [],
@@ -124,21 +118,21 @@ const FilterScreen: React.FC = () => {
 
     if (locationSelected && latitude && longitude) {
       apiFilters.geolocation = [parseFloat(latitude), parseFloat(longitude)];
-      apiFilters.proximity = 10; 
+      apiFilters.proximity = 10;
     }
 
     try {
       await filterRestaurants(apiFilters);
       router.push({ pathname: '/screens/Search' });
     } catch (error) {
-      console.error("Erro ao filtrar restaurantes:", error);
+      console.error('Erro ao filtrar restaurantes:', error);
     }
   };
 
   if (tagsLoading || filterLoading) {
     return (
       <SafeAreaView style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color= {Colors.orange.orangeStandard} />
+        <ActivityIndicator size="large" color={Colors.orange.orangeStandard} />
       </SafeAreaView>
     );
   }
@@ -151,20 +145,17 @@ const FilterScreen: React.FC = () => {
     );
   }
 
-  const localTags = tags.filter((t) => t.type === "LOCAL");
-  const categoryTags = tags.filter((t) => t.type === "CATEGORIA");
-  const occasionTags = tags.filter((t) => t.type === "OCASIAO");
+  const localTags = tags.filter((t) => t.type === 'LOCAL');
+  const categoryTags = tags.filter((t) => t.type === 'CATEGORIA');
+  const occasionTags = tags.filter((t) => t.type === 'OCASIAO');
 
   const iconColor = Colors.icon;
-  const dropdownIconColor = "#8F8F8F";
+  const dropdownIconColor = '#8F8F8F';
   const iconSize = 16;
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor= {Colors.white}
-      />
+      <StatusBar barStyle="dark-content" backgroundColor={Colors.white} />
 
       <View style={styles.header}>
         <Text style={styles.title}>Filtros</Text>
@@ -177,7 +168,6 @@ const FilterScreen: React.FC = () => {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
-
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Preço</Text>
           <View style={styles.tagsContainer}>
@@ -194,7 +184,7 @@ const FilterScreen: React.FC = () => {
               }
               iconPosition="right"
               onPress={() => {
-                setPriceInput(priceIsSet ? String(priceNumber) : "");
+                setPriceInput(priceIsSet ? String(priceNumber) : '');
                 setPriceModalVisible(true);
               }}
             />
@@ -219,7 +209,7 @@ const FilterScreen: React.FC = () => {
               onPress={() => {
                 setFilters((prev) => ({
                   ...prev,
-                  distance: locationSelected ? [] : ["Localização"],
+                  distance: locationSelected ? [] : ['Localização'],
                 }));
               }}
             />
@@ -236,9 +226,7 @@ const FilterScreen: React.FC = () => {
                 />
               }
               onPress={() => {
-                setAddressInput(
-                  addressSet ? filters.distance[0] : ""
-                );
+                setAddressInput(addressSet ? filters.distance[0] : '');
                 setAddressModalVisible(true);
               }}
             />
@@ -254,9 +242,7 @@ const FilterScreen: React.FC = () => {
                 title={tag.name}
                 isSelected={filters.location.includes(tag.name)}
                 style={styles.tag}
-                onPress={() =>
-                  handleTagPress("location", tag.name)
-                }
+                onPress={() => handleTagPress('location', tag.name)}
               />
             ))}
           </View>
@@ -271,9 +257,7 @@ const FilterScreen: React.FC = () => {
                 title={tag.name}
                 isSelected={filters.category.includes(tag.name)}
                 style={styles.tag}
-                onPress={() =>
-                  handleTagPress("category", tag.name)
-                }
+                onPress={() => handleTagPress('category', tag.name)}
               />
             ))}
           </View>
@@ -288,9 +272,7 @@ const FilterScreen: React.FC = () => {
                 title={tag.name}
                 isSelected={filters.occasion.includes(tag.name)}
                 style={styles.tag}
-                onPress={() =>
-                  handleTagPress("occasion", tag.name)
-                }
+                onPress={() => handleTagPress('occasion', tag.name)}
               />
             ))}
           </View>
@@ -324,15 +306,11 @@ const FilterScreen: React.FC = () => {
         visible={priceModalVisible}
         transparent
         animationType="slide"
-        onRequestClose={() =>
-          setPriceModalVisible(false)
-        }
+        onRequestClose={() => setPriceModalVisible(false)}
       >
         <View style={modalStyles.backdrop}>
           <View style={modalStyles.wrapper}>
-            <Text style={modalStyles.modalTitle}>
-              Definir Preço Médio
-            </Text>
+            <Text style={modalStyles.modalTitle}>Definir Preço Médio</Text>
 
             <TextInput
               value={priceInput}
@@ -347,9 +325,7 @@ const FilterScreen: React.FC = () => {
                 title="Cancelar"
                 type="white"
                 style={{ flex: 1, marginRight: 10 }}
-                onPress={() =>
-                  setPriceModalVisible(false)
-                }
+                onPress={() => setPriceModalVisible(false)}
               />
               <Button
                 title="Salvar"
@@ -359,10 +335,7 @@ const FilterScreen: React.FC = () => {
                   const num = parseFloat(priceInput);
                   setFilters((prev) => ({
                     ...prev,
-                    price:
-                      isNaN(num) || num <= 0
-                        ? "Preço Médio"
-                        : `R$ ${num}`,
+                    price: isNaN(num) || num <= 0 ? 'Preço Médio' : `R$ ${num}`,
                   }));
                   setPriceModalVisible(false);
                 }}
@@ -376,15 +349,11 @@ const FilterScreen: React.FC = () => {
         visible={addressModalVisible}
         transparent
         animationType="slide"
-        onRequestClose={() =>
-          setAddressModalVisible(false)
-        }
+        onRequestClose={() => setAddressModalVisible(false)}
       >
         <View style={modalStyles.backdrop}>
           <View style={modalStyles.wrapper}>
-            <Text style={modalStyles.modalTitle}>
-              Digite um endereço
-            </Text>
+            <Text style={modalStyles.modalTitle}>Digite um endereço</Text>
 
             <TextInput
               value={addressInput}
@@ -398,9 +367,7 @@ const FilterScreen: React.FC = () => {
                 title="Cancelar"
                 type="white"
                 style={{ flex: 1, marginRight: 10 }}
-                onPress={() =>
-                  setAddressModalVisible(false)
-                }
+                onPress={() => setAddressModalVisible(false)}
               />
               <Button
                 title="Salvar"
@@ -426,12 +393,12 @@ const FilterScreen: React.FC = () => {
 const styles = StyleSheet.create({
   loaderContainer: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
     backgroundColor: Colors.white,
   },
   errorText: {
-    color: "red",
-    textAlign: "center",
+    color: 'red',
+    textAlign: 'center',
     paddingHorizontal: 20,
   },
   container: {
@@ -440,42 +407,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginTop: 10,
     marginBottom: 20,
   },
   title: {
-    fontFamily: "Poppins-Regular",
+    fontFamily: 'Poppins-Regular',
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: Colors.orange.orangeStandard,
   },
   scrollView: { flex: 1 },
   section: { marginBottom: 20 },
   sectionTitle: {
-    fontFamily: "Poppins-Regular",
+    fontFamily: 'Poppins-Regular',
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
     color: Colors.orange.orangeStandard,
     marginBottom: 10,
   },
   tagsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 10,
   },
   tag: {},
   toggleSection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 30,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 30,
     gap: 15,
   },
@@ -485,8 +452,8 @@ const styles = StyleSheet.create({
 const modalStyles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.35)",
-    justifyContent: "flex-end",
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    justifyContent: 'flex-end',
   },
   wrapper: {
     backgroundColor: Colors.white,
@@ -495,9 +462,9 @@ const modalStyles = StyleSheet.create({
     padding: 24,
   },
   modalTitle: {
-    fontFamily: "Poppins-Regular",
+    fontFamily: 'Poppins-Regular',
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: '600',
     color: Colors.orange.orangeStandard,
     marginBottom: 20,
   },
@@ -510,7 +477,7 @@ const modalStyles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 24,
   },
-  modalButtons: { flexDirection: "row" },
+  modalButtons: { flexDirection: 'row' },
 });
 
 export default FilterScreen;

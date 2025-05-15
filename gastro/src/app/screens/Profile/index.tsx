@@ -1,5 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+  ActivityIndicator,
+} from 'react-native';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import Header from '@/src/components/Header';
 import Colors from '@/src/constants/Colors';
@@ -9,16 +17,18 @@ import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 
 export default function Profile() {
   const { getUserById, loading, error, data: userData } = useCreateUser();
-  const [visitedRestaurants, setVisitedRestaurants] = useState<RestaurantDTO[]>([]);
+  const [visitedRestaurants, setVisitedRestaurants] = useState<RestaurantDTO[]>(
+    [],
+  );
   const { userId } = useLocalSearchParams();
 
   useFocusEffect(
     useCallback(() => {
-      const id = typeof userId === "string" ? userId : "user-1";
+      const id = typeof userId === 'string' ? userId : 'user-1';
       getUserById(id);
-    }, [userId])
+    }, [userId]),
   );
-  
+
   useEffect(() => {
     if (userData) {
       setVisited();
@@ -26,24 +36,26 @@ export default function Profile() {
   }, [userData]);
 
   function setVisited() {
-    const visitedFromReviews: RestaurantDTO[] = userData!.reviews?.map(mapRestaurantToReview) ?? [];
-    const visitedFromCheckins: RestaurantDTO[] = userData!.checkinsWithoutReview?.map(mapCheckinToRestaurant) ?? [];
+    const visitedFromReviews: RestaurantDTO[] =
+      userData!.reviews?.map(mapRestaurantToReview) ?? [];
+    const visitedFromCheckins: RestaurantDTO[] =
+      userData!.checkinsWithoutReview?.map(mapCheckinToRestaurant) ?? [];
 
-    const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];    
+    const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];
 
-    const uniqueVisited = Array.from(new Map(
-      combinedVisited.map(item => [item.id, item])
-    ).values());
+    const uniqueVisited = Array.from(
+      new Map(combinedVisited.map((item) => [item.id, item])).values(),
+    );
 
     if (uniqueVisited.length > 0) {
       return setVisitedRestaurants(uniqueVisited);
     }
-    setVisitedRestaurants([]);  
+    setVisitedRestaurants([]);
   }
 
   function mapCheckinToRestaurant(checkin: CheckinDTO): RestaurantDTO {
     return {
-      id: checkin.restaurant_id ?? "",
+      id: checkin.restaurant_id ?? '',
       profilePhoto: checkin.restaurantProfilePhoto,
       address: '',
       name: checkin.restaurantName!,
@@ -53,15 +65,15 @@ export default function Profile() {
       averagePrice: 0,
       phone: '',
       userType: '',
-      cnpj:''
+      cnpj: '',
     };
   }
 
   function mapRestaurantToReview(review: ReviewDTO): RestaurantDTO {
     return {
-      id: review.restaurantId ?? "",
+      id: review.restaurantId ?? '',
       stars: review.stars ?? 0,
-      profilePhoto: review.restaurantProfilePhoto,     
+      profilePhoto: review.restaurantProfilePhoto,
       address: '',
       name: review.restaurantName!,
       description: '',
@@ -70,14 +82,18 @@ export default function Profile() {
       averagePrice: 0,
       phone: '',
       userType: '',
-      cnpj:''
+      cnpj: '',
     };
   }
 
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color= {Colors.orange.orangeStandard} style={{ marginTop: 50 }} />
+        <ActivityIndicator
+          size="large"
+          color={Colors.orange.orangeStandard}
+          style={{ marginTop: 50 }}
+        />
       </SafeAreaView>
     );
   }
@@ -85,25 +101,34 @@ export default function Profile() {
   if (error) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>{error}</Text>
+        <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>
+          {error}
+        </Text>
       </SafeAreaView>
     );
   }
-  
+
   return (
-      <View style={styles.container}>
-    <ScrollView>
-      
-      <Header isProfile={true} name={userData?.name ?? '-'} nickName={userData?.nickname ?? '-' } />       
+    <View style={styles.container}>
+      <ScrollView>
+        <Header
+          isProfile={true}
+          name={userData?.name ?? '-'}
+          nickName={userData?.nickname ?? '-'}
+        />
 
-      <View style={styles.titleRow}>
-        <Text style={styles.title}>Visitados</Text>
-        <TouchableOpacity>
-          <Text style={styles.mostrarMais}>Mostrar mais</Text>
-        </TouchableOpacity>            
-      </View>          
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>Visitados</Text>
+          <TouchableOpacity>
+            <Text style={styles.mostrarMais}>Mostrar mais</Text>
+          </TouchableOpacity>
+        </View>
 
-        <UserCarouselRestaurant variant={'visited'} carouselProfileRestaurant={true} restaurantsExternal={visitedRestaurants ?? []}/>
+        <UserCarouselRestaurant
+          variant={'visited'}
+          carouselProfileRestaurant={true}
+          restaurantsExternal={visitedRestaurants ?? []}
+        />
 
         <View style={styles.titleRow}>
           <Text style={styles.title}>Salvos</Text>
@@ -111,11 +136,9 @@ export default function Profile() {
             <Text style={styles.mostrarMais}>Mostrar mais</Text>
           </TouchableOpacity>
         </View>
-        <UserCarouselRestaurant variant={'saved'} restaurantsExternal={[]}/>
-
-
-    </ScrollView>
-      </View>
+        <UserCarouselRestaurant variant={'saved'} restaurantsExternal={[]} />
+      </ScrollView>
+    </View>
   );
 }
 
@@ -123,7 +146,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    
   },
   titleRow: {
     marginTop: 24,

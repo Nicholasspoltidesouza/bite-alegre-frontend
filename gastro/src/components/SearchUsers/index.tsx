@@ -1,8 +1,8 @@
-import Colors from "@/src/constants/Colors";
-import { MaterialIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Colors from '@/src/constants/Colors';
+import { MaterialIcons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import React from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface SearchUsersProps {
   name: string;
@@ -11,30 +11,38 @@ interface SearchUsersProps {
   useId: string;
 }
 
-const SearchUsers: React.FC<SearchUsersProps> = ({ name, nickname, profilePhoto, useId }) => {
+const SearchUsers: React.FC<SearchUsersProps> = ({
+  name,
+  nickname,
+  profilePhoto,
+  useId,
+}) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={() => router.push({
-      pathname: "/screens/Profile",
-      params: {
-        userId: useId,
-      },
-    })}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() =>
+        router.push({
+          pathname: '/screens/Profile',
+          params: {
+            userId: useId,
+          },
+        })
+      }
+    >
       <View style={styles.imageContainer}>
         {profilePhoto ? (
           <Image source={{ uri: profilePhoto }} style={styles.image} />
-        ) :
-          (
-            <View style={styles.placeholderPhoto}>
-              <MaterialIcons name="image" size={32} color='#888' />
-            </View>
-          )}
+        ) : (
+          <View style={styles.placeholderPhoto}>
+            <MaterialIcons name="image" size={32} color="#888" />
+          </View>
+        )}
       </View>
 
       <View style={styles.textContainer}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.nickname}>@{nickname}</Text>
       </View>
-
     </TouchableOpacity>
   );
 };
@@ -42,10 +50,10 @@ const SearchUsers: React.FC<SearchUsersProps> = ({ name, nickname, profilePhoto,
 const styles = StyleSheet.create({
   container: {
     marginTop: 10,
-    flexDirection: "row",
+    flexDirection: 'row',
     padding: 12,
-    alignItems: "center",
-    backgroundColor: "white",
+    alignItems: 'center',
+    backgroundColor: 'white',
     borderRadius: 20,
     marginVertical: 6,
     marginHorizontal: 12,
@@ -59,9 +67,9 @@ const styles = StyleSheet.create({
     width: 86,
     height: 86,
     borderRadius: 20,
-    backgroundColor: "#EDEDED",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#EDEDED',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 12,
   },
   image: {
@@ -73,25 +81,25 @@ const styles = StyleSheet.create({
     width: 86,
     height: 86,
     borderRadius: 20,
-    backgroundColor: "#E0E0E0",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#E0E0E0',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   textContainer: {
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   name: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: Colors.orange.orangeStandard,
     marginBottom: 4,
   },
   nickname: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: Colors.black,
     marginBottom: 4,
   },
 });
 
-export default SearchUsers
+export default SearchUsers;

@@ -1,4 +1,4 @@
 export interface OperatingHoursDto {
-    day: string;
-    time: string;
-  };
+  day: string;
+  time: string;
+}

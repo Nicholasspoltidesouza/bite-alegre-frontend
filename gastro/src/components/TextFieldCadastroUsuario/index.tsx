@@ -70,7 +70,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
         onChangeText={handleChangeText}
         value={value}
         placeholder={placeholder}
-        placeholderTextColor= {Colors.orange.orangeStandard}
+        placeholderTextColor={Colors.orange.orangeStandard}
         {...props}
       />
     </>

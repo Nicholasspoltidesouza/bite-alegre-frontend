@@ -45,8 +45,8 @@ Obs: lembre-se de adicionar capturas de tela e explicações do que foi feito.
 Caso queira rodar pelo computador:
 
 ```sh
-npm install          # Instala dependências
-npx expo start       # Inicia o expo
+npm install --force         # Instala dependências
+npx expo start              # Inicia o expo
 ```
 
 

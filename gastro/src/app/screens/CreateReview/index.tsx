@@ -4,9 +4,19 @@ import Colors from '@/src/constants/Colors';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import { useCreateUser } from '@/src/hooks/useUserApi';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const CreateReview: React.FC = () => {
   const { createReview } = useRestaurantApi();
@@ -18,13 +28,17 @@ const CreateReview: React.FC = () => {
   const [imputHeight, setImputHeight] = useState(0);
 
   useEffect(() => {
-    getUserById("user-1");
+    getUserById('user-1');
   }, []);
 
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color= {Colors.orange.orangeStandard} style={{ marginTop: 50 }} />
+        <ActivityIndicator
+          size="large"
+          color={Colors.orange.orangeStandard}
+          style={{ marginTop: 50 }}
+        />
       </SafeAreaView>
     );
   }
@@ -32,7 +46,9 @@ const CreateReview: React.FC = () => {
   if (error) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>{error}</Text>
+        <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>
+          {error}
+        </Text>
       </SafeAreaView>
     );
   }
@@ -50,10 +66,14 @@ const CreateReview: React.FC = () => {
           <FontAwesome
             name={'star'}
             size={24}
-            color={i <= nota ? Colors.orange.orangeStandard : 'rgba(255, 179, 112, 0.25)'}
+            color={
+              i <= nota
+                ? Colors.orange.orangeStandard
+                : 'rgba(255, 179, 112, 0.25)'
+            }
             style={styles.starIcon}
           />
-        </TouchableOpacity>
+        </TouchableOpacity>,
       );
     }
     return estrelas;
@@ -65,24 +85,36 @@ const CreateReview: React.FC = () => {
         stars: nota,
         feedback: description,
         user_id: userData!.id!,
-        restaurant_id: restaurantId.toString()
+        restaurant_id: restaurantId.toString(),
       };
 
       await createReview(data);
       Alert.alert('Sucesso', 'Avaliação feita com sucesso!');
-      router.push({ pathname: "/screens/restaurantProfile" });
+      router.push({ pathname: '/screens/restaurantProfile' });
     } catch (err) {
       console.error('Submit Error:', err);
-      Alert.alert('Erro', err instanceof Error ? err.message : 'Ocorreu um erro inesperado');
+      Alert.alert(
+        'Erro',
+        err instanceof Error ? err.message : 'Ocorreu um erro inesperado',
+      );
     }
-  }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         <View style={styles.containerTitle}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.push({ pathname: "/screens/restaurantProfile" })}>
-            <MaterialIcons name="keyboard-arrow-left" size={35} color= {Colors.orange.orangeStandard} />
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() =>
+              router.push({ pathname: '/screens/restaurantProfile' })
+            }
+          >
+            <MaterialIcons
+              name="keyboard-arrow-left"
+              size={35}
+              color={Colors.orange.orangeStandard}
+            />
           </TouchableOpacity>
           <Text style={styles.titleText}>
             Esta foi sua primeira visita ao restaurante, deixe uma avaliação!
@@ -98,23 +130,39 @@ const CreateReview: React.FC = () => {
           </View>
           <View style={styles.textContainer}>
             <Text style={styles.textUserName}>{userData?.name}</Text>
-            <Text>As avaliações são públicas e podem ser vistas tanto pelo restaurante, quanto por outros usuários.</Text>
+            <Text>
+              As avaliações são públicas e podem ser vistas tanto pelo
+              restaurante, quanto por outros usuários.
+            </Text>
           </View>
         </View>
-        <View style={styles.starsContainer}>
-          {renderEstrelas()}
-        </View>
+        <View style={styles.starsContainer}>{renderEstrelas()}</View>
         <CustomTextInput
           value={description}
           onChangeText={setDescription}
           placeholder={'Descreva sua experiência (opcional)'}
           multiline={true}
-          style={{ marginHorizontal: '5%', height: imputHeight > 50 ? imputHeight : 50, borderRadius: 20, backgroundColor: "rgba(255, 179, 112, 0.25)", color: Colors.black}}
-          onContentSizeChange={(e) => setImputHeight(e.nativeEvent.contentSize.height)}
+          style={{
+            marginHorizontal: '5%',
+            height: imputHeight > 50 ? imputHeight : 50,
+            borderRadius: 20,
+            backgroundColor: 'rgba(255, 179, 112, 0.25)',
+            color: Colors.black,
+          }}
+          onContentSizeChange={(e) =>
+            setImputHeight(e.nativeEvent.contentSize.height)
+          }
+        ></CustomTextInput>
+        <TouchableOpacity
+          style={{ alignItems: 'flex-end' }}
+          onPress={() => handleSubmit()}
         >
-        </CustomTextInput>
-        <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={() => handleSubmit()}>
-          <MaterialIcons name="navigation" size={40} color={Colors.orange.orangeMedium} style={{ margin: '5%', transform: [{ rotate: '90deg' }] }} />
+          <MaterialIcons
+            name="navigation"
+            size={40}
+            color={Colors.orange.orangeMedium}
+            style={{ margin: '5%', transform: [{ rotate: '90deg' }] }}
+          />
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -124,7 +172,7 @@ const CreateReview: React.FC = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: Colors.background
+    backgroundColor: Colors.background,
   },
   container: {
     padding: '4%',
@@ -149,7 +197,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: Colors.text.black,
-    marginBottom: 5
+    marginBottom: 5,
   },
   textUser: {
     flexDirection: 'row',
@@ -161,7 +209,7 @@ const styles = StyleSheet.create({
     height: 65,
     width: 65,
     alignItems: 'center',
-    marginRight: '5%'
+    marginRight: '5%',
   },
   textContainer: {
     fontFamily: 'Poppins-Regular',
@@ -171,7 +219,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    marginVertical: '5%'
+    marginVertical: '5%',
   },
   starIcon: {
     marginHorizontal: 5,
@@ -185,7 +233,7 @@ const styles = StyleSheet.create({
     top: '50%',
     left: '2%',
     zIndex: 10,
-  }
+  },
 });
 
 export default CreateReview;

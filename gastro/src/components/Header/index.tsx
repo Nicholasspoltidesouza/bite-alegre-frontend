@@ -1,11 +1,18 @@
-import useLocation from "@/src/hooks/useLocation";
-import React from "react";
-import { View, StyleSheet, Text, StatusBar, TouchableOpacity, Image } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { MaterialIcons } from "@expo/vector-icons";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { useCreateUser } from "@/src/hooks/useUserApi";
-import Colors from "@/src/constants/Colors";
+import useLocation from '@/src/hooks/useLocation';
+import React from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  StatusBar,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialIcons } from '@expo/vector-icons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { useCreateUser } from '@/src/hooks/useUserApi';
+import Colors from '@/src/constants/Colors';
 
 interface HeaderProps {
   isProfile?: boolean;
@@ -22,11 +29,14 @@ const Header: React.FC<HeaderProps> = ({
   showGreeting = true,
   profileImageUrl,
 }) => {
-  const { subregion, refreshLocation } = useLocation(); 
+  const { subregion, refreshLocation } = useLocation();
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor= {Colors.orange.orangeStandard} translucent={false} />
+      <StatusBar
+        backgroundColor={Colors.orange.orangeStandard}
+        translucent={false}
+      />
       <LinearGradient
         colors={[Colors.orange.orangeStandard, Colors.white]}
         locations={[0.45, 0.95]}
@@ -35,7 +45,10 @@ const Header: React.FC<HeaderProps> = ({
         <View style={styles.content}>
           <View style={styles.photo}>
             {profileImageUrl ? (
-              <Image source={{ uri: profileImageUrl }} style={styles.profileImage} />
+              <Image
+                source={{ uri: profileImageUrl }}
+                style={styles.profileImage}
+              />
             ) : (
               <MaterialIcons name="person" size={40} color="#fcd5b5" />
             )}
@@ -43,27 +56,27 @@ const Header: React.FC<HeaderProps> = ({
 
           <View style={styles.textContainer}>
             {!isProfile && showGreeting && (
-            <Text style={styles.greeting}>
+              <Text style={styles.greeting}>
                 Olá, <Text style={styles.bold}>{name}!</Text> Bora jantar?
-            </Text>
+              </Text>
             )}
 
-              {isProfile && (
-            <>
-              <Text style={styles.name}>{name}</Text> 
-              <Text style={styles.username}>@{nickName}</Text> 
-            </>
-             )}
+            {isProfile && (
+              <>
+                <Text style={styles.name}>{name}</Text>
+                <Text style={styles.username}>@{nickName}</Text>
+              </>
+            )}
             <TouchableOpacity onPress={refreshLocation}>
               <View style={styles.row}>
                 <MaterialIcons
                   name="location-on"
                   size={16}
-                  color= {Colors.white}
+                  color={Colors.white}
                   style={styles.icon}
                 />
                 <Text style={styles.infoText}>
-                  {subregion?.trim()?.length ? subregion : "Location"}
+                  {subregion?.trim()?.length ? subregion : 'Location'}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -73,9 +86,13 @@ const Header: React.FC<HeaderProps> = ({
         {isProfile && (
           <TouchableOpacity
             style={styles.editIconButton}
-            onPress={() => console.log("Edit Profile")}
+            onPress={() => console.log('Edit Profile')}
           >
-            <MaterialCommunityIcons name="lead-pencil" size={22} color={Colors.white} />
+            <MaterialCommunityIcons
+              name="lead-pencil"
+              size={22}
+              color={Colors.white}
+            />
           </TouchableOpacity>
         )}
       </LinearGradient>
@@ -85,11 +102,11 @@ const Header: React.FC<HeaderProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    width: '100%',
     height: 200,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   gradient: {
     flex: 1,
@@ -97,15 +114,15 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
     paddingHorizontal: 20,
     paddingTop: 40,
-    position: "relative",
+    position: 'relative',
   },
   content: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     zIndex: 1,
   },
   editIconButton: {
-    position: "absolute",
+    position: 'absolute',
     top: 40,
     right: 20,
     backgroundColor: Colors.orange.orangeStandard,
@@ -115,12 +132,12 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   photo: {
-    backgroundColor: "#ffffff40",
+    backgroundColor: '#ffffff40',
     borderRadius: 50,
     padding: 10,
     marginRight: 15,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     width: 60,
     height: 60,
   },
@@ -134,25 +151,25 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 20,
-    fontFamily: "Poppins-Medium",
+    fontFamily: 'Poppins-Medium',
     color: Colors.white,
   },
   username: {
     fontSize: 14,
-    color: "#ffffffcc",
-    fontFamily: "Poppins-Medium",
+    color: '#ffffffcc',
+    fontFamily: 'Poppins-Medium',
   },
   greeting: {
-    fontSize: 22, 
-    fontFamily: "Poppins-Medium", 
+    fontSize: 22,
+    fontFamily: 'Poppins-Medium',
     color: Colors.white,
   },
   bold: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   row: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   icon: {
     marginRight: 6,
@@ -160,7 +177,7 @@ const styles = StyleSheet.create({
   infoText: {
     color: Colors.white,
     fontSize: 14,
-    fontFamily: "Poppins-Medium",
+    fontFamily: 'Poppins-Medium',
   },
 });
 

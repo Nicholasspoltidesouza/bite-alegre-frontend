@@ -1,12 +1,12 @@
-import { UserDTO } from "@/src/@types/DTO";
-import Button from "@/src/components/Button";
-import Dropdown from "@/src/components/Dropdown";
-import SignupHeader from "@/src/components/SignupHeader";
-import CustomTextInput from "@/src/components/TextFieldCadastroUsuario";
-import Colors from "@/src/constants/Colors";
-import { useCreateUser } from "@/src/hooks/useUserApi";
-import { useRouter, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import { UserDTO } from '@/src/@types/DTO';
+import Button from '@/src/components/Button';
+import Dropdown from '@/src/components/Dropdown';
+import SignupHeader from '@/src/components/SignupHeader';
+import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
+import Colors from '@/src/constants/Colors';
+import { useCreateUser } from '@/src/hooks/useUserApi';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import React, { useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -16,36 +16,36 @@ import {
   StyleSheet,
   Text,
   View,
-} from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SignupUser = () => {
   const router = useRouter();
   const { userData } = useLocalSearchParams();
 
   const [name, setName] = useState<string>(
-    userData ? JSON.parse(userData as string).name : ""
+    userData ? JSON.parse(userData as string).name : '',
   );
   const [nickname, setNickname] = useState<string>(
-    userData ? JSON.parse(userData as string).nickname : ""
+    userData ? JSON.parse(userData as string).nickname : '',
   );
   const [email, setEmail] = useState<string>(
-    userData ? JSON.parse(userData as string).email : ""
+    userData ? JSON.parse(userData as string).email : '',
   );
   const [password, setPassword] = useState<string>(
-    userData ? JSON.parse(userData as string).password : ""
+    userData ? JSON.parse(userData as string).password : '',
   );
   const [phone, setPhone] = useState<string>(
-    userData ? JSON.parse(userData as string).phone : ""
+    userData ? JSON.parse(userData as string).phone : '',
   );
   const [gender, setGender] = useState<string | null>(
-    userData ? JSON.parse(userData as string).gender : null
+    userData ? JSON.parse(userData as string).gender : null,
   );
   const [birthDate, setBirthDate] = useState<string>(
-    userData ? JSON.parse(userData as string).birthDate : ""
+    userData ? JSON.parse(userData as string).birthDate : '',
   );
   const [userType, setUserType] = useState<string | null>(
-    userData ? JSON.parse(userData as string).userType : "Cadastro de Usuário"
+    userData ? JSON.parse(userData as string).userType : 'Cadastro de Usuário',
   );
 
   const [birthDateTouched, setBirthDateTouched] = useState<boolean>(false);
@@ -55,51 +55,51 @@ const SignupUser = () => {
   const insets = useSafeAreaInsets();
 
   const validateName = (text: string): string | null => {
-    if (text.length < 2) return "Nome deve ter no mínimo 2 caracteres";
-    if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(text)) return "Nome deve conter apenas letras";
-    if (text.length > 50) return "Nome deve ter no máximo 50 caracteres";
+    if (text.length < 2) return 'Nome deve ter no mínimo 2 caracteres';
+    if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(text)) return 'Nome deve conter apenas letras';
+    if (text.length > 50) return 'Nome deve ter no máximo 50 caracteres';
     return null;
   };
 
   const validateNickname = (text: string): string | null => {
-    if (text.length < 2) return "Apelido deve ter no mínimo 2 caracteres";
-    if (text.length > 30) return "Apelido deve ter no máximo 30 caracteres";
+    if (text.length < 2) return 'Apelido deve ter no mínimo 2 caracteres';
+    if (text.length > 30) return 'Apelido deve ter no máximo 30 caracteres';
     return null;
   };
 
   const validateEmail = (text: string): string | null => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!text) return "Email é obrigatório";
-    if (!emailRegex.test(text)) return "Formato de email inválido";
-    if (text.length > 100) return "Email deve ter no máximo 100 caracteres";
+    if (!text) return 'Email é obrigatório';
+    if (!emailRegex.test(text)) return 'Formato de email inválido';
+    if (text.length > 100) return 'Email deve ter no máximo 100 caracteres';
     return null;
   };
 
   const validatePassword = (text: string): string | null => {
-    if (text.length < 6) return "Senha deve ter no mínimo 6 caracteres";
-    if (text.length > 50) return "Senha deve ter no máximo 50 caracteres";
+    if (text.length < 6) return 'Senha deve ter no mínimo 6 caracteres';
+    if (text.length > 50) return 'Senha deve ter no máximo 50 caracteres';
     return null;
   };
 
   const validatePhone = (text: string): string | null => {
-    const cleaned = text.replace(/\D/g, "");
-    if (!cleaned) return "Telefone é obrigatório";
-    if (!/^\d{10,11}$/.test(cleaned)) return "Formato de telefone inválido";
+    const cleaned = text.replace(/\D/g, '');
+    if (!cleaned) return 'Telefone é obrigatório';
+    if (!/^\d{10,11}$/.test(cleaned)) return 'Formato de telefone inválido';
     return null;
   };
 
   const validateBirthDate = (text: string): string | null => {
     const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-    if (!text) return "Data de nascimento é obrigatória";
-    if (!dateRegex.test(text)) return "Formato deve ser DD/MM/AAAA";
-    const [day, month, year] = text.split("/").map(Number);
+    if (!text) return 'Data de nascimento é obrigatória';
+    if (!dateRegex.test(text)) return 'Formato deve ser DD/MM/AAAA';
+    const [day, month, year] = text.split('/').map(Number);
     const date = new Date(year, month - 1, day);
     if (
       date.getDate() !== day ||
       date.getMonth() !== month - 1 ||
       date.getFullYear() !== year
     )
-      return "Data inválida";
+      return 'Data inválida';
     return null;
   };
 
@@ -130,7 +130,7 @@ const SignupUser = () => {
       !gender ||
       !userType
     ) {
-      Alert.alert("Erro", "Por favor, preencha todos os campos obrigatórios.");
+      Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
 
@@ -144,16 +144,16 @@ const SignupUser = () => {
     ].filter((error) => error !== null);
 
     if (errors.length > 0) {
-      Alert.alert("Erro de Validação", errors.join("\n"));
+      Alert.alert('Erro de Validação', errors.join('\n'));
       return;
     }
 
-    const [day, month, year] = birthDate.split("/");
+    const [day, month, year] = birthDate.split('/');
     const isoBirthDate = `${year}-${month}-${day}T00:00:00Z`;
     const formattedGender =
-      gender === "PREFIRO NÃO INFORMAR" ? "NAO_QUERO_INFORMAR" : gender;
+      gender === 'PREFIRO NÃO INFORMAR' ? 'NAO_QUERO_INFORMAR' : gender;
     const formattedUserType =
-      userType === "Cadastro de Restaurante" ? "RESTAURANTE" : "USUARIO";
+      userType === 'Cadastro de Restaurante' ? 'RESTAURANTE' : 'USUARIO';
 
     const userData = {
       name,
@@ -167,10 +167,10 @@ const SignupUser = () => {
     };
 
     router.push({
-      pathname: "/screens/SignupInterestsScreen",
+      pathname: '/screens/SignupInterestsScreen',
       params: {
         userData: JSON.stringify(userData),
-        screenTitle: "Conte-nos seus interesses",
+        screenTitle: 'Conte-nos seus interesses',
       },
     });
   };
@@ -178,21 +178,21 @@ const SignupUser = () => {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
     >
       <SafeAreaView
         style={[
           styles.safeArea,
           { paddingTop: 0 },
-          Platform.OS === "ios" && { marginTop: -insets.top },
+          Platform.OS === 'ios' && { marginTop: -insets.top },
         ]}
       >
         <SignupHeader
           userType={userType}
           setUserType={setUserType}
           onBack={() => router.back()}
-          profileIcon={"person"}
+          profileIcon={'person'}
         />
         <ScrollView
           contentContainerStyle={styles.container}
@@ -246,9 +246,9 @@ const SignupUser = () => {
               value={phone}
               onChangeText={(text) => {
                 const formatted = text
-                  .replace(/\D/g, "")
-                  .replace(/^(\d{2})(\d)/, "($1) $2")
-                  .replace(/(\d{5})(\d)/, "$1-$2")
+                  .replace(/\D/g, '')
+                  .replace(/^(\d{2})(\d)/, '($1) $2')
+                  .replace(/(\d{5})(\d)/, '$1-$2')
                   .slice(0, 15);
                 setPhone(formatted);
               }}
@@ -267,10 +267,10 @@ const SignupUser = () => {
                 selected={gender}
                 placeholder="Gênero"
                 options={[
-                  "MASCULINO",
-                  "FEMININO",
-                  "OUTRO",
-                  "PREFIRO NÃO INFORMAR",
+                  'MASCULINO',
+                  'FEMININO',
+                  'OUTRO',
+                  'PREFIRO NÃO INFORMAR',
                 ]}
                 onSelect={setGender}
                 width="50%"
@@ -283,9 +283,9 @@ const SignupUser = () => {
                 value={birthDate}
                 onChangeText={(text) => {
                   const formatted = text
-                    .replace(/\D/g, "")
-                    .replace(/^(\d{2})(\d)/, "$1/$2")
-                    .replace(/^(\d{2}\/\d{2})(\d)/, "$1/$2")
+                    .replace(/\D/g, '')
+                    .replace(/^(\d{2})(\d)/, '$1/$2')
+                    .replace(/^(\d{2}\/\d{2})(\d)/, '$1/$2')
                     .slice(0, 10);
                   setBirthDate(formatted);
                   if (!birthDateTouched) setBirthDateTouched(true);
@@ -296,7 +296,7 @@ const SignupUser = () => {
                   birthDateTouched &&
                     validateBirthDate(birthDate) && {
                       borderWidth: 2,
-                      borderColor: "red",
+                      borderColor: 'red',
                     },
                 ]}
                 validation={undefined}
@@ -330,58 +330,58 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   container: {
-    alignItems: "center",
-    padding: "4%",
-    paddingBottom: "8%",
-    width: "100%",
+    alignItems: 'center',
+    padding: '4%',
+    paddingBottom: '8%',
+    width: '100%',
   },
   inputWrapper: {
-    width: "90%",
-    marginBottom: "5%",
+    width: '90%',
+    marginBottom: '5%',
   },
   input: {
-    width: "100%",
+    width: '100%',
     height: 50,
     borderRadius: 20,
-    backgroundColor: "rgba(255, 179, 112, 0.25)",
+    backgroundColor: 'rgba(255, 179, 112, 0.25)',
     paddingLeft: 24,
     paddingRight: 16,
     color: Colors.black,
-    fontFamily: "Poppins-Regular",
+    fontFamily: 'Poppins-Regular',
     fontSize: 16,
   },
   rowContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "90%",
-    marginBottom: "5%",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '90%',
+    marginBottom: '5%',
   },
   halfInputWrapper: {
-    width: "48%",
+    width: '48%',
   },
   birthDateInput: {
     height: 50,
-    width: "100%",
+    width: '100%',
     borderRadius: 20,
-    backgroundColor: "rgba(255, 179, 112, 0.25)",
+    backgroundColor: 'rgba(255, 179, 112, 0.25)',
     paddingLeft: 24,
     paddingRight: 16,
     color: Colors.black,
-    fontFamily: "Poppins-Regular",
+    fontFamily: 'Poppins-Regular',
     fontSize: 16,
   },
   errorText: {
-    color: "red",
+    color: 'red',
     fontSize: 12,
     marginTop: 4,
     marginLeft: 24,
-    fontFamily: "Poppins-Regular",
+    fontFamily: 'Poppins-Regular',
   },
   buttonContainer: {
-    marginTop: "2%",
-    width: "90%",
-    flexDirection: "row",
-    justifyContent: "flex-end",
+    marginTop: '2%',
+    width: '90%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
 });
 

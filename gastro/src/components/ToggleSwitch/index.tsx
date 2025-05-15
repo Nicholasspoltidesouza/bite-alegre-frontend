@@ -1,70 +1,81 @@
-"use client"
+'use client';
 
-import Colors from "@/src/constants/Colors"
-import React from "react"
-import { useState, useEffect } from "react"
-import { StyleSheet, TouchableOpacity, Animated, type ViewStyle, type StyleProp } from "react-native"
+import Colors from '@/src/constants/Colors';
+import React from 'react';
+import { useState, useEffect } from 'react';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Animated,
+  type ViewStyle,
+  type StyleProp,
+} from 'react-native';
 
 interface ToggleSwitchProps {
-  isEnabled?: boolean
-  onToggle?: (value: boolean) => void
-  activeColor?: string
-  inactiveColor?: string
-  style?: StyleProp<ViewStyle>
-  disabled?: boolean
+  isEnabled?: boolean;
+  onToggle?: (value: boolean) => void;
+  activeColor?: string;
+  inactiveColor?: string;
+  style?: StyleProp<ViewStyle>;
+  disabled?: boolean;
 }
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   isEnabled = false,
   onToggle,
   activeColor = Colors.orange.orangeStandard,
-  inactiveColor = "#E3E1E1",
+  inactiveColor = '#E3E1E1',
   style,
   disabled = false,
 }) => {
-  const [isActive, setIsActive] = useState(isEnabled)
-  const [animatedValue] = useState(new Animated.Value(isEnabled ? 1 : 0))
+  const [isActive, setIsActive] = useState(isEnabled);
+  const [animatedValue] = useState(new Animated.Value(isEnabled ? 1 : 0));
 
   const handleToggle = () => {
-    if (disabled) return
+    if (disabled) return;
 
-    const newValue = !isActive
-    setIsActive(newValue)
+    const newValue = !isActive;
+    setIsActive(newValue);
 
     Animated.timing(animatedValue, {
       toValue: newValue ? 1 : 0,
       duration: 200,
       useNativeDriver: false,
-    }).start()
+    }).start();
 
     if (onToggle) {
-      onToggle(newValue)
+      onToggle(newValue);
     }
-  }
+  };
 
   useEffect(() => {
     if (isEnabled !== isActive) {
-      setIsActive(isEnabled)
+      setIsActive(isEnabled);
       Animated.timing(animatedValue, {
         toValue: isEnabled ? 1 : 0,
         duration: 200,
         useNativeDriver: false,
-      }).start()
+      }).start();
     }
-  }, [isEnabled])
+  }, [isEnabled]);
 
   const backgroundColorAnimation = animatedValue.interpolate({
     inputRange: [0, 1],
     outputRange: [inactiveColor, activeColor],
-  })
+  });
 
   const translateXAnimation = animatedValue.interpolate({
     inputRange: [0, 1],
     outputRange: [2, 22],
-  })
+  });
 
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={handleToggle} disabled={disabled} style={[styles.container, style]}>
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={handleToggle}
+      disabled={disabled}
+      style={[styles.container, style]}
+    >
       <Animated.View
         style={[
           styles.background,
@@ -84,26 +95,26 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
         />
       </Animated.View>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     width: 50,
     height: 26,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   background: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
     borderRadius: 13,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   circle: {
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     shadowColor: Colors.black,
     shadowOffset: {
       width: 0,
@@ -113,6 +124,6 @@ const styles = StyleSheet.create({
     shadowRadius: 2.5,
     elevation: 2,
   },
-})
+});
 
-export default ToggleSwitch
+export default ToggleSwitch;

@@ -10,41 +10,41 @@ interface UserDTO {
   userType: string;
   id?: string;
   reviews?: ReviewDTO[];
-  checkinsWithoutReview?: CheckinDTO[]; 
+  checkinsWithoutReview?: CheckinDTO[];
 }
 interface RestaurantDTO {
-    id?: string;
-    profilePhoto?: string;
-    bannerPhoto?: string;
-    address: string;
-    name: string;
-    cnpj: string;
-    description: string;
-    email: string;
-    password: string;
-    averagePrice: number;
-    averageScore?: number | null;
-    phone: string;
-    userType: string;
-    reviews?: ReviewDTO[];
-    stars?: number;
+  id?: string;
+  profilePhoto?: string;
+  bannerPhoto?: string;
+  address: string;
+  name: string;
+  cnpj: string;
+  description: string;
+  email: string;
+  password: string;
+  averagePrice: number;
+  averageScore?: number | null;
+  phone: string;
+  userType: string;
+  reviews?: ReviewDTO[];
+  stars?: number;
 }
 
 interface CheckinDTO {
   user_id: string;
   restaurant_id: string;
   restaurantProfilePhoto?: string;
-  restaurantName?: string
+  restaurantName?: string;
 }
 
 interface ReviewDTO {
   user_id: string;
-  restaurantId?: string
-  restaurant_id?: string
+  restaurantId?: string;
+  restaurant_id?: string;
   stars: number;
-  feedback?: string
-  restaurantProfilePhoto?: string
-  restaurantName?: string
+  feedback?: string;
+  restaurantProfilePhoto?: string;
+  restaurantName?: string;
 }
 
 interface RestaurantFilterDTO {
@@ -56,4 +56,10 @@ interface RestaurantFilterDTO {
   open_now?: boolean;
 }
 
-export type { RestaurantDTO, UserDTO, CheckinDTO, ReviewDTO, RestaurantFilterDTO };
+export type {
+  RestaurantDTO,
+  UserDTO,
+  CheckinDTO,
+  ReviewDTO,
+  RestaurantFilterDTO,
+};

@@ -4,8 +4,18 @@ import SearchUsers from '@/src/components/SearchUsers';
 import Colors from '@/src/constants/Colors';
 import { useSearch } from '@/src/hooks/useSearch';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 const Search = () => {
   const insets = useSafeAreaInsets();
@@ -41,30 +51,41 @@ const Search = () => {
           />
         </View>
 
-        <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+        >
           {loading && (
-            <ActivityIndicator size="small" color= {Colors.orange.orangeStandard} style={{ marginTop: 20 }} />
+            <ActivityIndicator
+              size="small"
+              color={Colors.orange.orangeStandard}
+              style={{ marginTop: 20 }}
+            />
           )}
 
-          {!loading && isUserSearch && users.map((user) => (
-            <SearchUsers
-              key={user.id}
-              name={user.name}
-              nickname={user.nickname}
-              profilePhoto={user.profilePhoto || ''}
-              useId={user.id!}
-            />
-          ))}
+          {!loading &&
+            isUserSearch &&
+            users.map((user) => (
+              <SearchUsers
+                key={user.id}
+                name={user.name}
+                nickname={user.nickname}
+                profilePhoto={user.profilePhoto || ''}
+                useId={user.id!}
+              />
+            ))}
 
-          {!loading && !isUserSearch && restaurants.map((restaurant) => (
-            <SearchRestaurants
-              name={restaurant.name}
-              averagePrice={restaurant.averagePrice}
-              note={restaurant.averageScore ?? 0}
-              location={restaurant.address}
-              restaurantId={restaurant.id!}
-            />
-          ))}
+          {!loading &&
+            !isUserSearch &&
+            restaurants.map((restaurant) => (
+              <SearchRestaurants
+                name={restaurant.name}
+                averagePrice={restaurant.averagePrice}
+                note={restaurant.averageScore ?? 0}
+                location={restaurant.address}
+                restaurantId={restaurant.id!}
+              />
+            ))}
         </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
