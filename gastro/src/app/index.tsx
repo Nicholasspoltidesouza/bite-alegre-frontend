@@ -43,11 +43,12 @@ const App: React.FC = () => {
           type={'orange'}
         />
         <Button
-          title="Adicionar Mídia"
-          onPress={() => router.push({ pathname: '/screens/PublicationInfluencer' })}
+          title="Publicaçao influencer"
+          onPress={() =>
+            router.push({ pathname: '/screens/PublicationInfluencer' })
+          }
           type={'orange'}
         />
-       
       </View>
     </View>
   );
