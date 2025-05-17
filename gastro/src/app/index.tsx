@@ -42,13 +42,6 @@ const App: React.FC = () => {
           onPress={() => router.push({ pathname: '/screens/AddMedia' })}
           type={'orange'}
         />
-        <Button
-          title="Publicaçao influencer"
-          onPress={() =>
-            router.push({ pathname: '/screens/PublicationInfluencer' })
-          }
-          type={'orange'}
-        />
       </View>
     </View>
   );
