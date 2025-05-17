@@ -69,15 +69,12 @@ const FilterScreen: React.FC = () => {
       : filters.distance[0]
     : 'Escolha';
 
-  const handleTagPress = (section: keyof FilterOptions, tag: string) => {
+  const handleTagPress = (section: keyof FilterOptions, tagId: string) => {
     setFilters((prev) => {
-      if (section === 'price') {
-        return { ...prev, price: tag };
-      }
       const list = prev[section] as string[];
-      return list.includes(tag)
-        ? { ...prev, [section]: list.filter((t) => t !== tag) }
-        : { ...prev, [section]: [...list, tag] };
+      return list.includes(tagId)
+        ? { ...prev, [section]: list.filter((t) => t !== tagId) }
+        : { ...prev, [section]: [...list, tagId] };
     });
   };
 
@@ -239,9 +236,9 @@ const FilterScreen: React.FC = () => {
               <Tag
                 key={tag.id}
                 title={tag.name}
-                isSelected={filters.location.includes(tag.name)}
+                isSelected={filters.location.includes(tag.id)}
                 style={styles.tag}
-                onPress={() => handleTagPress('location', tag.name)}
+                onPress={() => handleTagPress('location', tag.id)}
               />
             ))}
           </View>
@@ -254,9 +251,9 @@ const FilterScreen: React.FC = () => {
               <Tag
                 key={tag.id}
                 title={tag.name}
-                isSelected={filters.category.includes(tag.name)}
+                isSelected={filters.category.includes(tag.id)}
                 style={styles.tag}
-                onPress={() => handleTagPress('category', tag.name)}
+                onPress={() => handleTagPress('category', tag.id)}
               />
             ))}
           </View>
@@ -269,9 +266,9 @@ const FilterScreen: React.FC = () => {
               <Tag
                 key={tag.id}
                 title={tag.name}
-                isSelected={filters.occasion.includes(tag.name)}
+                isSelected={filters.occasion.includes(tag.id)}
                 style={styles.tag}
-                onPress={() => handleTagPress('occasion', tag.name)}
+                onPress={() => handleTagPress('occasion', tag.id)}
               />
             ))}
           </View>
@@ -404,6 +401,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
     paddingHorizontal: 20,
+    paddingTop: 40,
   },
   header: {
     flexDirection: 'row',

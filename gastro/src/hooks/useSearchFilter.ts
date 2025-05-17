@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { RestaurantDTO, RestaurantFilterDTO } from '../@types/DTO';
 import ApiService from '../services/apiService';
+import { useFilterResult } from '../contexts/FilterResultContext';
 
 export const useSearchFilter = () => {
-  const [restaurants, setRestaurants] = useState<RestaurantDTO[]>([]);
+  const { restaurants, setRestaurants } = useFilterResult();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

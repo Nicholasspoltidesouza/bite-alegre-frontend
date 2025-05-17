@@ -9,15 +9,21 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  TouchableOpacity,
 } from 'react-native';
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useFilterResult } from '@/src/contexts/FilterResultContext';
 
 const FilterResultScreen = () => {
   const insets = useSafeAreaInsets();
   const { restaurants, loading } = useSearchFilter();
+  const router = useRouter();
+  useFilterResult();
 
   return (
     <KeyboardAvoidingView
@@ -32,6 +38,12 @@ const FilterResultScreen = () => {
           Platform.OS === 'ios' && { marginTop: -insets.top },
         ]}
       >
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.push('/screens/FilterScreen')}
+        >
+          <MaterialIcons name="keyboard-arrow-left" size={35} color={Colors.orange.orangeStandard} />
+        </TouchableOpacity>
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
           keyboardShouldPersistTaps="handled"
@@ -66,11 +78,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
   },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 12,
+    zIndex: 10,
+  },
   scrollContainer: {
     alignItems: 'center',
     paddingBottom: '8%',
     paddingHorizontal: '4%',
     width: '100%',
+    marginTop: 50,
   },
 });
 
