@@ -1,6 +1,7 @@
 import { ReviewDTO } from '@/src/@types/DTO';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import Colors from '@/src/constants/Colors';
+import { useAuthContext } from '@/src/contexts/authContext';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import { useCreateUser } from '@/src/hooks/useUserApi';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
@@ -22,14 +23,15 @@ const CreateReview: React.FC = () => {
   const { createReview } = useRestaurantApi();
   const { getUserById, loading, error, data: userData } = useCreateUser();
   const { restaurantId } = useLocalSearchParams();
+  const { user } = useAuthContext();  
 
   const [description, setDescription] = useState<string>('');
   const [nota, setNota] = useState(0);
   const [imputHeight, setImputHeight] = useState(0);
 
   useEffect(() => {
-    getUserById('user-1');
-  }, []);
+    getUserById(user!.id);
+  }, [user]);
 
   if (loading) {
     return (
@@ -84,13 +86,17 @@ const CreateReview: React.FC = () => {
       const data: ReviewDTO = {
         stars: nota,
         feedback: description,
-        user_id: userData!.id!,
         restaurant_id: restaurantId.toString(),
       };
 
       await createReview(data);
       Alert.alert('Sucesso', 'Avaliação feita com sucesso!');
-      router.push({ pathname: '/screens/restaurantProfile' });
+      router.push({
+        pathname: '/screens/restaurantProfile',
+        params: {
+          restaurantId: data.restaurant_id,
+        },
+      });
     } catch (err) {
       console.error('Submit Error:', err);
       Alert.alert(
