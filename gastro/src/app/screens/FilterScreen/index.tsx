@@ -1,14 +1,12 @@
 import Button from '@/src/components/Button';
 import Tag from '@/src/components/Tag';
 import ToggleSwitch from '@/src/components/ToggleSwitch';
-import { API_URL_ANDROID, API_URL_BACKEND } from '@/src/constants/apiUrl';
 import { RestaurantFilterDTO } from '@/src/@types/DTO';
 import { useSearchFilter } from '@/src/hooks/useSearchFilter';
-import useFetchTags from '@/src/hooks/useFetchTags';
 import useLocation from '@/src/hooks/useLocation';
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Colors from '@/src/constants/Colors';
 import {
   ActivityIndicator,
@@ -22,6 +20,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useFetchTags } from '@/src/hooks/useFetchTags';
 
 interface FilterOptions {
   price: string;
@@ -50,14 +49,14 @@ const FilterScreen: React.FC = () => {
   const { filterRestaurants, loading: filterLoading } = useSearchFilter();
   const { latitude, longitude } = useLocation();
 
-  const {
-    tags,
-    loading: tagsLoading,
-    error: tagsError,
-  } = useFetchTags(`${API_URL_ANDROID}/tags`);
+  const { getTags, tags, loading: tagsLoading, error: tagsError, } = useFetchTags();
 
   const priceNumber = parseFloat(filters.price.replace(/[^\d]/g, '')) || 0;
   const priceIsSet = priceNumber > 0;
+
+  useEffect(() => {
+    getTags();
+  }, []);
 
   const locationSelected = filters.distance[0] === 'Localização';
   const addressSet =
