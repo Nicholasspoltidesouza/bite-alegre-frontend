@@ -1,6 +1,13 @@
 import useLocation from '@/src/hooks/useLocation';
 import React, { useState } from 'react';
-import {View,StyleSheet,Text,StatusBar,TouchableOpacity,Image,} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  StatusBar,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
