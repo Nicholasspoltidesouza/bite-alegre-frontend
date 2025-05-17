@@ -42,21 +42,24 @@ export default function PublicationInfluencer() {
         </View>
 
         <Text style={styles.description}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua...
+          A pizzaria napolitana é especializada em trazer a autêntica experiência italiana aos amantes da boa pizza. Com massas leves e fermentação natural, suas pizzas são assadas em f
+          orno a lenha em altíssimas temperaturas, resultando em bordas infladas e sabor levemente defumado. Ingredientes frescos, como molho de tomate San Marzano, mozzarella de b
+          úfala e manjericão, garantem o equilíbrio perfeito entre 
+          simplicidade e sabor.
+    
         </Text>
 
         <View style={styles.restauranteRow}>
           <Image
             source={{
-              uri: 'https://marketplace.canva.com/EAFuRCowrBE/1/0/1600w/canva-logotipo-para-restaurante-moderno-laranja-marrom-M2uDDAK9eXw.jpg',
+              uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHziDArbpect3kgH--Ytr-W5hXyfw6W7IXRQ&s',
             }}
             style={styles.restaurantImage}
           />
           <View style={styles.nameAndTagsColumn}>
-            <TouchableOpacity onPress={() => router.push('../restaurantProfile/index.tsx')}>
-              <Text style={styles.restaurantName}>Nome do Restaurante</Text>
-            </TouchableOpacity>{' '}
+            <TouchableOpacity onPress={() => router.push('../restaurantProfile')}>
+              <Text style={styles.restaurantName}>Marques Pizzaria</Text>
+            </TouchableOpacity>
             <View style={styles.tagsRow}>
               <Text style={styles.tag}>Restaurante</Text>
               <Text style={styles.tag}>Pizzaria</Text>
