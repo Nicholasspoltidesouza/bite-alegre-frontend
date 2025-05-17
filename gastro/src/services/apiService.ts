@@ -33,7 +33,7 @@ class ApiService {
         const shouldSkipAuth = noAuthEndpoints.some(
             (item) => item.method === method && endpoint.startsWith(item.path)
         );
-        console.log(shouldSkipAuth)
+
         const baseHeaders: HeadersInit = { 'Content-Type': 'application/json' };
         if (!shouldSkipAuth) {
             baseHeaders['Authorization'] = `Bearer ${token}`;
@@ -43,8 +43,7 @@ class ApiService {
             ...options,
             headers: baseHeaders
         };
-        console.log(config)
-        console.log("URL", url)
+        
         try {
             const response = await fetch(url, config);
             const responseData = await response.json();

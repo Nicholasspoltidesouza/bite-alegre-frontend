@@ -37,7 +37,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const setAuthData = async (token: string, role: string, user: User) => {
-    clearAuthData();
+    await clearAuthData();
     setToken(token);
     setRole(role);
     setUser(user);

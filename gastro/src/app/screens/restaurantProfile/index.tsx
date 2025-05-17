@@ -41,7 +41,6 @@ const RestaurantProfile: React.FC = () => {
   const { restaurantId } = useLocalSearchParams();
 
   useEffect(() => {
-    console.log("no useEffect rest profile", restaurantId)
     if (typeof restaurantId === 'string')
         getRestaurantById(restaurantId.toString());
   }, [restaurantId, refresh]);
@@ -207,7 +206,6 @@ const RestaurantProfile: React.FC = () => {
                       title="Sim"
                       onPress={() => {
                         setModalVisible(!modalVisible);
-                        console.log("para o create review", restaurantId);
                         router.push({
                           pathname: '/screens/CreateReview',
                           params: {

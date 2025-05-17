@@ -1,4 +1,3 @@
-// hooks/useAuthApi.ts
 import { useState } from "react";
 import ApiService from "../services/apiService";
 import { AuthDTO, UserDTO } from "../@types/DTO";
