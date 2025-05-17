@@ -175,6 +175,10 @@ export default function RootLayout() {
           options={{ href: null, tabBarShowLabel: false }}
         />
         <Tabs.Screen
+          name="screens/FilterResultScreen/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
           name="screens/Feed/index"
           options={{ href: null, tabBarShowLabel: false }}
         />

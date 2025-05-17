@@ -122,7 +122,7 @@ const FilterScreen: React.FC = () => {
 
     try {
       await filterRestaurants(apiFilters);
-      router.push({ pathname: '/screens/Search' });
+      router.push({ pathname: '/screens/FilterResultScreen' });
     } catch (error) {
       console.error('Erro ao filtrar restaurantes:', error);
     }

@@ -14,12 +14,14 @@ interface SearchInputProps extends TextInputProps {
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
+  onSubmitEditing?: () => void;
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
   value,
   onChangeText,
   placeholder = 'Pesquisar',
+  onSubmitEditing,
   ...props
 }) => {
   const iconSize = 20;
@@ -53,6 +55,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
             paddingRight,
           },
         ]}
+        onSubmitEditing={onSubmitEditing}
         {...props}
       />
       <TouchableOpacity
