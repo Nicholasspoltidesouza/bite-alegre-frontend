@@ -42,6 +42,11 @@ const App: React.FC = () => {
           onPress={() => router.push({ pathname: '/screens/AddMedia' })}
           type={'orange'}
         />
+          {/* <Button
+          title="Modal da Roleta"
+          onPress={() => router.push({ pathname: '/screens/RoulletFilter' })}
+          type={'orange'}
+        /> */}
       </View>
     </View>
   );
