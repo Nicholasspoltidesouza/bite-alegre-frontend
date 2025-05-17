@@ -57,7 +57,12 @@ export default function PublicationInfluencer() {
             style={styles.restaurantImage}
           />
           <View style={styles.nameAndTagsColumn}>
-            <TouchableOpacity onPress={() => router.push('../restaurantProfile')}>
+            <TouchableOpacity onPress={() => router.push({
+                pathname: '/screens/restaurantProfile',
+                params: {
+                restaurantId:'rest-1',
+              },
+              })}>
               <Text style={styles.restaurantName}>Marques Pizzaria</Text>
             </TouchableOpacity>
             <View style={styles.tagsRow}>
