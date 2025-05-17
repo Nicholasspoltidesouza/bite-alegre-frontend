@@ -54,7 +54,9 @@ export default function PublicationInfluencer() {
             style={styles.restaurantImage}
           />
           <View style={styles.nameAndTagsColumn}>
-            <Text style={styles.restaurantName}>Nome do Restaurante</Text>
+            <TouchableOpacity onPress={() => router.push('../restaurantProfile/index.tsx')}>
+              <Text style={styles.restaurantName}>Nome do Restaurante</Text>
+            </TouchableOpacity>{' '}
             <View style={styles.tagsRow}>
               <Text style={styles.tag}>Restaurante</Text>
               <Text style={styles.tag}>Pizzaria</Text>
