@@ -1,6 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -15,10 +15,10 @@ import {
 import Button from '../../../components/Button';
 import Tag from '../../../components/Tag';
 import { API_URL_ANDROID, API_URL_BACKEND } from '../../../constants/apiUrl';
-import useFetchTags from '../../../hooks/useFetchTags';
 import { useCreateUser } from '../../../hooks/useUserApi';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import Colors from '@/src/constants/Colors';
+import { useFetchTags } from '@/src/hooks/useFetchTags';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -35,11 +35,11 @@ const SignupInterests: React.FC = () => {
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const {
-    tags,
-    loading: tagsLoading,
-    error,
-  } = useFetchTags(`${API_URL_ANDROID}/tags`);
+  const { getTags, tags, loading: tagsLoading, error } = useFetchTags();
+  
+  useEffect(() => {
+    getTags();
+  }, []);
 
   const toggleTagSelection = (tagId: string) => {
     setSelectedTags((prev) =>

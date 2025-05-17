@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import ApiService from '../services/apiService';
 
 interface TagItem {
   id: string;
@@ -6,31 +7,35 @@ interface TagItem {
   type: 'LOCAL' | 'CATEGORIA' | 'OCASIAO';
 }
 
-const useFetchTags = (url: string) => {
+export const useFetchTags = () => {
   const [tags, setTags] = useState<TagItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const tagsApiService = new ApiService("/tags");
 
-  useEffect(() => {
-    const fetchTags = async () => {
+  const callApi = async <T>(callApiPromise: Promise<T>): Promise<T | null> => {
+      setLoading(true);
+      setError(null);
       try {
-        const response = await fetch(url, { credentials: 'include' });
-        if (!response.ok) {
-          throw new Error(`Erro ao buscar tags: ${response.statusText}`);
-        }
-        const data = await response.json();
-        setTags(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro desconhecido');
+          const result = await callApiPromise;
+          return result;
+      } catch (err: any) {
+          setError(err.message || 'Erro ao executar a chamada da API.');
+          return null;
       } finally {
-        setLoading(false);
+          setLoading(false);
       }
-    };
+  };
 
-    fetchTags();
-  }, [url]);
+  const getTags = async (): Promise<void> => {
+      const responseData = await callApi(
+          tagsApiService.get<TagItem[]>()
+      );
 
-  return { tags, loading, error };
+      if (responseData) {
+          setTags(responseData);
+      }
+  };
+  
+  return { getTags, tags, loading, error };
 };
-
-export default useFetchTags;

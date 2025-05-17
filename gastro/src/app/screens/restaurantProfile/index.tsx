@@ -23,7 +23,7 @@ import {
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import Button from '@/src/components/Button';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
-import { CheckinDTO } from '@/src/@types/DTO';
+import { CheckinDTO, RestaurantDTO } from '@/src/@types/DTO';
 import Colors from '@/src/constants/Colors';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -37,14 +37,26 @@ const RestaurantProfile: React.FC = () => {
     error,
   } = useRestaurantApi();
   const [modalVisible, setModalVisible] = useState(false);
+  const [refresh, setRefresh ]= useState(0);
   const { restaurantId } = useLocalSearchParams();
 
-  useFocusEffect(
-    useCallback(() => {
-      if (typeof restaurantId === 'string')
+  useEffect(() => {
+    console.log("no useEffect rest profile", restaurantId)
+    if (typeof restaurantId === 'string')
         getRestaurantById(restaurantId.toString());
-    }, [restaurantId]),
+  }, [restaurantId, refresh]);
+
+  function isRestaurantDTO(obj: any): obj is RestaurantDTO {
+  return (
+    obj &&
+    typeof obj === 'object' &&
+    'bannerPhoto' in obj &&
+    'profilePhoto' in obj &&
+    'name' in obj &&
+    'description' in obj &&
+    'address' in obj
   );
+}
 
   if (loading) {
     return (
@@ -58,11 +70,11 @@ const RestaurantProfile: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (error || (restaurant && !isRestaurantDTO(restaurant))) {
     return (
       <SafeAreaView style={styles.container}>
         <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>
-          {error}
+          {error ?? 'Erro ao buscar restaurante.'}
         </Text>
       </SafeAreaView>
     );
@@ -71,12 +83,11 @@ const RestaurantProfile: React.FC = () => {
   const handleCheckin = async () => {
     try {
       const checkinData: CheckinDTO = {
-        user_id: '1',
-        restaurant_id: '1',
+        restaurant_id: restaurantId.toString(),
       };
-
       await createCheckin(checkinData);
-      Alert.alert('Sucesso', 'Checkin feito feito com sucesso!');
+      Alert.alert('Sucesso', 'Checkin feito com sucesso!');
+      setRefresh(prev => prev + 1);
     } catch (err) {
       console.error('Submit Error:', err);
       Alert.alert(
@@ -196,6 +207,7 @@ const RestaurantProfile: React.FC = () => {
                       title="Sim"
                       onPress={() => {
                         setModalVisible(!modalVisible);
+                        console.log("para o create review", restaurantId);
                         router.push({
                           pathname: '/screens/CreateReview',
                           params: {
