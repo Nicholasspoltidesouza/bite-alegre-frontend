@@ -42,6 +42,11 @@ const App: React.FC = () => {
           onPress={() => router.push({ pathname: '/screens/AddMedia' })}
           type={'orange'}
         />
+        <Button
+          title="Home"
+          onPress={() => router.push({ pathname: '/screens/Home' })}
+          type={'orange'}
+        />
       </View>
     </View>
   );
