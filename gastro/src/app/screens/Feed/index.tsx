@@ -17,21 +17,22 @@ import SearchInput from '@/src/components/SearchInput';
 import { router } from 'expo-router';
 import useLocation from '@/src/hooks/useLocation';
 import { useFeedApi } from '@/src/hooks/useFeedApi';
-import { RestaurantDTO } from '@/src/@types/DTO';
 import { useCreateUser } from '@/src/hooks/useUserApi';
+import { useAuthContext } from '@/src/contexts/authContext';
 
 export default function Feed() {
   const { latitude, longitude, loadingLocation } = useLocation();
   const { getFeed, data: restaurantData, loading, error } = useFeedApi();
   const { getUserById, data: userData } = useCreateUser();
+  const { user } = useAuthContext();  
 
   useEffect(() => {
-    getUserById('user-1');
-  }, []);
+    getUserById(user!.id);
+  }, [user]);
 
   useEffect(() => {
     if (latitude && longitude) {
-      getFeed('user-1', latitude, longitude);
+      getFeed(latitude, longitude);
     }
   }, [latitude, longitude]);
 

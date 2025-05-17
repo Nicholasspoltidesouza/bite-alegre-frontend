@@ -13,7 +13,7 @@ import Header from '@/src/components/Header';
 import Colors from '@/src/constants/Colors';
 import { useCreateUser } from '@/src/hooks/useUserApi';
 import { CheckinDTO, RestaurantDTO, ReviewDTO } from '@/src/@types/DTO';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 
 export default function Profile() {
   const { getUserById, loading, error, data: userData } = useCreateUser();
@@ -22,12 +22,10 @@ export default function Profile() {
   );
   const { userId } = useLocalSearchParams();
 
-  useFocusEffect(
-    useCallback(() => {
+  useEffect(() => {
       const id = typeof userId === 'string' ? userId : 'user-1';
       getUserById(id);
-    }, [userId]),
-  );
+  },[userId]);
 
   useEffect(() => {
     if (userData) {
