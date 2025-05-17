@@ -41,7 +41,9 @@ export default function RootLayout() {
             borderTopWidth: 1.5,
             borderColor: Colors.orange.orangeStandard,
           },
-          tabBarButton: (props) => <Pressable {...props} android_ripple={{ color: 'transparent' }} />
+          tabBarButton: (props) => (
+            <Pressable {...props} android_ripple={{ color: 'transparent' }} />
+          ),
         }}
       >
         <Tabs.Screen
@@ -178,6 +180,10 @@ export default function RootLayout() {
         />
         <Tabs.Screen
           name="screens/AddMedia/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/PublicationInfluencer/index"
           options={{ href: null, tabBarShowLabel: false }}
         />
       </Tabs>

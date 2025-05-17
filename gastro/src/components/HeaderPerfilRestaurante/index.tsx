@@ -1,4 +1,10 @@
-import {StyleSheet,ImageBackground,TouchableOpacity,Image,SafeAreaView,} from 'react-native';
+import {
+  StyleSheet,
+  ImageBackground,
+  TouchableOpacity,
+  Image,
+  SafeAreaView,
+} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useEffect, useState } from 'react';
