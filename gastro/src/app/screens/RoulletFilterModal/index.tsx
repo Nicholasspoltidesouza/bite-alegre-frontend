@@ -1,41 +1,29 @@
-import React from 'react';
-import { Modal, View, Text, StyleSheet } from 'react-native';
-import Colors from '@/src/constants/Colors';
-import { useRouter } from 'expo-router';
-import { useCreateUser } from '@/src/hooks/useUserApi';
+import React, { useState } from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
+import RoulletFilterModal from '@/src/components/RoulletFilterModal';
 
-type BaseModalProps = {
-    visible: boolean;
-    onClose: () => void;
-}
+const RoulletScreen = () => {
+  const [modalVisible, setModalVisible] = useState(false);
 
-const RoulletFilter: React.FC<BaseModalProps> = ({ visible, onClose}) => {
-      const { logout } = useCreateUser();
-      const router = useRouter();
-      const handleLogout = async () => {
-        try {
-          onClose();
-          await logout();
-          router.replace('/');
-        } catch (error) {
-          console.error('Erro ao fazer logout:', error);
-        }
-      };
+  return (
+    <View style={styles.container}>
+      <Text>Bem-vindo à roleta!</Text>
+      <Button title="Abrir Modal" onPress={() => setModalVisible(true)} />
 
-      return (
-        <Modal 
-            transparent={true}
-            visible={visible}
-            animationType='fade'
-      //      onRequestClose={onclose}
-        >
-            <View >
-                <Text>Mais ou menos</Text>
-                <Text>Me surpreenda!</Text>
-            </View>
-        </Modal>
-            
-      );
+      <RoulletFilterModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
+    </View>
+  );
 };
 
-export default RoulletFilter;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+export default RoulletScreen;
