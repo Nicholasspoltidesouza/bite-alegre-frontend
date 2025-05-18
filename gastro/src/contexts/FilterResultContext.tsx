@@ -11,7 +11,9 @@ const FilterResultContext = createContext<FilterResultContextProps>({
   setRestaurants: () => {},
 });
 
-export const FilterResultProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const FilterResultProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [restaurants, setRestaurants] = useState<RestaurantDTO[]>([]);
   return (
     <FilterResultContext.Provider value={{ restaurants, setRestaurants }}>
@@ -20,4 +22,4 @@ export const FilterResultProvider: React.FC<{ children: React.ReactNode }> = ({ 
   );
 };
 
-export const useFilterResult = () => useContext(FilterResultContext); 
+export const useFilterResult = () => useContext(FilterResultContext);

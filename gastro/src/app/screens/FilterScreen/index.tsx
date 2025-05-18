@@ -49,7 +49,12 @@ const FilterScreen: React.FC = () => {
   const { filterRestaurants, loading: filterLoading } = useSearchFilter();
   const { latitude, longitude } = useLocation();
 
-  const { getTags, tags, loading: tagsLoading, error: tagsError, } = useFetchTags();
+  const {
+    getTags,
+    tags,
+    loading: tagsLoading,
+    error: tagsError,
+  } = useFetchTags();
 
   const priceNumber = parseFloat(filters.price.replace(/[^\d]/g, '')) || 0;
   const priceIsSet = priceNumber > 0;

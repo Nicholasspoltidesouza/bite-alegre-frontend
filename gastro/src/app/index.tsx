@@ -12,8 +12,8 @@ const App: React.FC = () => {
   function handle() {
     const user = {
       email: 'user1@bite.io',
-      password: 'user1'
-    } as UserDTO
+      password: 'user1',
+    } as UserDTO;
     login(user);
   }
 

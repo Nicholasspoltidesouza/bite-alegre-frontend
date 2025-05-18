@@ -72,5 +72,5 @@ export type {
   CheckinDTO,
   ReviewDTO,
   RestaurantFilterDTO,
-  AuthDTO
+  AuthDTO,
 };

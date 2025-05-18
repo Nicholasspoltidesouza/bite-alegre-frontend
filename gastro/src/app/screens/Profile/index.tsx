@@ -23,9 +23,9 @@ export default function Profile() {
   const { userId } = useLocalSearchParams();
 
   useEffect(() => {
-      const id = typeof userId === 'string' ? userId : 'user-1';
-      getUserById(id);
-  },[userId]);
+    const id = typeof userId === 'string' ? userId : 'user-1';
+    getUserById(id);
+  }, [userId]);
 
   useEffect(() => {
     if (userData) {
