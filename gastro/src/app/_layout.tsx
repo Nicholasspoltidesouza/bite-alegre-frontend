@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Image, Pressable } from 'react-native';
 import { NavBarIcon } from '../components/NavBarItem/index';
 import Colors from '../constants/Colors';
+import { AuthProvider } from '../contexts/authContext';
 
 export default function RootLayout() {
   const pathname = usePathname();
@@ -27,42 +28,22 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors.orange.orangeStandard,
-        tabBarInactiveTintColor: Colors.orange.orangeStandard,
-        headerShown: false,
-        tabBarHideOnKeyboard: true,
-        tabBarStyle: {
-          display: shouldHideTabBar ? 'none' : 'flex',
-          height: 66,
-          backgroundColor: 'white',
-          borderTopWidth: 1.5,
-          borderColor: Colors.orange.orangeStandard,
-        },
-        tabBarButton: (props) => (
-          <Pressable {...props} android_ripple={{ color: 'transparent' }} />
-        ),
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          tabBarShowLabel: false,
-          tabBarIcon: ({ color, size, focused }) => (
-            <NavBarIcon
-              color={color}
-              size={size}
-              focused={focused}
-              children={
-                <MaterialIcons
-                  name="home"
-                  size={40}
-                  color={color}
-                  style={{ height: 40, width: 40 }}
-                />
-              }
-            />
+    <AuthProvider>
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: Colors.orange.orangeStandard,
+          tabBarInactiveTintColor: Colors.orange.orangeStandard,
+          headerShown: false,
+          tabBarHideOnKeyboard: true,
+          tabBarStyle: {
+            display: shouldHideTabBar ? 'none' : 'flex',
+            height: 66,
+            backgroundColor: 'white',
+            borderTopWidth: 1.5,
+            borderColor: Colors.orange.orangeStandard,
+          },
+          tabBarButton: (props) => (
+            <Pressable {...props} android_ripple={{ color: 'transparent' }} />
           ),
         }}
       />
@@ -186,5 +167,6 @@ export default function RootLayout() {
         options={{ href: null, tabBarShowLabel: false }}
       />
     </Tabs>
+    </AuthProvider>
   );
 }

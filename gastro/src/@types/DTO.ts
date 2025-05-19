@@ -31,14 +31,14 @@ interface RestaurantDTO {
 }
 
 interface CheckinDTO {
-  user_id: string;
+  user_id?: string;
   restaurant_id: string;
   restaurantProfilePhoto?: string;
   restaurantName?: string;
 }
 
 interface ReviewDTO {
-  user_id: string;
+  user_id?: string;
   restaurantId?: string;
   restaurant_id?: string;
   stars: number;
@@ -56,10 +56,21 @@ interface RestaurantFilterDTO {
   open_now?: boolean;
 }
 
+interface AuthDTO {
+  token: string;
+  role: string;
+  user: {
+    id: string;
+    email: string;
+    name?: string;
+  };
+}
+
 export type {
   RestaurantDTO,
   UserDTO,
   CheckinDTO,
   ReviewDTO,
   RestaurantFilterDTO,
+  AuthDTO
 };
