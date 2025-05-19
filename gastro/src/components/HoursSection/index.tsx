@@ -1,16 +1,14 @@
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
 import {
-  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   Alert,
-  Modal,
-} from "react-native";
+} from "react-native"; 
 import { OperatingHoursDto } from "../../@types/OperatingHoursDto";
-import "../Dropdown";
+import Dropdown from "../Dropdown"; 
 
 interface Props {
   hours: OperatingHoursDto[];
@@ -38,160 +36,6 @@ const timeOptions = [
   }),
 ];
 
-// Componente para o dropdown
-interface DropdownProps {
-  options: string[];
-  selectedValue: string;
-  onSelect: (value: string) => void;
-  placeholder: string;
-  disabled?: boolean;
-  width?: number | string;
-}
-
-// Componente de dropdown com modal para garantir que as opções apareçam sobre outros elementos
-const Dropdown: React.FC<DropdownProps> = ({
-  options,
-  selectedValue,
-  onSelect,
-  placeholder,
-  disabled = false,
-  width = "100%",
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [dropdownLayout, setDropdownLayout] = useState({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  });
-
-  const dropdownRef = React.useRef<View>(null);
-
-  const toggleDropdown = () => {
-    if (!disabled) {
-      if (!isOpen) {
-        // Capturar a posição do dropdown antes de abrir
-        dropdownRef.current?.measure((_, __, width, height, pageX, pageY) => {
-          setDropdownLayout({
-            x: pageX,
-            y: pageY + height,
-            width: width,
-            height: height,
-          });
-          setIsOpen(true);
-        });
-      } else {
-        setIsOpen(false);
-      }
-    }
-  };
-
-  const handleSelect = (value: string) => {
-    onSelect(value);
-    setIsOpen(false);
-  };
-
-  // Componente de modal para as opções do dropdown
-  const renderDropdownOptions = () => {
-    return (
-      <Modal
-        visible={isOpen}
-        transparent={true}
-        animationType="none"
-        onRequestClose={() => setIsOpen(false)}
-      >
-        <TouchableOpacity
-          style={dropdownStyles.overlay}
-          activeOpacity={1}
-          onPress={() => setIsOpen(false)}
-        >
-          <View
-            style={[
-              dropdownStyles.dropdown,
-              {
-                position: "absolute",
-                top: dropdownLayout.y,
-                left: dropdownLayout.x,
-                width: dropdownLayout.width,
-              },
-            ]}
-          >
-            <FlatList
-              data={options}
-              keyExtractor={(_, index) => index.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    dropdownStyles.option,
-                    selectedValue === item && dropdownStyles.optionSelected,
-                  ]}
-                  onPress={() => handleSelect(item)}
-                >
-                  <Text
-                    style={[
-                      dropdownStyles.optionText,
-                      selectedValue === item &&
-                        dropdownStyles.optionTextSelected,
-                    ]}
-                    numberOfLines={1}
-                  >
-                    {item}
-                  </Text>
-                  {selectedValue === item && (
-                    <MaterialIcons name="check" size={18} color="#FF914B" />
-                  )}
-                </TouchableOpacity>
-              )}
-              style={dropdownStyles.optionsList}
-              nestedScrollEnabled
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: 4 }}
-            />
-          </View>
-        </TouchableOpacity>
-      </Modal>
-    );
-  };
-
-  return (
-    <>
-      <View
-        ref={dropdownRef}
-        style={[dropdownStyles.container, { width: width as any }]}
-        collapsable={false}
-      >
-        <TouchableOpacity
-          style={[
-            dropdownStyles.button,
-            disabled && dropdownStyles.buttonDisabled,
-          ]}
-          onPress={toggleDropdown}
-          activeOpacity={disabled ? 1 : 0.7}
-        >
-          <Text
-            style={[
-              dropdownStyles.buttonText,
-              !selectedValue && { color: "#FF914B", opacity: 0.8 },
-            ]}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {selectedValue || placeholder}
-          </Text>
-          <MaterialIcons
-            name={isOpen ? "arrow-drop-up" : "arrow-drop-down"}
-            size={24}
-            color={disabled ? "#CCCCCC" : "#FF914B"}
-          />
-        </TouchableOpacity>
-      </View>
-
-      {/* Renderizar as opções do dropdown em um modal para garantir que fiquem acima de tudo */}
-      {renderDropdownOptions()}
-    </>
-  );
-};
-
 // Componente principal
 const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
   const [operatingHours, setOperatingHours] =
@@ -200,6 +44,12 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
     day: "",
     periods: [{ startTime: "", endTime: "" }],
   });
+  const [editingDayOriginalPeriods, setEditingDayOriginalPeriods] = useState<OperatingHoursDto['periods'] | null>(null);
+
+  // Adiciona um novo slot de período ao newHour
+  const handleAddPeriodToNewHour = () => {
+    setNewHour(prev => ({ ...prev, periods: [...prev.periods, { startTime: "", endTime: "" }] }));
+  };
   const [isAddingNew, setIsAddingNew] = useState(false);
 
   useEffect(() => {
@@ -213,71 +63,135 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
       day: "",
       periods: [{ startTime: "", endTime: "" }],
     });
+    setEditingDayOriginalPeriods(null);
+  };
+
+  // Remove um slot de período do newHour
+  const handleRemovePeriodFromNewHour = (index: number) => {
+    setNewHour(prev => ({
+      ...prev,
+      periods: prev.periods.filter((_, i) => i !== index),
+    }));
+  };
+
+  // Atualiza um campo (startTime ou endTime) de um período específico no newHour
+  const handleUpdatePeriodInNewHour = (index: number, field: 'startTime' | 'endTime', value: string) => {
+    setNewHour(prev => {
+      const updatedPeriods = prev.periods.map((p, i) => 
+        i === index ? { ...p, [field]: value } : p
+      );
+      return { ...prev, periods: updatedPeriods };
+    });
+  };
+
+  const timeToMinutes = (time: string): number => {
+    if (time === "Fechado" || !time || !time.includes(":")) return -1; // -1 para "Fechado" ou formato inválido
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours * 60 + minutes;
   };
 
   const handleSaveNewHour = () => {
-    // Validações
     if (!newHour.day) {
       Alert.alert("Erro", "Selecione um dia da semana");
       return;
     }
 
-    // Verificar se já existe um horário para este dia
+    const isExplicitlyClosed = newHour.periods.some(p => p.startTime === "Fechado" && p.endTime === "Fechado");
+    let processedPeriods: OperatingHoursDto['periods'] = [];
+
+    if (isExplicitlyClosed) {
+      if (newHour.periods.length > 1) {
+        Alert.alert("Erro", "Se um período é 'Fechado', não pode haver outros períodos para este dia.");
+        return;
+      }
+      processedPeriods = [{ startTime: "Fechado", endTime: "Fechado" }];
+    } else {
+      processedPeriods = newHour.periods.filter(p => {
+        const s = p.startTime;
+        const e = p.endTime;
+        if (s === "Fechado" || e === "Fechado") return false; // Um "Fechado" sozinho não é válido aqui
+        if (!s || !e) return false; // Ambos devem estar preenchidos
+        return true;
+      });
+
+      if (processedPeriods.length === 0) {
+        Alert.alert("Erro", "Preencha pelo menos um período de funcionamento ou marque como 'Fechado'.");
+        return;
+      }
+
+      for (const period of processedPeriods) {
+        const startMinutes = timeToMinutes(period.startTime);
+        const endMinutes = timeToMinutes(period.endTime);
+
+        if (startMinutes === -1 || endMinutes === -1) {
+            Alert.alert("Erro", `Horário inválido no período: ${period.startTime} - ${period.endTime}.`);
+            return;
+        }
+        if (endMinutes <= startMinutes) {
+          Alert.alert("Erro", `O horário de fechamento (${period.endTime}) deve ser depois do horário de abertura (${period.startTime})`);
+          return;
+        }
+      }
+
+      // Remover duplicatas exatas
+      const uniquePeriods: OperatingHoursDto['periods'] = [];
+      processedPeriods.forEach(p => {
+          if (!uniquePeriods.some(up => up.startTime === p.startTime && up.endTime === p.endTime)) {
+              uniquePeriods.push(p);
+          }
+      });
+      processedPeriods = uniquePeriods;
+
+      // Ordenar por startTime
+      processedPeriods.sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
+
+      // Verificar sobreposições
+      for (let i = 0; i < processedPeriods.length - 1; i++) {
+          const p1 = processedPeriods[i];
+          const p2 = processedPeriods[i+1];
+          const p1End = timeToMinutes(p1.endTime);
+          const p2Start = timeToMinutes(p2.startTime);
+
+          if (p1End > p2Start) {
+              Alert.alert(
+                  "Erro de Sobreposição",
+                  `Os períodos "${p1.startTime} - ${p1.endTime}" e "${p2.startTime} - ${p2.endTime}" se sobrepõem.`
+              );
+              return;
+          }
+      }
+    }
+
+    if (processedPeriods.length === 0) {
+        // Se era pra ser fechado, mas algo deu errado e finalPeriods ficou vazio
+        if (isExplicitlyClosed) {
+            processedPeriods = [{ startTime: "Fechado", endTime: "Fechado" }];
+        } else {
+            Alert.alert("Erro", "Nenhum período de funcionamento válido foi definido.");
+            return;
+        }
+    }
+
+    const hourToSave = {
+      day: newHour.day,
+      periods: processedPeriods,
+    };
+
     const existingDayIndex = operatingHours.findIndex(
       (hour) => hour.day === newHour.day
     );
 
-    // Filtrar períodos vazios
-    const validPeriods = newHour.periods.filter(
-      (period) =>
-        period.startTime &&
-        period.endTime &&
-        period.startTime !== "Fechado" &&
-        period.endTime !== "Fechado"
-    );
-
-    // Verificar se pelo menos um período foi preenchido
-    if (validPeriods.length === 0) {
-      Alert.alert("Erro", "Preencha pelo menos um período de funcionamento");
-      return;
-    }
-
-    // Validar cada período
-    for (const period of validPeriods) {
-      // Validar que o horário de fechamento é depois do de abertura
-      const startHour = parseInt(period.startTime.split(":")[0]);
-      const startMinutes = parseInt(period.startTime.split(":")[1] || "0");
-      const endHour = parseInt(period.endTime.split(":")[0]);
-      const endMinutes = parseInt(period.endTime.split(":")[1] || "0");
-
-      const startTimeInMinutes = startHour * 60 + startMinutes;
-      const endTimeInMinutes = endHour * 60 + endMinutes;
-
-      if (endTimeInMinutes <= startTimeInMinutes) {
-        Alert.alert(
-          "Erro",
-          "O horário de fechamento deve ser depois do horário de abertura"
-        );
-        return;
-      }
-    }
-
-    // Criar o objeto de horário com apenas os períodos válidos
-    const hourToSave = {
-      day: newHour.day,
-      periods: validPeriods,
-    };
-
-    // Atualizar ou adicionar o horário
     let updatedHours;
     if (existingDayIndex >= 0) {
-      // Substituir o dia existente
       updatedHours = [...operatingHours];
       updatedHours[existingDayIndex] = hourToSave;
     } else {
-      // Adicionar um novo dia
       updatedHours = [...operatingHours, hourToSave];
     }
+
+    // Ordenar a lista principal de operatingHours por dia
+    const dayOrder = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo", "Feriados"];
+    updatedHours.sort((a, b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day));
 
     setOperatingHours(updatedHours);
     onUpdateHours(updatedHours);
@@ -286,6 +200,7 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
 
   const handleCancelNewHour = () => {
     setIsAddingNew(false);
+    setEditingDayOriginalPeriods(null);
   };
 
   const handleRemoveHour = (dayIndex: number, periodIndex?: number) => {
@@ -313,8 +228,6 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
     }
   };
 
-  // Função para formatar a exibição dos horários removida pois agora é feita diretamente no render
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -334,69 +247,85 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
         </View>
       )}
 
-{isAddingNew && (
+      {isAddingNew && (
         <View style={styles.newHourContainer}>
           <View style={styles.dropdownRow}>
             <View style={{ flex: 1 }}>
               <Text style={styles.dropdownLabel}>Dia:</Text>
               <Dropdown
+                label="Dia" // Prop 'label' é obrigatória no Dropdown components
                 options={dayOptions}
-                selectedValue={newHour.day}
-                onSelect={(value: string) => {
+                selected={newHour.day || null}
+                onSelect={(selectedDay: string) => {
+                  const existingDayConfig = operatingHours.find(h => h.day === selectedDay);
+                  let periodsToLoad: OperatingHoursDto['periods'] = [{ startTime: "", endTime: "" }];
+                  
+                  if (existingDayConfig && existingDayConfig.periods.length > 0) {
+                      // Deep copy periods
+                      periodsToLoad = JSON.parse(JSON.stringify(existingDayConfig.periods));
+                      setEditingDayOriginalPeriods(JSON.parse(JSON.stringify(existingDayConfig.periods)));
+                  } else {
+                    setEditingDayOriginalPeriods(null);
+                  }
+
                   setNewHour({
-                    ...newHour,
-                    day: value,
+                    day: selectedDay,
+                    periods: periodsToLoad,
                   });
                 }}
-                placeholder="Selecione"
+                placeholder="Selecione o dia"
+                paddingLeft={24}
                 width="100%"
               />
             </View>
           </View>
 
-          <Text style={styles.periodSectionTitle}></Text>
-          <View style={styles.dropdownRow}>
-            <View style={{ flex: 1, marginRight: 8 }}>
-              <Text style={styles.dropdownLabel}>Abertura:</Text>
-              <Dropdown
-                options={timeOptions}
-                selectedValue={newHour.periods[0]?.startTime || ""}
-                onSelect={(value: string) => {
-                  const updatedPeriods = [...newHour.periods];
-                  updatedPeriods[0] = {
-                    ...updatedPeriods[0],
-                    startTime: value,
-                  };
-                  setNewHour({
-                    ...newHour,
-                    periods: updatedPeriods,
-                  });
-                }}
-                placeholder="Selecione"
-                width="100%"
-              />
+          {newHour.day && newHour.periods.map((period, index) => (
+            <View key={index} style={styles.periodEntryRow}>
+              <View style={styles.dropdownRowFlex}>
+                <View style={{ flex: 1, marginRight: 8 }}>
+                  <Text style={styles.dropdownLabel}>Abertura {index + 1}:</Text>
+                  <Dropdown
+                    label={`Abertura ${index + 1}`}
+                    options={timeOptions}
+                    selected={period.startTime || null}
+                    onSelect={(value) => handleUpdatePeriodInNewHour(index, 'startTime', value)}
+                    placeholder="Selecione"
+                    paddingLeft={24}
+                    width="100%"
+                  />
+                </View>
+                <View style={{ flex: 1, marginLeft: 8 }}>
+                  <Text style={styles.dropdownLabel}>Fechamento {index + 1}:</Text>
+                  <Dropdown
+                    label={`Fechamento ${index + 1}`}
+                    options={timeOptions}
+                    selected={period.endTime || null}
+                    onSelect={(value) => handleUpdatePeriodInNewHour(index, 'endTime', value)}
+                    placeholder="Selecione"
+                    paddingLeft={24}
+                    width="100%"
+                  />
+                </View>
+              </View>
+              {newHour.periods.length > 1 && (
+                <TouchableOpacity
+                  onPress={() => handleRemovePeriodFromNewHour(index)}
+                  style={styles.removePeriodButtonInternal}
+                >
+                  <MaterialIcons name="remove-circle-outline" size={22} color="#FF5252" />
+                </TouchableOpacity>
+              )}
             </View>
-            <View style={{ flex: 1, marginLeft: 8 }}>
-              <Text style={styles.dropdownLabel}>Fechamento:</Text>
-              <Dropdown
-                options={timeOptions}
-                selectedValue={newHour.periods[0]?.endTime || ""}
-                onSelect={(value: string) => {
-                  const updatedPeriods = [...newHour.periods];
-                  updatedPeriods[0] = {
-                    ...updatedPeriods[0],
-                    endTime: value,
-                  };
-                  setNewHour({
-                    ...newHour,
-                    periods: updatedPeriods,
-                  });
-                }}
-                placeholder="Selecione"
-                width="100%"
-              />
-            </View>
-          </View>
+          ))}
+
+          {newHour.day && (
+            <TouchableOpacity onPress={handleAddPeriodToNewHour} style={styles.addPeriodButton}>
+              <MaterialIcons name="add-circle-outline" size={22} color="#FF914B" />
+              <Text style={styles.addPeriodButtonText}>Adicionar outro período</Text>
+            </TouchableOpacity>
+          )}
+
           <View style={styles.buttonRow}>
             <TouchableOpacity
               style={[styles.actionButton, styles.cancelButton]}
@@ -413,7 +342,7 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
           </View>
         </View>
       )}
-      
+
       {operatingHours.length > 0 && (
         <View style={styles.tableContainer}>
           <View style={styles.tableHeader}>
@@ -471,82 +400,6 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
   );
 };
 
-// Estilos para o dropdown
-const dropdownStyles = StyleSheet.create({
-  container: {
-    position: "relative",
-  },
-  button: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "rgba(255, 179, 112, 0.25)",
-    borderRadius: 20,
-    padding: 10,
-    paddingLeft: 24,
-    paddingRight: 16,
-    height: 50,
-  },
-  buttonDisabled: {
-    backgroundColor: "#EEEEEE",
-    opacity: 0.7,
-  },
-  buttonText: {
-    color: "#FF914B",
-    fontSize: 16,
-    fontFamily: "Poppins-Regular",
-    flex: 1,
-  },
-  overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "transparent",
-    zIndex: 9999,
-    elevation: 9999,
-  },
-  dropdown: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#EEEEEE",
-    marginTop: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 10,
-    maxHeight: 250,
-    zIndex: 10000,
-  },
-  optionsList: {
-    maxHeight: 250,
-  },
-  option: {
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  optionSelected: {
-    backgroundColor: "#FFE5D3",
-  },
-  optionText: {
-    color: "#5B5B5B",
-    fontSize: 14,
-    fontFamily: "Poppins-Regular",
-    flex: 1,
-  },
-  optionTextSelected: {
-    color: "#FF914B",
-    fontFamily: "Poppins-SemiBold",
-  },
-});
-
 // Estilos para o componente principal
 const styles = StyleSheet.create({
   container: {
@@ -571,7 +424,7 @@ const styles = StyleSheet.create({
   title: {
     color: "#FFFFFF",
     fontSize: 16,
-    fontFamily: "Poppins-SemiBold",
+    fontFamily: "Poppins-Regular",
     left: "5%",
   },
   addButton: {
@@ -591,7 +444,7 @@ const styles = StyleSheet.create({
     color: "#FF9500",
     fontWeight: "bold",
     fontSize: 14,
-    fontFamily: "Poppins-SemiBold",
+    fontFamily: "Poppins-Regular",
   },
   row: {
     flexDirection: "row",
@@ -646,7 +499,7 @@ const styles = StyleSheet.create({
   },
   dayTitle: {
     fontSize: 16,
-    fontFamily: "Poppins-SemiBold",
+    fontFamily: "Poppins-Regular",
     color: "#FF914B",
   },
   periodsContainer: {
@@ -701,6 +554,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 12,
   },
+  dropdownRowFlex: {
+    flexDirection: "row",
+    flex: 1, 
+  },
   dropdownLabel: {
     color: "#5B5B5B",
     fontSize: 14,
@@ -709,7 +566,7 @@ const styles = StyleSheet.create({
   },
   periodSectionTitle: {
     fontSize: 16,
-    fontFamily: "Poppins-SemiBold",
+    fontFamily: "Poppins-Regular",
     color: "#FF914B",
     marginTop: 15,
     marginBottom: 8,
@@ -735,7 +592,7 @@ const styles = StyleSheet.create({
   },
   tableHeaderText: {
     fontSize: 14,
-    fontFamily: "Poppins-SemiBold",
+    fontFamily: "Poppins-Regular",
     color: "#5B5B5B",
   },
   tableRow: {
@@ -751,7 +608,7 @@ const styles = StyleSheet.create({
   },
   dayText: {
     fontSize: 14,
-    fontFamily: "Poppins-Medium",
+    fontFamily: "Poppins-Regular",
     color: "#5B5B5B",
   },
   periodsCell: {
@@ -770,7 +627,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   periodText: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: "Poppins-Regular",
     color: "#5B5B5B",
   },
@@ -806,7 +663,33 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: "#FFFFFF",
     fontSize: 14,
-    fontFamily: "Poppins-SemiBold",
+    fontFamily: "Poppins-Regular",
+  },
+  periodEntryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  removePeriodButtonInternal: {
+    marginLeft: 8,
+    padding: 4, 
+  },
+  addPeriodButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#FF914B',
+    backgroundColor: 'rgba(255, 179, 112, 0.1)',
+    marginTop: 8,
+  },
+  addPeriodButtonText: {
+    marginLeft: 12,
+    color: '#FF914B',
+    fontFamily: 'Poppins-Regular',
+    fontSize: 14,
   },
 });
 
