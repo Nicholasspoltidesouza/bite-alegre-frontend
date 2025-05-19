@@ -186,6 +186,10 @@ export default function RootLayout() {
           name="screens/PublicationInfluencer/index"
           options={{ href: null, tabBarShowLabel: false }}
         />
+        <Tabs.Screen
+          name="screens/InfluencerProfile/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
       </Tabs>
     </AuthProvider>
   );

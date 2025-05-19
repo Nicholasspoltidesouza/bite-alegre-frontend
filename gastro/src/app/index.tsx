@@ -53,6 +53,13 @@ const App: React.FC = () => {
           onPress={() => router.push({ pathname: '/screens/AddMedia' })}
           type={'orange'}
         />
+        <Button
+          title="Perfil Influencer"
+          onPress={() =>
+            router.push({ pathname: '/screens/InfluencerProfile' })
+          }
+          type={'orange'}
+        />
         <Button title="Login" onPress={() => handle()} type={'orange'} />
       </View>
     </View>
