@@ -13,7 +13,7 @@ export default function RootLayout() {
     '/screens/SignupUser',
     '/screens/SignupRestaurant',
     '/screens/SignupInterestsScreen',
-    '/screens/RoulletFilterModal'
+    '/screens/RoulletFilterModal',
   ];
   const shouldHideTabBar = hiddenRoutes.includes(pathname);
 
@@ -46,127 +46,152 @@ export default function RootLayout() {
             <Pressable {...props} android_ripple={{ color: 'transparent' }} />
           ),
         }}
-      />
-      <Tabs.Screen
-        name="screens/Search/index"
-        options={{
-          tabBarShowLabel: false,
-          tabBarIcon: ({ color, size, focused }) => (
-            <NavBarIcon
-              color={color}
-              size={size}
-              focused={focused}
-              children={
-                <MaterialIcons
-                  name="search"
-                  size={40}
-                  color={color}
-                  style={{ height: 40, width: 40 }}
-                />
-              }
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="screens/Roullete/index"
-        options={{
-          tabBarShowLabel: false,
-          tabBarIcon: ({ color, size, focused }) => (
-            <NavBarIcon
-              color={color}
-              size={size}
-              focused={focused}
-              iconType="roleta"
-              children={
-                <Image
-                  source={require('../../assets/images/icon-roleta.png')}
-                  style={{ width: 55, height: 55 }}
-                />
-              }
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="screens/Community/index"
-        options={{
-          tabBarShowLabel: false,
-          tabBarIcon: ({ color, size, focused }) => (
-            <NavBarIcon
-              color={color}
-              size={size}
-              focused={focused}
-              children={
-                <MaterialIcons
-                  name="groups"
-                  size={45}
-                  color={color}
-                  style={{ height: 45, width: 45 }}
-                />
-              }
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="screens/Profile/index"
-        options={{
-          tabBarShowLabel: false,
-          tabBarIcon: ({ color, size, focused }) => (
-            <NavBarIcon
-              color={color}
-              size={size}
-              focused={focused}
-              children={
-                <MaterialIcons
-                  name="person"
-                  size={40}
-                  color={color}
-                  style={{ height: 40, width: 40 }}
-                />
-              }
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="screens/SignupInterestsScreen/index"
-        options={{ href: null, tabBarShowLabel: false }}
-      />
-      <Tabs.Screen
-        name="screens/restaurantProfile/index"
-        options={{ href: null, tabBarShowLabel: false }}
-      />
-      <Tabs.Screen
-        name="screens/SignupRestaurant/index"
-        options={{ href: null, tabBarShowLabel: false }}
-      />
-      <Tabs.Screen
-        name="screens/SignupUser/index"
-        options={{ href: null, tabBarShowLabel: false }}
-      />
-      <Tabs.Screen
-        name="screens/CreateReview/index"
-        options={{ href: null, tabBarShowLabel: false }}
-      />
-      <Tabs.Screen
-        name="screens/FilterScreen/index"
-        options={{ href: null, tabBarShowLabel: false }}
-      />
-      <Tabs.Screen
-        name="screens/Feed/index"
-        options={{ href: null, tabBarShowLabel: false }}
-      />
-      <Tabs.Screen
-        name="screens/AddMedia/index"
-        options={{ href: null, tabBarShowLabel: false }}
-      />
-      <Tabs.Screen
-        name="screens/RoulletFilterModal/index"
-        options={{ href: null, tabBarShowLabel: false }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            tabBarShowLabel: false,
+            tabBarIcon: ({ color, size, focused }) => (
+              <NavBarIcon
+                color={color}
+                size={size}
+                focused={focused}
+                children={
+                  <MaterialIcons
+                    name="home"
+                    size={40}
+                    color={color}
+                    style={{ height: 40, width: 40 }}
+                  />
+                }
+              />
+            )
+          }}
+        />
+        <Tabs.Screen
+          name="screens/Search/index"
+          options={{
+            tabBarShowLabel: false,
+            tabBarIcon: ({ color, size, focused }) => (
+              <NavBarIcon
+                color={color}
+                size={size}
+                focused={focused}
+                children={
+                  <MaterialIcons
+                    name="search"
+                    size={40}
+                    color={color}
+                    style={{ height: 40, width: 40 }}
+                  />
+                }
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="screens/Roullete/index"
+          options={{
+            tabBarShowLabel: false,
+            tabBarIcon: ({ color, size, focused }) => (
+              <NavBarIcon
+                color={color}
+                size={size}
+                focused={focused}
+                iconType="roleta"
+                children={
+                  <Image
+                    source={require('../../assets/images/icon-roleta.png')}
+                    style={{ width: 55, height: 55 }}
+                  />
+                }
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="screens/Community/index"
+          options={{
+            tabBarShowLabel: false,
+            tabBarIcon: ({ color, size, focused }) => (
+              <NavBarIcon
+                color={color}
+                size={size}
+                focused={focused}
+                children={
+                  <MaterialIcons
+                    name="groups"
+                    size={45}
+                    color={color}
+                    style={{ height: 45, width: 45 }}
+                  />
+                }
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="screens/Profile/index"
+          options={{
+            tabBarShowLabel: false,
+            tabBarIcon: ({ color, size, focused }) => (
+              <NavBarIcon
+                color={color}
+                size={size}
+                focused={focused}
+                children={
+                  <MaterialIcons
+                    name="person"
+                    size={40}
+                    color={color}
+                    style={{ height: 40, width: 40 }}
+                  />
+                }
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="screens/SignupInterestsScreen/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/restaurantProfile/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/SignupRestaurant/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/SignupUser/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/CreateReview/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/FilterScreen/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/Feed/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/AddMedia/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/RoulletFilterModal/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/PublicationInfluencer/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+      </Tabs>
     </AuthProvider>
   );
 }
