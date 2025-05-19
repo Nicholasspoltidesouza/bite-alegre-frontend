@@ -334,6 +334,86 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
         </View>
       )}
 
+{isAddingNew && (
+        <View style={styles.newHourContainer}>
+          <View style={styles.dropdownRow}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.dropdownLabel}>Dia:</Text>
+              <Dropdown
+                options={dayOptions}
+                selectedValue={newHour.day}
+                onSelect={(value: string) => {
+                  setNewHour({
+                    ...newHour,
+                    day: value,
+                  });
+                }}
+                placeholder="Selecione"
+                width="100%"
+              />
+            </View>
+          </View>
+
+          <Text style={styles.periodSectionTitle}></Text>
+          <View style={styles.dropdownRow}>
+            <View style={{ flex: 1, marginRight: 8 }}>
+              <Text style={styles.dropdownLabel}>Abertura:</Text>
+              <Dropdown
+                options={timeOptions}
+                selectedValue={newHour.periods[0]?.startTime || ""}
+                onSelect={(value: string) => {
+                  const updatedPeriods = [...newHour.periods];
+                  updatedPeriods[0] = {
+                    ...updatedPeriods[0],
+                    startTime: value,
+                  };
+                  setNewHour({
+                    ...newHour,
+                    periods: updatedPeriods,
+                  });
+                }}
+                placeholder="Selecione"
+                width="100%"
+              />
+            </View>
+            <View style={{ flex: 1, marginLeft: 8 }}>
+              <Text style={styles.dropdownLabel}>Fechamento:</Text>
+              <Dropdown
+                options={timeOptions}
+                selectedValue={newHour.periods[0]?.endTime || ""}
+                onSelect={(value: string) => {
+                  const updatedPeriods = [...newHour.periods];
+                  updatedPeriods[0] = {
+                    ...updatedPeriods[0],
+                    endTime: value,
+                  };
+                  setNewHour({
+                    ...newHour,
+                    periods: updatedPeriods,
+                  });
+                }}
+                placeholder="Selecione"
+                width="100%"
+              />
+            </View>
+          </View>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity
+              style={[styles.actionButton, styles.cancelButton]}
+              onPress={handleCancelNewHour}
+            >
+              <Text style={styles.actionButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.actionButton, styles.saveButton]}
+              onPress={handleSaveNewHour}
+            >
+              <Text style={styles.actionButtonText}>Adicionar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+      
       {operatingHours.length > 0 && (
         <View style={styles.tableContainer}>
           <View style={styles.tableHeader}>
