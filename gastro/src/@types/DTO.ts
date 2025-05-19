@@ -1,3 +1,4 @@
+import { OperatingHoursDto } from "./OperatingHoursDto";
 interface UserDTO {
   profilePhoto?: string;
   name: string;
@@ -28,6 +29,7 @@ interface RestaurantDTO {
   userType: string;
   reviews?: ReviewDTO[];
   stars?: number;
+  operatingHours?: OperatingHoursDto[];
 }
 
 interface CheckinDTO {

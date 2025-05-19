@@ -1,4 +1,7 @@
 export interface OperatingHoursDto {
   day: string;
-  time: string;
-}
+  periods: {
+    startTime: string;
+    endTime: string;
+  }[];
+};

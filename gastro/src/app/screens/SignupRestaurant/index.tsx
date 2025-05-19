@@ -32,20 +32,14 @@ const SignupRestaurant = () => {
     'Cadastro de Restaurante',
   );
 
-  const [operatingHours, setOperatingHours] = useState<OperatingHoursDto[]>([
-    { day: 'Segunda', time: '11:00 – 14:00' },
-    { day: 'Feriados', time: '18:30 – 23:30' },
-  ]);
+  const [operatingHours, setOperatingHours] = useState<OperatingHoursDto[]>([]);
 
   const { getRestaurantById } = useRestaurantApi();
   const { createRestaurant } = useRestaurantApi();
   const router = useRouter();
 
-  const handleAddOperatingHour = () => {
-    setOperatingHours((prev: any) => [
-      ...prev,
-      { day: 'Quarta', startTime: '12:00', endTime: '15:00' },
-    ]);
+  const handleUpdateOperatingHours = (updatedHours: OperatingHoursDto[]) => {
+    setOperatingHours(updatedHours);
   };
 
   const validateDescription = (text: string): string | null => {
@@ -190,9 +184,8 @@ const SignupRestaurant = () => {
     }
   };
 
-  const handleEditOperatingHour = (item: OperatingHoursDto, index: number) => {
-    Alert.alert('Editar Horário', `Você clicou em ${item.day} - ${item.time}`);
-  };
+  // Não precisamos mais da função handleEditOperatingHour pois
+  // a edição é tratada internamente pelo componente HoursSection
 
   return (
     <KeyboardAvoidingView
@@ -326,8 +319,7 @@ const SignupRestaurant = () => {
           <View style={styles.inputWrapper}>
             <HoursSection
               hours={operatingHours}
-              onAdd={handleAddOperatingHour}
-              onPressItem={handleEditOperatingHour}
+              onUpdateHours={handleUpdateOperatingHours}
             />
           </View>
 
