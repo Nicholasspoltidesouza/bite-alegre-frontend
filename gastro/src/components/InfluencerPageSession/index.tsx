@@ -1,46 +1,66 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { AntDesign, MaterialIcons, Feather } from '@expo/vector-icons';
-import Colors from '@/src/constants/Colors';
-import { useRouter } from 'expo-router';
+import { MaterialIcons, Feather } from '@expo/vector-icons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Colors from '@/src/constants/Colors';
+import { useRouter } from 'expo-router';
 
-export default function InfluencerPageSession() {
+interface Props {
+  userView?: boolean;
+}
+
+export default function InfluencerPageSession({ userView = false }: Props) {
   const router = useRouter();
-  const handlePress = () => {
-    router.push('/');
-  };
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()}>
-        <Feather name="grid" size={24} color={Colors.orange.orangeStandard} />
+      
+      <TouchableOpacity onPress={() => router.back()} style={styles.button}>
+        <View style={styles.iconWithIndicator}>
+          <Feather name="grid" size={24} color={Colors.orange.orangeStandard} />
+          <View style={styles.indicator} />
+        </View>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.back()}>
+      <TouchableOpacity onPress={() => router.back()} style={styles.button}>
         <MaterialIcons name="reviews" size={24} color={Colors.gray.grayLight} />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.back()}>
+      <TouchableOpacity onPress={() => router.back()} style={styles.button}>
         <FontAwesome6 name="house-circle-check" size={24} color={Colors.gray.grayLight} />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.back()}>
-        <FontAwesome5 name="user-alt" size={24} color={Colors.gray.grayLight} />
-      </TouchableOpacity>
+      {!userView && (
+        <TouchableOpacity onPress={() => router.back()} style={styles.button}>
+          <FontAwesome5 name="user-alt" size={22} color={Colors.gray.grayLight} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingVertical: 1,
     backgroundColor: Colors.white,
-    borderRadius: 10,
-    marginBottom: 20,
+    marginTop: -6,
   },
   button: {
-    padding: 10,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+  },
+  iconWithIndicator: {
+    alignItems: 'center',
+  },
+  indicator: {
+    width: 14,
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: Colors.orange.orangeStandard,
+    marginTop: 6,
   },
 });

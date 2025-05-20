@@ -187,9 +187,14 @@ export default function RootLayout() {
           options={{ href: null, tabBarShowLabel: false }}
         />
         <Tabs.Screen
-          name="screens/InfluencerProfile/index"
+          name="screens/Influencer/InfluencerProfile/index"
           options={{ href: null, tabBarShowLabel: false }}
         />
+        <Tabs.Screen
+          name="screens/Influencer/InfluencerProfileUserView/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        
       </Tabs>
     </AuthProvider>
   );

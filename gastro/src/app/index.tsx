@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import Colors from '../constants/Colors';
@@ -19,6 +19,7 @@ const App: React.FC = () => {
 
   return (
     <View style={styles.container}>
+       <ScrollView>
       <Header name={'Manu'} nickName={'manu'} />
       <View style={styles.buttons}>
         <Button
@@ -56,13 +57,26 @@ const App: React.FC = () => {
         <Button
           title="Perfil Influencer"
           onPress={() =>
-            router.push({ pathname: '/screens/InfluencerProfile' })
+            router.push({
+              pathname: '/screens/Influencer/InfluencerProfile',
+            })
+          }
+          type={'orange'}
+        />
+        <Button
+          title="Perfil Influencer UserView"
+          onPress={() =>
+            router.push({
+              pathname: '/screens/Influencer/InfluencerProfileUserView',
+            })
           }
           type={'orange'}
         />
         <Button title="Login" onPress={() => handle()} type={'orange'} />
       </View>
+      </ScrollView>
     </View>
+  
   );
 };
 
