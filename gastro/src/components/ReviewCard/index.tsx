@@ -55,7 +55,7 @@ return (
                             name="star"
                             size={15}
                             color={
-                            i < review.stars! ? Colors.orange.orangeStandard : '#FF914B40'
+                             i < (review.stars ?? 0) ? Colors.orange.orangeStandard : '#FF914B40'
                             }
                         />
                     ))}
@@ -106,11 +106,5 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginTop: 8,
         fontFamily: 'Poppins-Medium',
-    },
-    image: {
-        width: '100%',
-        height: '100%',
-        resizeMode: 'cover',
-        borderRadius: 16,
     },
 });
