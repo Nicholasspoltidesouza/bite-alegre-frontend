@@ -14,7 +14,8 @@ const App: React.FC = () => {
     stars: 4,
     feedback: "sdaksjhdjkashdkasjdhjkashdkjashdkjahskdjhask dhaskjdhkajshdkjas ajshdkasjhdjashkdjha jahdskjdhaksjdhka askjdhaksjdhaksjd",
     restaurantName: "Pedrinho Lanches",
-    restaurantProfilePhoto:""
+    restaurantProfilePhoto:"https://static.ifood-static.com.br/image/upload/t_medium/logosgde/a4d28d60-aa8b-483f-911f-ac8bb7c670d3/202304261653_V81M.png",
+    restaurantId:'rest-2'
   } as ReviewDTO
 
 

@@ -1,6 +1,7 @@
 import { ReviewDTO } from '@/src/@types/DTO';
 import Colors from '@/src/constants/Colors';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import React from 'react';
 import {
     TouchableOpacity,
@@ -19,6 +20,12 @@ export const CardReview: React.FC<CardReviewProps> = ({
 }) => {
 
 const handlePress = () => {
+    router.push({
+        pathname: '/screens/restaurantProfile',
+        params: {
+            restaurantId: review.restaurantId,
+        },
+    });
 };
 
 return (
@@ -27,15 +34,18 @@ return (
         style={styles.card}
         >
         <View style={styles.header}>
-            <View style={{backgroundColor: Colors.background, borderRadius: 50, padding: '2%'}}>
+            <View style={{backgroundColor: Colors.background, borderRadius: 50}}>
                 {review.restaurantProfilePhoto ? (
-                    <Image source={{ uri: review.restaurantProfilePhoto }} />
+                    <Image
+                    source={{ uri: review.restaurantProfilePhoto }} // Substitua pelo logo real
+                    style={styles.logo}
+                    />
                         ) : (
-                    <MaterialIcons name="store" size={40} color="#fcd5b5" />
+                    <MaterialIcons name="store" size={40} color="#fcd5b5" style={{padding: '2%'}} />
                 )}
             </View>
             <View style={styles.titleContainer}>
-                <Text>
+                <Text style={styles.restaurantName}>
                     {review.restaurantName}
                 </Text>
                 <View style={styles.stars}>
@@ -52,7 +62,7 @@ return (
                 </View>
             </View>
         </View>
-        <Text>
+        <Text style={styles.reviewText}>
             {review.feedback}
         </Text>
     </TouchableOpacity>
@@ -75,7 +85,6 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         borderRadius: 25,
-        backgroundColor: '#ccc',
     },
     titleContainer: {
         marginLeft: 12,
@@ -84,8 +93,8 @@ const styles = StyleSheet.create({
     },
     restaurantName: {
         fontSize: 16,
-        fontWeight: 'bold',
-        color: '#f7943e',
+        fontFamily: 'Poppins-Medium',
+        color: Colors.text.standard,
         marginBottom: '2%',
     },
     stars: {
@@ -93,8 +102,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     reviewText: {
-        color: '#333',
-        fontSize: 14,
+        color: Colors.text.black,
+        fontSize: 12,
         marginTop: 8,
+        fontFamily: 'Poppins-Medium',
+    },
+    image: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+        borderRadius: 16,
     },
 });
