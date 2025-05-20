@@ -32,14 +32,19 @@ const App: React.FC = () => {
           onPress={() => router.push({ pathname: '/screens/SignupRestaurant' })}
           type={'orange'}
         />
-        <Button
+        {/* <Button
           title="Feed"
           onPress={() => router.push({ pathname: '/screens/Feed' })}
           type={'orange'}
-        />
-        <Button
+        /> */}
+        {/* <Button
           title="Adicionar Mídia"
           onPress={() => router.push({ pathname: '/screens/AddMedia' })}
+          type={'orange'}
+        /> */}
+          <Button
+          title="Modal da Roleta"
+          onPress={() => router.push({ pathname: '/screens/RoulletFilterModal' })}
           type={'orange'}
         />
       </View>

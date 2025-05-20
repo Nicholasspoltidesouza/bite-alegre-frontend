@@ -1,9 +1,9 @@
-import { Tabs, usePathname } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
+import * as Font from 'expo-font';
+import { Tabs, usePathname } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import { Image, Pressable } from 'react-native';
 import { NavBarIcon } from '../components/NavBarItem/index';
-import React, { useEffect, useState } from 'react';
-import * as Font from 'expo-font';
 import Colors from '../constants/Colors';
 import { AuthProvider } from '../contexts/authContext';
 
@@ -13,6 +13,7 @@ export default function RootLayout() {
     '/screens/SignupUser',
     '/screens/SignupRestaurant',
     '/screens/SignupInterestsScreen',
+    '/screens/RoulletFilterModal',
   ];
   const shouldHideTabBar = hiddenRoutes.includes(pathname);
 
@@ -41,7 +42,9 @@ export default function RootLayout() {
             borderTopWidth: 1.5,
             borderColor: Colors.orange.orangeStandard,
           },
-          tabBarButton: (props) => <Pressable {...props} android_ripple={{ color: 'transparent' }} />
+          tabBarButton: (props) => (
+            <Pressable {...props} android_ripple={{ color: 'transparent' }} />
+          ),
         }}
       >
         <Tabs.Screen
@@ -62,7 +65,7 @@ export default function RootLayout() {
                   />
                 }
               />
-            ),
+            )
           }}
         />
         <Tabs.Screen
@@ -178,6 +181,14 @@ export default function RootLayout() {
         />
         <Tabs.Screen
           name="screens/AddMedia/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/RoulletFilterModal/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/PublicationInfluencer/index"
           options={{ href: null, tabBarShowLabel: false }}
         />
       </Tabs>
