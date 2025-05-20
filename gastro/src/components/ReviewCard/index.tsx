@@ -37,7 +37,7 @@ return (
             <View style={{backgroundColor: Colors.background, borderRadius: 50}}>
                 {review.restaurantProfilePhoto ? (
                     <Image
-                    source={{ uri: review.restaurantProfilePhoto }} // Substitua pelo logo real
+                    source={{ uri: review.restaurantProfilePhoto }}
                     style={styles.logo}
                     />
                         ) : (
