@@ -16,6 +16,7 @@ import BaseModal from '@/src/components/BaseModal';
 
 interface HeaderProps {
   isProfile?: boolean;
+  userView?: boolean;
   name: string;
   nickName: string;
   showGreeting?: boolean;
@@ -24,6 +25,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({
   isProfile = false,
+  userView = false,
   name,
   nickName,
   showGreeting = true,
@@ -34,10 +36,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <View style={styles.container}>
-      <StatusBar
-        backgroundColor={Colors.orange.orangeStandard}
-        translucent={false}
-      />
+      <StatusBar backgroundColor={Colors.orange.orangeStandard} translucent={false} />
       <LinearGradient
         colors={[Colors.orange.orangeStandard, Colors.white]}
         locations={[0.45, 0.95]}
@@ -46,10 +45,7 @@ const Header: React.FC<HeaderProps> = ({
         <View style={styles.content}>
           <View style={styles.photo}>
             {profileImageUrl ? (
-              <Image
-                source={{ uri: profileImageUrl }}
-                style={styles.profileImage}
-              />
+              <Image source={{ uri: profileImageUrl }} style={styles.profileImage} />
             ) : (
               <MaterialIcons name="person" size={40} color="#fcd5b5" />
             )}
@@ -68,23 +64,26 @@ const Header: React.FC<HeaderProps> = ({
                 <Text style={styles.username}>@{nickName}</Text>
               </>
             )}
-            <TouchableOpacity onPress={refreshLocation}>
-              <View style={styles.row}>
-                <MaterialIcons
-                  name="location-on"
-                  size={16}
-                  color={Colors.white}
-                  style={styles.icon}
-                />
-                <Text style={styles.infoText}>
-                  {subregion?.trim()?.length ? subregion : 'Location'}
-                </Text>
-              </View>
-            </TouchableOpacity>
+
+            {(!isProfile || (isProfile && !userView)) && (
+              <TouchableOpacity onPress={refreshLocation}>
+                <View style={styles.row}>
+                  <MaterialIcons
+                    name="location-on"
+                    size={16}
+                    color={Colors.white}
+                    style={styles.icon}
+                  />
+                  <Text style={styles.infoText}>
+                    {subregion?.trim()?.length ? subregion : 'Location'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
-        {isProfile && (
+        {isProfile && !userView && (
           <TouchableOpacity
             style={styles.editIconButton}
             onPress={() => setModalVisible(true)}
@@ -93,6 +92,7 @@ const Header: React.FC<HeaderProps> = ({
           </TouchableOpacity>
         )}
       </LinearGradient>
+
       <BaseModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}

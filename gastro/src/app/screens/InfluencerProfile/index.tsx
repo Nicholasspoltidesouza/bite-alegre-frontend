@@ -17,7 +17,7 @@ export default function Profile() {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <Header isProfile={true} name={'Manu'} nickName={'manu'} />
+        <Header isProfile={true} name={'Manu'} nickName={'manu'} userView = {true} />
 
         <InfluencerPageSession />
       </ScrollView>

@@ -113,6 +113,7 @@ export default function Profile() {
           isProfile={true}
           name={userData?.name ?? '-'}
           nickName={userData?.nickname ?? '-'}
+          userView={false}
         />
 
         <View style={styles.titleRow}>
