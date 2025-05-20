@@ -59,6 +59,9 @@ const App: React.FC = () => {
           onPress={() =>
             router.push({
               pathname: '/screens/Influencer/InfluencerProfile',
+                params: {
+                userId:'user-1',
+              }              
             })
           }
           type={'orange'}

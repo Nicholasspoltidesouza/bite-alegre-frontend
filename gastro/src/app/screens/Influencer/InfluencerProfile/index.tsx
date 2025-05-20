@@ -1,21 +1,51 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import Header from '@/src/components/Header';
 import Colors from '@/src/constants/Colors';
 import InfluencerPageSession from '@/src/components/InfluencerPageSession';
 import { AntDesign } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useAuthContext } from '@/src/contexts/authContext';
 
-export default function Profile() {
+export default function InfluencerProfile() {
+  const { user } = useAuthContext(); 
+  const [ sameUser, setSameUser] = useState(false);
+  const [ isLoading, setIsLoading] = useState(true);
+  const { userId, isInfluencer } = useLocalSearchParams();
+
   const handleAddPress = () => {
     router.push({ pathname: '/screens/AddMedia' });
-
   };
+
+  useEffect(() => {
+    //user-1 vai ser user!.id que vem do AuthContext
+    console.log(userId)
+    if(userId == 'user-1') setSameUser(true);
+    console.log(sameUser)
+    setIsLoading(false);
+  }, [userId]);
+
+   if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator
+          size="large"
+          color={Colors.orange.orangeStandard}
+          style={{ marginTop: 50 }}
+        />
+      </SafeAreaView>
+    );
+  }
+
+
+
 
   return (
     <View style={styles.container}>
@@ -27,7 +57,7 @@ export default function Profile() {
           userView={false}
         />
 
-        <InfluencerPageSession userView={false} />
+        <InfluencerPageSession userView={!sameUser} />
       </ScrollView>
 
      
