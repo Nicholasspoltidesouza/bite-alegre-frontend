@@ -42,7 +42,7 @@ const Dropdown = ({
   onSelect,
   iconSize = 20,
   iconColor = Colors.orange.orangeStandard,
-  width = 327,
+  width = '100%',
   textColor = Colors.orange.orangeStandard,
   backgroundColor = 'rgba(255, 179, 112, 0.25)',
   justifyContent = 'space-between',
@@ -109,7 +109,6 @@ const Dropdown = ({
 
 const styles = StyleSheet.create({
   wrapper: {
-    width: 327,
     marginBottom: 16,
   },
   dropdownButton: {

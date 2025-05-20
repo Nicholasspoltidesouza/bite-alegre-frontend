@@ -273,7 +273,6 @@ const SignupUser = () => {
                   'PREFIRO NÃO INFORMAR',
                 ]}
                 onSelect={setGender}
-                width="50%"
                 paddingLeft={24}
                 textColor={gender ? Colors.black : Colors.orange.orangeStandard}
               />

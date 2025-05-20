@@ -249,41 +249,35 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
 
       {isAddingNew && (
         <View style={styles.newHourContainer}>
-          <View style={styles.dropdownRow}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.dropdownLabel}>Dia:</Text>
-              <Dropdown
-                label="Dia" // Prop 'label' é obrigatória no Dropdown components
-                options={dayOptions}
-                selected={newHour.day || null}
-                onSelect={(selectedDay: string) => {
-                  const existingDayConfig = operatingHours.find(h => h.day === selectedDay);
-                  let periodsToLoad: OperatingHoursDto['periods'] = [{ startTime: "", endTime: "" }];
-                  
-                  if (existingDayConfig && existingDayConfig.periods.length > 0) {
-                      // Deep copy periods
-                      periodsToLoad = JSON.parse(JSON.stringify(existingDayConfig.periods));
-                      setEditingDayOriginalPeriods(JSON.parse(JSON.stringify(existingDayConfig.periods)));
-                  } else {
-                    setEditingDayOriginalPeriods(null);
-                  }
+          <Text style={styles.dropdownLabel}>Dia:</Text>
+          <Dropdown
+            label="Dia" // Prop 'label' é obrigatória no Dropdown components
+            options={dayOptions}
+            selected={newHour.day || null}
+            onSelect={(selectedDay: string) => {
+              const existingDayConfig = operatingHours.find(h => h.day === selectedDay);
+              let periodsToLoad: OperatingHoursDto['periods'] = [{ startTime: "", endTime: "" }];
+              
+              if (existingDayConfig && existingDayConfig.periods.length > 0) {
+                  // Deep copy periods
+                  periodsToLoad = JSON.parse(JSON.stringify(existingDayConfig.periods));
+                  setEditingDayOriginalPeriods(JSON.parse(JSON.stringify(existingDayConfig.periods)));
+              } else {
+                setEditingDayOriginalPeriods(null);
+              }
 
-                  setNewHour({
-                    day: selectedDay,
-                    periods: periodsToLoad,
-                  });
-                }}
-                placeholder="Selecione o dia"
-                paddingLeft={24}
-                width="100%"
-              />
-            </View>
-          </View>
+              setNewHour({
+                day: selectedDay,
+                periods: periodsToLoad,
+              });
+            }}
+            placeholder="Selecione o dia"
+            paddingLeft={24}
+          />
 
           {newHour.day && newHour.periods.map((period, index) => (
-            <View key={index} style={styles.periodEntryRow}>
-              <View style={styles.dropdownRowFlex}>
-                <View style={{ flex: 1, marginRight: 8 }}>
+            <View key={index} style={styles.periodEntryContainer}>
+              <View style={{flex: 1}}>
                   <Text style={styles.dropdownLabel}>Abertura {index + 1}:</Text>
                   <Dropdown
                     label={`Abertura ${index + 1}`}
@@ -294,20 +288,20 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
                     paddingLeft={24}
                     width="100%"
                   />
-                </View>
-                <View style={{ flex: 1, marginLeft: 8 }}>
-                  <Text style={styles.dropdownLabel}>Fechamento {index + 1}:</Text>
-                  <Dropdown
-                    label={`Fechamento ${index + 1}`}
-                    options={timeOptions}
-                    selected={period.endTime || null}
-                    onSelect={(value) => handleUpdatePeriodInNewHour(index, 'endTime', value)}
-                    placeholder="Selecione"
-                    paddingLeft={24}
-                    width="100%"
-                  />
-                </View>
               </View>
+              <View style={{flex: 1}}>
+                <Text style={styles.dropdownLabel}>Fechamento {index + 1}:</Text>
+                <Dropdown
+                  label={`Fechamento ${index + 1}`}
+                  options={timeOptions}
+                  selected={period.endTime || null}
+                  onSelect={(value) => handleUpdatePeriodInNewHour(index, 'endTime', value)}
+                  placeholder="Selecione"
+                  paddingLeft={24}
+                  width="100%"
+                />
+              </View>
+
               {newHour.periods.length > 1 && (
                 <TouchableOpacity
                   onPress={() => handleRemovePeriodFromNewHour(index)}
@@ -477,17 +471,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  dayContainer: {
-    marginBottom: 15,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 10,
-    padding: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
   dayHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -545,14 +528,10 @@ const styles = StyleSheet.create({
   newHourContainer: {
     backgroundColor: "rgba(255, 179, 112, 0.1)",
     borderRadius: 20,
-    padding: 16,
     marginTop: 10,
     marginBottom: 10,
     width: "100%",
-  },
-  dropdownRow: {
-    flexDirection: "row",
-    marginBottom: 12,
+    padding: '2%',
   },
   dropdownRowFlex: {
     flexDirection: "row",
@@ -665,10 +644,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Poppins-Regular",
   },
-  periodEntryRow: {
+  periodEntryContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 12,
+    gap: '5%'
   },
   removePeriodButtonInternal: {
     marginLeft: 8,
