@@ -1,7 +1,7 @@
 import { ReviewDTO } from '@/src/@types/DTO';
 import Colors from '@/src/constants/Colors';
-import { MaterialIcons } from '@expo/vector-icons';
-import React, { useState, useEffect } from 'react';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import React from 'react';
 import {
     TouchableOpacity,
     View,
@@ -24,22 +24,34 @@ const handlePress = () => {
 return (
     <TouchableOpacity     
         onPress={handlePress}
-        style={styles.container}
+        style={styles.card}
         >
-        <View style={styles.photo}>
-            {review.restaurantProfilePhoto ? (
-            <Image source={{ uri: review.restaurantProfilePhoto }} />
-                ) : (
-            <MaterialIcons name="person" size={60} color="#fcd5b5" />
-        )}
+        <View style={styles.header}>
+            <View style={{backgroundColor: Colors.background, borderRadius: 50, padding: '2%'}}>
+                {review.restaurantProfilePhoto ? (
+                    <Image source={{ uri: review.restaurantProfilePhoto }} />
+                        ) : (
+                    <MaterialIcons name="store" size={40} color="#fcd5b5" />
+                )}
+            </View>
+            <View style={styles.titleContainer}>
+                <Text>
+                    {review.restaurantName}
+                </Text>
+                <View style={styles.stars}>
+                    {Array.from({ length: 5 }, (_, i) => (
+                        <FontAwesome
+                            key={i}
+                            name="star"
+                            size={15}
+                            color={
+                            i < review.stars! ? Colors.orange.orangeStandard : '#FF914B40'
+                            }
+                        />
+                    ))}
+                </View>
+            </View>
         </View>
-
-        <Text>
-            {review.restaurantName}
-        </Text>
-        <Text>
-            {review.stars}
-        </Text>
         <Text>
             {review.feedback}
         </Text>
@@ -48,17 +60,41 @@ return (
 };
 
 const styles = StyleSheet.create({
-    container:{
-
+    card: {
+        backgroundColor: '#fff3ec',
+        borderRadius: 12,
+        padding: '5%',
+        margin: '5%',
+        elevation: 3,
     },
-    title: {
-        
+    header: {
+        flexDirection: 'row',
+        marginBottom: '2%',
     },
-    text: {
-
+    logo: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: '#ccc',
     },
-    photo: {
-        flex: 1,
-        backgroundColor: Colors.background,
-    }, 
+    titleContainer: {
+        marginLeft: 12,
+        justifyContent: 'center',
+        gap: '5%'
+    },
+    restaurantName: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#f7943e',
+        marginBottom: '2%',
+    },
+    stars: {
+        gap: '3%',
+        flexDirection: 'row',
+    },
+    reviewText: {
+        color: '#333',
+        fontSize: 14,
+        marginTop: 8,
+    },
 });
