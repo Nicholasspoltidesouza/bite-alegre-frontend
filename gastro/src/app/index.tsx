@@ -1,11 +1,11 @@
 import { router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { UserDTO } from '../@types/DTO';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import Colors from '../constants/Colors';
 import { useAuthApi } from '../hooks/useAuthApi';
-import { UserDTO } from '../@types/DTO';
 
 const App: React.FC = () => {
   const { login } = useAuthApi();
@@ -53,11 +53,11 @@ const App: React.FC = () => {
           onPress={() => router.push({ pathname: '/screens/AddMedia' })}
           type={'orange'}
         /> */}
-          <Button
+        {/* <Button
           title="Modal da Roleta"
-          onPress={() => router.push({ pathname: '/screens/RoulletFilterModal' })}
+          onPress={() => router.push({ pathname: '/screens/RouletteFilterModal' })}
           type={'orange'}
-        />
+        /> */}
         <Button title="Login" onPress={() => handle()} type={'orange'} />
       </View>
     </View>

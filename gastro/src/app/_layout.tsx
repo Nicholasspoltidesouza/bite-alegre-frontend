@@ -1,9 +1,11 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
-import { Tabs, usePathname } from 'expo-router';
+import { router, Tabs, usePathname } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Image, Pressable } from 'react-native';
 import { NavBarIcon } from '../components/NavBarItem/index';
+import RouletteFilterModal from '../components/RouletteFilterModal';
+import RouletteVibeModal from '../components/RouletteVibeModal';
 import Colors from '../constants/Colors';
 import { AuthProvider } from '../contexts/authContext';
 
@@ -13,11 +15,14 @@ export default function RootLayout() {
     '/screens/SignupUser',
     '/screens/SignupRestaurant',
     '/screens/SignupInterestsScreen',
-    '/screens/RoulletFilterModal',
+    // '/screens/RouletteFilterModal',
+    '/screens/Roulette'
   ];
   const shouldHideTabBar = hiddenRoutes.includes(pathname);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [showRouletteModal, setShowRouletteModal] = useState(false);
+  const [showVibeModal, setShowVibeModal] = useState(false);
 
   useEffect(() => {
     Font.loadAsync({
@@ -90,22 +95,18 @@ export default function RootLayout() {
           }}
         />
         <Tabs.Screen
-          name="screens/Roullete/index"
+          name="screens/Roulette/index"
           options={{
             tabBarShowLabel: false,
-            tabBarIcon: ({ color, size, focused }) => (
-              <NavBarIcon
-                color={color}
-                size={size}
-                focused={focused}
-                iconType="roleta"
-                children={
-                  <Image
-                    source={require('../../assets/images/icon-roleta.png')}
-                    style={{ width: 55, height: 55 }}
-                  />
-                }
-              />
+            tabBarButton: () => (
+              <Pressable
+                onPress={() => setShowRouletteModal(true)}
+              >
+                <Image
+                  source={require('../../assets/images/icon-roleta.png')}
+                  style={{ width: 60, height: 60 }}
+                />
+              </Pressable>
             ),
           }}
         />
@@ -183,15 +184,34 @@ export default function RootLayout() {
           name="screens/AddMedia/index"
           options={{ href: null, tabBarShowLabel: false }}
         />
-        <Tabs.Screen
-          name="screens/RoulletFilterModal/index"
+        {/* <Tabs.Screen
+          name="screens/RouletteFilterModal/index"
           options={{ href: null, tabBarShowLabel: false }}
-        />
+        /> */}
         <Tabs.Screen
           name="screens/PublicationInfluencer/index"
           options={{ href: null, tabBarShowLabel: false }}
         />
       </Tabs>
+
+      <RouletteFilterModal
+        visible={showRouletteModal}
+        onClose={() => setShowRouletteModal(false)}
+        onVibeRequest={() => {
+          setShowRouletteModal(false);
+          setShowVibeModal(true);
+        }}
+      />
+
+      <RouletteVibeModal
+        visible={showVibeModal}
+        onClose={() => setShowVibeModal(false)}
+        onSelect={(selected) => {
+          console.log('Vibe selecionada:', selected);
+
+        }}
+      />
+
     </AuthProvider>
   );
 }
