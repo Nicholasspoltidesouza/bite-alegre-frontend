@@ -39,6 +39,12 @@ interface RestaurantPatchDTO {
   description?: string;
   averagePrice?: number;
   phone?: string;
+  openingPeriods?: {
+    weekday: string;
+    opensAt: string;
+    closesAt: string;
+  }[];
+  tagIds?: string[];
 }
 
 interface CheckinDTO {
