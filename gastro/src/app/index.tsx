@@ -4,19 +4,8 @@ import { StyleSheet, View } from 'react-native';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import Colors from '../constants/Colors';
-import { useAuthApi } from '../hooks/useAuthApi';
-import { UserDTO } from '../@types/DTO';
 
 const App: React.FC = () => {
-  const { login } = useAuthApi();
-  function handle() {
-    const user = {
-      email: 'user1@bite.io',
-      password: 'user1'
-    } as UserDTO
-    login(user);
-  }
-
   return (
     <View style={styles.container}>
       <Header name={'Manu'} nickName={'manu'} />
@@ -56,11 +45,6 @@ const App: React.FC = () => {
           <Button
           title="Modal da Roleta"
           onPress={() => router.push({ pathname: '/screens/RoulletFilterModal' })}
-          type={'orange'}
-        />
-        <Button
-          title="Home"
-          onPress={() => router.push({ pathname: '/screens/Home' })}
           type={'orange'}
         />
       </View>
