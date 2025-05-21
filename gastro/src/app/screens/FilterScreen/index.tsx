@@ -21,6 +21,7 @@ import {
   View,
 } from 'react-native';
 import { useFetchTags } from '@/src/hooks/useFetchTags';
+import { geocodeAddress, validateCoordinates, getDefaultPortoAlegreCoordinates } from '@/src/utils/geocodingUtils';
 
 interface FilterOptions {
   price: string;
@@ -40,11 +41,11 @@ const FilterScreen: React.FC = () => {
     occasion: [],
     openNow: false,
   });
-
   const [priceModalVisible, setPriceModalVisible] = useState(false);
   const [priceInput, setPriceInput] = useState('');
   const [addressModalVisible, setAddressModalVisible] = useState(false);
   const [addressInput, setAddressInput] = useState('');
+  const [isGeocodingLoading, setIsGeocodingLoading] = useState(false);
 
   const { filterRestaurants, loading: filterLoading } = useSearchFilter();
   const { latitude, longitude } = useLocation();
@@ -115,11 +116,53 @@ const FilterScreen: React.FC = () => {
 
     if (filters.openNow) {
       apiFilters.open_now = true;
-    }
-
-    if (locationSelected && latitude && longitude) {
-      apiFilters.geolocation = [parseFloat(latitude), parseFloat(longitude)];
-      apiFilters.proximity = 10;
+    }    if (locationSelected && latitude && longitude) {
+      try {
+        // Parse string values to numbers and validate
+        const lat = Number(latitude);
+        const lng = Number(longitude);
+        
+        if (validateCoordinates(lat, lng)) {
+          apiFilters.geolocation = [lat, lng];
+          apiFilters.proximity = 10;
+          console.log('Device geolocation added to filter:', `${lat},${lng}`);
+        } else {
+          console.error('Invalid geolocation data:', { latitude, longitude });
+          // Usar coordenadas padrão como fallback se a localização atual for inválida
+          const [defaultLat, defaultLng] = getDefaultPortoAlegreCoordinates();
+          apiFilters.geolocation = [defaultLat, defaultLng];
+          console.log('Using default coordinates instead:', `${defaultLat},${defaultLng}`);
+        }
+      } catch (error) {
+        console.error('Error processing geolocation:', error);
+        // Fallback para coordenadas padrão em caso de erro
+        const [defaultLat, defaultLng] = getDefaultPortoAlegreCoordinates();
+        apiFilters.geolocation = [defaultLat, defaultLng];
+      }
+    } 
+    // Handle manual address input
+    else if (addressSet) {
+      const address = filters.distance[0];
+      console.log('Trying to geocode address:', address);
+      
+      try {
+        setIsGeocodingLoading(true);
+        const coordinates = await geocodeAddress(address);
+        
+        if (coordinates) {
+          apiFilters.geolocation = coordinates;
+          apiFilters.proximity = 10;
+          console.log('Address geocoded and added to filter:', `${coordinates[0]},${coordinates[1]}`);
+        } else {
+          console.error('Failed to geocode address:', address);
+          // Usar coordenadas padrão como fallback se a geocodificação falhar
+          const [defaultLat, defaultLng] = getDefaultPortoAlegreCoordinates();
+          apiFilters.geolocation = [defaultLat, defaultLng];
+          console.log('Using default coordinates instead:', `${defaultLat},${defaultLng}`);
+        }
+      } finally {
+        setIsGeocodingLoading(false);
+      }
     }
 
     try {
@@ -130,7 +173,7 @@ const FilterScreen: React.FC = () => {
     }
   };
 
-  if (tagsLoading || filterLoading) {
+  if (tagsLoading || filterLoading || isGeocodingLoading) {
     return (
       <SafeAreaView style={styles.loaderContainer}>
         <ActivityIndicator size="large" color={Colors.orange.orangeStandard} />
@@ -373,14 +416,30 @@ const FilterScreen: React.FC = () => {
               <Button
                 title="Salvar"
                 type="orange"
-                style={{ flex: 1 }}
-                onPress={() => {
+                style={{ flex: 1 }}                onPress={async () => {
                   const addr = addressInput.trim();
                   setFilters((prev) => ({
                     ...prev,
                     distance: addr ? [addr] : [],
                   }));
                   setAddressModalVisible(false);
+
+                  // Geocode the address to get coordinates
+                  if (addr) {
+                    try {
+                      setIsGeocodingLoading(true);
+                      const coordinates = await geocodeAddress(addr);
+                      setIsGeocodingLoading(false);
+                      
+                      if (coordinates) {
+                        const [lat, lng] = coordinates;
+                        console.log('Address coordinates:', { lat, lng });
+                      }
+                    } catch (error) {
+                      setIsGeocodingLoading(false);
+                      console.error('Error geocoding address:', error);
+                    }
+                  }
                 }}
               />
             </View>
