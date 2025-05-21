@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   View,
+  Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
@@ -30,6 +31,7 @@ export default function InfluencerProfile() {
   const [ sameUser, setSameUser] = useState(false);
   const [ isLoading, setIsLoading] = useState(true);
   const { userId, isInfluencer } = useLocalSearchParams();
+  const [selectedTab, setSelectedTab] = useState<'grid' | 'reviews' | 'checkins' | 'user'>('grid');
 
   const handleAddPress = () => {
     router.push({ pathname: '/screens/AddMedia' });
@@ -55,6 +57,21 @@ export default function InfluencerProfile() {
     );
   }
 
+  function renderComponent() {
+    switch (selectedTab) {
+      case 'grid':
+        return <PhotoGrid images={images} />;
+      case 'reviews':
+        return <View><Text>Reviews Section</Text></View>;
+      case 'checkins':
+        return <View><Text>Home Section</Text></View>;
+      case 'user':
+        return <View><Text>User Info</Text></View>;
+      default:
+        return null;
+    }
+}
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -64,8 +81,8 @@ export default function InfluencerProfile() {
           nickName={'manu'}
           userView={false}
         />
-        <InfluencerPageSession userView={!sameUser} />
-        <PhotoGrid images={images}/>
+        <InfluencerPageSession userView={!sameUser} onTabSelect={setSelectedTab} selectedTab={selectedTab}/>
+        {renderComponent()}
       </ScrollView>     
       <TouchableOpacity style={styles.fab} onPress={handleAddPress}>
         <AntDesign name="plus" size={28} color="white" />

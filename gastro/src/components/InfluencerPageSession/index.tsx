@@ -8,34 +8,60 @@ import { useRouter } from 'expo-router';
 
 interface Props {
   userView?: boolean;
+  onTabSelect: (tab: 'grid' | 'reviews' | 'checkins' | 'user') => void;
+  selectedTab: 'grid' | 'reviews' | 'checkins' | 'user';
 }
 
-export default function InfluencerPageSession({ userView = false }: Props) {
-  const router = useRouter();
+export default function InfluencerPageSession({ userView = false, onTabSelect, selectedTab }: Props) {
 
   return (
     <View style={styles.container}>
       
-      <TouchableOpacity onPress={() => router.back()} style={styles.button}>
+    <TouchableOpacity onPress={() => onTabSelect('grid')} style={styles.button}>
+      <View style={styles.iconWithIndicator}>
+        <Feather
+          name="grid"
+          size={24}
+          color={selectedTab === 'grid' ? Colors.orange.orangeStandard : Colors.gray.grayLight}
+        />
+        {selectedTab === 'grid' && <View style={styles.indicator} />}
+      </View>
+    </TouchableOpacity>
+
+    <TouchableOpacity onPress={() => onTabSelect('reviews')} style={styles.button}>
+      <View style={styles.iconWithIndicator}>
+        <MaterialIcons
+          name="reviews"
+          size={24}
+          color={selectedTab === 'reviews' ? Colors.orange.orangeStandard : Colors.gray.grayLight}
+        />
+        {selectedTab === 'reviews' && <View style={styles.indicator} />}
+      </View>
+    </TouchableOpacity>
+
+    <TouchableOpacity onPress={() => onTabSelect('checkins')} style={styles.button}>
+      <View style={styles.iconWithIndicator}>
+        <FontAwesome6
+          name="house-circle-check"
+          size={24}
+          color={selectedTab === 'checkins' ? Colors.orange.orangeStandard : Colors.gray.grayLight}
+        />
+        {selectedTab === 'checkins' && <View style={styles.indicator} />}
+      </View>
+    </TouchableOpacity>
+
+    {!userView && (
+      <TouchableOpacity onPress={() => onTabSelect('user')} style={styles.button}>
         <View style={styles.iconWithIndicator}>
-          <Feather name="grid" size={24} color={Colors.orange.orangeStandard} />
-          <View style={styles.indicator} />
+          <FontAwesome5
+            name="user-alt"
+            size={22}
+            color={selectedTab === 'user' ? Colors.orange.orangeStandard : Colors.gray.grayLight}
+          />
+          {selectedTab === 'user' && <View style={styles.indicator} />}
         </View>
       </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => router.back()} style={styles.button}>
-        <MaterialIcons name="reviews" size={24} color={Colors.gray.grayLight} />
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => router.back()} style={styles.button}>
-        <FontAwesome6 name="house-circle-check" size={24} color={Colors.gray.grayLight} />
-      </TouchableOpacity>
-
-      {!userView && (
-        <TouchableOpacity onPress={() => router.back()} style={styles.button}>
-          <FontAwesome5 name="user-alt" size={22} color={Colors.gray.grayLight} />
-        </TouchableOpacity>
-      )}
+    )}
     </View>
   );
 }
