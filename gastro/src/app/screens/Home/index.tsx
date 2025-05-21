@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     text: {
         fontFamily: "Poppins-Regular",
         fontSize: 20,
-        color: "#fff",
+        color: Colors.white,
         textAlign: "center",
     },
     bold: {
