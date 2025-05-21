@@ -67,7 +67,7 @@ interface AuthDTO {
 }
 
 interface PublicationDTO {
-  media: File;
+  media: string;
   description: string;
   restaurant_id: string;
 }
