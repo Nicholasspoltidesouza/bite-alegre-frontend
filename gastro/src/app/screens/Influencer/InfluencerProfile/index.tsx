@@ -15,8 +15,9 @@ import { AntDesign } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useAuthContext } from '@/src/contexts/authContext';
 import { Publications } from '@/src/components/Publications';
-import { ImageItem } from '@/src/@types/DTO';
+import { ImageItem, ReviewDTO } from '@/src/@types/DTO';
 import CheckinSection from '@/src/components/CheckinSection';
+import { CardReview } from '@/src/components/ReviewCard';
 
 
 const images: ImageItem[] = [
@@ -26,6 +27,11 @@ const images: ImageItem[] = [
     { id: '4', uri: 'https://i.pinimg.com/736x/e7/f9/29/e7f929707c5648e800de74437a47583f.jpg' },
     { id: '5', uri: 'https://i.pinimg.com/736x/0b/e4/7a/0be47ad5d2427db37badb02293b14fde.jpg' },
     { id: '6', uri: 'https://i.pinimg.com/736x/11/9d/89/119d896e809dbb513e74a82eac654c62.jpg' }
+]
+
+const reviews: ReviewDTO[] = [
+    { id:'1', stars: 3, feedback: "hsdjkfhsdjkhfjksdhfkjshfkjhsdfjkhfksdjfhsdkjhfksd", restaurantName: "REST", restaurantProfilePhoto: 'https://static.ifood-static.com.br/image/upload/t_medium/logosgde/a4d28d60-aa8b-483f-911f-ac8bb7c670d3/202304261653_V81M.png' },
+    { id:'2', stars: 3, feedback: "hsdjkfhsdjkhfjksdhfkjshfkjhsdfjkhfksdjfhsdkjhfksd", restaurantName: "REST", restaurantProfilePhoto: 'https://static.ifood-static.com.br/image/upload/t_medium/logosgde/a4d28d60-aa8b-483f-911f-ac8bb7c670d3/202304261653_V81M.png' }
 ]
 
 export default function InfluencerProfile() {
@@ -41,7 +47,7 @@ export default function InfluencerProfile() {
 
   useEffect(() => {
     //user-1 vai ser user!.id que vem do AuthContext
-    setSameUser(userId === 'user-1');
+    setSameUser(userId === 'user-2');
     setIsLoading(false);
   }, [userId]);
 
@@ -62,7 +68,7 @@ export default function InfluencerProfile() {
       case 'grid':
         return <Publications images={images} />;
       case 'reviews':
-        return <View><Text>Reviews Section</Text></View>;
+        return <CardReview reviews={reviews} /> 
       case 'checkins':
         return <View>
            <CheckinSection /> 
@@ -85,10 +91,12 @@ export default function InfluencerProfile() {
         />
         <InfluencerPageSession userView={!sameUser} onTabSelect={setSelectedTab} selectedTab={selectedTab}/>
         {renderComponent()}
-      </ScrollView>     
-      <TouchableOpacity style={styles.fab} onPress={handleAddPress}>
-        <AntDesign name="plus" size={28} color="white" />
-      </TouchableOpacity>
+      </ScrollView>
+      { sameUser && (
+        <TouchableOpacity style={styles.fab} onPress={handleAddPress}>
+          <AntDesign name="plus" size={28} color="white" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

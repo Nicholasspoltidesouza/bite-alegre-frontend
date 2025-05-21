@@ -38,6 +38,7 @@ interface CheckinDTO {
 }
 
 interface ReviewDTO {
+  id?: string;
   user_id?: string;
   restaurantId?: string;
   restaurant_id?: string;
