@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   Pressable,
@@ -21,6 +21,12 @@ const budgetOptions = [
 
 const RouletteBudgetModal = ({ visible, onClose, onSelect }: RouletteBudgetModalProps) => {
   const [selected, setSelected] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!visible) {
+      setSelected(null);
+    }
+  })
 
   return (
     <Modal transparent visible={visible} animationType="fade">
