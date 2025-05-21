@@ -5,7 +5,10 @@ import HoursSection from '@/src/components/HoursSection';
 import SignupHeader from '@/src/components/SignupHeader';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
-import { useRouter } from 'expo-router';
+import { useMediaApi } from '@/src/hooks/useMediaApi';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import React, { useState } from 'react';
 import {
   Alert,
@@ -15,22 +18,43 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  TouchableOpacity,
+  Text,
+  Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Colors from '@/src/constants/Colors';
+import { MaterialIcons } from '@expo/vector-icons';
+import { getBase64FromUri } from '@/src/utils/s3';
 
 const SignupRestaurant = () => {
   const insets = useSafeAreaInsets();
-  const [name, setName] = useState<string>('');
-  const [cnpj, setCnpj] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [address, setAddress] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [averagePrice, setAveragePrice] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
+  const { restaurantData } = useLocalSearchParams();
+  const { selectImageFromGallery, captureImageWithCamera } = useMediaApi();
+  
+  const parsedData = restaurantData ? JSON.parse(restaurantData as string) : null;
+
+  const [name, setName] = useState<string>(parsedData?.name || '');
+  const [cnpj, setCnpj] = useState<string>(parsedData?.cnpj || '');
+  const [description, setDescription] = useState<string>(parsedData?.description || '');
+  const [address, setAddress] = useState<string>(parsedData?.address || '');
+  const [email, setEmail] = useState<string>(parsedData?.email || '');
+  const [password, setPassword] = useState<string>(parsedData?.password || '');
+  const [averagePrice, setAveragePrice] = useState<string>(parsedData?.averagePrice?.toString() || '');
+  const [phone, setPhone] = useState<string>(parsedData?.phone || '');
   const [userType, setUserType] = useState<string | null>(
     'Cadastro de Restaurante',
   );
+  
+  // Photo state
+  const [profilePhoto, setProfilePhoto] = useState<string | undefined>(
+    parsedData?.profilePhoto || undefined,
+  );
+  const [profilePhotoAsset, setProfilePhotoAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
+  const [bannerPhoto, setBannerPhoto] = useState<string | undefined>(
+    parsedData?.bannerPhoto || undefined,
+  );
+  const [bannerPhotoAsset, setBannerPhotoAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
 
   const [operatingHours, setOperatingHours] = useState<OperatingHoursDto[]>([
     { day: 'Segunda', time: '11:00 – 14:00' },
@@ -40,6 +64,112 @@ const SignupRestaurant = () => {
   const { getRestaurantById } = useRestaurantApi();
   const { createRestaurant } = useRestaurantApi();
   const router = useRouter();
+
+  const handleProfilePhotoSelection = async () => {
+    Alert.alert(
+      'Foto de Perfil',
+      'Escolha uma opção',
+      [
+        {
+          text: 'Câmera',
+          onPress: async () => {
+            const result = await captureImageWithCamera();
+            if (result) {
+              // Garantir que temos o base64
+              if (!result.base64) {
+                try {
+                  result.base64 = await getBase64FromUri(result.uri);
+                } catch (e) {
+                  console.error('Erro ao converter imagem para base64:', e);
+                  Alert.alert('Erro', 'Não foi possível processar a imagem.');
+                  return;
+                }
+              }
+              setProfilePhotoAsset(result);
+              setProfilePhoto(result.uri);
+            }
+          }
+        },
+        {
+          text: 'Galeria',
+          onPress: async () => {
+            const result = await selectImageFromGallery();
+            if (result) {
+              // Garantir que temos o base64
+              if (!result.base64) {
+                try {
+                  result.base64 = await getBase64FromUri(result.uri);
+                } catch (e) {
+                  console.error('Erro ao converter imagem para base64:', e);
+                  Alert.alert('Erro', 'Não foi possível processar a imagem.');
+                  return;
+                }
+              }
+              setProfilePhotoAsset(result);
+              setProfilePhoto(result.uri);
+            }
+          }
+        },
+        {
+          text: 'Cancelar',
+          style: 'cancel'
+        }
+      ]
+    );
+  };
+
+  const handleBannerPhotoSelection = async () => {
+    Alert.alert(
+      'Foto de Banner',
+      'Escolha uma opção',
+      [
+        {
+          text: 'Câmera',
+          onPress: async () => {
+            const result = await captureImageWithCamera();
+            if (result) {
+              // Garantir que temos o base64
+              if (!result.base64) {
+                try {
+                  result.base64 = await getBase64FromUri(result.uri);
+                } catch (e) {
+                  console.error('Erro ao converter imagem para base64:', e);
+                  Alert.alert('Erro', 'Não foi possível processar a imagem.');
+                  return;
+                }
+              }
+              setBannerPhotoAsset(result);
+              setBannerPhoto(result.uri);
+            }
+          }
+        },
+        {
+          text: 'Galeria',
+          onPress: async () => {
+            const result = await selectImageFromGallery();
+            if (result) {
+              // Garantir que temos o base64
+              if (!result.base64) {
+                try {
+                  result.base64 = await getBase64FromUri(result.uri);
+                } catch (e) {
+                  console.error('Erro ao converter imagem para base64:', e);
+                  Alert.alert('Erro', 'Não foi possível processar a imagem.');
+                  return;
+                }
+              }
+              setBannerPhotoAsset(result);
+              setBannerPhoto(result.uri);
+            }
+          }
+        },
+        {
+          text: 'Cancelar',
+          style: 'cancel'
+        }
+      ]
+    );
+  };
 
   const handleAddOperatingHour = () => {
     setOperatingHours((prev: any) => [
@@ -172,7 +302,18 @@ const SignupRestaurant = () => {
         averagePrice: parseFloat(averagePrice.replace(',', '.')),
         phone,
         userType: formatedUserType,
+        profilePhoto,
+        bannerPhoto,
       };
+
+      // Save assets for S3 upload
+      if (profilePhotoAsset) {
+        (restaurantData as any).profilePhotoAsset = JSON.stringify(profilePhotoAsset);
+      }
+
+      if (bannerPhotoAsset) {
+        (restaurantData as any).bannerPhotoAsset = JSON.stringify(bannerPhotoAsset);
+      }
 
       router.push({
         pathname: '/screens/SignupInterestsScreen',
@@ -212,8 +353,26 @@ const SignupRestaurant = () => {
           setUserType={setUserType}
           profileIcon={'store'}
           onBack={() => router.back()}
+          urlProfilePhoto={profilePhoto}
+          onPhotoPress={handleProfilePhotoSelection}
         />
+
         <ScrollView contentContainerStyle={styles.container}>
+          {/* Banner photo selection */}
+          <View style={styles.bannerContainer}>
+            <Text style={styles.photoLabel}>Foto de Banner do Restaurante</Text>
+            <TouchableOpacity style={styles.bannerWrapper} onPress={handleBannerPhotoSelection}>
+              {bannerPhoto ? (
+                <Image source={{ uri: bannerPhoto }} style={styles.bannerImage} />
+              ) : (
+                <View style={styles.bannerPlaceholder}>
+                  <MaterialIcons name="image" size={40} color="#FFFFFF" />
+                  <Text style={styles.bannerText}>Escolher imagem</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={name}
@@ -376,6 +535,44 @@ const styles = StyleSheet.create({
     width: '90%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+  bannerContainer: {
+    width: '100%',
+    marginBottom: 16,
+  },
+  photoLabel: {
+    fontSize: 16,
+    fontFamily: 'Poppins-Medium',
+    color: '#333',
+    marginBottom: 8,
+  },
+  bannerWrapper: {
+    width: '100%',
+    height: 200,
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: Colors.light.lightGray,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bannerImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 12,
+  },
+  bannerPlaceholder: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bannerText: {
+    fontSize: 14,
+    fontFamily: 'Poppins-Regular',
+    color: '#666',
+    marginTop: 4,
   },
 });
 

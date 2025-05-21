@@ -17,8 +17,10 @@ import Tag from '../../../components/Tag';
 import { API_URL_ANDROID, API_URL_BACKEND } from '../../../constants/apiUrl';
 import { useCreateUser } from '../../../hooks/useUserApi';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
+import { useMediaApi } from '@/src/hooks/useMediaApi';
 import Colors from '@/src/constants/Colors';
 import { useFetchTags } from '@/src/hooks/useFetchTags';
+import * as ImagePicker from 'expo-image-picker';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -27,6 +29,7 @@ const SignupInterests: React.FC = () => {
   const router = useRouter();
   const { createUser, loading } = useCreateUser();
   const { createRestaurant } = useRestaurantApi();
+  const { uploadUserMedia, uploadRestaurantMedia } = useMediaApi();
 
   const parsedUserData = userData ? JSON.parse(userData as string) : null;
   const parsedRestaurantData = restaurantData
@@ -64,8 +67,49 @@ const SignupInterests: React.FC = () => {
         tagIds: selectedTags,
       };
 
+      // Tratar o asset de foto de perfil e banner
+      // Removemos os assets do payload pois apenas o base64 será enviado
+      let profilePhotoBase64 = null;
+      let bannerPhotoBase64 = null;
+
+      // Extrair base64 do profilePhotoAsset se existir
+      if (parsedUserData?.profilePhotoAsset || parsedRestaurantData?.profilePhotoAsset) {
+        try {
+          const profilePhotoAssetStr = parsedUserData?.profilePhotoAsset || parsedRestaurantData?.profilePhotoAsset;
+          if (profilePhotoAssetStr) {
+            const asset = JSON.parse(profilePhotoAssetStr);
+            profilePhotoBase64 = asset.base64;
+            
+            // Remover os assets do payload, mantendo apenas o necessário
+            delete payload.profilePhotoAsset;
+            
+            // Adicionar o base64 da imagem de perfil
+            payload.profilePhotoBase64 = profilePhotoBase64;
+          }
+        } catch (error) {
+          console.error('Falha ao processar foto de perfil:', error);
+        }
+      }
+
+      // Extrair base64 do bannerPhotoAsset se existir (para restaurantes)
+      if (parsedRestaurantData?.bannerPhotoAsset) {
+        try {
+          const asset = JSON.parse(parsedRestaurantData.bannerPhotoAsset);
+          bannerPhotoBase64 = asset.base64;
+          
+          // Remover os assets do payload
+          delete payload.bannerPhotoAsset;
+          
+          // Adicionar o base64 da imagem de banner
+          payload.bannerPhotoBase64 = bannerPhotoBase64;
+        } catch (error) {
+          console.error('Falha ao processar foto de banner:', error);
+        }
+      }
+
       if (parsedUserData) {
         const userCreated = await createUser(payload);
+        
         if (userCreated) {
           Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
           router.push({
@@ -75,10 +119,11 @@ const SignupInterests: React.FC = () => {
             },
           });
         } else {
-          Alert.alert('Dados inválidos para o cadastro do seu usuário.');
+          Alert.alert('Erro', 'Dados inválidos para o cadastro do seu usuário.');
         }
       } else if (parsedRestaurantData) {
         const restaurantCreated = await createRestaurant(payload);
+        
         if (restaurantCreated) {
           Alert.alert('Sucesso', 'Restaurante cadastrado com sucesso!');
           router.push({
@@ -88,13 +133,14 @@ const SignupInterests: React.FC = () => {
             },
           });
         } else {
-          Alert.alert('Dados inválidos para o cadastro do seu restaurante.');
+          Alert.alert('Erro', 'Dados inválidos para o cadastro do seu restaurante.');
         }
       } else {
         Alert.alert('Erro', 'Dados inválidos para cadastro.');
       }
-    } catch {
-      Alert.alert('Erro', 'Falha ao cadastrar.');
+    } catch (error) {
+      console.error('Error during signup:', error);
+      Alert.alert('Erro', 'Falha ao cadastrar. Tente novamente mais tarde.');
     }
   };
 

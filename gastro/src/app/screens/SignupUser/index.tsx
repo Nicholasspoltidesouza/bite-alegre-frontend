@@ -5,6 +5,8 @@ import SignupHeader from '@/src/components/SignupHeader';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import Colors from '@/src/constants/Colors';
 import { useCreateUser } from '@/src/hooks/useUserApi';
+import { useMediaApi } from '@/src/hooks/useMediaApi';
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -18,10 +20,12 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { getBase64FromUri } from '@/src/utils/s3';
 
 const SignupUser = () => {
   const router = useRouter();
   const { userData } = useLocalSearchParams();
+  const { selectImageFromGallery, captureImageWithCamera } = useMediaApi();
 
   const [name, setName] = useState<string>(
     userData ? JSON.parse(userData as string).name : '',
@@ -47,12 +51,69 @@ const SignupUser = () => {
   const [userType, setUserType] = useState<string | null>(
     userData ? JSON.parse(userData as string).userType : 'Cadastro de Usuário',
   );
+  const [profilePhoto, setProfilePhoto] = useState<string | undefined>(
+    userData ? JSON.parse(userData as string).profilePhoto : undefined,
+  );
+  const [profilePhotoAsset, setProfilePhotoAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
 
   const [birthDateTouched, setBirthDateTouched] = useState<boolean>(false);
 
   const { createUser } = useCreateUser();
 
   const insets = useSafeAreaInsets();
+
+  const handlePhotoSelection = async () => {
+    Alert.alert(
+      'Foto de Perfil',
+      'Escolha uma opção',
+      [
+        {
+          text: 'Câmera',
+          onPress: async () => {
+            const result = await captureImageWithCamera();
+            if (result) {
+              // Garantir que temos o base64
+              if (!result.base64) {
+                try {
+                  result.base64 = await getBase64FromUri(result.uri);
+                } catch (e) {
+                  console.error('Erro ao converter imagem para base64:', e);
+                  Alert.alert('Erro', 'Não foi possível processar a imagem.');
+                  return;
+                }
+              }
+              setProfilePhotoAsset(result);
+              setProfilePhoto(result.uri);
+            }
+          }
+        },
+        {
+          text: 'Galeria',
+          onPress: async () => {
+            const result = await selectImageFromGallery();
+            if (result) {
+              // Garantir que temos o base64
+              if (!result.base64) {
+                try {
+                  result.base64 = await getBase64FromUri(result.uri);
+                } catch (e) {
+                  console.error('Erro ao converter imagem para base64:', e);
+                  Alert.alert('Erro', 'Não foi possível processar a imagem.');
+                  return;
+                }
+              }
+              setProfilePhotoAsset(result);
+              setProfilePhoto(result.uri);
+            }
+          }
+        },
+        {
+          text: 'Cancelar',
+          style: 'cancel'
+        }
+      ]
+    );
+  };
 
   const validateName = (text: string): string | null => {
     if (text.length < 2) return 'Nome deve ter no mínimo 2 caracteres';
@@ -164,6 +225,8 @@ const SignupUser = () => {
       gender: formattedGender,
       birthDate: isoBirthDate,
       userType: formattedUserType,
+      profilePhoto,
+      profilePhotoAsset: profilePhotoAsset ? JSON.stringify(profilePhotoAsset) : undefined,
     };
 
     router.push({
@@ -193,6 +256,8 @@ const SignupUser = () => {
           setUserType={setUserType}
           onBack={() => router.back()}
           profileIcon={'person'}
+          urlProfilePhoto={profilePhoto}
+          onPhotoPress={handlePhotoSelection}
         />
         <ScrollView
           contentContainerStyle={styles.container}

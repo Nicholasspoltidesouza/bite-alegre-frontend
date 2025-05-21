@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Keyboard } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {
@@ -12,29 +12,41 @@ import {
   Platform,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from 'react-native';
-import { Video } from 'expo-av';
+import { Video, ResizeMode } from 'expo-av';
 import Button from '@/src/components/Button';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useSearch } from '@/src/hooks/useSearch';
+import { useMediaApi } from '@/src/hooks/useMediaApi';
+import { useAuthContext } from '@/src/contexts/authContext';
+import * as FileSystem from 'expo-file-system';
 
 const AddMedia = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const auth = useAuthContext();
 
+  const [mediaAsset, setMediaAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
   const [mediaUri, setMediaUri] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<'image' | 'video' | null>(null);
   const [description, setDescription] = useState<string>('');
   const [restaurantSearch, setRestaurantSearch] = useState<string>('');
-  const [selectedRestaurantId, setSelectedRestaurantId] = useState<
-    string | null
-  >(null);
+  const [selectedRestaurantId, setSelectedRestaurantId] = useState<string | null>(null);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-
+  const [isCreatingPost, setIsCreatingPost] = useState(false);
+  
   const { restaurants, search: runSearch, loading } = useSearch();
+  const { 
+    isLoading, 
+    error, 
+    selectImageFromGallery, 
+    captureImageWithCamera, 
+    uploadPostMedia 
+  } = useMediaApi();
 
   useEffect(() => {
     if (restaurantSearch.length > 1) {
@@ -56,13 +68,20 @@ const AddMedia = () => {
     };
   }, []);
 
+  useEffect(() => {
+    // Exibir alerta de erro se ocorrer algum erro durante o upload de mídia
+    if (error) {
+      Alert.alert('Erro', error);
+    }
+  }, [error]);
+
   const validateDescription = (text: string): string | null => {
     if (text.length > 200)
       return 'Descrição não pode ter mais de 200 caracteres';
     return null;
   };
 
-  const isFormValid = true;
+  const isFormValid = description.trim().length > 0 && mediaAsset !== null;
 
   const handleAddMedia = () => {
     Alert.alert(
@@ -85,49 +104,25 @@ const AddMedia = () => {
   };
 
   const pickImage = async () => {
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (!permissionResult.granted) {
-      alert('Você precisa permitir o acesso à galeria!');
-      return;
-    }
-
-    console.log('Abrindo galeria');
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets && result.assets[0]) {
-      const asset = result.assets[0];
+    const asset = await selectImageFromGallery();
+    if (asset) {
+      setMediaAsset(asset);
       setMediaUri(asset.uri);
-      setMediaType(asset.type === 'video' ? 'video' : 'image');
+      setMediaType('image');
     }
   };
 
   const openCameraPhoto = async () => {
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    if (!permissionResult.granted) {
-      alert('Permissão para usar a câmera negada.');
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets && result.assets[0]) {
-      const asset = result.assets[0];
+    const asset = await captureImageWithCamera();
+    if (asset) {
+      setMediaAsset(asset);
       setMediaUri(asset.uri);
       setMediaType('image');
     }
   };
 
   const openCameraVideo = async () => {
+    // Para vídeos, usamos ImagePicker com suporte a base64
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     if (!permissionResult.granted) {
       alert('Permissão para usar a câmera negada.');
@@ -138,35 +133,115 @@ const AddMedia = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.Videos,
       videoMaxDuration: 120,
       quality: 1,
+      base64: true, // Solicitar o base64 do vídeo
     });
 
     if (!result.canceled && result.assets && result.assets[0]) {
       const asset = result.assets[0];
+      // Se o base64 não estiver disponível, precisaremos obtê-lo manualmente
+      if (!asset.base64) {
+        try {
+          const base64 = await FileSystem.readAsStringAsync(asset.uri, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+          asset.base64 = base64;
+        } catch (error) {
+          console.error('Erro ao converter vídeo para base64:', error);
+        }
+      }
+      setMediaAsset(asset);
       setMediaUri(asset.uri);
       setMediaType('video');
     }
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const errors = [validateDescription(description)].filter(
       (error) => error != null,
     );
 
-    if (!description) {
+    if (!description.trim()) {
       Alert.alert('Erro', 'Descrição é obrigatória.');
       return;
     }
 
-    if (mediaUri == null) {
+    if (!mediaAsset) {
       Alert.alert('Erro', 'Adicione uma foto ou vídeo.');
       return;
     }
 
-    setDescription('');
-    setMediaUri(null);
-    setRestaurantSearch('');
-    Alert.alert('Sucesso', 'Publicação criada!');
-    router.back();
+    if (errors.length > 0) {
+      Alert.alert('Erro de Validação', errors.join('\n'));
+      return;
+    }
+
+    setIsCreatingPost(true);
+
+    try {
+      // Garantir que temos o base64 da mídia
+      let mediaBase64 = mediaAsset.base64;
+      
+      // Se o base64 não estiver disponível, buscamos ele
+      if (!mediaBase64) {
+        try {
+          mediaBase64 = await FileSystem.readAsStringAsync(mediaAsset.uri, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+        } catch (error) {
+          console.error('Erro ao converter mídia para base64:', error);
+          Alert.alert('Erro', 'Não foi possível processar a mídia. Tente novamente.');
+          setIsCreatingPost(false);
+          return;
+        }
+      }
+
+      // Dados do post para o backend incluindo o base64 da mídia
+      const postData = {
+        description,
+        restaurantId: selectedRestaurantId,
+        userId: auth?.user?.id,
+        mediaBase64: mediaBase64,
+        mediaType: mediaType,
+        fileName: `${Date.now()}.${mediaAsset.uri.split('.').pop()}`,
+        mimeType: mediaType === 'video' 
+          ? `video/${mediaAsset.uri.split('.').pop()}` 
+          : `image/${mediaAsset.uri.split('.').pop() === 'jpg' ? 'jpeg' : mediaAsset.uri.split('.').pop()}`,
+        width: mediaAsset.width,
+        height: mediaAsset.height,
+        createdAt: new Date().toISOString(),
+      };
+
+      // Aqui você implementaria a chamada API para criar o post no backend
+      // O backend será responsável por fazer o upload para o S3
+      // Exemplo:
+      // const response = await fetch(`${API_URL_ANDROID}/posts`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'Authorization': `Bearer ${token}`
+      //   },
+      //   body: JSON.stringify(postData)
+      // });
+      
+      console.log('Post data ready to send to backend (includes base64)');
+
+      Alert.alert('Sucesso', 'Publicação criada com sucesso!');
+      
+      // Limpar estados
+      setDescription('');
+      setMediaUri(null);
+      setMediaAsset(null);
+      setRestaurantSearch('');
+      setSelectedRestaurantId(null);
+      
+      // Voltar para a tela anterior
+      router.back();
+    } catch (err) {
+      console.error('Erro ao criar publicação:', err);
+      Alert.alert('Erro', 'Ocorreu um erro ao criar a publicação. Tente novamente mais tarde.');
+    } finally {
+      setIsCreatingPost(false);
+    }
   };
 
   return (
@@ -196,6 +271,12 @@ const AddMedia = () => {
               </TouchableOpacity>
               <Text style={styles.textCreatePublication}>Criar Publicação</Text>
 
+              {isLoading && (
+                <View style={styles.loadingOverlay}>
+                  <ActivityIndicator size="large" color="#FFFFFF" />
+                </View>
+              )}
+
               {mediaUri ? (
                 <View style={styles.previewContainer}>
                   {mediaType === 'image' ? (
@@ -209,13 +290,14 @@ const AddMedia = () => {
                       source={{ uri: mediaUri }}
                       style={styles.previewMedia}
                       useNativeControls
-                      resizeMode="cover"
+                      resizeMode={ResizeMode.COVER}
                     />
                   )}
                   <TouchableOpacity
                     style={styles.removeMediaButton}
                     onPress={() => {
                       setMediaUri(null);
+                      setMediaAsset(null);
                       setMediaType(null);
                     }}
                   >
@@ -229,6 +311,7 @@ const AddMedia = () => {
                   onPress={handleAddMedia}
                   style={styles.orangeButton}
                   textStyle={styles.orangeButtonText}
+                  disabled={isLoading}
                 />
               )}
             </View>
@@ -248,6 +331,7 @@ const AddMedia = () => {
                 multiline={true}
                 numberOfLines={4}
                 textAlignVertical="top"
+                editable={!isLoading && !isCreatingPost}
               />
             </View>
 
@@ -260,6 +344,7 @@ const AddMedia = () => {
                 }}
                 placeholder="Restaurante"
                 style={styles.input}
+                editable={!isLoading && !isCreatingPost}
               />
               <MaterialIcons
                 name="search"
@@ -278,8 +363,9 @@ const AddMedia = () => {
                         style={styles.resultItem}
                         onPress={() => {
                           setRestaurantSearch(restaurant.name);
-                          setSelectedRestaurantId(restaurant.id);
+                          setSelectedRestaurantId(restaurant.id ?? null);
                         }}
+                        disabled={isLoading || isCreatingPost}
                       >
                         <Text style={styles.resultText}>{restaurant.name}</Text>
                       </TouchableOpacity>
@@ -290,10 +376,10 @@ const AddMedia = () => {
 
             <View style={styles.buttonCreate}>
               <Button
-                title="Criar"
+                title={isCreatingPost ? "Criando..." : "Criar"}
                 type="orange"
                 onPress={handleCreate}
-                disabled={!isFormValid}
+                disabled={!isFormValid || isLoading || isCreatingPost}
               />
             </View>
           </ScrollView>
@@ -417,7 +503,6 @@ const styles = StyleSheet.create({
   previewContainer: {
     alignItems: 'center',
   },
-
   removeMediaButton: {
     marginTop: 10,
     marginBottom: -45,
@@ -426,7 +511,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
   },
-
   removeMediaText: {
     color: '#FF914B',
     fontSize: 14,
@@ -443,18 +527,27 @@ const styles = StyleSheet.create({
     marginTop: 8,
     zIndex: 10,
   },
-
   resultItem: {
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
-
   resultText: {
     fontSize: 16,
     color: '#333',
     fontFamily: 'Poppins-Regular',
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
   },
 });
 
