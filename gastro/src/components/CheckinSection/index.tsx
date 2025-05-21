@@ -34,7 +34,7 @@ const mockCheckins: Checkin[] = [
     id: '3',
     restaurantName: 'Marques Pizzaria',
     restaurantImage:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHziDArbpect3kgH--Ytr-W5hXyfw6W7IXRQ&s',
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHziDArbpect3kgH--Ytr-W5hXyfw6W7IXRQ&s",
     date: '28/02/2025',
   },
 ];

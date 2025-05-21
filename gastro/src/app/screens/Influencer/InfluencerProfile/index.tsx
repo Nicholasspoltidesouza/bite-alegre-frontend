@@ -18,6 +18,7 @@ import { Publications } from '@/src/components/Publications';
 import { ImageItem, ReviewDTO } from '@/src/@types/DTO';
 import CheckinSection from '@/src/components/CheckinSection';
 import { CardReview } from '@/src/components/ReviewCard';
+import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 
 
 const images: ImageItem[] = [
@@ -30,8 +31,9 @@ const images: ImageItem[] = [
 ]
 
 const reviews: ReviewDTO[] = [
-    { id:'1', stars: 3, feedback: "hsdjkfhsdjkhfjksdhfkjshfkjhsdfjkhfksdjfhsdkjhfksd", restaurantName: "REST", restaurantProfilePhoto: 'https://static.ifood-static.com.br/image/upload/t_medium/logosgde/a4d28d60-aa8b-483f-911f-ac8bb7c670d3/202304261653_V81M.png' },
-    { id:'2', stars: 3, feedback: "hsdjkfhsdjkhfjksdhfkjshfkjhsdfjkhfksdjfhsdkjhfksd", restaurantName: "REST", restaurantProfilePhoto: 'https://static.ifood-static.com.br/image/upload/t_medium/logosgde/a4d28d60-aa8b-483f-911f-ac8bb7c670d3/202304261653_V81M.png' }
+    { id:'1', stars: 3, feedback: "A experiência foi maravilhosa! O atendimento super atencioso, comida deliciosa e o ambiente muito acolhedor. Pedi uma pizza de quatro queijos que estava no ponto certo, bem quente e com muito sabor. Com certeza voltarei outras vezes!", restaurantName: "Araujo`s", restaurantProfilePhoto: 'https://files.menudino.com/cardapios/67052/logo.png' },
+    { id:'2', stars: 5, feedback: "Visitei o restaurante com amigos e fomos surpreendidos positivamente. O cardápio é variado, e a apresentação dos pratos é impecável. Destaque para o atendimento personalizado e a sobremesa de tiramisù, que estava incrível. Ótima escolha tanto para jantares a dois quanto para grupos. Ambiente limpo, bem decorado e com clima agradável.", restaurantName: "Marques Pizzaria", restaurantProfilePhoto: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHziDArbpect3kgH--Ytr-W5hXyfw6W7IXRQ&s' },
+    { id:'3', stars: 4, feedback: "O restaurante é muito bom! A comida é deliciosa e o serviço excelente. A equipe é muito amigável e atenta. O ambiente é bem acolhedor e o local bem organizado. Aproveitei a experiência e recomendo para quem busca um lugar aconchegante e com boa comida.", restaurantName: "Mamamia", restaurantProfilePhoto: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzVD67Bl2NkphlMJZg2xKv0qwXX2L_MOcSsw&s' },
 ]
 
 export default function InfluencerProfile() {
@@ -74,7 +76,28 @@ export default function InfluencerProfile() {
            <CheckinSection /> 
         </View>;
       case 'user':
-        return <View><Text>User Info</Text></View>;
+        return <View>
+          <View style={styles.titleRow}>
+                    <Text style={styles.title}>Visitados</Text>
+                    <TouchableOpacity>
+                      <Text style={styles.mostrarMais}>Mostrar mais</Text>
+                    </TouchableOpacity>
+                  </View>
+          
+                  <UserCarouselRestaurant
+                    variant={'visited'}
+                    carouselProfileRestaurant={true}
+                    restaurantsExternal={[]}
+                  />
+          
+                  <View style={styles.titleRow}>
+                    <Text style={styles.title}>Salvos</Text>
+                    <TouchableOpacity>
+                      <Text style={styles.mostrarMais}>Mostrar mais</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <UserCarouselRestaurant variant={'saved'} restaurantsExternal={[]} />
+          </View>;
       default:
         return null;
     }
@@ -121,5 +144,23 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+  },
+   titleRow: {
+    marginTop: 24,
+    marginHorizontal: '3%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  title: {
+    paddingLeft: 1,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.orange.orangeBold,
+  },
+  mostrarMais: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: Colors.orange.orangeStandard,
   },
 });
