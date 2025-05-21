@@ -16,6 +16,8 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useAuthContext } from '@/src/contexts/authContext';
 import { Publications } from '@/src/components/Publications';
 import { ImageItem } from '@/src/@types/DTO';
+import CheckinSection from '@/src/components/CheckinSection';
+
 
 const images: ImageItem[] = [
     { id: '1', uri: 'https://i.pinimg.com/736x/3a/1f/7a/3a1f7a2f270bf6399b734092e9dc4fd5.jpg' },
@@ -39,7 +41,7 @@ export default function InfluencerProfile() {
 
   useEffect(() => {
     //user-1 vai ser user!.id que vem do AuthContext
-    setSameUser(userId === 'user-2');
+    setSameUser(userId === 'user-1');
     setIsLoading(false);
   }, [userId]);
 
@@ -62,7 +64,9 @@ export default function InfluencerProfile() {
       case 'reviews':
         return <View><Text>Reviews Section</Text></View>;
       case 'checkins':
-        return <View><Text>Checkins Section</Text></View>;
+        return <View>
+           <CheckinSection /> 
+        </View>;
       case 'user':
         return <View><Text>User Info</Text></View>;
       default:
