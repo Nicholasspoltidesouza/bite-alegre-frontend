@@ -30,6 +30,17 @@ interface RestaurantDTO {
   stars?: number;
 }
 
+interface RestaurantPatchDTO {
+  id: string;
+  profilePhoto?: string;
+  bannerPhoto?: string;
+  address?: string;
+  name?: string;
+  description?: string;
+  averagePrice?: number;
+  phone?: string;
+}
+
 interface CheckinDTO {
   user_id?: string;
   restaurant_id: string;
@@ -68,6 +79,7 @@ interface AuthDTO {
 
 export type {
   RestaurantDTO,
+  RestaurantPatchDTO,
   UserDTO,
   CheckinDTO,
   ReviewDTO,
