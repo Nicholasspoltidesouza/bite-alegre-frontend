@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = ({
   name,
   nickName,
   showGreeting = true,
-  profileImageUrl,
+  profileImageUrl
 }) => {
   const { subregion, refreshLocation } = useLocation();
   const [modalVisible, setModalVisible] = useState(false);

@@ -39,13 +39,11 @@ export default function InfluencerProfile() {
 
   useEffect(() => {
     //user-1 vai ser user!.id que vem do AuthContext
-    console.log(userId)
-    if(userId == 'user-1') setSameUser(true);
-    console.log(sameUser)
+    setSameUser(userId === 'user-2');
     setIsLoading(false);
   }, [userId]);
 
-   if (isLoading) {
+  if (isLoading) {
     return (
       <SafeAreaView style={styles.container}>
         <ActivityIndicator
@@ -79,7 +77,7 @@ export default function InfluencerProfile() {
           isProfile={true}
           name={'Manu'}
           nickName={'manu'}
-          userView={false}
+          userView={!sameUser}
         />
         <InfluencerPageSession userView={!sameUser} onTabSelect={setSelectedTab} selectedTab={selectedTab}/>
         {renderComponent()}
