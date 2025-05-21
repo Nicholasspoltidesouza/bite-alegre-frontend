@@ -62,7 +62,7 @@ export default function InfluencerProfile() {
       case 'reviews':
         return <View><Text>Reviews Section</Text></View>;
       case 'checkins':
-        return <View><Text>Home Section</Text></View>;
+        return <View><Text>Checkins Section</Text></View>;
       case 'user':
         return <View><Text>User Info</Text></View>;
       default:
