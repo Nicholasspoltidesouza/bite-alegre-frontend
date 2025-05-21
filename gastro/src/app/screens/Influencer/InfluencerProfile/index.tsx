@@ -16,9 +16,11 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useAuthContext } from '@/src/contexts/authContext';
 import { Publications } from '@/src/components/Publications';
 import { ImageItem, ReviewDTO } from '@/src/@types/DTO';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import CheckinSection from '@/src/components/CheckinSection';
 import { CardReview } from '@/src/components/ReviewCard';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
+
 
 
 const images: ImageItem[] = [
@@ -46,10 +48,13 @@ export default function InfluencerProfile() {
   const handleAddPress = () => {
     router.push({ pathname: '/screens/AddMedia' });
   };
+  const filterAddPress = () => {
+    router.push({ pathname: '/screens/AddMedia' });
+  };
 
   useEffect(() => {
     //user-1 vai ser user!.id que vem do AuthContext
-    setSameUser(userId === 'user-2');
+    setSameUser(userId === 'user-1');
     setIsLoading(false);
   }, [userId]);
 
@@ -68,7 +73,11 @@ export default function InfluencerProfile() {
   function renderComponent() {
     switch (selectedTab) {
       case 'grid':
-        return <Publications images={images} />;
+  return (
+    <ScrollView>
+      <Publications images={images} />
+    </ScrollView>
+  );
       case 'reviews':
         return <CardReview reviews={reviews} /> 
       case 'checkins':
@@ -100,32 +109,49 @@ export default function InfluencerProfile() {
           </View>;
       default:
         return null;
+
     }
 }
 
-  return (
-    <View style={styles.container}>
-      <ScrollView>
-        <Header
-          isProfile={true}
-          name={'Manu'}
-          nickName={'manu'}
-          userView={!sameUser}
-        />
-        <InfluencerPageSession userView={!sameUser} onTabSelect={setSelectedTab} selectedTab={selectedTab}/>
-        {renderComponent()}
-      </ScrollView>
-      { sameUser && (
-        <TouchableOpacity style={styles.fab} onPress={handleAddPress}>
-          <AntDesign name="plus" size={28} color="white" />
-        </TouchableOpacity>
-      )}
-    </View>
-  );
+
+ return (
+  <View style={styles.container}>
+  <ScrollView>
+      <Header
+        isProfile={true}
+        name={'Manu'}
+        nickName={'manu'}
+        userView={!sameUser}
+        
+      />
+      
+      <InfluencerPageSession
+        userView={!sameUser}
+        onTabSelect={setSelectedTab}
+        selectedTab={selectedTab}
+      />
+      {renderComponent()}
+   </ScrollView>
+
+    {selectedTab === 'grid' && sameUser && (
+      <TouchableOpacity style={styles.fab} onPress={handleAddPress}>
+        <AntDesign name="plus" size={28} color="white" />
+      </TouchableOpacity>
+    )}
+
+    {selectedTab === 'grid' && !sameUser && (
+      <TouchableOpacity style={styles.fab} onPress={filterAddPress}>
+        <Ionicons name="options" size={24} color="white" />
+      </TouchableOpacity>
+    )}
+    
+  </View>
+);
 }
 
 const styles = StyleSheet.create({
   container: {
+    
     flex: 1,
     backgroundColor: Colors.background,
   },
