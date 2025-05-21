@@ -13,6 +13,8 @@ import InfluencerPageSession from '@/src/components/InfluencerPageSession';
 import { AntDesign } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useAuthContext } from '@/src/contexts/authContext';
+import { PhotoGrid } from '@/src/components/InfluencersFeedPhotos';
+
 
 export default function InfluencerProfile() {
   const { user } = useAuthContext(); 
@@ -44,9 +46,6 @@ export default function InfluencerProfile() {
     );
   }
 
-
-
-
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -56,11 +55,9 @@ export default function InfluencerProfile() {
           nickName={'manu'}
           userView={false}
         />
-
         <InfluencerPageSession userView={!sameUser} />
-      </ScrollView>
-
-     
+        <PhotoGrid/>
+      </ScrollView>     
       <TouchableOpacity style={styles.fab} onPress={handleAddPress}>
         <AntDesign name="plus" size={28} color="white" />
       </TouchableOpacity>
