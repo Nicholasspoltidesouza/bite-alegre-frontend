@@ -66,6 +66,11 @@ interface AuthDTO {
   };
 }
 
+export interface ImageItem {
+  id: string;
+  uri: string;
+};
+
 export type {
   RestaurantDTO,
   UserDTO,

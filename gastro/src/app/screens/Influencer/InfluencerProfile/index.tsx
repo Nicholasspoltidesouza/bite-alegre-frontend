@@ -14,7 +14,16 @@ import { AntDesign } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useAuthContext } from '@/src/contexts/authContext';
 import { PhotoGrid } from '@/src/components/InfluencersFeedPhotos';
+import { ImageItem } from '@/src/@types/DTO';
 
+const images: ImageItem[] = [
+    { id: '1', uri: 'https://i.pinimg.com/736x/3a/1f/7a/3a1f7a2f270bf6399b734092e9dc4fd5.jpg' },
+    { id: '2', uri: 'https://i.pinimg.com/736x/55/7c/19/557c198eaf016b0d72787d34306011ab.jpg' },
+    { id: '3', uri: 'https://i.pinimg.com/736x/8f/87/bd/8f87bd41ecf97811cf3cbf955fa841b6.jpg' },
+    { id: '4', uri: 'https://i.pinimg.com/736x/e7/f9/29/e7f929707c5648e800de74437a47583f.jpg' },
+    { id: '5', uri: 'https://i.pinimg.com/736x/0b/e4/7a/0be47ad5d2427db37badb02293b14fde.jpg' },
+    { id: '6', uri: 'https://i.pinimg.com/736x/11/9d/89/119d896e809dbb513e74a82eac654c62.jpg' }
+]
 
 export default function InfluencerProfile() {
   const { user } = useAuthContext(); 
@@ -56,7 +65,7 @@ export default function InfluencerProfile() {
           userView={false}
         />
         <InfluencerPageSession userView={!sameUser} />
-        <PhotoGrid/>
+        <PhotoGrid images={images}/>
       </ScrollView>     
       <TouchableOpacity style={styles.fab} onPress={handleAddPress}>
         <AntDesign name="plus" size={28} color="white" />

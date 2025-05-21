@@ -1,3 +1,4 @@
+import { ImageItem } from '@/src/@types/DTO';
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -7,21 +8,14 @@ import {
   Dimensions,
 } from 'react-native';
 
-type ImageItem = {
-  id: string;
-  uri: string;
-};
-
 const screenWidth = Dimensions.get('window').width;
 const columnWidth = screenWidth / 2 - 8;
 
-const rawImages: ImageItem[] = [
-  { id: '1', uri: 'https://images.ctfassets.net/trvmqu12jq2l/6FV4Opt7wUyR91t2FXyOIr/f32972fce10fc87585e831b334ea17ef/header.jpg' },
-  { id: '2', uri: 'https://www.nationalrestaurantawards.co.uk/filestore/jpg/RestaurantStory1.jpg' },
-  { id: '3', uri: 'https://images.ctfassets.net/trvmqu12jq2l/6FV4Opt7wUyR91t2FXyOIr/f32972fce10fc87585e831b334ea17ef/header.jpg' }
-];
+interface PhotoGridProps {
+  images: ImageItem[];
+}
 
-export const PhotoGrid: React.FC = () => {
+export const PhotoGrid: React.FC<PhotoGridProps> = ({ images }) => {
   const [leftColumn, setLeftColumn] = useState<any[]>([]);
   const [rightColumn, setRightColumn] = useState<any[]>([]);
 
@@ -34,7 +28,7 @@ export const PhotoGrid: React.FC = () => {
 
     let processed = 0;
 
-    rawImages.forEach(image => {
+    images.forEach(image => {
       Image.getSize(
         image.uri,
         (width, height) => {
@@ -50,7 +44,7 @@ export const PhotoGrid: React.FC = () => {
           }
 
           processed++;
-          if (processed === rawImages.length) {
+          if (processed === images.length) {
             setLeftColumn(left);
             setRightColumn(right);
           }
@@ -58,7 +52,7 @@ export const PhotoGrid: React.FC = () => {
         (error) => {
           console.warn(`Erro ao carregar imagem ${image.uri}`, error);
           processed++;
-          if (processed === rawImages.length) {
+          if (processed === images.length) {
             setLeftColumn(left);
             setRightColumn(right);
           }
