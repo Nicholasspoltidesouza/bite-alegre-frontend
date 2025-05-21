@@ -60,7 +60,7 @@ export default function InfluencerProfile() {
   function renderComponent() {
     switch (selectedTab) {
       case 'grid':
-        return <PhotoGrid images={images} />;
+        return <Publications images={images} />;
       case 'reviews':
         return <View><Text>Reviews Section</Text></View>;
       case 'checkins':
