@@ -9,35 +9,33 @@ import {
 import Tag from '../Tag';
 
 
-type RouletteVibeModalProps = {
+type RouletteBudgetModalProps = {
   visible: boolean;
   onClose: () => void;
   onSelect: (value: string) => void;
 };
 
-const vibeOptions = [
-  'Date', 'Amigos', 'Trabalho',
-  'Happy Hour', 'Família', 'Festa',
-  'Comemoração', 'Tranquilo',
+const budgetOptions = [
+  'Até R$ 50', 'Até R$ 100', 'Acima de R$ 100',
 ];
 
-const RouletteVibeModal = ({ visible, onClose, onSelect }: RouletteVibeModalProps) => {
+const RouletteBudgetModal = ({ visible, onClose, onSelect }: RouletteBudgetModalProps) => {
   const [selected, setSelected] = useState<string | null>(null);
 
   return (
     <Modal transparent visible={visible} animationType="fade">
       <Pressable style={styles.modalOverlay} onPress={onClose}>
         <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
-          <Text style={styles.title}>Qual a vibe de hoje?</Text>
+          <Text style={styles.title}>Qual o orçamento?</Text>
           <ScrollView contentContainerStyle={styles.tagsContainer}>
-            {vibeOptions.map((vibe) => (
+            {budgetOptions.map((budget) => (
               <Tag
-                key={vibe}
-                title={vibe}
-                isSelected={selected === vibe}
+                key={budget}
+                title={budget}
+                isSelected={selected === budget}
                 onPress={() => {
-                  setSelected(vibe);
-                  onSelect(vibe);
+                  setSelected(budget);
+                  onSelect(budget);
                 }}
                 controlled
               />
@@ -69,7 +67,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Poppins-Medium',
     color: '#FF914B',
-    marginBottom: 20,
+    marginBottom: 24,
     textAlign: 'center',
   },
   tagsContainer: {
@@ -80,4 +78,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RouletteVibeModal;
+export default RouletteBudgetModal;
