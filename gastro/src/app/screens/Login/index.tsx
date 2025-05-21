@@ -1,9 +1,52 @@
 import Colors from "@/src/constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert } from "react-native";
+import { useRouter } from "expo-router";
+import { useAuthApi } from "@/src/hooks/useAuthApi";
 
 export default function Login() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [emailError, setEmailError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+    const router = useRouter();
+    const { login, loading } = useAuthApi();
+
+    const handleLogin = async () => {
+        let hasError = false;
+        if (!email) {
+            setEmailError(true);
+            hasError = true;
+        } else {
+            setEmailError(false);
+        }
+        if (!password) {
+            setPasswordError(true);
+            hasError = true;
+        } else {
+            setPasswordError(false);
+        }
+        if (hasError) {
+            Alert.alert("Erro", "Preencha email e senha.");
+            return;
+        }
+        const result = await login({
+            email, password,
+            name: "",
+            nickname: "",
+            phone: "",
+            gender: null,
+            userType: ""
+        });
+        if (result === null) {
+            Alert.alert("Erro", "Falha no login. Verifique suas credenciais.");
+            return;
+        }
+        Alert.alert("Sucesso", "Login realizado!");
+        router.replace("/screens/Feed");
+    };
+
     return (
         <LinearGradient
             colors={[Colors.orange.orangeStandard, Colors.orange.orangeStandard, Colors.orange.orangeLight, Colors.white]}
@@ -24,14 +67,30 @@ export default function Login() {
 
                     <TextInput
                         placeholder="Email"
-                        style={styles.textField}
+                        style={[
+                            styles.textField,
+                            emailError && { borderColor: "red", borderWidth: 2 }
+                        ]}
                         placeholderTextColor={Colors.orange.orangeStandard}
+                        value={email}
+                        onChangeText={text => {
+                            setEmail(text);
+                            setEmailError(false);
+                        }}
                     />
                     <TextInput
                         placeholder="Senha"
-                        style={styles.textField}
+                        style={[
+                            styles.textField,
+                            passwordError && { borderColor: "red", borderWidth: 2 }
+                        ]}
                         secureTextEntry
                         placeholderTextColor={Colors.orange.orangeStandard}
+                        value={password}
+                        onChangeText={text => {
+                            setPassword(text);
+                            setPasswordError(false);
+                        }}
                     />
 
                     <View style={styles.buttonRow}>
@@ -39,8 +98,12 @@ export default function Login() {
                             <Text style={styles.outlinedText}>Cadastre-se</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.filledButton}>
-                            <Text style={styles.filledText}>Entrar</Text>
+                        <TouchableOpacity 
+                            style={styles.filledButton}
+                            onPress={handleLogin}
+                            disabled={loading}
+                        >
+                            <Text style={styles.filledText}>{loading ? "Entrando..." : "Entrar"}</Text>
                         </TouchableOpacity>
                     </View>
 
