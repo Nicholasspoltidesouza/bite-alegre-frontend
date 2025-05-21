@@ -23,7 +23,7 @@ export default function Home() {
                 <View style={styles.textContainer}>
                     <Text style={styles.text}>
                         Primeira vez aqui?{" "}
-                        <TouchableOpacity onPress={() => console.log("Cadastrar pressionado")}>
+                        <TouchableOpacity onPress={() => router.push({ pathname: "/screens/Register" })}>
                             <Text style={styles.bold}>
                                 Cadastre-se
                             </Text>
