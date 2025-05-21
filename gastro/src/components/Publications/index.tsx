@@ -11,11 +11,11 @@ import {
 const screenWidth = Dimensions.get('window').width;
 const columnWidth = screenWidth / 2 - 8;
 
-interface PhotoGridProps {
+interface Props {
   images: ImageItem[];
 }
 
-export const PhotoGrid: React.FC<PhotoGridProps> = ({ images }) => {
+export const Publications: React.FC<Props> = ({ images }) => {
   const [leftColumn, setLeftColumn] = useState<any[]>([]);
   const [rightColumn, setRightColumn] = useState<any[]>([]);
 

@@ -14,7 +14,7 @@ import InfluencerPageSession from '@/src/components/InfluencerPageSession';
 import { AntDesign } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useAuthContext } from '@/src/contexts/authContext';
-import { PhotoGrid } from '@/src/components/InfluencersFeedPhotos';
+import { Publications } from '@/src/components/Publications';
 import { ImageItem } from '@/src/@types/DTO';
 
 const images: ImageItem[] = [
