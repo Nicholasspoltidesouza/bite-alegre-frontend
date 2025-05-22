@@ -40,7 +40,7 @@ export const useSearchFilter = () => {
       }
 
       const queryString = queryParams.toString();
-      const url = `${API_URL_ANDROID}/restaurants${queryString ? '?' + queryString : ''}`;
+      const url = `${API_URL_BACKEND}/restaurants${queryString ? '?' + queryString : ''}`;
       console.log('Filtrando restaurantes com a URL:', url);
 
       const response = await fetch(url, {

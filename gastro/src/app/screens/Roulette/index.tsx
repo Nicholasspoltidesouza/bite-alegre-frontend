@@ -1,6 +1,8 @@
+import { RestaurantDTO } from '@/src/@types/DTO';
+import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import MaterialIcons from '@expo/vector-icons/build/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useRef, useState } from 'react';
 import {
   Animated,
@@ -16,9 +18,21 @@ export default function Roulette() {
   const rotation = useRef(new Animated.Value(0)).current;
   const totalRotation = useRef(0);
   const router = useRouter();
+
+  const { vibe, budget } = useLocalSearchParams();
   const [showConfetti, setShowConfetti] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [restaurant, setRestaurant] = useState<RestaurantDTO | null>(null);
 
+  const { getRandomRestaurant, loading, error } = useRestaurantApi();
+
+  const fetchRestaurant = async () => {
+    if (!vibe || !budget) return;
+    const result = await getRandomRestaurant(String(vibe), Number(budget));
+    if (result) {
+      setRestaurant(result);
+    }
+  };
 
   const spinRoulette = () => {
     setShowConfetti(false);
@@ -34,9 +48,11 @@ export default function Roulette() {
       duration: 2000,
       useNativeDriver: true,
       easing: Easing.out(Easing.exp),
-    }).start(() => {
+    }).start(async () => {
       setShowConfetti(true);
+      await fetchRestaurant();
       setShowResult(true);
+
       setTimeout(() => {
         setShowConfetti(false);
         setShowResult(false);
@@ -93,17 +109,19 @@ export default function Roulette() {
                 source={require('../../../../assets/images/roulette.png')}
               />
             </Animated.View>
-            {showResult && (
-              <Image
-                source={require('../../../../assets/images/profile.png')}
-                style={styles.resultImage}
-              />
+            {showResult && restaurant && (
+              <View style={styles.resultContainer}>
+                <Image
+                  source={{ uri: restaurant.profilePhoto }}
+                  style={styles.resultImage}
+                />
+                <Text style={styles.resultName}>{restaurant.name}</Text>
+              </View>
             )}
-
           </View>
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={spinRoulette}>
+        <TouchableOpacity style={styles.button} onPress={spinRoulette} disabled={loading}>
           <Text style={styles.buttonText}>Sortear</Text>
         </TouchableOpacity>
       </View>
@@ -136,7 +154,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 55,
   },
-
   spinContainer: {
     width: 350,
     height: 350,
@@ -185,11 +202,27 @@ const styles = StyleSheet.create({
     width: 60,
     resizeMode: 'contain',
   },
-  resultImage: {
+  resultContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
     position: 'absolute',
+    top: '30%',
+    zIndex: 11,
+  },
+  resultImage: {
     width: 120,
     height: 120,
-    resizeMode: 'contain',
-    zIndex: 10,
+    borderRadius: 60,
+    marginBottom: 10,
+  },
+  resultName: {
+    color: '#333',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    backgroundColor: 'white',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
   },
 });
