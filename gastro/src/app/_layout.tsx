@@ -1,9 +1,9 @@
-import { Tabs, usePathname } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
+import * as Font from 'expo-font';
+import { Tabs, usePathname } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import { Image, Pressable } from 'react-native';
 import { NavBarIcon } from '../components/NavBarItem/index';
-import React, { useEffect, useState } from 'react';
-import * as Font from 'expo-font';
 import Colors from '../constants/Colors';
 import { AuthProvider } from '../contexts/authContext';
 import { FilterResultProvider } from '../contexts/FilterResultContext';
@@ -14,6 +14,7 @@ export default function RootLayout() {
     '/screens/SignupUser',
     '/screens/SignupRestaurant',
     '/screens/SignupInterestsScreen',
+    '/screens/RoulletFilterModal',
   ];
   const shouldHideTabBar = hiddenRoutes.includes(pathname);
 
