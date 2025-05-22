@@ -120,6 +120,8 @@ const FilterScreen: React.FC = () => {
     if (locationSelected && latitude && longitude) {
       apiFilters.geolocation = [parseFloat(latitude), parseFloat(longitude)];
       apiFilters.proximity = 10;
+    } else if (addressSet) {
+      apiFilters.address = filters.distance[0];
     }
 
     try {

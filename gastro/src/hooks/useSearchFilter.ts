@@ -25,6 +25,11 @@ export const useSearchFilter = () => {
       if (filters.open_now !== undefined)
         queryParams.append('open_now', filters.open_now.toString());
 
+      if (filters.address) {
+        const cleanedAddress = filters.address.replace(/,/g, '');
+        queryParams.append('address', cleanedAddress);
+      }
+
       if (filters.geolocation && filters.geolocation.length === 2) {
         queryParams.append('lat', filters.geolocation[0].toString());
         queryParams.append('lng', filters.geolocation[1].toString());

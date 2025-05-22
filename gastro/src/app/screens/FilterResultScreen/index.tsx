@@ -8,7 +8,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  View,
   TouchableOpacity,
 } from 'react-native';
 import {
@@ -42,11 +41,7 @@ const FilterResultScreen = () => {
           style={styles.backButton}
           onPress={() => router.push('/screens/FilterScreen')}
         >
-          <MaterialIcons
-            name="keyboard-arrow-left"
-            size={35}
-            color={Colors.orange.orangeStandard}
-          />
+          <MaterialIcons name="keyboard-arrow-left" size={35} color={Colors.orange.orangeStandard} />
         </TouchableOpacity>
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
