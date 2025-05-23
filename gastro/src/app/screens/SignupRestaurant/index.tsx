@@ -32,7 +32,7 @@ const SignupRestaurant = () => {
     'Cadastro de Restaurante',
   );
 
-  const [operatingHours, setOperatingHours] = useState<OperatingHoursDto[]>([]);
+  const [openingPeriods, setOperatingHours] = useState<OperatingHoursDto[]>([]);
 
   const { getRestaurantById } = useRestaurantApi();
   const { createRestaurant } = useRestaurantApi();
@@ -130,7 +130,8 @@ const SignupRestaurant = () => {
       !address ||
       !averagePrice ||
       !userType ||
-      !description
+      !description || 
+      !openingPeriods
     ) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
       return;
@@ -166,6 +167,7 @@ const SignupRestaurant = () => {
         averagePrice: parseFloat(averagePrice.replace(',', '.')),
         phone,
         userType: formatedUserType,
+        openingPeriods, 
       };
 
       router.push({
@@ -183,9 +185,6 @@ const SignupRestaurant = () => {
       );
     }
   };
-
-  // Não precisamos mais da função handleEditOperatingHour pois
-  // a edição é tratada internamente pelo componente HoursSection
 
   return (
     <KeyboardAvoidingView
@@ -318,7 +317,7 @@ const SignupRestaurant = () => {
 
           <View style={styles.inputWrapper}>
             <HoursSection
-              hours={operatingHours}
+              hours={openingPeriods}
               onUpdateHours={handleUpdateOperatingHours}
             />
           </View>

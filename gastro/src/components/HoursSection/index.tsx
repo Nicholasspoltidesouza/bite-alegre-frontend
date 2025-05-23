@@ -9,8 +9,23 @@ import {
   Alert,
   Modal,
 } from "react-native";
-import { OperatingHoursDto } from "../../@types/OperatingHoursDto";
-import "../Dropdown";
+import { OperatingHoursDto } from "../../@types/OperatingHoursDto"; // Using the strict DTO
+import {
+  mapToWeekday,
+  mapFromWeekday,
+  Weekday,
+} from "../../utils/weekdayUtils"; // Assuming this path is correct
+import "../Dropdown"; // Assuming this import is for styles or a global component setup
+
+// Internal display structure
+interface DisplayPeriod {
+  startTime: string;
+  endTime: string;
+}
+interface DisplayHourGroup {
+  day: string; // Display name like "Segunda", "Terça"
+  periods: DisplayPeriod[];
+}
 
 interface Props {
   hours: OperatingHoursDto[];
@@ -193,62 +208,147 @@ const Dropdown: React.FC<DropdownProps> = ({
 };
 
 // Componente principal
-const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
-  const [operatingHours, setOperatingHours] =
-    useState<OperatingHoursDto[]>(hours);
-  const [newHour, setNewHour] = useState<OperatingHoursDto>({
-    day: "",
-    periods: [{ startTime: "", endTime: "" }],
+const HoursSection: React.FC<Props> = ({ hours: operatingHoursProp, onUpdateHours }) => {
+  const [displayedHours, setDisplayedHours] = useState<DisplayHourGroup[]>([]);
+  const [newHourEntry, setNewHourEntry] = useState<{
+    day: string;
+    startTime: string;
+    endTime: string;
+  }>({
+    day: '',
+    startTime: '',
+    endTime: '',
   });
   const [isAddingNew, setIsAddingNew] = useState(false);
 
+  const convertToActualDtoFormat = (
+    groups: DisplayHourGroup[] // Internal display format
+  ): OperatingHoursDto[] => { // Strict DTO for output
+    const actualDtos: OperatingHoursDto[] = [];
+    groups.forEach(group => {
+      const weekday = mapToWeekday(group.day);
+      group.periods.forEach(period => {
+        // Only create a DTO if it's a valid opening period and maps to a Weekday
+        if (period.startTime && period.endTime && period.startTime !== "Fechado" && period.endTime !== "Fechado") {
+          if (weekday) { // Ensure it's a valid weekday (filters out "Feriados")
+            actualDtos.push({
+              weekday: weekday,
+              opensAt: period.startTime,
+              closesAt: period.endTime,
+            });
+          }
+        }
+      });
+    });
+    return actualDtos;
+  };
+
   useEffect(() => {
-    // Atualiza o componente quando as horas mudam externamente
-    setOperatingHours(hours);
-  }, [hours]);
+    const convertToDisplayFormat = (
+      actualDtos: OperatingHoursDto[] // Strict DTO from props
+    ): DisplayHourGroup[] => {
+      const grouped: { [key: string]: DisplayHourGroup } = {};
+      actualDtos.forEach(dto => {
+        const dayName = mapFromWeekday(dto.weekday); // dto.weekday is mandatory
+        // dto.opensAt and dto.closesAt are mandatory
+          if (!grouped[dayName]) {
+            grouped[dayName] = { day: dayName, periods: [] };
+          }
+          grouped[dayName].periods.push({
+            startTime: dto.opensAt,
+            endTime: dto.closesAt,
+          });
+      });
+
+      Object.values(grouped).forEach(group => {
+        group.periods.sort((a, b) => {
+          const timeToMinutes = (timeStr: string) => {
+            if (timeStr === "Fechado") return Infinity; // Sort "Fechado" last or handle as needed
+            const [h, m] = timeStr.split(':').map(Number);
+            return h * 60 + m;
+          };
+          return timeToMinutes(a.startTime) - timeToMinutes(b.startTime);
+        });
+      });
+
+      const dayOrderMap = dayOptions.reduce((acc, day, index) => {
+        acc[day] = index;
+        return acc;
+      }, {} as Record<string, number>);
+
+      return Object.values(grouped).sort((a, b) => {
+        const orderA = dayOrderMap[a.day] ?? Infinity;
+        const orderB = dayOrderMap[b.day] ?? Infinity;
+        return orderA - orderB;
+      });
+    };
+
+    const initialDisplayHoursFromProps = convertToDisplayFormat(operatingHoursProp);
+    
+    // Ensure all days from dayOptions are represented, marking them as "Fechado" if no hours are provided.
+    // "Feriados" will only be included if it came with actual times from props, otherwise it's not added by default.
+    const allDisplayDays: DisplayHourGroup[] = dayOptions
+      .map(dayString => {
+        const existingDay = initialDisplayHoursFromProps.find(dh => dh.day === dayString);
+        if (existingDay) {
+          return existingDay;
+        }
+        if (dayString !== "Feriados") { // Don't add "Feriados" by default if not in props
+          return { day: dayString, periods: [{ startTime: "Fechado", endTime: "Fechado" }] };
+        }
+        return null; // Skip "Feriados" if not in props
+      })
+      .filter(Boolean) as DisplayHourGroup[]; // Filter out nulls
+
+    // Sort again to ensure correct order after merging
+    const dayOrderMap = dayOptions.reduce((acc, day, index) => {
+        acc[day] = index;
+        return acc;
+      }, {} as Record<string, number>);
+
+    allDisplayDays.sort((a, b) => {
+        const orderA = dayOrderMap[a.day] ?? Infinity;
+        const orderB = dayOrderMap[b.day] ?? Infinity;
+        return orderA - orderB;
+    });
+
+    setDisplayedHours(allDisplayDays);
+  }, [operatingHoursProp]);
 
   const handleAddNewHour = () => {
     setIsAddingNew(true);
-    setNewHour({
-      day: "",
-      periods: [{ startTime: "", endTime: "" }],
+    setNewHourEntry({
+      day: '',
+      startTime: '',
+      endTime: '',
     });
   };
 
   const handleSaveNewHour = () => {
-    // Validações
-    if (!newHour.day) {
+    const { day: selectedDay, startTime, endTime } = newHourEntry;
+
+    if (!selectedDay) {
       Alert.alert("Erro", "Selecione um dia da semana");
       return;
     }
 
-    // Verificar se já existe um horário para este dia
-    const existingDayIndex = operatingHours.findIndex(
-      (hour) => hour.day === newHour.day
-    );
-
-    // Filtrar períodos vazios
-    const validPeriods = newHour.periods.filter(
-      (period) =>
-        period.startTime &&
-        period.endTime &&
-        period.startTime !== "Fechado" &&
-        period.endTime !== "Fechado"
-    );
-
-    // Verificar se pelo menos um período foi preenchido
-    if (validPeriods.length === 0) {
-      Alert.alert("Erro", "Preencha pelo menos um período de funcionamento");
+    if (selectedDay === "Feriados" && (startTime !== "Fechado" || endTime !== "Fechado")) {
+      Alert.alert("Aviso", "Horários para 'Feriados' não podem ser salvos como horários regulares. Selecione um dia da semana válido ou marque como 'Fechado'.");
       return;
     }
 
-    // Validar cada período
-    for (const period of validPeriods) {
-      // Validar que o horário de fechamento é depois do de abertura
-      const startHour = parseInt(period.startTime.split(":")[0]);
-      const startMinutes = parseInt(period.startTime.split(":")[1] || "0");
-      const endHour = parseInt(period.endTime.split(":")[0]);
-      const endMinutes = parseInt(period.endTime.split(":")[1] || "0");
+    const isClosingTime = startTime === 'Fechado' || endTime === 'Fechado';
+
+    if (!isClosingTime && (!startTime || !endTime)) {
+      Alert.alert('Erro', 'Preencha os horários de abertura e fechamento, ou marque como "Fechado".');
+      return;
+    }
+
+    if (!isClosingTime) {
+      const startHour = parseInt(startTime.split(':')[0]);
+      const startMinutes = parseInt(startTime.split(':')[1] || '0');
+      const endHour = parseInt(endTime.split(':')[0]);
+      const endMinutes = parseInt(endTime.split(':')[1] || '0');
 
       const startTimeInMinutes = startHour * 60 + startMinutes;
       const endTimeInMinutes = endHour * 60 + endMinutes;
@@ -256,64 +356,96 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
       if (endTimeInMinutes <= startTimeInMinutes) {
         Alert.alert(
           "Erro",
-          "O horário de fechamento deve ser depois do horário de abertura"
+          "O horário de fechamento deve ser depois do horário de abertura."
         );
         return;
       }
     }
 
-    // Criar o objeto de horário com apenas os períodos válidos
-    const hourToSave = {
-      day: newHour.day,
-      periods: validPeriods,
-    };
+    let updatedDisplayHours = [...displayedHours];
+    const existingDayIndex = updatedDisplayHours.findIndex(
+      (group) => group.day === selectedDay
+    );
 
-    // Atualizar ou adicionar o horário
-    let updatedHours;
     if (existingDayIndex >= 0) {
-      // Substituir o dia existente
-      updatedHours = [...operatingHours];
-      updatedHours[existingDayIndex] = hourToSave;
+      const dayGroup = updatedDisplayHours[existingDayIndex];
+      if (isClosingTime) {
+        dayGroup.periods = [{ startTime: 'Fechado', endTime: 'Fechado' }]; // Represent "Fechado"
+      } else {
+        // Remove any "Fechado" placeholder if adding actual times
+        dayGroup.periods = dayGroup.periods.filter(p => p.startTime !== "Fechado");
+        
+        const isDuplicate = dayGroup.periods.some(
+          (p) => p.startTime === startTime && 
+                  p.endTime === endTime &&
+                  p.startTime !== "Fechado" 
+        );
+        if (!isDuplicate) {
+          dayGroup.periods.push({ startTime, endTime });
+          dayGroup.periods.sort((a, b) => {
+             const timeToMinutes = (timeStr: string) => {
+              if (timeStr === "Fechado") return Infinity;
+              const [h, m] = timeStr.split(':').map(Number);
+              return h * 60 + m;
+            };
+            return timeToMinutes(a.startTime) - timeToMinutes(b.startTime);
+          });
+        } else {
+          Alert.alert("Aviso", "Este período de horário já existe para o dia selecionado.");
+          return; // Keep form open
+        }
+      }
     } else {
-      // Adicionar um novo dia
-      updatedHours = [...operatingHours, hourToSave];
+      // This case should ideally not happen if all days are pre-populated.
+      // But if it does, add the new day group.
+      updatedDisplayHours.push({
+        day: selectedDay,
+        periods: isClosingTime ? [{ startTime: 'Fechado', endTime: 'Fechado' }] : [{ startTime, endTime }],
+      });
     }
 
-    setOperatingHours(updatedHours);
-    onUpdateHours(updatedHours);
+    // Sort all day groups by the predefined order
+    const dayOrderMap = dayOptions.reduce((acc, day, index) => {
+      acc[day] = index;
+      return acc;
+    }, {} as Record<string, number>);
+    updatedDisplayHours.sort((a, b) => {
+        const orderA = dayOrderMap[a.day] ?? Infinity;
+        const orderB = dayOrderMap[b.day] ?? Infinity;
+        return orderA - orderB;
+    });
+
+    setDisplayedHours(updatedDisplayHours);
+    onUpdateHours(convertToActualDtoFormat(updatedDisplayHours));
     setIsAddingNew(false);
+    setNewHourEntry({ day: '', startTime: '', endTime: '' }); // Reset form
   };
 
   const handleCancelNewHour = () => {
+    setNewHourEntry({ day: '', startTime: '', endTime: '' }); // Reset on cancel
     setIsAddingNew(false);
   };
 
-  const handleRemoveHour = (dayIndex: number, periodIndex?: number) => {
-    // Se periodIndex for fornecido, remover apenas o período específico
+  const handleRemoveHour = (dayNameToRemove: string, periodIndex?: number) => {
+    let updatedDisplayHours = [...displayedHours];
+    const dayGroupIndex = updatedDisplayHours.findIndex(dg => dg.day === dayNameToRemove);
+
+    if (dayGroupIndex === -1) return;
+
     if (periodIndex !== undefined) {
-      const updatedHours = [...operatingHours];
-      const day = updatedHours[dayIndex];
-
-      // Se for o último período, remover o dia inteiro
-      if (day.periods.length === 1) {
-        updatedHours.splice(dayIndex, 1);
-      } else {
-        // Remover apenas o período específico
-        day.periods.splice(periodIndex, 1);
+      const dayGroup = updatedDisplayHours[dayGroupIndex];
+      dayGroup.periods.splice(periodIndex, 1);
+      
+      const remainingActualPeriods = dayGroup.periods.filter(p => p.startTime !== "Fechado");
+      if (remainingActualPeriods.length === 0) {
+        dayGroup.periods = [{ startTime: "Fechado", endTime: "Fechado" }];
       }
-
-      setOperatingHours(updatedHours);
-      onUpdateHours(updatedHours);
     } else {
-      // Remover o dia inteiro
-      const updatedHours = [...operatingHours];
-      updatedHours.splice(dayIndex, 1);
-      setOperatingHours(updatedHours);
-      onUpdateHours(updatedHours);
+      updatedDisplayHours[dayGroupIndex].periods = [{ startTime: "Fechado", endTime: "Fechado" }];
     }
+    setDisplayedHours(updatedDisplayHours);
+    onUpdateHours(convertToActualDtoFormat(updatedDisplayHours));
   };
-
-  // Função para formatar a exibição dos horários removida pois agora é feita diretamente no render
 
   return (
     <View style={styles.container}>
@@ -324,9 +456,11 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
         </TouchableOpacity>
       </View>
 
-      {operatingHours.length > 0 && <View style={styles.listHeader}></View>}
+      {/* Show header if there are days to display (excluding Feriados if it's only "Fechado") */}
+      {displayedHours.filter(d => d.day !== "Feriados" || d.periods.some(p => p.startTime !== "Fechado")).length > 0 && 
+        <View style={styles.listHeader}></View>}
 
-      {operatingHours.length === 0 && !isAddingNew && (
+      {displayedHours.filter(d => d.periods.some(p => p.startTime !== "Fechado")).length === 0 && !isAddingNew && (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>
             Nenhum horário cadastrado. Clique no + para adicionar.
@@ -334,17 +468,21 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
         </View>
       )}
 
-{isAddingNew && (
+      {isAddingNew && (
         <View style={styles.newHourContainer}>
           <View style={styles.dropdownRow}>
             <View style={{ flex: 1 }}>
               <Text style={styles.dropdownLabel}>Dia:</Text>
               <Dropdown
                 options={dayOptions}
-                selectedValue={newHour.day}
+                selectedValue={newHourEntry.day}
                 onSelect={(value: string) => {
-                  setNewHour({
-                    ...newHour,
+                  if (value === "Feriados") {
+                    Alert.alert("Aviso", "Horários para 'Feriados' não são salvos como horários regulares. Selecione um dia da semana ou marque como 'Fechado'.");
+                    // Optionally clear other fields or prevent selection
+                  }
+                  setNewHourEntry({
+                    ...newHourEntry,
                     day: value,
                   });
                 }}
@@ -360,16 +498,11 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
               <Text style={styles.dropdownLabel}>Abertura:</Text>
               <Dropdown
                 options={timeOptions}
-                selectedValue={newHour.periods[0]?.startTime || ""}
+                selectedValue={newHourEntry.startTime}
                 onSelect={(value: string) => {
-                  const updatedPeriods = [...newHour.periods];
-                  updatedPeriods[0] = {
-                    ...updatedPeriods[0],
+                  setNewHourEntry({
+                    ...newHourEntry,
                     startTime: value,
-                  };
-                  setNewHour({
-                    ...newHour,
-                    periods: updatedPeriods,
                   });
                 }}
                 placeholder="Selecione"
@@ -380,16 +513,11 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
               <Text style={styles.dropdownLabel}>Fechamento:</Text>
               <Dropdown
                 options={timeOptions}
-                selectedValue={newHour.periods[0]?.endTime || ""}
+                selectedValue={newHourEntry.endTime}
                 onSelect={(value: string) => {
-                  const updatedPeriods = [...newHour.periods];
-                  updatedPeriods[0] = {
-                    ...updatedPeriods[0],
+                  setNewHourEntry({
+                    ...newHourEntry,
                     endTime: value,
-                  };
-                  setNewHour({
-                    ...newHour,
-                    periods: updatedPeriods,
                   });
                 }}
                 placeholder="Selecione"
@@ -413,16 +541,19 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
           </View>
         </View>
       )}
-      
-      {operatingHours.length > 0 && (
+
+      {/* Render table if there are displayable hours and not in add mode */}
+      {displayedHours.length > 0 && !isAddingNew && (
         <View style={styles.tableContainer}>
           <View style={styles.tableHeader}>
             <Text style={styles.tableHeaderText}>Dia</Text>
             <Text style={styles.tableHeaderText}>Horários</Text>
             <Text style={styles.tableHeaderText}></Text>
           </View>
-
-          {operatingHours.map((day, dayIndex) => (
+          {/* Filter out "Feriados" from general display if it's always "Fechado" or has no actual times */}
+          {displayedHours
+            .filter(day => day.day !== "Feriados" || day.periods.some(p => p.startTime !== "Fechado"))
+            .map((day, dayIndex) => (
             <View key={dayIndex} style={styles.tableRow}>
               <View style={styles.dayCell}>
                 <Text style={styles.dayText}>{day.day}</Text>
@@ -431,16 +562,18 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
               <View style={styles.periodsCell}>
                 {day.periods.map((period, periodIndex) => (
                   <View key={periodIndex} style={styles.periodBadge}>
-                    <Text style={styles.periodText}>
-                      {period.startTime === "Fechado" ||
-                      period.endTime === "Fechado"
-                        ? "Fechado"
-                        : `${period.startTime} – ${period.endTime}`}
-                    </Text>
-                    {day.periods.length > 1 && (
+                    {period.startTime === 'Fechado' ? (
+                      <Text style={[styles.periodText, styles.closedText]}>Fechado</Text>
+                    ) : (
+                      <Text style={styles.periodText}>
+                        {`${period.startTime} – ${period.endTime}`}
+                      </Text>
+                    )}
+                    {/* Show remove button for an actual time period */}
+                    {period.startTime !== "Fechado" && (
                       <TouchableOpacity
                         style={styles.removePeriodButton}
-                        onPress={() => handleRemoveHour(dayIndex, periodIndex)}
+                        onPress={() => handleRemoveHour(day.day, periodIndex)}
                         activeOpacity={0.7}
                       >
                         <MaterialIcons
@@ -454,10 +587,11 @@ const HoursSection: React.FC<Props> = ({ hours, onUpdateHours }) => {
                 ))}
               </View>
 
+              {/* Button to mark the entire day as "Fechado" */}
               <View style={styles.actionCell}>
                 <TouchableOpacity
                   style={styles.removeButton}
-                  onPress={() => handleRemoveHour(dayIndex)}
+                  onPress={() => handleRemoveHour(day.day)}
                   activeOpacity={0.7}
                 >
                   <MaterialIcons name="delete" size={20} color="#FF5252" />
@@ -773,6 +907,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "Poppins-Regular",
     color: "#5B5B5B",
+  },
+  closedText: {
+    color: "#999999", // More subtle color for "Fechado"
+    fontStyle: 'italic',
   },
   actionCell: {
     flex: 1,

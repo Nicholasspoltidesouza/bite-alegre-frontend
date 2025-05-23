@@ -22,8 +22,9 @@ import {
 } from '@expo/vector-icons';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import Button from '@/src/components/Button';
-import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
-import { CheckinDTO, RestaurantDTO } from '@/src/@types/DTO';
+import { router, useLocalSearchParams } from 'expo-router';
+import { CheckinDTO, RestaurantDTO, OperatingHoursDto } from '@/src/@types/DTO';
+import { Weekday, mapFromWeekday } from '@/src/utils/weekdayUtils'; 
 import Colors from '@/src/constants/Colors';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -78,6 +79,43 @@ const RestaurantProfile: React.FC = () => {
       </SafeAreaView>
     );
   }
+
+  const formatOpeningPeriodsForDisplay = (
+    openingPeriods: OperatingHoursDto[] | undefined,
+  ): string => {
+    if (!openingPeriods || openingPeriods.length === 0) {
+      console.log(openingPeriods)
+      return 'Horários de funcionamento não disponíveis.';
+    }
+
+    const groupedPeriods: Record<string, string[]> = {};
+    // Define the desired order of weekdays
+    const dayOrder: Weekday[] = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    const dayDisplayNames: { [key in Weekday]?: string } = {};
+    
+    openingPeriods.forEach(period => {
+      const dayName = mapFromWeekday(period.weekday as Weekday);
+      dayDisplayNames[period.weekday as Weekday] = dayName;
+      if (!groupedPeriods[period.weekday]) {
+        groupedPeriods[period.weekday] = [];
+      }
+      groupedPeriods[period.weekday].push(`${period.opensAt} - ${period.closesAt}`);
+    });
+
+    // Sort periods within each day (e.g., "09:00 - 12:00", "14:00 - 18:00")
+    for (const weekdayKey in groupedPeriods) {
+      groupedPeriods[weekdayKey].sort(); 
+    }
+
+    let formattedString = '';
+    dayOrder.forEach(weekday => {
+      if (groupedPeriods[weekday] && dayDisplayNames[weekday]) {
+        formattedString += `${dayDisplayNames[weekday]}:\n  ${groupedPeriods[weekday].join('\n  ')}\n\n`;
+      }
+    });
+
+    return formattedString.trim() || 'Horários de funcionamento não disponíveis.';
+  };
 
   const handleCheckin = async () => {
     try {
@@ -151,15 +189,7 @@ const RestaurantProfile: React.FC = () => {
           <Accordion
             title={'Aberto'}
             description={''}
-            content={
-              `Segunda-Feira            18:30 às 23:00\n` +
-              `Terça-Feira                  18:30 às 23:00\n` +
-              `Quarta-Feira               18:30 às 23:00\n` +
-              `Quinta-Feira               18:30 às 23:00\n` +
-              `Sexta-Feira                 18:30 às 00:00\n` +
-              `Sábado                        12:00 às 00:00\n` +
-              `Domingo                    12:00 às 22:00`
-            }
+            content={formatOpeningPeriodsForDisplay(restaurant?.openingPeriods)}
             staticArrow={false}
             children={
               <Foundation
