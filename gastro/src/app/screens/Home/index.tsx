@@ -23,7 +23,7 @@ export default function Home() {
                 <View style={styles.textContainer}>
                     <Text style={styles.text}>
                         Primeira vez aqui?{" "}
-                        <TouchableOpacity onPress={() => router.push({ pathname: "/screens/Register" })}>
+                        <TouchableOpacity onPress={() => router.push({ pathname: "/screens/SignupUser" })}>
                             <Text style={styles.bold}>
                                 Cadastre-se
                             </Text>
@@ -32,7 +32,7 @@ export default function Home() {
 
                     <Text style={styles.text}>
                         Cadastre seu restaurante{" "}
-                        <TouchableOpacity onPress={() => console.log("Entrar pressionado")}>
+                        <TouchableOpacity onPress={() => router.push({ pathname: "/screens/SignupRestaurant" })}>
                             <Text style={styles.bold}>aqui!</Text>
                         </TouchableOpacity>
                     </Text>
@@ -83,5 +83,6 @@ const styles = StyleSheet.create({
         fontFamily: "Poppins-ExtraBold",
         fontSize: 20,
         fontWeight: "bold",
+        color: Colors.white,
     },
 });
