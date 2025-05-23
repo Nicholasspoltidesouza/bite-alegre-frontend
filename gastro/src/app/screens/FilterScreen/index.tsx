@@ -21,7 +21,6 @@ import {
   View,
 } from 'react-native';
 import { useFetchTags } from '@/src/hooks/useFetchTags';
-import { geocodeAddress, validateCoordinates, getDefaultPortoAlegreCoordinates } from '@/src/utils/geocodingUtils';
 
 interface FilterOptions {
   price: string;
@@ -41,11 +40,11 @@ const FilterScreen: React.FC = () => {
     occasion: [],
     openNow: false,
   });
+
   const [priceModalVisible, setPriceModalVisible] = useState(false);
   const [priceInput, setPriceInput] = useState('');
   const [addressModalVisible, setAddressModalVisible] = useState(false);
   const [addressInput, setAddressInput] = useState('');
-  const [isGeocodingLoading, setIsGeocodingLoading] = useState(false);
 
   const { filterRestaurants, loading: filterLoading } = useSearchFilter();
   const { latitude, longitude } = useLocation();
@@ -133,7 +132,7 @@ const FilterScreen: React.FC = () => {
     }
   };
 
-  if (tagsLoading || filterLoading || isGeocodingLoading) {
+  if (tagsLoading || filterLoading) {
     return (
       <SafeAreaView style={styles.loaderContainer}>
         <ActivityIndicator size="large" color={Colors.orange.orangeStandard} />
@@ -376,30 +375,14 @@ const FilterScreen: React.FC = () => {
               <Button
                 title="Salvar"
                 type="orange"
-                style={{ flex: 1 }}                onPress={async () => {
+                style={{ flex: 1 }}
+                onPress={() => {
                   const addr = addressInput.trim();
                   setFilters((prev) => ({
                     ...prev,
                     distance: addr ? [addr] : [],
                   }));
                   setAddressModalVisible(false);
-
-                  // Geocode the address to get coordinates
-                  if (addr) {
-                    try {
-                      setIsGeocodingLoading(true);
-                      const coordinates = await geocodeAddress(addr);
-                      setIsGeocodingLoading(false);
-                      
-                      if (coordinates) {
-                        const [lat, lng] = coordinates;
-                        console.log('Address coordinates:', { lat, lng });
-                      }
-                    } catch (error) {
-                      setIsGeocodingLoading(false);
-                      console.error('Error geocoding address:', error);
-                    }
-                  }
                 }}
               />
             </View>
