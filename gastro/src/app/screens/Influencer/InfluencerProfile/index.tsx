@@ -49,7 +49,7 @@ export default function InfluencerProfile() {
         setUserDataPublication(data);
       }
     });
-  }, [userId, user, getUserById, getPublicationbyUserId]);
+  }, [userId]);
 
   if (loading || loadingPublication ) {
     return (
