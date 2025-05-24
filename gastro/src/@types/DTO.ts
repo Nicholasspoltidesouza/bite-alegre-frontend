@@ -67,6 +67,12 @@ interface AuthDTO {
   };
 }
 
+interface PublicationDTO {
+  media: string;
+  description: string;
+  restaurant_id: string;
+}
+
 export type {
   RestaurantDTO,
   UserDTO,
@@ -74,4 +80,5 @@ export type {
   ReviewDTO,
   RestaurantFilterDTO,
   AuthDTO,
+  PublicationDTO
 };
