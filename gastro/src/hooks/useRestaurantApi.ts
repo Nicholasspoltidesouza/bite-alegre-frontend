@@ -36,7 +36,7 @@ export const useRestaurantApi = () => {
         tag: string,
         price_range: number
     ): Promise<RestaurantDTO | null> => {
-        const query = `random-draw?tags=${tag}&price_range=${price_range}`;
+        const query = `/random-draw?tags=${tag}&price_range=${price_range}`;
 
         const responseData = await callApi(
             restaurantApiService.get<RestaurantDTO>(query)

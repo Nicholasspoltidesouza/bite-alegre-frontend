@@ -1,4 +1,5 @@
 import { RestaurantDTO } from '@/src/@types/DTO';
+import RouletteRestaurantModal from '@/src/components/RouletteRestaurantModal';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import MaterialIcons from '@expo/vector-icons/build/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -21,21 +22,25 @@ export default function Roulette() {
 
   const { vibe, budget } = useLocalSearchParams();
   const [showConfetti, setShowConfetti] = useState(false);
-  const [showResult, setShowResult] = useState(false);
   const [restaurant, setRestaurant] = useState<RestaurantDTO | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [isSpinning, setIsSpinning] = useState(false);
 
-  const { getRandomRestaurant, loading, error } = useRestaurantApi();
+  const { getRandomRestaurant, loading } = useRestaurantApi();
 
   const fetchRestaurant = async () => {
     if (!vibe || !budget) return;
     const result = await getRandomRestaurant(String(vibe), Number(budget));
-    if (result) {
-      setRestaurant(result);
-    }
+    if (result) setRestaurant(result);
   };
 
   const spinRoulette = () => {
+    if (isSpinning) return;
+
+    setIsSpinning(true);
     setShowConfetti(false);
+    setRestaurant(null);
+    setShowModal(false);
 
     const fullSpins = 360 * 5;
     const randomOffset = Math.floor(Math.random() * 360);
@@ -51,12 +56,11 @@ export default function Roulette() {
     }).start(async () => {
       setShowConfetti(true);
       await fetchRestaurant();
-      setShowResult(true);
-
       setTimeout(() => {
         setShowConfetti(false);
-        setShowResult(false);
-      }, 3500);
+        setShowModal(true);
+        setIsSpinning(false);
+      }, 3000);
     });
   };
 
@@ -73,6 +77,7 @@ export default function Roulette() {
           style={styles.confettiFullScreen}
         />
       )}
+
       <View style={StyleSheet.absoluteFill}>
         <LinearGradient
           colors={['#FFB370', '#FF914B']}
@@ -99,32 +104,42 @@ export default function Roulette() {
 
           <View style={styles.rouletteWrapper}>
             <Animated.View
-              style={[
-                styles.spinContainer,
-                { transform: [{ rotate: rotateInterpolation }] },
-              ]}
+              style={[styles.spinContainer, { transform: [{ rotate: rotateInterpolation }] }]}
             >
               <Image
                 style={styles.spinImage}
                 source={require('../../../../assets/images/roulette.png')}
               />
             </Animated.View>
-            {showResult && restaurant && (
-              <View style={styles.resultContainer}>
-                <Image
-                  source={{ uri: restaurant.profilePhoto }}
-                  style={styles.resultImage}
-                />
-                <Text style={styles.resultName}>{restaurant.name}</Text>
-              </View>
-            )}
           </View>
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={spinRoulette} disabled={loading}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={spinRoulette}
+          disabled={loading || isSpinning}
+        >
           <Text style={styles.buttonText}>Sortear</Text>
         </TouchableOpacity>
       </View>
+
+      {restaurant && (
+        <RouletteRestaurantModal
+          visible={showModal}
+          onClose={() => setShowModal(false)}
+          onGoToRestaurant={() => {
+            setShowModal(false);
+            router.push({
+              pathname: '/screens/restaurantProfile',
+              params: { restaurantId: restaurant.id },
+            });
+          }}
+          imageUrl={restaurant.profilePhoto ?? ''}
+          restaurantName={restaurant.name}
+          currentVibe={String(vibe)}
+          currentBudget={String(budget)}
+        />
+      )}
     </View>
   );
 }
@@ -201,28 +216,5 @@ const styles = StyleSheet.create({
     zIndex: 2,
     width: 60,
     resizeMode: 'contain',
-  },
-  resultContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    top: '30%',
-    zIndex: 11,
-  },
-  resultImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: 10,
-  },
-  resultName: {
-    color: '#333',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    backgroundColor: 'white',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
   },
 });

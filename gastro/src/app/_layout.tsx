@@ -4,12 +4,11 @@ import { router, Tabs, usePathname } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Image, Pressable } from 'react-native';
 import { NavBarIcon } from '../components/NavBarItem/index';
+import RouletteBudgetModal from '../components/RouletteBudgetModal';
 import RouletteFilterModal from '../components/RouletteFilterModal';
 import RouletteVibeModal from '../components/RouletteVibeModal';
 import Colors from '../constants/Colors';
 import { AuthProvider } from '../contexts/authContext';
-import RouletteBudgetModal from '../components/RouletteBudgetModal';
-import RouletteRestaurantModal from '../components/RouletteRestaurantModal';
 
 export default function RootLayout() {
   const pathname = usePathname();
@@ -17,8 +16,7 @@ export default function RootLayout() {
     '/screens/SignupUser',
     '/screens/SignupRestaurant',
     '/screens/SignupInterestsScreen',
-    // '/screens/RouletteFilterModal',
-    '/screens/Roulette'
+    '/screens/Roulette',
   ];
   const shouldHideTabBar = hiddenRoutes.includes(pathname);
 
@@ -26,7 +24,7 @@ export default function RootLayout() {
   const [showRouletteModal, setShowRouletteModal] = useState(false);
   const [showVibeModal, setShowVibeModal] = useState(false);
   const [showBudgetModal, setShowBudgetModal] = useState(false);
-  const [showRestaurantModal, setShowRestaurantModal] = useState(false);
+  const [selectedVibe, setSelectedVibe] = useState(''); // Novo state
 
   useEffect(() => {
     Font.loadAsync({
@@ -65,16 +63,15 @@ export default function RootLayout() {
                 color={color}
                 size={size}
                 focused={focused}
-                children={
-                  <MaterialIcons
-                    name="home"
-                    size={40}
-                    color={color}
-                    style={{ height: 40, width: 40 }}
-                  />
-                }
-              />
-            )
+              >
+                <MaterialIcons
+                  name="home"
+                  size={40}
+                  color={color}
+                  style={{ height: 40, width: 40 }}
+                />
+              </NavBarIcon>
+            ),
           }}
         />
         <Tabs.Screen
@@ -86,15 +83,14 @@ export default function RootLayout() {
                 color={color}
                 size={size}
                 focused={focused}
-                children={
-                  <MaterialIcons
-                    name="search"
-                    size={40}
-                    color={color}
-                    style={{ height: 40, width: 40 }}
-                  />
-                }
-              />
+              >
+                <MaterialIcons
+                  name="search"
+                  size={40}
+                  color={color}
+                  style={{ height: 40, width: 40 }}
+                />
+              </NavBarIcon>
             ),
           }}
         />
@@ -103,9 +99,7 @@ export default function RootLayout() {
           options={{
             tabBarShowLabel: false,
             tabBarButton: () => (
-              <Pressable
-                onPress={() => setShowRouletteModal(true)}
-              >
+              <Pressable onPress={() => setShowRouletteModal(true)}>
                 <Image
                   source={require('../../assets/images/icon-roleta.png')}
                   style={{ width: 60, height: 60 }}
@@ -123,15 +117,14 @@ export default function RootLayout() {
                 color={color}
                 size={size}
                 focused={focused}
-                children={
-                  <MaterialIcons
-                    name="groups"
-                    size={45}
-                    color={color}
-                    style={{ height: 45, width: 45 }}
-                  />
-                }
-              />
+              >
+                <MaterialIcons
+                  name="groups"
+                  size={45}
+                  color={color}
+                  style={{ height: 45, width: 45 }}
+                />
+              </NavBarIcon>
             ),
           }}
         />
@@ -144,60 +137,30 @@ export default function RootLayout() {
                 color={color}
                 size={size}
                 focused={focused}
-                children={
-                  <MaterialIcons
-                    name="person"
-                    size={40}
-                    color={color}
-                    style={{ height: 40, width: 40 }}
-                  />
-                }
-              />
+              >
+                <MaterialIcons
+                  name="person"
+                  size={40}
+                  color={color}
+                  style={{ height: 40, width: 40 }}
+                />
+              </NavBarIcon>
             ),
           }}
         />
-        <Tabs.Screen
-          name="screens/SignupInterestsScreen/index"
-          options={{ href: null, tabBarShowLabel: false }}
-        />
-        <Tabs.Screen
-          name="screens/restaurantProfile/index"
-          options={{ href: null, tabBarShowLabel: false }}
-        />
-        <Tabs.Screen
-          name="screens/SignupRestaurant/index"
-          options={{ href: null, tabBarShowLabel: false }}
-        />
-        <Tabs.Screen
-          name="screens/SignupUser/index"
-          options={{ href: null, tabBarShowLabel: false }}
-        />
-        <Tabs.Screen
-          name="screens/CreateReview/index"
-          options={{ href: null, tabBarShowLabel: false }}
-        />
-        <Tabs.Screen
-          name="screens/FilterScreen/index"
-          options={{ href: null, tabBarShowLabel: false }}
-        />
-        <Tabs.Screen
-          name="screens/Feed/index"
-          options={{ href: null, tabBarShowLabel: false }}
-        />
-        <Tabs.Screen
-          name="screens/AddMedia/index"
-          options={{ href: null, tabBarShowLabel: false }}
-        />
-        {/* <Tabs.Screen
-          name="screens/RouletteFilterModal/index"
-          options={{ href: null, tabBarShowLabel: false }}
-        /> */}
-        <Tabs.Screen
-          name="screens/PublicationInfluencer/index"
-          options={{ href: null, tabBarShowLabel: false }}
-        />
+        {/* Hidden Screens */}
+        <Tabs.Screen name="screens/SignupInterestsScreen/index" options={{ href: null, tabBarShowLabel: false }} />
+        <Tabs.Screen name="screens/restaurantProfile/index" options={{ href: null, tabBarShowLabel: false }} />
+        <Tabs.Screen name="screens/SignupRestaurant/index" options={{ href: null, tabBarShowLabel: false }} />
+        <Tabs.Screen name="screens/SignupUser/index" options={{ href: null, tabBarShowLabel: false }} />
+        <Tabs.Screen name="screens/CreateReview/index" options={{ href: null, tabBarShowLabel: false }} />
+        <Tabs.Screen name="screens/FilterScreen/index" options={{ href: null, tabBarShowLabel: false }} />
+        <Tabs.Screen name="screens/Feed/index" options={{ href: null, tabBarShowLabel: false }} />
+        <Tabs.Screen name="screens/AddMedia/index" options={{ href: null, tabBarShowLabel: false }} />
+        <Tabs.Screen name="screens/PublicationInfluencer/index" options={{ href: null, tabBarShowLabel: false }} />
       </Tabs>
 
+      {/* Modais */}
       <RouletteFilterModal
         visible={showRouletteModal}
         onClose={() => setShowRouletteModal(false)}
@@ -211,7 +174,7 @@ export default function RootLayout() {
         visible={showVibeModal}
         onClose={() => setShowVibeModal(false)}
         onSelect={(selected) => {
-          console.log('Vibe selecionada:', selected);
+          setSelectedVibe(selected); // guarda vibe para próxima tela
           setShowVibeModal(false);
           setShowBudgetModal(true);
         }}
@@ -221,10 +184,15 @@ export default function RootLayout() {
         visible={showBudgetModal}
         onClose={() => setShowBudgetModal(false)}
         onSelect={(selected) => {
-          console.log('Orçamento selecionado:', selected);
           setShowBudgetModal(false);
-          setShowRestaurantModal(true);
-          router.push('/screens/Roulette');
+          router.push({
+            pathname: '/screens/Roulette',
+            params: {
+              vibe: selectedVibe,
+              budget: selected,
+              autoSpin: 'true',
+            },
+          });
         }}
       />
     </AuthProvider>

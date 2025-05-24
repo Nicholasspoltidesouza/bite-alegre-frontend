@@ -1,29 +1,46 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
+    Image,
     Modal,
     Pressable,
     StyleSheet,
     Text,
     View,
-    Image,
 } from 'react-native';
 import Button from '../Button';
 
-type BaseModalProps = {
+type RouletteRestaurantModalProps = {
     visible: boolean;
     onClose: () => void;
-    onVibeRequest: () => void;
+    onGoToRestaurant: () => void;
     imageUrl: string;
-    nomeDoRestaurante: string;
+    restaurantName: string;
+    currentVibe: string;
+    currentBudget: string;
 };
 
-const RouletteRestaurantModal = ({ visible, onClose, onVibeRequest, imageUrl, nomeDoRestaurante }: BaseModalProps) => {
+const RouletteRestaurantModal = ({
+    visible,
+    onClose,
+    onGoToRestaurant,
+    imageUrl,
+    restaurantName,
+    currentVibe,
+    currentBudget,
+}: RouletteRestaurantModalProps) => {
     const router = useRouter();
 
-    const handleSurprise = () => {
+    const handleSortAgain = () => {
         onClose();
-        router.push('/screens/Roulette');
+        router.push({
+            pathname: '/screens/Roulette',
+            params: {
+                vibe: currentVibe,
+                budget: currentBudget,
+                autoSpin: 'true',
+            },
+        });
     };
 
     return (
@@ -34,24 +51,30 @@ const RouletteRestaurantModal = ({ visible, onClose, onVibeRequest, imageUrl, no
             onRequestClose={onClose}
         >
             <Pressable style={styles.modalContainer} onPress={onClose}>
-                <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
-                    <Text style={styles.textModal}>
-                        O restaurante sorteado é
-                    </Text>
-                    <Text style={styles.textModal}>
-                        {nomeDoRestaurante}
-                    </Text>
-                    <Image source={{ uri: imageUrl }} style={styles.image} />
+                <Pressable
+                    style={styles.modalContent}
+                    onPress={(e) => e.stopPropagation()}
+                >
+                    <Text style={styles.textModal}>O restaurante sorteado é</Text>
+                    <Text style={styles.textModal}>{restaurantName}</Text>
+                    <Image
+                        source={
+                            imageUrl
+                                ? { uri: imageUrl }
+                                : require('../../../assets/images/profile.png')
+                        }
+                        style={styles.image}
+                    />
                     <View style={styles.buttonsContainer}>
                         <Button
                             title="Ir para o restaurante"
-                            onPress={onVibeRequest}
+                            onPress={onGoToRestaurant}
                             type="orange"
                             style={styles.button}
                         />
                         <Button
                             title="Sortear novamente"
-                            onPress={handleSurprise}
+                            onPress={handleSortAgain}
                             type="white"
                             style={styles.button}
                         />

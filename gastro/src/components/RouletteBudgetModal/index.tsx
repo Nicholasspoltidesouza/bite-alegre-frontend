@@ -12,15 +12,17 @@ import Tag from '../Tag';
 type RouletteBudgetModalProps = {
   visible: boolean;
   onClose: () => void;
-  onSelect: (value: string) => void;
+  onSelect: (value: number) => void;
 };
 
 const budgetOptions = [
-  'Até R$ 50', 'Até R$ 100', 'Acima de R$ 100',
+  { label: 'Até R$ 50', value: 50 },
+  { label: 'Até R$ 100', value: 100 },
+  { label: 'Tanto faz', value: 999999 },
 ];
 
 const RouletteBudgetModal = ({ visible, onClose, onSelect }: RouletteBudgetModalProps) => {
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<number | null>(null);
 
   useEffect(() => {
     if (!visible) {
@@ -36,12 +38,12 @@ const RouletteBudgetModal = ({ visible, onClose, onSelect }: RouletteBudgetModal
           <ScrollView contentContainerStyle={styles.tagsContainer}>
             {budgetOptions.map((budget) => (
               <Tag
-                key={budget}
-                title={budget}
-                isSelected={selected === budget}
+                key={budget.value}
+                title={budget.label}
+                isSelected={selected === budget.value}
                 onPress={() => {
-                  setSelected(budget);
-                  onSelect(budget);
+                  setSelected(budget.value);
+                  onSelect(budget.value);
                 }}
                 controlled
               />

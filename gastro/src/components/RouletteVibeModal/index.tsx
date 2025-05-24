@@ -18,7 +18,7 @@ type RouletteVibeModalProps = {
 const vibeOptions = [
   'Date', 'Amigos', 'Trabalho',
   'Happy Hour', 'Família', 'Festa',
-  'Comemoração', 'Tranquilo',
+  'Comemoração', 'Tranquilo', 'Pet-friendly',
 ];
 
 const RouletteVibeModal = ({ visible, onClose, onSelect }: RouletteVibeModalProps) => {
