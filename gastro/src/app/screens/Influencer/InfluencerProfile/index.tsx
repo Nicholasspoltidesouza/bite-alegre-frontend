@@ -20,45 +20,38 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import CheckinSection from '@/src/components/CheckinSection';
 import { CardReview } from '@/src/components/ReviewCard';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
-
+import { useCreateUser } from '@/src/hooks/useUserApi';
 
 
 const images: ImageItem[] = [
-    { id: '1', uri: 'https://i.pinimg.com/736x/3a/1f/7a/3a1f7a2f270bf6399b734092e9dc4fd5.jpg' },
-    { id: '2', uri: 'https://i.pinimg.com/736x/55/7c/19/557c198eaf016b0d72787d34306011ab.jpg' },
-    { id: '3', uri: 'https://i.pinimg.com/736x/8f/87/bd/8f87bd41ecf97811cf3cbf955fa841b6.jpg' },
-    { id: '4', uri: 'https://i.pinimg.com/736x/e7/f9/29/e7f929707c5648e800de74437a47583f.jpg' },
-    { id: '5', uri: 'https://i.pinimg.com/736x/0b/e4/7a/0be47ad5d2427db37badb02293b14fde.jpg' },
-    { id: '6', uri: 'https://i.pinimg.com/736x/11/9d/89/119d896e809dbb513e74a82eac654c62.jpg' }
-]
-
-const reviews: ReviewDTO[] = [
-    { id:'1', stars: 3, feedback: "A experiência foi maravilhosa! O atendimento super atencioso, comida deliciosa e o ambiente muito acolhedor. Pedi uma pizza de quatro queijos que estava no ponto certo, bem quente e com muito sabor. Com certeza voltarei outras vezes!", restaurantName: "Araujo`s", restaurantProfilePhoto: 'https://files.menudino.com/cardapios/67052/logo.png' },
-    { id:'2', stars: 5, feedback: "Visitei o restaurante com amigos e fomos surpreendidos positivamente. O cardápio é variado, e a apresentação dos pratos é impecável. Destaque para o atendimento personalizado e a sobremesa de tiramisù, que estava incrível. Ótima escolha tanto para jantares a dois quanto para grupos. Ambiente limpo, bem decorado e com clima agradável.", restaurantName: "Marques Pizzaria", restaurantProfilePhoto: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHziDArbpect3kgH--Ytr-W5hXyfw6W7IXRQ&s' },
-    { id:'3', stars: 4, feedback: "O restaurante é muito bom! A comida é deliciosa e o serviço excelente. A equipe é muito amigável e atenta. O ambiente é bem acolhedor e o local bem organizado. Aproveitei a experiência e recomendo para quem busca um lugar aconchegante e com boa comida.", restaurantName: "Mamamia", restaurantProfilePhoto: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzVD67Bl2NkphlMJZg2xKv0qwXX2L_MOcSsw&s' },
-]
+  { id: '1', uri: 'https://i.pinimg.com/736x/3a/1f/7a/3a1f7a2f270bf6399b734092e9dc4fd5.jpg' },
+  { id: '2', uri: 'https://i.pinimg.com/736x/55/7c/19/557c198eaf016b0d72787d34306011ab.jpg' },
+  { id: '3', uri: 'https://i.pinimg.com/736x/8f/87/bd/8f87bd41ecf97811cf3cbf955fa841b6.jpg' },
+  { id: '4', uri: 'https://i.pinimg.com/736x/e7/f9/29/e7f929707c5648e800de74437a47583f.jpg' },
+  { id: '5', uri: 'https://i.pinimg.com/736x/0b/e4/7a/0be47ad5d2427db37badb02293b14fde.jpg' },
+  { id: '6', uri: 'https://i.pinimg.com/736x/11/9d/89/119d896e809dbb513e74a82eac654c62.jpg' }
+];
 
 export default function InfluencerProfile() {
-  const { user } = useAuthContext(); 
-  const [ sameUser, setSameUser] = useState(false);
-  const [ isLoading, setIsLoading] = useState(true);
-  const { userId, isInfluencer } = useLocalSearchParams();
-  const [selectedTab, setSelectedTab] = useState<'grid' | 'reviews' | 'checkins' | 'user'>('grid');
+  const { getUserById, loading, error, data: userData } = useCreateUser();
+  const { user } = useAuthContext();
+  const [sameUser, setSameUser] = useState(false);
+  const { userId } = useLocalSearchParams();
+  const [selectedTab, setSelectedTab] = useState<
+    'grid' | 'reviews' | 'checkins' | 'user'
+  >('grid');
 
-  const handleAddPress = () => {
-    router.push({ pathname: '/screens/AddMedia' });
-  };
-  const filterAddPress = () => {
-    router.push({ pathname: '/screens/AddMedia' });
-  };
+  const {} = useCreateUser();
+  const handleAddPress = () => router.push({ pathname: '/screens/AddMedia' });
+  const filterAddPress = () => router.push({ pathname: '/screens/AddMedia' });
 
   useEffect(() => {
     //user-1 vai ser user!.id que vem do AuthContext
-    setSameUser(userId === 'user-1');
-    setIsLoading(false);
+    setSameUser(userId === 'user-2');
+    getUserById(userId.toString());
   }, [userId]);
 
-  if (isLoading) {
+  if (loading) {
     return (
       <SafeAreaView style={styles.container}>
         <ActivityIndicator
@@ -69,84 +62,96 @@ export default function InfluencerProfile() {
       </SafeAreaView>
     );
   }
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>
+          {error}
+        </Text>
+      </SafeAreaView>
+    );
+  }
 
   function renderComponent() {
     switch (selectedTab) {
       case 'grid':
-  return (
-    <ScrollView>
-      <Publications images={images} />
-    </ScrollView>
-  );
+        return (
+          <ScrollView>
+            <Publications images={images} />
+          </ScrollView>
+        );
       case 'reviews':
-        return <CardReview reviews={reviews} /> 
+        return <CardReview reviews={userData!.reviews!} />;
       case 'checkins':
-        return <View>
-           <CheckinSection /> 
-        </View>;
+        return (
+          <View>
+            <CheckinSection checkins={userData!.checkinsWithoutReview!} />;
+          </View>
+        );
       case 'user':
-        return <View>
-          <View style={styles.titleRow}>
-                    <Text style={styles.title}>Visitados</Text>
-                    <TouchableOpacity>
-                      <Text style={styles.mostrarMais}>Mostrar mais</Text>
-                    </TouchableOpacity>
-                  </View>
-          
-                  <UserCarouselRestaurant
-                    variant={'visited'}
-                    carouselProfileRestaurant={true}
-                    restaurantsExternal={[]}
-                  />
-          
-                  <View style={styles.titleRow}>
-                    <Text style={styles.title}>Salvos</Text>
-                    <TouchableOpacity>
-                      <Text style={styles.mostrarMais}>Mostrar mais</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <UserCarouselRestaurant variant={'saved'} restaurantsExternal={[]} />
-          </View>;
+        return (
+          <View>
+            <View style={styles.titleRow}>
+              <Text style={styles.title}>Visitados</Text>
+              <TouchableOpacity>
+                <Text style={styles.mostrarMais}>Mostrar mais</Text>
+              </TouchableOpacity>
+            </View>
+
+            <UserCarouselRestaurant
+              variant={'visited'}
+              carouselProfileRestaurant={true}
+              restaurantsExternal={[]}
+            />
+
+            <View style={styles.titleRow}>
+              <Text style={styles.title}>Salvos</Text>
+              <TouchableOpacity>
+                <Text style={styles.mostrarMais}>Mostrar mais</Text>
+              </TouchableOpacity>
+            </View>
+            <UserCarouselRestaurant
+              variant={'saved'}
+              restaurantsExternal={[]}
+            />
+          </View>
+        );
       default:
         return null;
-
     }
-}
+  }
 
+  return (
+    <View style={styles.container}>
+      <ScrollView>
+        <Header
+          isProfile={true}
+          name={'Manu'}
+          nickName={'manu'}
+          userView={!sameUser}
+        />
 
- return (
-  <View style={styles.container}>
-  <ScrollView>
-      <Header
-        isProfile={true}
-        name={'Manu'}
-        nickName={'manu'}
-        userView={!sameUser}
-        
-      />
-      
-      <InfluencerPageSession
-        userView={!sameUser}
-        onTabSelect={setSelectedTab}
-        selectedTab={selectedTab}
-      />
-      {renderComponent()}
-   </ScrollView>
+        <InfluencerPageSession
+          userView={!sameUser}
+          onTabSelect={setSelectedTab}
+          selectedTab={selectedTab}
+        />
+        {renderComponent()}
+      </ScrollView>
 
-    {selectedTab === 'grid' && sameUser && (
-      <TouchableOpacity style={styles.fab} onPress={handleAddPress}>
-        <AntDesign name="plus" size={28} color="white" />
-      </TouchableOpacity>
-    )}
+      {selectedTab === 'grid' && sameUser && (
+        <TouchableOpacity style={styles.fab} onPress={handleAddPress}>
+          <AntDesign name="plus" size={28} color="white" />
+        </TouchableOpacity>
+      )}
 
-    {selectedTab === 'grid' && !sameUser && (
-      <TouchableOpacity style={styles.fab} onPress={filterAddPress}>
-        <Ionicons name="options" size={24} color="white" />
-      </TouchableOpacity>
-    )}
-    
-  </View>
-);
+      {selectedTab === 'grid' && !sameUser && (
+        <TouchableOpacity style={styles.fab} onPress={filterAddPress}>
+          <Ionicons name="options" size={24} color="white" />
+        </TouchableOpacity>
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

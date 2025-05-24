@@ -8,49 +8,24 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Colors from '@/src/constants/Colors';
+import { CheckinDTO } from '@/src/@types/DTO';
 
-interface Checkin {
-  id: string;
-  restaurantName: string;
-  restaurantImage: string;
-  date: string; 
+interface Props {
+  checkins: CheckinDTO[];
 }
 
-const mockCheckins: Checkin[] = [
-  {
-    id: '1',
-    restaurantName: 'Araujo`s',
-    restaurantImage:
-      'https://files.menudino.com/cardapios/67052/logo.png',
-    date: '17/03/2025',
-  },
-  {
-    id: '2',
-    restaurantName: 'Mamamia',
-    restaurantImage: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzVD67Bl2NkphlMJZg2xKv0qwXX2L_MOcSsw&s',
-    date: '05/03/2025',
-  },
-  {
-    id: '3',
-    restaurantName: 'Marques Pizzaria',
-    restaurantImage:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHziDArbpect3kgH--Ytr-W5hXyfw6W7IXRQ&s",
-    date: '28/02/2025',
-  },
-];
-
-export default function CheckinSection() {
+export default function CheckinSection({ checkins }: Props) {
   return (
     <FlatList
-      data={mockCheckins}
-      keyExtractor={(item) => item.id}
+      data={checkins}
+      keyExtractor={(item) => item.restaurant_id}
       contentContainerStyle={{ paddingBottom: 16 }}
       renderItem={({ item }) => (
         <TouchableOpacity style={styles.card}>
-          <Image source={{ uri: item.restaurantImage }} style={styles.image} />
+          <Image source={{ uri: item.restaurantProfilePhoto }} style={styles.image} />
           <View style={styles.info}>
             <Text style={styles.name}>{item.restaurantName}</Text>
-            <Text style={styles.date}>{item.date}</Text>
+            <Text style={styles.date}>Data não disponível</Text>
           </View>
         </TouchableOpacity>
       )}
