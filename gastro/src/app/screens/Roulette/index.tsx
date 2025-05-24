@@ -1,9 +1,11 @@
 import { RestaurantDTO } from '@/src/@types/DTO';
+import RouletteBudgetModal from '@/src/components/RouletteBudgetModal';
 import RouletteRestaurantModal from '@/src/components/RouletteRestaurantModal';
+import RouletteVibeModal from '@/src/components/RouletteVibeModal';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import MaterialIcons from '@expo/vector-icons/build/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React, { useRef, useState } from 'react';
 import {
   Animated,
@@ -20,27 +22,24 @@ export default function Roulette() {
   const totalRotation = useRef(0);
   const router = useRouter();
 
-  const { vibe, budget } = useLocalSearchParams();
-  const [showConfetti, setShowConfetti] = useState(false);
+  const [vibe, setVibe] = useState<string | null>(null);
+  const [budget, setBudget] = useState<number | null>(null);
+  const [showVibeModal, setShowVibeModal] = useState(true);
+  const [showBudgetModal, setShowBudgetModal] = useState(false);
+  const [showRestaurantModal, setShowRestaurantModal] = useState(false);
   const [restaurant, setRestaurant] = useState<RestaurantDTO | null>(null);
-  const [showModal, setShowModal] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
-  const { getRandomRestaurant, loading } = useRestaurantApi();
-
-  const fetchRestaurant = async () => {
-    if (!vibe || !budget) return;
-    const result = await getRandomRestaurant(String(vibe), Number(budget));
-    if (result) setRestaurant(result);
-  };
+  const { getRandomRestaurant } = useRestaurantApi();
 
   const spinRoulette = () => {
-    if (isSpinning) return;
+    if (!vibe || !budget || isSpinning) return;
 
     setIsSpinning(true);
-    setShowConfetti(false);
     setRestaurant(null);
-    setShowModal(false);
+    setShowRestaurantModal(false);
+    setShowConfetti(false);
 
     const fullSpins = 360 * 5;
     const randomOffset = Math.floor(Math.random() * 360);
@@ -55,12 +54,13 @@ export default function Roulette() {
       easing: Easing.out(Easing.exp),
     }).start(async () => {
       setShowConfetti(true);
-      await fetchRestaurant();
+      const result = await getRandomRestaurant(vibe, budget);
+      if (result) setRestaurant(result);
       setTimeout(() => {
         setShowConfetti(false);
-        setShowModal(true);
+        setShowRestaurantModal(true);
         setIsSpinning(false);
-      }, 3000);
+      }, 1000);
     });
   };
 
@@ -117,18 +117,37 @@ export default function Roulette() {
         <TouchableOpacity
           style={styles.button}
           onPress={spinRoulette}
-          disabled={loading || isSpinning}
+          disabled={!vibe || !budget || isSpinning}
         >
           <Text style={styles.buttonText}>Sortear</Text>
         </TouchableOpacity>
       </View>
 
+      <RouletteVibeModal
+        visible={showVibeModal}
+        onClose={() => setShowVibeModal(false)}
+        onSelect={(selected) => {
+          setVibe(selected);
+          setShowVibeModal(false);
+          setShowBudgetModal(true);
+        }}
+      />
+
+      <RouletteBudgetModal
+        visible={showBudgetModal}
+        onClose={() => setShowBudgetModal(false)}
+        onSelect={(selected) => {
+          setBudget(Number(selected));
+          setShowBudgetModal(false);
+        }}
+      />
+
       {restaurant && (
         <RouletteRestaurantModal
-          visible={showModal}
-          onClose={() => setShowModal(false)}
+          visible={showRestaurantModal}
+          onClose={() => setShowRestaurantModal(false)}
           onGoToRestaurant={() => {
-            setShowModal(false);
+            setShowRestaurantModal(false);
             router.push({
               pathname: '/screens/restaurantProfile',
               params: { restaurantId: restaurant.id },
@@ -136,8 +155,8 @@ export default function Roulette() {
           }}
           imageUrl={restaurant.profilePhoto ?? ''}
           restaurantName={restaurant.name}
-          currentVibe={String(vibe)}
-          currentBudget={String(budget)}
+          currentVibe={vibe ?? ''}
+          currentBudget={budget?.toString() ?? ''}
         />
       )}
     </View>

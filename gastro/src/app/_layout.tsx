@@ -1,12 +1,9 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
-import { router, Tabs, usePathname } from 'expo-router';
+import { Tabs, usePathname } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Image, Pressable } from 'react-native';
 import { NavBarIcon } from '../components/NavBarItem/index';
-import RouletteBudgetModal from '../components/RouletteBudgetModal';
-import RouletteFilterModal from '../components/RouletteFilterModal';
-import RouletteVibeModal from '../components/RouletteVibeModal';
 import Colors from '../constants/Colors';
 import { AuthProvider } from '../contexts/authContext';
 import { FilterResultProvider } from '../contexts/FilterResultContext';
@@ -22,10 +19,6 @@ export default function RootLayout() {
   const shouldHideTabBar = hiddenRoutes.includes(pathname);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [showRouletteModal, setShowRouletteModal] = useState(false);
-  const [showVibeModal, setShowVibeModal] = useState(false);
-  const [showBudgetModal, setShowBudgetModal] = useState(false);
-  const [selectedVibe, setSelectedVibe] = useState(''); // Novo state
 
   useEffect(() => {
     Font.loadAsync({
@@ -201,41 +194,6 @@ export default function RootLayout() {
             options={{ href: null, tabBarShowLabel: false }}
           />
         </Tabs>
-        {/* Modais */}
-        <RouletteFilterModal
-          visible={showRouletteModal}
-          onClose={() => setShowRouletteModal(false)}
-          onVibeRequest={() => {
-            setShowRouletteModal(false);
-            setShowVibeModal(true);
-          }}
-        />
-
-        <RouletteVibeModal
-          visible={showVibeModal}
-          onClose={() => setShowVibeModal(false)}
-          onSelect={(selected) => {
-            setSelectedVibe(selected); // guarda vibe para próxima tela
-            setShowVibeModal(false);
-            setShowBudgetModal(true);
-          }}
-        />
-
-        <RouletteBudgetModal
-          visible={showBudgetModal}
-          onClose={() => setShowBudgetModal(false)}
-          onSelect={(selected) => {
-            setShowBudgetModal(false);
-            router.push({
-              pathname: '/screens/Roulette',
-              params: {
-                vibe: selectedVibe,
-                budget: selected,
-                autoSpin: 'true',
-              },
-            });
-          }}
-        />
       </AuthProvider>
     </FilterResultProvider>
   );
