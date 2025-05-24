@@ -24,10 +24,18 @@ export const usePublicationApi = () => {
 
 
     const createPublication = async (newPublicationData: PublicationDTO): Promise<PublicationDTO | null> => {
+        const { media, description, restaurant_id } = newPublicationData;
+
+        const payload = {
+            media,
+            description,
+            restaurant_id
+        };
+
         const responseData = await callApi(
-            publicationApiService.post<PublicationDTO, PublicationDTO>(newPublicationData)
+            publicationApiService.post<PublicationDTO, PublicationDTO>(payload)
         );
-        
+
         if (responseData) {
             setData(responseData);
         }

@@ -169,17 +169,21 @@ const AddMedia = () => {
     const base64Media = await FileSystem.readAsStringAsync(mediaUri, {
       encoding: FileSystem.EncodingType.Base64,
     });
-    
-    const postData : PublicationDTO = {
+
+    const postData: PublicationDTO = {
       media: base64Media,
       description,
       restaurant_id: selectedRestaurantId
     }
 
-    createPublication(postData);
-    Alert.alert('Sucesso', 'Publicação criada!');
+    const res = await createPublication(postData);
+    if (!res) {
+      Alert.alert('Erro', 'Erro ao criar publicação.');
+      return;
+    }
+    Alert.alert('Sucesso', 'Publicação criada com sucesso!');
     router.push({
-      pathname: '/screens/Profile',
+      pathname: '/screens/PublicationInfluencer',
       params: {
         postData: JSON.stringify(postData),
       },
