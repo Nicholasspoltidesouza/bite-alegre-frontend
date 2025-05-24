@@ -50,6 +50,7 @@ interface ReviewDTO {
 interface RestaurantFilterDTO {
   name?: string;
   geolocation?: [number, number];
+  address?: string;
   proximity?: number;
   price_range?: number;
   tags?: string[];
@@ -72,5 +73,5 @@ export type {
   CheckinDTO,
   ReviewDTO,
   RestaurantFilterDTO,
-  AuthDTO
+  AuthDTO,
 };
