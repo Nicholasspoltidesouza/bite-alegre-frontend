@@ -29,7 +29,6 @@ const RestaurantProfilePatch = () => {
   const router = useRouter();
   const { patchRestaurant } = useRestaurantApi();
   
-  // Estados para campos do formulário
   const [restaurantId] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -40,12 +39,10 @@ const RestaurantProfilePatch = () => {
   const [userType, setUserType] = useState<string>('Editar Restaurante');
   const [showOperatingHours, setShowOperatingHours] = useState<boolean>(true);
   
-  // Modal para seleção de horários
   const [showTimePickerModal, setShowTimePickerModal] = useState(false);
   const [selectedTimeType, setSelectedTimeType] = useState<'abertura' | 'fechamento'>('abertura');
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(-1);
   
-  // Horários disponíveis para seleção
   const availableTimes = [
     "-",
     "00:00", "01:00", "02:00", "03:00", "04:00", "05:00",
@@ -53,7 +50,7 @@ const RestaurantProfilePatch = () => {
     "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
     "18:00", "19:00", "20:00", "21:00", "22:00", "23:00",
   ];
-  // Horários de funcionamento
+
   const [operatingHours, setOperatingHours] = useState<LocalOperatingHour[]>([
     { day: 'Segunda-feira', openTime: '16:00', closeTime: '22:00', weekday: 'MON' },
     { day: 'Terça-feira', openTime: '16:00', closeTime: '22:00', weekday: 'TUE' },
@@ -65,52 +62,51 @@ const RestaurantProfilePatch = () => {
     { day: 'Feriados', openTime: '16:00', closeTime: '22:00', weekday: 'HOL' },
   ]);
 
-  // Validações simples - feitas opcionais
   const validateNameRestaurant = (text: string): string | null => {
-    if (!text) return null; // Campo não obrigatório
+    if (!text) return null; 
     if (text.length < 2) return 'Nome deve ter no mínimo 2 caracteres';
     if (text.length > 50) return 'Nome deve ter no máximo 50 caracteres';
     return null;
   };
 
   const validateDescription = (text: string): string | null => {
-    if (!text) return null; // Campo não obrigatório
+    if (!text) return null; 
     if (text.length > 200) return 'Descrição não pode ter mais de 200 caracteres';
     return null;
   };
 
   const validateAddress = (text: string): string | null => {
-    if (!text) return null; // Campo não obrigatório
+    if (!text) return null; 
     if (text.length < 5) return 'Endereço deve ter no mínimo 5 caracteres';
     if (text.length > 100) return 'Endereço deve ter no máximo 100 caracteres';
     return null;
   };
 
   const validatePhone = (text: string): string | null => {
-    if (!text) return null; // Campo não obrigatório
+    if (!text) return null; 
     const cleaned = text.replace(/\D/g, '');
     if (!/^\d{10,11}$/.test(cleaned)) return 'Formato de telefone inválido';
     return null;
   };
 
   const validateAveregePrice = (text: string): string | null => {
-    if (!text) return null; // Campo não obrigatório
+    if (!text) return null;
     const number = parseFloat(text.replace(',', '.'));
     if (isNaN(number)) return 'Preço deve ser um número válido';
     if (number <= 0) return 'Preço deve ser maior que zero';
     return null;
   };
 
-  // Todos os campos são opcionais, então o formulário sempre é válido desde que não haja erros de validação
+
   const isFormValid = true;
-  // Abrir o modal de seleção de horário
+
   const openTimePicker = (dayIndex: number, type: 'abertura' | 'fechamento') => {
     setSelectedDayIndex(dayIndex);
     setSelectedTimeType(type);
     setShowTimePickerModal(true);
   };
 
-  // Selecionar um horário
+
   const selectTime = (time: string) => {
     if (selectedDayIndex >= 0) {
       const updatedHours = [...operatingHours];
@@ -123,12 +119,11 @@ const RestaurantProfilePatch = () => {
       setShowTimePickerModal(false);
     }
   };
-    // Função para salvar as alterações
+  
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
       
-      // Criar objeto com apenas os campos preenchidos
       const patchData: RestaurantPatchDTO = {
         id: restaurantId,
       };
@@ -138,16 +133,14 @@ const RestaurantProfilePatch = () => {
       if (address) patchData.address = address;
       if (averagePrice) patchData.averagePrice = parseFloat(averagePrice.replace(',', '.'));
       if (phone) patchData.phone = phone;
-        // Formatar horários de operação para o formato da API
       const openingPeriods: OpeningPeriodDto[] = operatingHours
-        .filter(hour => hour.openTime !== "-" && hour.closeTime !== "-") // Filtrar períodos vazios
+        .filter(hour => hour.openTime !== "-" && hour.closeTime !== "-") 
         .map(hour => ({
           weekday: hour.weekday,
           opensAt: hour.openTime,
           closesAt: hour.closeTime,
         }));
       
-      // Adicionar períodos de funcionamento se houver algum definido
       if (openingPeriods.length > 0) {
         patchData.openingPeriods = openingPeriods;
       }
@@ -280,10 +273,10 @@ const RestaurantProfilePatch = () => {
                 {operatingHours.map((hour, index) => (
                   <React.Fragment key={index}>
                     <View style={styles.hourRow}>
-                      <View style={styles.dayColumn}>                        <Text style={[
+                      <View style={styles.dayColumn}>                        
+                        <Text style={[
                           styles.dayText,
-                          index === 6 && styles.weekendText // Styling for Sunday
-                          // No special styling for Holidays anymore
+                          index === 6 && styles.weekendText 
                         ]}>
                           {hour.day}
                         </Text>
@@ -313,7 +306,7 @@ const RestaurantProfilePatch = () => {
               </View>
             </View>
           )}
-            {/* Modal de seleção de horários */}
+
           <Modal
             visible={showTimePickerModal}
             transparent={true}
@@ -387,7 +380,8 @@ const RestaurantProfilePatch = () => {
               onPress={() => Alert.alert('Categorias', 'Navegar para tela de categorias')}
             >              <Text style={styles.categoriesLinkText}>Categorias</Text>
               <MaterialIcons name="keyboard-arrow-right" size={24} color={Colors.orange.orangeStandard} />
-            </TouchableOpacity>          </View>
+            </TouchableOpacity>          
+          </View>
         </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
