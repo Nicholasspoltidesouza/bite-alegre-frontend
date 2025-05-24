@@ -41,8 +41,7 @@ export default function InfluencerProfile() {
   const filterAddPress = () => router.push({ pathname: '/screens/AddMedia' });
 
   useEffect(() => {
-    //user-1 vai ser user!.id que vem do AuthContext
-    setSameUser(userId === 'user-2');
+    setSameUser(userId === user!.id);
     getUserById(userId.toString());
     getPublicationbyUserId(userId.toString()).then((data) => {
       if (data) {
