@@ -39,22 +39,35 @@ const RestaurantProfile: React.FC = () => {
   } = useRestaurantApi();
   const [modalVisible, setModalVisible] = useState(false);
   const [refresh, setRefresh ]= useState(0);
-  const { restaurantId } = useLocalSearchParams();
+  const params = useLocalSearchParams<{ restaurantId: string }>();
+  const currentRestaurantId = params.restaurantId;
 
   useEffect(() => {
-    if (typeof restaurantId === 'string')
-        getRestaurantById(restaurantId.toString());
-  }, [restaurantId, refresh]);
+    if (currentRestaurantId) {
+        getRestaurantById(currentRestaurantId);
+    }
+  }, [currentRestaurantId, refresh]);
 
   function isRestaurantDTO(obj: any): obj is RestaurantDTO {
   return (
-    obj &&
+    obj != null &&
     typeof obj === 'object' &&
-    'bannerPhoto' in obj &&
-    'profilePhoto' in obj &&
-    'name' in obj &&
-    'description' in obj &&
-    'address' in obj
+    (typeof obj.bannerPhoto === 'string' || obj.bannerPhoto === null) && // Permitir null
+    (typeof obj.profilePhoto === 'string' || obj.profilePhoto === null) && // Permitir null
+    typeof obj.name === 'string' &&
+    typeof obj.description === 'string' &&
+    typeof obj.address === 'string' &&
+    (obj.openingPeriods === undefined || 
+     obj.openingPeriods === null ||
+     (Array.isArray(obj.openingPeriods) &&
+      obj.openingPeriods.every(
+        (period: any) =>
+          period != null &&
+          typeof period === 'object' &&
+          typeof period.weekday === 'string' && 
+          typeof period.opensAt === 'string' &&
+          typeof period.closesAt === 'string'
+      )))
   );
 }
 
@@ -74,7 +87,7 @@ const RestaurantProfile: React.FC = () => {
     return (
       <SafeAreaView style={styles.container}>
         <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>
-          {error ?? 'Erro ao buscar restaurante.'}
+          {error ?? 'Erro ao carregar dados do restaurante ou formato inválido.'}
         </Text>
       </SafeAreaView>
     );
@@ -84,18 +97,20 @@ const RestaurantProfile: React.FC = () => {
     openingPeriods: OperatingHoursDto[] | undefined,
   ): string => {
     if (!openingPeriods || openingPeriods.length === 0) {
-      console.log(openingPeriods)
       return 'Horários de funcionamento não disponíveis.';
     }
 
     const groupedPeriods: Record<string, string[]> = {};
-    // Define the desired order of weekdays
     const dayOrder: Weekday[] = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
     const dayDisplayNames: { [key in Weekday]?: string } = {};
     
     openingPeriods.forEach(period => {
-      const dayName = mapFromWeekday(period.weekday as Weekday);
-      dayDisplayNames[period.weekday as Weekday] = dayName;
+      const validWeekday = period.weekday as Weekday;
+      const dayName = mapFromWeekday(validWeekday);
+      if (!dayName) {
+        return;
+      }
+      dayDisplayNames[validWeekday] = dayName;
       if (!groupedPeriods[period.weekday]) {
         groupedPeriods[period.weekday] = [];
       }
@@ -119,8 +134,12 @@ const RestaurantProfile: React.FC = () => {
 
   const handleCheckin = async () => {
     try {
+      if (!currentRestaurantId) {
+        Alert.alert("Erro", "ID do restaurante não encontrado para fazer check-in.");
+        return;
+      }
       const checkinData: CheckinDTO = {
-        restaurant_id: restaurantId.toString(),
+        restaurant_id: currentRestaurantId,
       };
       await createCheckin(checkinData);
       Alert.alert('Sucesso', 'Checkin feito com sucesso!');
@@ -236,10 +255,14 @@ const RestaurantProfile: React.FC = () => {
                       title="Sim"
                       onPress={() => {
                         setModalVisible(!modalVisible);
+                        if (!currentRestaurantId) {
+                          Alert.alert("Erro", "ID do restaurante não encontrado para avaliação.");
+                          return;
+                        }
                         router.push({
                           pathname: '/screens/CreateReview',
                           params: {
-                            restaurantId: restaurantId,
+                            restaurantId: currentRestaurantId, // Pass the validated string ID
                           },
                         });
                       }}
