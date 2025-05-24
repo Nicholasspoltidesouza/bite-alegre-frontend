@@ -9,6 +9,7 @@ import RouletteVibeModal from '../components/RouletteVibeModal';
 import Colors from '../constants/Colors';
 import { AuthProvider } from '../contexts/authContext';
 import RouletteBudgetModal from '../components/RouletteBudgetModal';
+import RouletteRestaurantModal from '../components/RouletteRestaurantModal';
 
 export default function RootLayout() {
   const pathname = usePathname();
@@ -25,6 +26,7 @@ export default function RootLayout() {
   const [showRouletteModal, setShowRouletteModal] = useState(false);
   const [showVibeModal, setShowVibeModal] = useState(false);
   const [showBudgetModal, setShowBudgetModal] = useState(false);
+  const [showRestaurantModal, setShowRestaurantModal] = useState(false);
 
   useEffect(() => {
     Font.loadAsync({
@@ -215,16 +217,16 @@ export default function RootLayout() {
         }}
       />
 
-       <RouletteBudgetModal
+      <RouletteBudgetModal
         visible={showBudgetModal}
         onClose={() => setShowBudgetModal(false)}
         onSelect={(selected) => {
           console.log('Orçamento selecionado:', selected);
           setShowBudgetModal(false);
+          setShowRestaurantModal(true);
           router.push('/screens/Roulette');
         }}
-        />
-
+      />
     </AuthProvider>
   );
 }
