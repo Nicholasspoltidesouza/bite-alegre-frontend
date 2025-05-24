@@ -51,7 +51,7 @@ export default function InfluencerProfile() {
     });
   }, [userId, user, getUserById, getPublicationbyUserId]);
 
-  if (loading) {
+  if (loading || loadingPublication ) {
     return (
       <SafeAreaView style={styles.container}>
         <ActivityIndicator
@@ -62,7 +62,7 @@ export default function InfluencerProfile() {
       </SafeAreaView>
     );
   }
-  if (error) {
+  if (error || errorPublication) {
     return (
       <SafeAreaView style={styles.container}>
         <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>
@@ -75,6 +75,15 @@ export default function InfluencerProfile() {
   function renderComponent() {
     switch (selectedTab) {
       case 'grid':
+        if (!userDataPublication) {
+          return (
+            <View style={{ marginTop: 20 }}>
+              <Text style={{ textAlign: 'center' }}>
+                Nenhuma publicação encontrada.
+              </Text>
+            </View>
+          );
+        }
         return (
           <ScrollView>
             <Publications images={userDataPublication!} />
