@@ -1,33 +1,28 @@
-import SearchInput from '@/src/components/SearchInput';
 import SearchRestaurants from '@/src/components/SearchRestaurants';
-import SearchUsers from '@/src/components/SearchUsers';
 import Colors from '@/src/constants/Colors';
-import { useSearch } from '@/src/hooks/useSearch';
-import React, { useState } from 'react';
+import { useSearchFilter } from '@/src/hooks/useSearchFilter';
+import React from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
-  View,
+  TouchableOpacity,
 } from 'react-native';
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useFilterResult } from '@/src/contexts/FilterResultContext';
 
-const Search = () => {
+const FilterResultScreen = () => {
   const insets = useSafeAreaInsets();
-  const [search, setSearch] = useState<string>('');
-
-  const { users, restaurants, loading, search: runSearch } = useSearch();
-
-  const handleSearch = () => {
-    runSearch(search);
-  };
-
-  const isUserSearch = search.trim().startsWith('@');
+  const { restaurants, loading } = useSearchFilter();
+  const router = useRouter();
+  useFilterResult();
 
   return (
     <KeyboardAvoidingView
@@ -42,17 +37,12 @@ const Search = () => {
           Platform.OS === 'ios' && { marginTop: -insets.top },
         ]}
       >
-        <View style={styles.fixedInputWrapper}>
-          <SearchInput
-            value={search}
-            onChangeText={setSearch}
-            placeholder="Pesquisar"
-            style={styles.input}
-            onSubmitEditing={handleSearch}
-            returnKeyType="search"
-          />
-        </View>
-
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.push('/screens/FilterScreen')}
+        >
+          <MaterialIcons name="keyboard-arrow-left" size={35} color={Colors.orange.orangeStandard} />
+        </TouchableOpacity>
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
           keyboardShouldPersistTaps="handled"
@@ -66,21 +56,9 @@ const Search = () => {
           )}
 
           {!loading &&
-            isUserSearch &&
-            users.map((user) => (
-              <SearchUsers
-                key={user.id}
-                name={user.name}
-                nickname={user.nickname}
-                profilePhoto={user.profilePhoto || ''}
-                useId={user.id!}
-              />
-            ))}
-
-          {!loading &&
-            !isUserSearch &&
             restaurants.map((restaurant) => (
               <SearchRestaurants
+                key={restaurant.id}
                 name={restaurant.name}
                 averagePrice={restaurant.averagePrice}
                 note={restaurant.averageScore ?? 0}
@@ -99,25 +77,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
   },
-  fixedInputWrapper: {
-    width: '90%',
-    alignSelf: 'center',
-    marginTop: 16,
-    marginBottom: 12,
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 12,
+    zIndex: 10,
   },
   scrollContainer: {
     alignItems: 'center',
     paddingBottom: '8%',
     paddingHorizontal: '4%',
     width: '100%',
-  },
-  input: {
-    height: 50,
-    borderRadius: 20,
-    color: Colors.black,
-    fontFamily: 'Poppins-Regular',
-    fontSize: 16,
+    marginTop: 50,
   },
 });
 
-export default Search;
+export default FilterResultScreen;

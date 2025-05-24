@@ -51,6 +51,7 @@ interface ReviewDTO {
 interface RestaurantFilterDTO {
   name?: string;
   geolocation?: [number, number];
+  address?: string;
   proximity?: number;
   price_range?: number;
   tags?: string[];
@@ -67,10 +68,11 @@ interface AuthDTO {
   };
 }
 
-export interface ImageItem {
-  id: string;
-  uri: string;
-};
+interface PublicationDTO {
+  media: string;
+  description: string;
+  restaurant_id: string;
+}
 
 export type {
   RestaurantDTO,
@@ -78,5 +80,6 @@ export type {
   CheckinDTO,
   ReviewDTO,
   RestaurantFilterDTO,
-  AuthDTO
+  AuthDTO,
+  PublicationDTO
 };

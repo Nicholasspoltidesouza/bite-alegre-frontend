@@ -30,7 +30,7 @@ export const useSearch = () => {
         const filtered = allUsers.filter(
           (user) =>
             user.name.toLowerCase().includes(searchTerm) ||
-            user.nickname?.toLowerCase().includes(searchTerm)
+            user.nickname?.toLowerCase().includes(searchTerm),
         );
         setUsers(filtered);
         setRestaurants([]);
@@ -38,7 +38,7 @@ export const useSearch = () => {
         const allRestaurants = await restaurantApi.get<RestaurantDTO[]>(); // GET /restaurants
         const searchTerm = trimmed.toLowerCase();
         const filtered = allRestaurants.filter((restaurant) =>
-          restaurant.name.toLowerCase().includes(searchTerm)
+          restaurant.name.toLowerCase().includes(searchTerm),
         );
         setRestaurants(filtered);
         setUsers([]);

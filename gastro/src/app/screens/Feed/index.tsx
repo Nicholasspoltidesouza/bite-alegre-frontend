@@ -24,7 +24,7 @@ export default function Feed() {
   const { latitude, longitude, loadingLocation } = useLocation();
   const { getFeed, data: restaurantData, loading, error } = useFeedApi();
   const { getUserById, data: userData } = useCreateUser();
-  const { user } = useAuthContext();  
+  const { user } = useAuthContext();
 
   useEffect(() => {
     getUserById(user!.id);

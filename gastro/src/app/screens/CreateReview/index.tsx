@@ -23,7 +23,7 @@ const CreateReview: React.FC = () => {
   const { createReview } = useRestaurantApi();
   const { getUserById, loading, error, data: userData } = useCreateUser();
   const { restaurantId } = useLocalSearchParams();
-  const { user } = useAuthContext();  
+  const { user } = useAuthContext();
 
   const [description, setDescription] = useState<string>('');
   const [nota, setNota] = useState(0);

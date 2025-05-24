@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { UserDTO } from '../@types/DTO';
 import ApiService from '../services/apiService';
 
-const userApiService = new ApiService("/users");
+const userApiService = new ApiService('/users');
 
 export const useCreateUser = () => {
   const [loading, setLoading] = useState(false);
@@ -13,35 +13,37 @@ export const useCreateUser = () => {
     setLoading(true);
     setError(null);
     try {
-        const result = await callApiPromise;
-        return result;
+      const result = await callApiPromise;
+      return result;
     } catch (err: any) {
-        setError(err.message || 'Erro desconhecido ao executar a chamada da API.');
-        return null;
+      setError(
+        err.message || 'Erro desconhecido ao executar a chamada da API.',
+      );
+      return null;
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
   const createUser = async (userData: UserDTO): Promise<UserDTO | null> => {
     const responseData = await callApi(
-        userApiService.post<UserDTO, UserDTO>(userData)
+      userApiService.post<UserDTO, UserDTO>(userData),
     );
-    
+
     if (responseData) {
-        console.log("Usuário criado:", responseData);
-        setData(responseData);
+      console.log('Usuário criado:', responseData);
+      setData(responseData);
     }
     return responseData;
   };
 
   const getUserById = async (userId: string): Promise<void> => {
     const responseData = await callApi(
-        userApiService.get<UserDTO>(`/${userId}`)
+      userApiService.get<UserDTO>(`/${userId}`),
     );
 
     if (responseData) {
-        setData(responseData);
+      setData(responseData);
     }
   };
 

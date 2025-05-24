@@ -49,7 +49,12 @@ const FilterScreen: React.FC = () => {
   const { filterRestaurants, loading: filterLoading } = useSearchFilter();
   const { latitude, longitude } = useLocation();
 
-  const { getTags, tags, loading: tagsLoading, error: tagsError, } = useFetchTags();
+  const {
+    getTags,
+    tags,
+    loading: tagsLoading,
+    error: tagsError,
+  } = useFetchTags();
 
   const priceNumber = parseFloat(filters.price.replace(/[^\d]/g, '')) || 0;
   const priceIsSet = priceNumber > 0;
@@ -69,15 +74,12 @@ const FilterScreen: React.FC = () => {
       : filters.distance[0]
     : 'Escolha';
 
-  const handleTagPress = (section: keyof FilterOptions, tag: string) => {
+  const handleTagPress = (section: keyof FilterOptions, tagId: string) => {
     setFilters((prev) => {
-      if (section === 'price') {
-        return { ...prev, price: tag };
-      }
       const list = prev[section] as string[];
-      return list.includes(tag)
-        ? { ...prev, [section]: list.filter((t) => t !== tag) }
-        : { ...prev, [section]: [...list, tag] };
+      return list.includes(tagId)
+        ? { ...prev, [section]: list.filter((t) => t !== tagId) }
+        : { ...prev, [section]: [...list, tagId] };
     });
   };
 
@@ -118,11 +120,13 @@ const FilterScreen: React.FC = () => {
     if (locationSelected && latitude && longitude) {
       apiFilters.geolocation = [parseFloat(latitude), parseFloat(longitude)];
       apiFilters.proximity = 10;
+    } else if (addressSet) {
+      apiFilters.address = filters.distance[0];
     }
 
     try {
       await filterRestaurants(apiFilters);
-      router.push({ pathname: '/screens/Search' });
+      router.push({ pathname: '/screens/FilterResultScreen' });
     } catch (error) {
       console.error('Erro ao filtrar restaurantes:', error);
     }
@@ -239,9 +243,9 @@ const FilterScreen: React.FC = () => {
               <Tag
                 key={tag.id}
                 title={tag.name}
-                isSelected={filters.location.includes(tag.name)}
+                isSelected={filters.location.includes(tag.id)}
                 style={styles.tag}
-                onPress={() => handleTagPress('location', tag.name)}
+                onPress={() => handleTagPress('location', tag.id)}
               />
             ))}
           </View>
@@ -254,9 +258,9 @@ const FilterScreen: React.FC = () => {
               <Tag
                 key={tag.id}
                 title={tag.name}
-                isSelected={filters.category.includes(tag.name)}
+                isSelected={filters.category.includes(tag.id)}
                 style={styles.tag}
-                onPress={() => handleTagPress('category', tag.name)}
+                onPress={() => handleTagPress('category', tag.id)}
               />
             ))}
           </View>
@@ -269,9 +273,9 @@ const FilterScreen: React.FC = () => {
               <Tag
                 key={tag.id}
                 title={tag.name}
-                isSelected={filters.occasion.includes(tag.name)}
+                isSelected={filters.occasion.includes(tag.id)}
                 style={styles.tag}
-                onPress={() => handleTagPress('occasion', tag.name)}
+                onPress={() => handleTagPress('occasion', tag.id)}
               />
             ))}
           </View>
@@ -404,6 +408,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
     paddingHorizontal: 20,
+    paddingTop: 40,
   },
   header: {
     flexDirection: 'row',
