@@ -121,16 +121,6 @@ export default function Profile() {
           <TouchableOpacity>
             <Text style={styles.mostrarMais}>Mostrar mais</Text>
           </TouchableOpacity>
-          <Button
-            title="Sim"
-            onPress={() => {
-              router.push({
-                pathname: '/screens/AddMedia',
-              });
-            }}
-            type={'orange'}
-            style={{ marginRight: 10 }}
-          />
         </View>
 
         <UserCarouselRestaurant
