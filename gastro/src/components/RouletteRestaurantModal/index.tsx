@@ -50,7 +50,7 @@ const RouletteRestaurantModal = ({ visible, onClose, onVibeRequest, imageUrl, no
                             style={styles.button}
                         />
                         <Button
-                            title="Retornar para o sorteio"
+                            title="Sortear novamente"
                             onPress={handleSurprise}
                             type="white"
                             style={styles.button}
@@ -77,16 +77,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     textModal: {
-        fontSize: 17,
+        fontSize: 20,
         color: '#FF914B',
         fontFamily: 'Poppins-SemiBold',
         textAlign: 'center',
         marginBottom: 20,
     },
     image: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+        width: 150,
+        height: 150,
+        borderRadius: 90,
         marginBottom: 20,
     },
     buttonsContainer: {
