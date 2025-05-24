@@ -71,6 +71,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
         value={value}
         placeholder={placeholder}
         placeholderTextColor={Colors.orange.orangeStandard}
+        returnKeyType="search"
         {...props}
       />
     </>
