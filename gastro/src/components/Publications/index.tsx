@@ -1,4 +1,4 @@
-import { ImageItem } from '@/src/@types/DTO';
+import {PublicationDTO } from '@/src/@types/DTO';
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -12,7 +12,7 @@ const screenWidth = Dimensions.get('window').width;
 const columnWidth = screenWidth / 2 - 8;
 
 interface Props {
-  images: ImageItem[];
+  images: PublicationDTO[];
 }
 
 export const Publications: React.FC<Props> = ({ images }) => {
@@ -30,7 +30,7 @@ export const Publications: React.FC<Props> = ({ images }) => {
 
     images.forEach(image => {
       Image.getSize(
-        image.uri,
+        image.url,
         (width, height) => {
           const scaledHeight = (columnWidth * height) / width;
           const imageWithHeight = { ...image, height: scaledHeight };
@@ -50,7 +50,7 @@ export const Publications: React.FC<Props> = ({ images }) => {
           }
         },
         (error) => {
-          console.warn(`Erro ao carregar imagem ${image.uri}`, error);
+          console.warn(`Erro ao carregar imagem ${image.url}`, error);
           processed++;
           if (processed === images.length) {
             setLeftColumn(left);

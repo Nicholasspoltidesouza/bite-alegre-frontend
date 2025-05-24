@@ -15,31 +15,26 @@ import { AntDesign } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useAuthContext } from '@/src/contexts/authContext';
 import { Publications } from '@/src/components/Publications';
-import { ImageItem, ReviewDTO } from '@/src/@types/DTO';
+import {PublicationDTO, ReviewDTO } from '@/src/@types/DTO';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import CheckinSection from '@/src/components/CheckinSection';
 import { CardReview } from '@/src/components/ReviewCard';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import { useCreateUser } from '@/src/hooks/useUserApi';
+import { usePublicationApi } from '@/src/hooks/usePublicationApi';
 
-
-const images: ImageItem[] = [
-  { id: '1', uri: 'https://i.pinimg.com/736x/3a/1f/7a/3a1f7a2f270bf6399b734092e9dc4fd5.jpg' },
-  { id: '2', uri: 'https://i.pinimg.com/736x/55/7c/19/557c198eaf016b0d72787d34306011ab.jpg' },
-  { id: '3', uri: 'https://i.pinimg.com/736x/8f/87/bd/8f87bd41ecf97811cf3cbf955fa841b6.jpg' },
-  { id: '4', uri: 'https://i.pinimg.com/736x/e7/f9/29/e7f929707c5648e800de74437a47583f.jpg' },
-  { id: '5', uri: 'https://i.pinimg.com/736x/0b/e4/7a/0be47ad5d2427db37badb02293b14fde.jpg' },
-  { id: '6', uri: 'https://i.pinimg.com/736x/11/9d/89/119d896e809dbb513e74a82eac654c62.jpg' }
-];
 
 export default function InfluencerProfile() {
   const { getUserById, loading, error, data: userData } = useCreateUser();
+  const { getPublicationbyUserId, loading : loadingPublication, error : errorPublication} = usePublicationApi();
   const { user } = useAuthContext();
   const [sameUser, setSameUser] = useState(false);
+  const [userDataPublication, setUserDataPublication] = useState<PublicationDTO[]>([]);
   const { userId } = useLocalSearchParams();
   const [selectedTab, setSelectedTab] = useState<
     'grid' | 'reviews' | 'checkins' | 'user'
   >('grid');
+
 
   const {} = useCreateUser();
   const handleAddPress = () => router.push({ pathname: '/screens/AddMedia' });
@@ -49,7 +44,12 @@ export default function InfluencerProfile() {
     //user-1 vai ser user!.id que vem do AuthContext
     setSameUser(userId === 'user-2');
     getUserById(userId.toString());
-  }, [userId]);
+    getPublicationbyUserId(userId.toString()).then((data) => {
+      if (data) {
+        setUserDataPublication(data);
+      }
+    });
+  }, [userId, user, getUserById, getPublicationbyUserId]);
 
   if (loading) {
     return (
@@ -77,7 +77,7 @@ export default function InfluencerProfile() {
       case 'grid':
         return (
           <ScrollView>
-            <Publications images={images} />
+            <Publications images={userDataPublication!} />
           </ScrollView>
         );
       case 'reviews':

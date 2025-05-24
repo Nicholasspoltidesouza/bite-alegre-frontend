@@ -69,17 +69,18 @@ interface AuthDTO {
 }
 
 interface PublicationDTO {
+  url: string;
   media: string;
   description: string;
   restaurant_id: string;
+  restaurant_name: string;
 }
-
 export type {
-  RestaurantDTO,
-  UserDTO,
-  CheckinDTO,
-  ReviewDTO,
-  RestaurantFilterDTO,
-  AuthDTO,
-  PublicationDTO
+    RestaurantDTO,
+    UserDTO,
+    CheckinDTO,
+    ReviewDTO,
+    RestaurantFilterDTO,
+    AuthDTO,
+    PublicationDTO, 
 };
