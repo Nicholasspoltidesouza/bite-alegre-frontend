@@ -9,6 +9,7 @@ interface SearchUsersProps {
   nickname: string;
   profilePhoto: string;
   useId: string;
+  influencer : boolean;
 }
 
 const SearchUsers: React.FC<SearchUsersProps> = ({
@@ -16,18 +17,32 @@ const SearchUsers: React.FC<SearchUsersProps> = ({
   nickname,
   profilePhoto,
   useId,
+  influencer,
 }) => {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() =>
-        router.push({
-          pathname: '/screens/Profile',
-          params: {
-            userId: useId,
-          },
-        })
+      onPress={() =>{
+        if(influencer) {
+          router.push
+          ({
+            pathname: '/screens/Influencer/InfluencerProfile',
+            params: {
+              userId: useId,
+            },
+          })
       }
+        else {
+          router.push
+          ({
+            pathname: '/screens/Profile',
+            params: {
+              userId: useId,
+            },
+          })
+        }
+    }
+  }
     >
       <View style={styles.imageContainer}>
         {profilePhoto ? (

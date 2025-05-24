@@ -11,6 +11,7 @@ interface UserDTO {
   id?: string;
   reviews?: ReviewDTO[];
   checkinsWithoutReview?: CheckinDTO[];
+  influencer?: boolean;
 }
 interface RestaurantDTO {
   id?: string;
