@@ -143,7 +143,7 @@ const RestaurantProfile: React.FC = () => {
       };
       await createCheckin(checkinData);
       Alert.alert('Sucesso', 'Checkin feito com sucesso!');
-      setRefresh(prev => prev + 1);
+      setRefresh((prev) => prev + 1);
     } catch (err) {
       console.error('Submit Error:', err);
       Alert.alert(

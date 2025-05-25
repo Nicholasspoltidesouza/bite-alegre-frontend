@@ -36,7 +36,7 @@ const SignupInterests: React.FC = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const { getTags, tags, loading: tagsLoading, error } = useFetchTags();
-  
+
   useEffect(() => {
     getTags();
   }, []);
