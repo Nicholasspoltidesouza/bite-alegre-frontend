@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_URL_ANDROID } from "../constants/apiUrl";
+import { API_URL_ANDROID, API_URL_BACKEND } from "../constants/apiUrl";
 
 export interface ApiErrorResponse {
     error?: string;
@@ -8,7 +8,7 @@ export interface ApiErrorResponse {
 
 class ApiService {
     private baseUrl: string;
-    private API_URL = API_URL_ANDROID;
+    private API_URL = API_URL_BACKEND;
 
     constructor(baseUrl: string) {
         if (!baseUrl) {
