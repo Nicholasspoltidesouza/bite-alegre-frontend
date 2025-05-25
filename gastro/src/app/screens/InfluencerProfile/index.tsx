@@ -15,7 +15,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useAuthContext } from '@/src/contexts/authContext';
 import { Publications } from '@/src/components/Publications';
-import {PublicationDTO, ReviewDTO } from '@/src/@types/DTO';
+import {CheckinDTO, PublicationDTO, RestaurantDTO, ReviewDTO } from '@/src/@types/DTO';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import CheckinSection from '@/src/components/CheckinSection';
 import { CardReview } from '@/src/components/ReviewCard';
@@ -34,6 +34,7 @@ export default function InfluencerProfile() {
   const [selectedTab, setSelectedTab] = useState<
     'grid' | 'reviews' | 'checkins' | 'user'
   >('grid');
+  const [visitedRestaurants, setVisitedRestaurants] = useState<RestaurantDTO[]>([],);
 
   const handleAddPress = () => router.push({ pathname: '/screens/AddMedia' });
   const filterAddPress = () => router.push({ pathname: '/screens/AddMedia' });
@@ -43,14 +44,66 @@ export default function InfluencerProfile() {
     const id = typeof userId === 'string' ? userId : user!.id;
     setSameUser(id === user!.id);
     getUserById(id.toString()).then((data) => {
-       getPublicationbyUserId(id.toString()).then((data) => {
-        if (data) {
-          setUserDataPublication(data);
-        }
-      });
-    });   
-    
+       setVisited();
+    });
+    getPublicationbyUserId(id.toString()).then((data) => {
+      if (data) {
+        console.log('Publicações do usuário:', data);
+        setUserDataPublication(data);
+      }
+    });
   }, [userId]);
+
+  function setVisited() {
+    const visitedFromReviews: RestaurantDTO[] =
+      userData!.reviews?.map(mapRestaurantToReview) ?? [];
+    const visitedFromCheckins: RestaurantDTO[] =
+      userData!.checkinsWithoutReview?.map(mapCheckinToRestaurant) ?? [];
+
+    const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];
+
+    const uniqueVisited = Array.from(
+      new Map(combinedVisited.map((item) => [item.id, item])).values(),
+    );
+
+    if (uniqueVisited.length > 0) {
+      return setVisitedRestaurants(uniqueVisited);
+    }
+    setVisitedRestaurants([]);
+  }
+
+  function mapCheckinToRestaurant(checkin: CheckinDTO): RestaurantDTO {
+    return {
+      id: checkin.restaurant_id ?? '',
+      profilePhoto: checkin.restaurantProfilePhoto,
+      address: '',
+      name: checkin.restaurantName!,
+      description: '',
+      email: '',
+      password: '',
+      averagePrice: 0,
+      phone: '',
+      userType: '',
+      cnpj: '',
+    };
+  }
+
+  function mapRestaurantToReview(review: ReviewDTO): RestaurantDTO {
+    return {
+      id: review.restaurantId ?? '',
+      stars: review.stars ?? 0,
+      profilePhoto: review.restaurantProfilePhoto,
+      address: '',
+      name: review.restaurantName!,
+      description: '',
+      email: '',
+      password: '',
+      averagePrice: 0,
+      phone: '',
+      userType: '',
+      cnpj: '',
+    };
+  }
 
   if (loading || loadingPublication ) {
     return (
@@ -106,7 +159,7 @@ export default function InfluencerProfile() {
             <UserCarouselRestaurant
               variant={'visited'}
               carouselProfileRestaurant={true}
-              restaurantsExternal={[]}
+              restaurantsExternal={visitedRestaurants}
             />
 
             <View style={styles.titleRow}>
