@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback,
   Alert,
 } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Accordion from '@/src/components/Accordion';
 
 import {
@@ -25,6 +25,7 @@ import Button from '@/src/components/Button';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { CheckinDTO, RestaurantDTO } from '@/src/@types/DTO';
 import Colors from '@/src/constants/Colors';
+import { useAuthContext } from '@/src/contexts/authContext';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -38,11 +39,15 @@ const RestaurantProfile: React.FC = () => {
   } = useRestaurantApi();
   const [modalVisible, setModalVisible] = useState(false);
   const [refresh, setRefresh] = useState(0);
+  const [isProfile, setIsProfile] = useState(false);
   const { restaurantId } = useLocalSearchParams();
+  const { user } = useAuthContext();
 
   useEffect(() => {
-    if (typeof restaurantId === 'string')
-      getRestaurantById(restaurantId.toString());
+    if (typeof restaurantId === 'string') {
+      getRestaurantById(restaurantId.toString());        
+      setIsProfile(user?.id == restaurantId.toString())
+     }
   }, [restaurantId, refresh]);
 
   function isRestaurantDTO(obj: any): obj is RestaurantDTO {
@@ -99,6 +104,7 @@ const RestaurantProfile: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <HeaderPerfilRestaurante
+        isProfile={isProfile}
         urlFotoBanner={restaurant?.bannerPhoto}
         urlFotoPerfil={restaurant?.profilePhoto}
       ></HeaderPerfilRestaurante>

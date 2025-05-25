@@ -51,7 +51,7 @@ const BaseModal: React.FC<BaseModalProps> = ({ visible, onClose }) => {
               style={styles.filledButton}
               onPress={() => {
                 onClose();
-                router.replace('/');
+                router.push('/screens/RestaurantProfilePatch');
               }}
             >
               <Text style={styles.filledText}>Editar perfil</Text>

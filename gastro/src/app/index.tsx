@@ -1,8 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import Button from '../components/Button';
-import Header from '../components/Header';
-import Colors from '../constants/Colors';
+import Home from './screens/Home';
 
 const App: React.FC = () => {
   return <Home />;
