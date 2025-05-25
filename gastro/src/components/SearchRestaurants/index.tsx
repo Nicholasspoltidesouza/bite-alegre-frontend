@@ -78,6 +78,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     elevation: 2,
+    width: '95%',
+    alignSelf: 'center',
   },
   imageContainer: {
     width: 86,
