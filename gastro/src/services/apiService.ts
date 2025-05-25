@@ -14,6 +14,8 @@ export function redirectToHome() {
 class ApiService {
     private baseUrl: string;
     private API_URL = API_URL_BACKEND;
+    private baseUrl: string;
+    private API_URL = API_URL_BACKEND;
 
   constructor(baseUrl: string) {
     if (!baseUrl) {

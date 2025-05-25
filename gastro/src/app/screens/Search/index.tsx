@@ -74,6 +74,7 @@ const Search = () => {
                 nickname={user.nickname}
                 profilePhoto={user.profilePhoto || ''}
                 useId={user.id!}
+                influencer={user.influencer!}
               />
             ))}
 

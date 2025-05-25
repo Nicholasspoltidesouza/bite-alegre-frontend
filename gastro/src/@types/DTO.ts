@@ -13,6 +13,7 @@ interface UserDTO {
   id?: string;
   reviews?: ReviewDTO[];
   checkinsWithoutReview?: CheckinDTO[];
+  influencer?: boolean;
 }
 interface RestaurantDTO {
   id?: string;
@@ -58,6 +59,7 @@ interface CheckinDTO {
 }
 
 interface ReviewDTO {
+  id?: string;
   user_id?: string;
   restaurantId?: string;
   restaurant_id?: string;
@@ -88,11 +90,13 @@ interface AuthDTO {
 }
 
 interface PublicationDTO {
+  id?: string;
+  url: string;
   media: string;
   description: string;
   restaurant_id: string;
+  restaurant_name: string;
 }
-
 export type {
   RestaurantDTO,
   RestaurantPatchDTO,
