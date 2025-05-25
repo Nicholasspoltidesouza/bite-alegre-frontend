@@ -19,10 +19,8 @@ export default function RootLayout() {
 }
 
 function RootLayoutContent() {
-  const { role, token, user } = useAuthContext();
+  const { role, token } = useAuthContext();
   const pathname = usePathname();
-
-  console.log('token navbar: ', token);
 
   const profileScreen =
     role === 'INFLUENCER'
@@ -40,9 +38,10 @@ function RootLayoutContent() {
     '/screens/SignupInterestsScreen',
     '/screens/Roulette',
     '/screens/Home',
-    '/screens/Login',
-    '/',
+    '/screens/Login'
   ];
+
+  if (!token ) hiddenRoutes.push('/');
   const shouldHideTabBar = hiddenRoutes.includes(pathname);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -228,6 +227,10 @@ function RootLayoutContent() {
         />
         <Tabs.Screen
           name={extraScreen}
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name='screens/Home/index'
           options={{ href: null, tabBarShowLabel: false }}
         />
       </Tabs>

@@ -47,12 +47,5 @@ export const useCreateUser = () => {
     }
   };
 
-  const logout = () => {
-    setData(null);
-    setError(null);
-    setLoading(false);
-    console.log('Usuário deslogado com sucesso!');
-  };
-
-  return { createUser, getUserById, logout, loading, error, data };
+  return { createUser, getUserById, loading, error, data };
 };

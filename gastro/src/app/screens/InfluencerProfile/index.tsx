@@ -128,7 +128,6 @@ export default function InfluencerProfile() {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
         <Header
           isProfile={true}
           name={userData?.name!}
@@ -142,8 +141,6 @@ export default function InfluencerProfile() {
           selectedTab={selectedTab}
         />
         {renderComponent()}
-      </ScrollView>
-
       {selectedTab === 'grid' && sameUser && (
         <TouchableOpacity style={styles.fab} onPress={handleAddPress}>
           <AntDesign name="plus" size={28} color="white" />

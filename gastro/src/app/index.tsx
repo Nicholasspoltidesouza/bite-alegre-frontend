@@ -6,8 +6,6 @@ import Feed from './screens/Feed';
 const App: React.FC = () => {
   const { token } = useAuthContext();
 
-  console.log('token app: ', token);
-
   return token == null ? <Home /> : <Feed />;
 };
 

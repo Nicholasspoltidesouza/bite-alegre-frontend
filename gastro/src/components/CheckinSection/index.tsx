@@ -10,10 +10,20 @@ import {
 import Colors from '@/src/constants/Colors';
 import { CheckinDTO } from '@/src/@types/DTO';
 import { MaterialIcons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 interface Props {
   checkins: CheckinDTO[];
 }
+
+const handlePress = (restaurantId: string) => {
+    router.push({
+        pathname: '/screens/restaurantProfile',
+        params: {
+            restaurantId: restaurantId,
+        },
+    });
+};
 
 export default function CheckinSection({ checkins }: Props) {
   return (
@@ -22,7 +32,7 @@ export default function CheckinSection({ checkins }: Props) {
       keyExtractor={(item) => item.restaurant_id}
       contentContainerStyle={{ paddingBottom: 16 }}
       renderItem={({ item }) => (
-        <TouchableOpacity style={styles.card}>
+        <TouchableOpacity style={styles.card} onPress={() => handlePress(item.restaurant_id)}>
           {item.restaurantProfilePhoto ? (
             <Image
             source={{ uri: item.restaurantProfilePhoto }}

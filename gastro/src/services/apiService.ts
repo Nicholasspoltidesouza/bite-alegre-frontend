@@ -8,12 +8,12 @@ export interface ApiErrorResponse {
 }
 
 export function redirectToHome() {
-  router.replace('/');
+  router.replace('/screens/Home');
 }
 
 class ApiService {
     private baseUrl: string;
-    private API_URL = API_URL_ANDROID;
+    private API_URL = API_URL_BACKEND;
 
   constructor(baseUrl: string) {
     if (!baseUrl) {
@@ -30,7 +30,7 @@ class ApiService {
   ): Promise<T> {
     if (endpoint == undefined) endpoint = '';
     const url = `${this.API_URL}${this.baseUrl}${endpoint}`;
-    const token = 'teste'// await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem('token');
 
     const method = options.method;
 

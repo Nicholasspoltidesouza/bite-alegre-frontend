@@ -20,13 +20,13 @@ export const CardReview: React.FC<CardReviewProps> = ({
     reviews
 }) => {
 
-const handlePress = () => {
-    // router.push({
-    //     pathname: '/screens/restaurantProfile',
-    //     params: {
-    //         restaurantId: review.restaurantId,
-    //     },
-    // });
+const handlePress = (restaurantId: string) => {
+    router.push({
+        pathname: '/screens/restaurantProfile',
+        params: {
+            restaurantId: restaurantId,
+        },
+    });
 };
 
 return (
@@ -36,7 +36,7 @@ return (
           contentContainerStyle={{ paddingBottom: 16 }}
           renderItem={({ item }) => (
             <TouchableOpacity     
-                onPress={handlePress}
+                onPress={() => handlePress(item.restaurantId)}
                 style={styles.card}
                 >
                 <View style={styles.header}>
