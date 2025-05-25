@@ -27,6 +27,10 @@ function RootLayoutContent() {
       ? 'screens/InfluencerProfile/index'
       : 'screens/Profile/index';
 
+  const extraScreen =
+    role === 'INFLUENCER'
+      ? 'screens/Profile/index'
+      : 'screens/InfluencerProfile/index';
   const hiddenRoutes = [
     '/screens/SignupUser',
     '/screens/SignupRestaurant',
@@ -205,6 +209,18 @@ function RootLayoutContent() {
         />
         <Tabs.Screen
           name="screens/PublicationInfluencer/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/Home/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/Login/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name={extraScreen}
           options={{ href: null, tabBarShowLabel: false }}
         />
       </Tabs>
