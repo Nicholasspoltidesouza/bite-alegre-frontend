@@ -1,4 +1,3 @@
-import { useRouter } from 'expo-router';
 import React from 'react';
 import {
     Image,
@@ -14,6 +13,7 @@ type RouletteRestaurantModalProps = {
     visible: boolean;
     onClose: () => void;
     onGoToRestaurant: () => void;
+    onSortAgain: () => void;
     imageUrl: string;
     restaurantName: string;
     currentVibe: string;
@@ -26,23 +26,8 @@ const RouletteRestaurantModal = ({
     onGoToRestaurant,
     imageUrl,
     restaurantName,
-    currentVibe,
-    currentBudget,
+    onSortAgain
 }: RouletteRestaurantModalProps) => {
-    const router = useRouter();
-
-    const handleSortAgain = () => {
-        onClose();
-        router.push({
-            pathname: '/screens/Roulette',
-            params: {
-                vibe: currentVibe,
-                budget: currentBudget,
-                autoSpin: 'true',
-            },
-        });
-    };
-
     return (
         <Modal
             transparent
@@ -61,7 +46,7 @@ const RouletteRestaurantModal = ({
                         source={
                             imageUrl
                                 ? { uri: imageUrl }
-                                : require('../../../assets/images/profile.png')
+                                : require('../../../assets/images/restaurant.png')
                         }
                         style={styles.image}
                     />
@@ -74,7 +59,7 @@ const RouletteRestaurantModal = ({
                         />
                         <Button
                             title="Sortear novamente"
-                            onPress={handleSortAgain}
+                            onPress={onSortAgain}
                             type="white"
                             style={styles.button}
                         />

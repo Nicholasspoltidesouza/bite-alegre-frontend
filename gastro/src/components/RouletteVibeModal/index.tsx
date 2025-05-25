@@ -1,3 +1,4 @@
+import { useFetchTags } from '@/src/hooks/useFetchTags';
 import React, { useEffect, useState } from 'react';
 import {
   Modal,
@@ -8,27 +9,24 @@ import {
 } from 'react-native';
 import Tag from '../Tag';
 
-
 type RouletteVibeModalProps = {
   visible: boolean;
   onClose: () => void;
   onSelect: (value: string) => void;
 };
 
-const vibeOptions = [
-  'Date', 'Amigos', 'Trabalho',
-  'Happy Hour', 'Família', 'Festa',
-  'Comemoração', 'Tranquilo', 'Pet-friendly',
-];
-
 const RouletteVibeModal = ({ visible, onClose, onSelect }: RouletteVibeModalProps) => {
   const [selected, setSelected] = useState<string | null>(null);
+  const { getTags, tags, loading: tagsLoading, error } = useFetchTags();
 
   useEffect(() => {
-    if (!visible) {
+    if (visible) {
+      getTags();
       setSelected(null);
     }
-  })
+  }, [visible]);
+
+  const vibeOptions = tags.filter((tag) => tag.type === 'OCASIAO');
 
   return (
     <Modal transparent visible={visible} animationType="fade">
@@ -36,14 +34,16 @@ const RouletteVibeModal = ({ visible, onClose, onSelect }: RouletteVibeModalProp
         <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
           <Text style={styles.title}>Qual a vibe de hoje?</Text>
           <ScrollView contentContainerStyle={styles.tagsContainer}>
-            {vibeOptions.map((vibe) => (
+            {tagsLoading && <Text style={{ color: '#FF914B', marginBottom: 10 }}>Carregando...</Text>}
+            {error && <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text>}
+            {vibeOptions.map((tag) => (
               <Tag
-                key={vibe}
-                title={vibe}
-                isSelected={selected === vibe}
+                key={tag.id}
+                title={tag.name}
+                isSelected={selected === tag.id}
                 onPress={() => {
-                  setSelected(vibe);
-                  onSelect(vibe);
+                  setSelected(tag.id);
+                  onSelect(tag.id);
                 }}
                 controlled
               />

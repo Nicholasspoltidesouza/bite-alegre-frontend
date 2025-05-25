@@ -1,5 +1,6 @@
 import { RestaurantDTO } from '@/src/@types/DTO';
 import RouletteBudgetModal from '@/src/components/RouletteBudgetModal';
+import RouletteFilterModal from '@/src/components/RouletteFilterModal';
 import RouletteRestaurantModal from '@/src/components/RouletteRestaurantModal';
 import RouletteVibeModal from '@/src/components/RouletteVibeModal';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
@@ -22,24 +23,40 @@ export default function Roulette() {
   const totalRotation = useRef(0);
   const router = useRouter();
 
-  const [vibe, setVibe] = useState<string | null>(null);
-  const [budget, setBudget] = useState<number | null>(null);
-  const [showVibeModal, setShowVibeModal] = useState(true);
-  const [showBudgetModal, setShowBudgetModal] = useState(false);
-  const [showRestaurantModal, setShowRestaurantModal] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const [restaurant, setRestaurant] = useState<RestaurantDTO | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
 
-  const { getRandomRestaurant } = useRestaurantApi();
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [showVibeModal, setShowVibeModal] = useState(false);
+  const [showBudgetModal, setShowBudgetModal] = useState(false);
+  const [showRestaurantModal, setShowRestaurantModal] = useState(false);
+
+  const [selectedVibe, setSelectedVibe] = useState('');
+  const [selectedBudget, setSelectedBudget] = useState('');
+
+  const { getRandomRestaurant, loading } = useRestaurantApi();
+
+  const fetchRestaurant = async () => {
+    const vibe = selectedVibe || '';
+    const budget = selectedBudget ? Number(selectedBudget) : 999999;
+
+    const result = await getRandomRestaurant(vibe, budget);
+
+    if (result) {
+      setRestaurant(result);
+    } else {
+      console.warn('Nenhum restaurante encontrado.');
+    }
+  };
 
   const spinRoulette = () => {
-    if (!vibe || !budget || isSpinning) return;
+    if (isSpinning) return;
 
     setIsSpinning(true);
+    setShowConfetti(false);
     setRestaurant(null);
     setShowRestaurantModal(false);
-    setShowConfetti(false);
 
     const fullSpins = 360 * 5;
     const randomOffset = Math.floor(Math.random() * 360);
@@ -54,13 +71,12 @@ export default function Roulette() {
       easing: Easing.out(Easing.exp),
     }).start(async () => {
       setShowConfetti(true);
-      const result = await getRandomRestaurant(vibe, budget);
-      if (result) setRestaurant(result);
+      await fetchRestaurant();
       setTimeout(() => {
         setShowConfetti(false);
         setShowRestaurantModal(true);
         setIsSpinning(false);
-      }, 1000);
+      }, 2800);
     });
   };
 
@@ -116,18 +132,31 @@ export default function Roulette() {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={spinRoulette}
-          disabled={!vibe || !budget || isSpinning}
+          onPress={() => setShowFilterModal(true)}
+          disabled={loading || isSpinning}
         >
           <Text style={styles.buttonText}>Sortear</Text>
         </TouchableOpacity>
       </View>
 
+      <RouletteFilterModal
+        visible={showFilterModal}
+        onClose={() => setShowFilterModal(false)}
+        onVibeRequest={() => {
+          setShowFilterModal(false);
+          setShowVibeModal(true);
+        }}
+        onSurpriseRequest={() => {
+          setShowFilterModal(false);
+          spinRoulette();
+        }}
+      />
+
       <RouletteVibeModal
         visible={showVibeModal}
         onClose={() => setShowVibeModal(false)}
-        onSelect={(selected) => {
-          setVibe(selected);
+        onSelect={(vibe) => {
+          setSelectedVibe(vibe);
           setShowVibeModal(false);
           setShowBudgetModal(true);
         }}
@@ -136,9 +165,10 @@ export default function Roulette() {
       <RouletteBudgetModal
         visible={showBudgetModal}
         onClose={() => setShowBudgetModal(false)}
-        onSelect={(selected) => {
-          setBudget(Number(selected));
+        onSelect={(budget) => {
+          setSelectedBudget(String(budget));
           setShowBudgetModal(false);
+          spinRoulette();
         }}
       />
 
@@ -153,10 +183,14 @@ export default function Roulette() {
               params: { restaurantId: restaurant.id },
             });
           }}
+          onSortAgain={() => {
+            setShowRestaurantModal(false);
+            spinRoulette();
+          }}
           imageUrl={restaurant.profilePhoto ?? ''}
           restaurantName={restaurant.name}
-          currentVibe={vibe ?? ''}
-          currentBudget={budget?.toString() ?? ''}
+          currentVibe={selectedVibe}
+          currentBudget={selectedBudget}
         />
       )}
     </View>

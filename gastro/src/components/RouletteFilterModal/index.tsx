@@ -1,4 +1,3 @@
-import { useRouter } from 'expo-router';
 import React from 'react';
 import {
   Modal,
@@ -13,16 +12,10 @@ type BaseModalProps = {
   visible: boolean;
   onClose: () => void;
   onVibeRequest: () => void;
+  onSurpriseRequest: () => void;
 };
 
-const RouletteFilterModal = ({ visible, onClose, onVibeRequest }: BaseModalProps) => {
-  const router = useRouter();
-
-  const handleSurprise = () => {
-    onClose();
-    router.push('/screens/Roulette');
-  };
-
+const RouletteFilterModal = ({ visible, onClose, onVibeRequest, onSurpriseRequest }: BaseModalProps) => {
   return (
     <Modal
       transparent
@@ -44,7 +37,7 @@ const RouletteFilterModal = ({ visible, onClose, onVibeRequest }: BaseModalProps
             />
             <Button
               title="Me surpreenda!"
-              onPress={handleSurprise}
+              onPress={onSurpriseRequest}
               type="orange"
               style={styles.button}
             />
