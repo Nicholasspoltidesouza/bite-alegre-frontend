@@ -29,10 +29,27 @@ export const useRestaurantApi = () => {
       restaurantApiService.get<RestaurantDTO>(`/${restaurantId}`),
     );
 
-    if (responseData) {
-      setData(responseData);
-    }
-  };
+        if (responseData) {
+            setData(responseData);
+        }
+    };
+
+    const getRandomRestaurant = async (
+        tag: string,
+        price_range: number
+    ): Promise<RestaurantDTO | null> => {
+        const query = `/random-draw?tags=${tag}&price_range=${price_range}`;
+
+        const responseData = await callApi(
+            restaurantApiService.get<RestaurantDTO>(query)
+        );
+
+        if (responseData) {
+            setData(responseData);
+        }
+
+        return responseData;
+    };
 
   const createRestaurant = async (
     newRestaurantData: RestaurantDTO,
@@ -91,14 +108,15 @@ export const useRestaurantApi = () => {
         return responseData;
     };
 
-  return {
-    patchRestaurant,
-    createRestaurant,
-    getRestaurantById,
-    createCheckin,
-    createReview,
-    loading,
-    error,
-    data,
-  };
+    return {
+        patchRestaurant,
+        createRestaurant,
+        getRestaurantById,
+        getRandomRestaurant,
+        createCheckin,
+        createReview,
+        loading,
+        error,
+        data,
+    };
 };
