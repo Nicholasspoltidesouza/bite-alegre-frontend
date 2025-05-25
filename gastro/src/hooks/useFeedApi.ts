@@ -9,13 +9,16 @@ export const useFeedApi = () => {
 
   const apiService = new ApiService('/feed');
 
-  const getFeed = async (latitude: string, longitude: string): Promise<void> => {
+  const getFeed = async (
+    latitude: string,
+    longitude: string,
+  ): Promise<void> => {
     setLoading(true);
     setError(null);
 
     try {
       const responseData = await apiService.get<RestaurantDTO[]>(
-        `/?geolocation=${latitude},${longitude}`
+        `/?geolocation=${latitude},${longitude}`,
       );
       console.log(responseData);
       setData(responseData);

@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type User = { id: string; email: string };
 
@@ -13,7 +13,9 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
@@ -21,9 +23,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const loadStoredData = async () => {
       const [storedToken, storedUser, storedRole] = await Promise.all([
-        AsyncStorage.getItem("token"),
-        AsyncStorage.getItem("user"),
-        AsyncStorage.getItem("role"),
+        AsyncStorage.getItem('token'),
+        AsyncStorage.getItem('user'),
+        AsyncStorage.getItem('role'),
       ]);
 
       if (storedToken && storedUser && storedRole) {
@@ -42,9 +44,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setRole(role);
     setUser(user);
 
-    await AsyncStorage.setItem("token", token);
-    await AsyncStorage.setItem("role", role);
-    await AsyncStorage.setItem("user", JSON.stringify(user));
+    await AsyncStorage.setItem('token', token);
+    await AsyncStorage.setItem('role', role);
+    await AsyncStorage.setItem('user', JSON.stringify(user));
   };
 
   const clearAuthData = async () => {
@@ -52,13 +54,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setRole(null);
     setUser(null);
 
-    await AsyncStorage.removeItem("token");
-    await AsyncStorage.removeItem("role");
-    await AsyncStorage.removeItem("user");
+    await AsyncStorage.removeItem('token');
+    await AsyncStorage.removeItem('role');
+    await AsyncStorage.removeItem('user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, role, setAuthData, clearAuthData }}>
+    <AuthContext.Provider
+      value={{ user, token, role, setAuthData, clearAuthData }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -67,7 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 export const useAuthContext = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuthContext deve ser usado dentro de um AuthProvider");
+    throw new Error('useAuthContext deve ser usado dentro de um AuthProvider');
   }
   return context;
 };

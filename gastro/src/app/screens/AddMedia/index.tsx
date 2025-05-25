@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { usePublicationApi } from '@/src/hooks/usePublicationApi';
+import * as FileSystem from 'expo-file-system';
 import { Keyboard } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {
@@ -20,6 +22,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useSearch } from '@/src/hooks/useSearch';
+import { PublicationDTO } from '@/src/@types/DTO';
 
 const AddMedia = () => {
   const router = useRouter();
@@ -30,11 +33,12 @@ const AddMedia = () => {
   const [description, setDescription] = useState<string>('');
   const [restaurantSearch, setRestaurantSearch] = useState<string>('');
   const [selectedRestaurantId, setSelectedRestaurantId] = useState<
-    string | null
-  >(null);
+    string
+  >('');
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
   const { restaurants, search: runSearch, loading } = useSearch();
+  const { createPublication } = usePublicationApi();
 
   useEffect(() => {
     if (restaurantSearch.length > 1) {
@@ -147,7 +151,7 @@ const AddMedia = () => {
     }
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const errors = [validateDescription(description)].filter(
       (error) => error != null,
     );
@@ -162,11 +166,28 @@ const AddMedia = () => {
       return;
     }
 
-    setDescription('');
-    setMediaUri(null);
-    setRestaurantSearch('');
-    Alert.alert('Sucesso', 'Publicação criada!');
-    router.back();
+    const base64Media = await FileSystem.readAsStringAsync(mediaUri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+
+    const postData: PublicationDTO = {
+      media: base64Media,
+      description,
+      restaurant_id: selectedRestaurantId
+    }
+
+    const res = await createPublication(postData);
+    if (!res) {
+      Alert.alert('Erro', 'Erro ao criar publicação.');
+      return;
+    }
+    Alert.alert('Sucesso', 'Publicação criada com sucesso!');
+    router.push({
+      pathname: '/screens/PublicationInfluencer',
+      params: {
+        postData: JSON.stringify(postData),
+      },
+    });
   };
 
   return (

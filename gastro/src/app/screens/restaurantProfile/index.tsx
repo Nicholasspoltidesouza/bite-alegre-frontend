@@ -37,25 +37,25 @@ const RestaurantProfile: React.FC = () => {
     error,
   } = useRestaurantApi();
   const [modalVisible, setModalVisible] = useState(false);
-  const [refresh, setRefresh ]= useState(0);
+  const [refresh, setRefresh] = useState(0);
   const { restaurantId } = useLocalSearchParams();
 
   useEffect(() => {
     if (typeof restaurantId === 'string')
-        getRestaurantById(restaurantId.toString());
+      getRestaurantById(restaurantId.toString());
   }, [restaurantId, refresh]);
 
   function isRestaurantDTO(obj: any): obj is RestaurantDTO {
-  return (
-    obj &&
-    typeof obj === 'object' &&
-    'bannerPhoto' in obj &&
-    'profilePhoto' in obj &&
-    'name' in obj &&
-    'description' in obj &&
-    'address' in obj
-  );
-}
+    return (
+      obj &&
+      typeof obj === 'object' &&
+      'bannerPhoto' in obj &&
+      'profilePhoto' in obj &&
+      'name' in obj &&
+      'description' in obj &&
+      'address' in obj
+    );
+  }
 
   if (loading) {
     return (
@@ -86,7 +86,7 @@ const RestaurantProfile: React.FC = () => {
       };
       await createCheckin(checkinData);
       Alert.alert('Sucesso', 'Checkin feito com sucesso!');
-      setRefresh(prev => prev + 1);
+      setRefresh((prev) => prev + 1);
     } catch (err) {
       console.error('Submit Error:', err);
       Alert.alert(

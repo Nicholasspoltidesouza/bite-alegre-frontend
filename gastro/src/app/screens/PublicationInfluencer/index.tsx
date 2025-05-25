@@ -42,11 +42,13 @@ export default function PublicationInfluencer() {
         </View>
 
         <Text style={styles.description}>
-          A pizzaria napolitana é especializada em trazer a autêntica experiência italiana aos amantes da boa pizza. Com massas leves e fermentação natural, suas pizzas são assadas em f
-          orno a lenha em altíssimas temperaturas, resultando em bordas infladas e sabor levemente defumado. Ingredientes frescos, como molho de tomate San Marzano, mozzarella de b
-          úfala e manjericão, garantem o equilíbrio perfeito entre 
-          simplicidade e sabor.
-    
+          A pizzaria napolitana é especializada em trazer a autêntica
+          experiência italiana aos amantes da boa pizza. Com massas leves e
+          fermentação natural, suas pizzas são assadas em f orno a lenha em
+          altíssimas temperaturas, resultando em bordas infladas e sabor
+          levemente defumado. Ingredientes frescos, como molho de tomate San
+          Marzano, mozzarella de b úfala e manjericão, garantem o equilíbrio
+          perfeito entre simplicidade e sabor.
         </Text>
 
         <View style={styles.restauranteRow}>
@@ -57,12 +59,16 @@ export default function PublicationInfluencer() {
             style={styles.restaurantImage}
           />
           <View style={styles.nameAndTagsColumn}>
-            <TouchableOpacity onPress={() => router.push({
-                pathname: '/screens/restaurantProfile',
-                params: {
-                restaurantId:'rest-1',
-              },
-              })}>
+            <TouchableOpacity
+              onPress={() =>
+                router.push({
+                  pathname: '/screens/restaurantProfile',
+                  params: {
+                    restaurantId: 'rest-1',
+                  },
+                })
+              }
+            >
               <Text style={styles.restaurantName}>Marques Pizzaria</Text>
             </TouchableOpacity>
             <View style={styles.tagsRow}>

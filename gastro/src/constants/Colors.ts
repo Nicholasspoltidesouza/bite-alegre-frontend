@@ -12,6 +12,7 @@ const Colors = {
     orangeLight: '#F9C69B',
     orangeMedium: '#FFB370',
     orangeDark: '#FF914B',
+    orangeWelcome: '#FF9500',
   },
   light: {
     lightGreen: '#92FFC3',
