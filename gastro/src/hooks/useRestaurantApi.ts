@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckinDTO, RestaurantDTO, ReviewDTO } from '../@types/DTO';
+import { CheckinDTO, RestaurantDTO, RestaurantPatchDTO, ReviewDTO } from '../@types/DTO';
 import ApiService from '../services/apiService';
 
 export const useRestaurantApi = () => {
@@ -94,7 +94,22 @@ export const useRestaurantApi = () => {
     }
   };
 
+  const patchRestaurant = async (patchData: RestaurantPatchDTO): Promise<RestaurantDTO | null> => {
+        const responseData = await callApi(
+            restaurantApiService.patch<RestaurantPatchDTO, RestaurantDTO>(
+                patchData,
+                `/${patchData.id}`
+            )
+        );
+        
+        if (responseData) {
+            setData(responseData);
+        }
+        return responseData;
+    };
+
     return {
+        patchRestaurant,
         createRestaurant,
         getRestaurantById,
         getRandomRestaurant,

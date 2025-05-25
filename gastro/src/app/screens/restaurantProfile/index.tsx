@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback,
   Alert,
 } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Accordion from '@/src/components/Accordion';
 
 import {
@@ -26,6 +26,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { CheckinDTO, RestaurantDTO, OperatingHoursDto } from '@/src/@types/DTO';
 import { Weekday, mapFromWeekday } from '@/src/utils/weekdayUtils'; 
 import Colors from '@/src/constants/Colors';
+import { useAuthContext } from '@/src/contexts/authContext';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -39,12 +40,15 @@ const RestaurantProfile: React.FC = () => {
   } = useRestaurantApi();
   const [modalVisible, setModalVisible] = useState(false);
   const [refresh, setRefresh ]= useState(0);
+    const [isProfile, setIsProfile] = useState(false);
   const params = useLocalSearchParams<{ restaurantId: string }>();
   const currentRestaurantId = params.restaurantId;
+  const { user } = useAuthContext();
 
   useEffect(() => {
     if (currentRestaurantId) {
         getRestaurantById(currentRestaurantId);
+        setIsProfile(user?.id === currentRestaurantId.toString())
     }
   }, [currentRestaurantId, refresh]);
 
@@ -156,6 +160,7 @@ const RestaurantProfile: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <HeaderPerfilRestaurante
+        isProfile={isProfile}
         urlFotoBanner={restaurant?.bannerPhoto}
         urlFotoPerfil={restaurant?.profilePhoto}
       ></HeaderPerfilRestaurante>

@@ -90,6 +90,17 @@ class ApiService {
     };
     return this.request<ResponseBody>(endpoint, optionsForRequest);
   }
+  
+    public patch<RequestBody, ResponseBody>(
+    data: RequestBody,
+    endpoint?: string
+    ): Promise<ResponseBody> {
+    const optionsForRequest: RequestInit = {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+    };
+    return this.request<ResponseBody>(endpoint, optionsForRequest);
+    }
 }
 
 export default ApiService;
