@@ -1,8 +1,12 @@
 import React from 'react';
 import Home from './screens/Home';
+import { useAuthContext } from '../contexts/authContext';
+import Feed from './screens/Feed';
 
 const App: React.FC = () => {
-  return <Home />;
+  const { token } = useAuthContext();
+
+  return token ? <Feed /> : <Home />;
 };
 
 export default App;
