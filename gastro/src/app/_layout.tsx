@@ -19,8 +19,10 @@ export default function RootLayout() {
 }
 
 function RootLayoutContent() {
-  const { role } = useAuthContext();
+  const { role, token, user } = useAuthContext();
   const pathname = usePathname();
+
+  console.log('token navbar: ', token);
 
   const profileScreen =
     role === 'INFLUENCER'
@@ -31,11 +33,15 @@ function RootLayoutContent() {
     role === 'INFLUENCER'
       ? 'screens/Profile/index'
       : 'screens/InfluencerProfile/index';
+
   const hiddenRoutes = [
     '/screens/SignupUser',
     '/screens/SignupRestaurant',
     '/screens/SignupInterestsScreen',
     '/screens/Roulette',
+    '/screens/Home',
+    '/screens/Login',
+    '/',
   ];
   const shouldHideTabBar = hiddenRoutes.includes(pathname);
 
@@ -69,7 +75,7 @@ function RootLayoutContent() {
         }}
       >
         <Tabs.Screen
-          name="screens/Feed/index"
+          name="index"
           options={{
             tabBarShowLabel: false,
             tabBarIcon: ({ color, size, focused }) => (
@@ -111,7 +117,7 @@ function RootLayoutContent() {
           }}
         />
         <Tabs.Screen
-          name="screens/Roullete/index"
+          name="screens/Roulette/index"
           options={{
             tabBarShowLabel: false,
             tabBarIcon: ({ color, size, focused }) => (
@@ -201,10 +207,6 @@ function RootLayoutContent() {
           options={{ href: null, tabBarShowLabel: false }}
         />
         <Tabs.Screen
-          name="index"
-          options={{ href: null, tabBarShowLabel: false }}
-        />
-        <Tabs.Screen
           name="screens/AddMedia/index"
           options={{ href: null, tabBarShowLabel: false }}
         />
@@ -213,11 +215,15 @@ function RootLayoutContent() {
           options={{ href: null, tabBarShowLabel: false }}
         />
         <Tabs.Screen
-          name="screens/Home/index"
+          name="screens/Feed/index"
           options={{ href: null, tabBarShowLabel: false }}
         />
         <Tabs.Screen
           name="screens/Login/index"
+          options={{ href: null, tabBarShowLabel: false }}
+        />
+        <Tabs.Screen
+          name="screens/RestaurantProfilePatch/index"
           options={{ href: null, tabBarShowLabel: false }}
         />
         <Tabs.Screen

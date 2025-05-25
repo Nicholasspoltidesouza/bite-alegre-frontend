@@ -1,7 +1,7 @@
 import Colors from "@/src/constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuthApi } from "@/src/hooks/useAuthApi";
 
@@ -61,59 +61,65 @@ export default function Login() {
                 style={styles.logo}
             />
 
-            <View style={styles.formWrapper}>
-                <View style={styles.formContainer}>
-                    <Text style={styles.welcome}> Bem-vindo de volta! </Text>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={{ flex: 1 }}
+                keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+            >
+                <View style={styles.formWrapper}>
+                    <View style={styles.formContainer}>
+                        <Text style={styles.welcome}> Bem-vindo de volta! </Text>
 
-                    <TextInput
-                        placeholder="Email"
-                        style={[
-                            styles.textField,
-                            emailError && { borderColor: "red", borderWidth: 2 }
-                        ]}
-                        placeholderTextColor={Colors.orange.orangeStandard}
-                        value={email}
-                        onChangeText={text => {
-                            setEmail(text);
-                            setEmailError(false);
-                        }}
-                    />
-                    <TextInput
-                        placeholder="Senha"
-                        style={[
-                            styles.textField,
-                            passwordError && { borderColor: "red", borderWidth: 2 }
-                        ]}
-                        secureTextEntry
-                        placeholderTextColor={Colors.orange.orangeStandard}
-                        value={password}
-                        onChangeText={text => {
-                            setPassword(text);
-                            setPasswordError(false);
-                        }}
-                    />
+                        <TextInput
+                            placeholder="Email"
+                            style={[
+                                styles.textField,
+                                emailError && { borderColor: "red", borderWidth: 2 }
+                            ]}
+                            placeholderTextColor={Colors.orange.orangeStandard}
+                            value={email}
+                            onChangeText={text => {
+                                setEmail(text);
+                                setEmailError(false);
+                            }}
+                        />
+                        <TextInput
+                            placeholder="Senha"
+                            style={[
+                                styles.textField,
+                                passwordError && { borderColor: "red", borderWidth: 2 }
+                            ]}
+                            secureTextEntry
+                            placeholderTextColor={Colors.orange.orangeStandard}
+                            value={password}
+                            onChangeText={text => {
+                                setPassword(text);
+                                setPasswordError(false);
+                            }}
+                        />
 
-                    <View style={styles.buttonRow}>
-                        <TouchableOpacity style={styles.outlinedButton}>
-                            <Text style={styles.outlinedText}>Cadastre-se</Text>
-                        </TouchableOpacity>
+                        <View style={styles.buttonRow}>
+                            <TouchableOpacity style={styles.outlinedButton}>
+                                <Text style={styles.outlinedText}>Cadastre-se</Text>
+                            </TouchableOpacity>
 
-                        <TouchableOpacity 
-                            style={styles.filledButton}
-                            onPress={handleLogin}
-                            disabled={loading}
-                        >
-                            <Text style={styles.filledText}>{loading ? "Entrando..." : "Entrar"}</Text>
+                            <TouchableOpacity 
+                                style={styles.filledButton}
+                                onPress={handleLogin}
+                                disabled={loading}
+                            >
+                                <Text style={styles.filledText}>{loading ? "Entrando..." : "Entrar"}</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <TouchableOpacity>
+                            <Text style={styles.linkText}>
+                                Cadastre seu restaurante <Text style={{ fontWeight: "bold" }}>aqui!</Text>
+                            </Text>
                         </TouchableOpacity>
                     </View>
-
-                    <TouchableOpacity>
-                        <Text style={styles.linkText}>
-                            Cadastre seu restaurante <Text style={{ fontWeight: "bold" }}>aqui!</Text>
-                        </Text>
-                    </TouchableOpacity>
                 </View>
-            </View>
+            </KeyboardAvoidingView>
         </LinearGradient>
     );
 };
