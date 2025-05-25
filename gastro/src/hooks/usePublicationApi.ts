@@ -17,6 +17,10 @@ export const usePublicationApi = () => {
             const result = await callApiPromise;
             return result;
         } catch (err: any) {
+            console.log(err);
+            if (err?.response?.status === 404) {
+                return null;
+            }
             setError(err.message || 'Erro ao executar a chamada da API.');
             return null;
         } finally {
@@ -48,6 +52,7 @@ export const usePublicationApi = () => {
         const responseData = await callApi(
             publicationApiService.get<PublicationDTO[] | null >('/user/' + userId)
         );
+        console.log('responseData', responseData);
         return responseData;
     };
 

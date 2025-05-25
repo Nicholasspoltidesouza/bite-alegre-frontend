@@ -70,6 +70,7 @@ interface AuthDTO {
 }
 
 interface PublicationDTO {
+  id?: string;
   url: string;
   media: string;
   description: string;

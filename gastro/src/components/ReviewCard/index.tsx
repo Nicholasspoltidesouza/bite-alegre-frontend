@@ -40,7 +40,6 @@ return (
                 style={styles.card}
                 >
                 <View style={styles.header}>
-                    <View style={{backgroundColor: Colors.background, borderRadius: 50}}>
                         {item.restaurantProfilePhoto ? (
                             <Image
                             source={{ uri: item.restaurantProfilePhoto }}
@@ -49,7 +48,6 @@ return (
                                 ) : (
                             <MaterialIcons name="store" size={40} color="#fcd5b5" style={{padding: '2%'}} />
                         )}
-                    </View>
                     <View style={styles.titleContainer}>
                         <Text style={styles.restaurantName}>
                             {item.restaurantName}
@@ -81,9 +79,9 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: '#fff3ec',
         borderRadius: 12,
-        padding: '5%',
-        margin: '5%',
-        elevation: 3,
+        padding: '2%',
+        marginVertical: 5,
+        marginHorizontal: 10,
     },
     header: {
         flexDirection: 'row',
@@ -112,7 +110,8 @@ const styles = StyleSheet.create({
     reviewText: {
         color: Colors.text.black,
         fontSize: 12,
-        marginTop: 8,
+        marginVertical: 8,
+        marginHorizontal: 8,
         fontFamily: 'Poppins-Medium',
     },
 });

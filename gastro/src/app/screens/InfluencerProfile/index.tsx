@@ -29,25 +29,27 @@ export default function InfluencerProfile() {
   const { getPublicationbyUserId, loading : loadingPublication, error : errorPublication} = usePublicationApi();
   const { user } = useAuthContext();
   const [sameUser, setSameUser] = useState(false);
-  const [userDataPublication, setUserDataPublication] = useState<PublicationDTO[]>([]);
+  const [userDataPublication, setUserDataPublication] = useState<PublicationDTO[] | null>([]);
   const { userId } = useLocalSearchParams();
   const [selectedTab, setSelectedTab] = useState<
     'grid' | 'reviews' | 'checkins' | 'user'
   >('grid');
 
-
-  const {} = useCreateUser();
   const handleAddPress = () => router.push({ pathname: '/screens/AddMedia' });
   const filterAddPress = () => router.push({ pathname: '/screens/AddMedia' });
 
   useEffect(() => {
-    setSameUser(userId === user!.id);
-    getUserById(userId.toString());
-    getPublicationbyUserId(userId.toString()).then((data) => {
-      if (data) {
-        setUserDataPublication(data);
-      }
-    });
+    console.log('user', user);
+    const id = typeof userId === 'string' ? userId : user!.id;
+    setSameUser(id === user!.id);
+    getUserById(id.toString()).then((data) => {
+       getPublicationbyUserId(id.toString()).then((data) => {
+        if (data) {
+          setUserDataPublication(data);
+        }
+      });
+    });   
+    
   }, [userId]);
 
   if (loading || loadingPublication ) {
@@ -65,8 +67,7 @@ export default function InfluencerProfile() {
     return (
       <SafeAreaView style={styles.container}>
         <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>
-          {error}
-        </Text>
+          'Erro ao carregar os dados do usuário.'</Text>
       </SafeAreaView>
     );
   }
@@ -84,17 +85,13 @@ export default function InfluencerProfile() {
           );
         }
         return (
-          <ScrollView>
-            <Publications images={userDataPublication!} />
-          </ScrollView>
+          <Publications images={userDataPublication!} />
         );
       case 'reviews':
         return <CardReview reviews={userData!.reviews!} />;
       case 'checkins':
         return (
-          <View>
-            <CheckinSection checkins={userData!.checkinsWithoutReview!} />;
-          </View>
+            <CheckinSection checkins={userData!.checkinsWithoutReview!} />
         );
       case 'user':
         return (
@@ -134,8 +131,8 @@ export default function InfluencerProfile() {
       <ScrollView>
         <Header
           isProfile={true}
-          name={'Manu'}
-          nickName={'manu'}
+          name={userData?.name!}
+          nickName={userData?.nickname!}
           userView={!sameUser}
         />
 

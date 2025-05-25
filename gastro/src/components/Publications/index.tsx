@@ -64,10 +64,10 @@ export const Publications: React.FC<Props> = ({ images }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.column}>
-        {leftColumn.map(image => (
-          <View key={image.id} style={styles.imageContainer}>
+        {leftColumn.map((image, index) => (
+          <View key={`left-${image.id ?? index}`} style={styles.imageContainer}>
             <Image
-              source={{ uri: image.uri }}
+              source={{ uri: image.url }}
               style={{
                 width: columnWidth,
                 height: image.height,
@@ -77,17 +77,17 @@ export const Publications: React.FC<Props> = ({ images }) => {
         ))}
       </View>
       <View style={styles.column}>
-        {rightColumn.map(image => (
-          <View key={image.id} style={styles.imageContainer}>
-            <Image
-              source={{ uri: image.uri }}
-              style={{
-                width: columnWidth,
-                height: image.height,
-              }}
-            />
-          </View>
-        ))}
+        {rightColumn.map((image, index) => (
+          <View key={`right-${image.id ?? index}`} style={styles.imageContainer}>
+          <Image
+            source={{ uri: image.url }}
+            style={{
+              width: columnWidth,
+              height: image.height,
+            }}
+          />
+        </View>
+      ))}
       </View>
     </ScrollView>
   );

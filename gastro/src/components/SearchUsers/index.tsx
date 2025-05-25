@@ -26,7 +26,7 @@ const SearchUsers: React.FC<SearchUsersProps> = ({
         if(influencer) {
           router.push
           ({
-            pathname: '/screens/Influencer/InfluencerProfile',
+            pathname: '/screens/InfluencerProfile',
             params: {
               userId: useId,
             },

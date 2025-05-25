@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Colors from '@/src/constants/Colors';
 import { CheckinDTO } from '@/src/@types/DTO';
+import { MaterialIcons } from '@expo/vector-icons';
 
 interface Props {
   checkins: CheckinDTO[];
@@ -22,7 +23,14 @@ export default function CheckinSection({ checkins }: Props) {
       contentContainerStyle={{ paddingBottom: 16 }}
       renderItem={({ item }) => (
         <TouchableOpacity style={styles.card}>
-          <Image source={{ uri: item.restaurantProfilePhoto }} style={styles.image} />
+          {item.restaurantProfilePhoto ? (
+            <Image
+            source={{ uri: item.restaurantProfilePhoto }}
+            style={styles.image}
+            />
+                ) : (
+            <MaterialIcons name="store" size={40} color="#fcd5b5" style={{padding: '2%'}} />
+          )}
           <View style={styles.info}>
             <Text style={styles.name}>{item.restaurantName}</Text>
             <Text style={styles.date}>Data não disponível</Text>
@@ -35,13 +43,13 @@ export default function CheckinSection({ checkins }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#ffe7d8',
+   backgroundColor: '#fff3ec',
     borderRadius: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 14,
-    marginHorizontal: 20,
-    marginVertical: 8,
+    padding: '2%',
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
   image: {
     width: 44,
@@ -51,11 +59,12 @@ const styles = StyleSheet.create({
   },
   info: {
     flex: 1,
+    marginLeft: 10,
   },
   name: {
     fontSize: 16,
     fontFamily: 'Poppins-Medium',
-    color: Colors.orange.orangeStandard,
+    color: Colors.text.standard,
   },
   date: {
     fontSize: 13,
