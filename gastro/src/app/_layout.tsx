@@ -14,7 +14,7 @@ export default function RootLayout() {
     '/screens/SignupUser',
     '/screens/SignupRestaurant',
     '/screens/SignupInterestsScreen',
-    '/screens/RoulletFilterModal',
+    '/screens/Roulette',
   ];
   const shouldHideTabBar = hiddenRoutes.includes(pathname);
 
@@ -92,7 +92,7 @@ export default function RootLayout() {
             }}
           />
           <Tabs.Screen
-            name="screens/Roullete/index"
+            name="screens/Roulette/index"
             options={{
               tabBarShowLabel: false,
               tabBarIcon: ({ color, size, focused }) => (
