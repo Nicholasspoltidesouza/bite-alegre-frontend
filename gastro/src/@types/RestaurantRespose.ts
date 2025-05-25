@@ -1,3 +1,5 @@
+import { OperatingHoursDto } from "./OperatingHoursDto";
+
 export type RestaurantResponse = {
   id: string;
   profilePhoto: string;
@@ -12,4 +14,5 @@ export type RestaurantResponse = {
   longitude: number;
   averageScore: number | null;
   reviews: any[];
+  openingPeriods?: OperatingHoursDto[];
 };

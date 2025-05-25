@@ -1,4 +1,7 @@
+import { Weekday } from "../utils/weekdayUtils";
+
 export interface OperatingHoursDto {
-  day: string;
-  time: string;
+    weekday: Weekday;
+    opensAt: string;
+    closesAt: string;
 }
