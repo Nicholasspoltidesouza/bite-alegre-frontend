@@ -35,6 +35,7 @@ function RootLayoutContent() {
     '/screens/SignupUser',
     '/screens/SignupRestaurant',
     '/screens/SignupInterestsScreen',
+    '/screens/Roulette',
   ];
   const shouldHideTabBar = hiddenRoutes.includes(pathname);
 
