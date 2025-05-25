@@ -1,3 +1,5 @@
+import { OperatingHoursDto } from "./OperatingHoursDto";
+
 interface UserDTO {
   profilePhoto?: string;
   name: string;
@@ -28,6 +30,24 @@ interface RestaurantDTO {
   userType: string;
   reviews?: ReviewDTO[];
   stars?: number;
+  openingPeriods?: OperatingHoursDto[];
+}
+
+interface RestaurantPatchDTO {
+  id: string;
+  profilePhoto?: string;
+  bannerPhoto?: string;
+  address?: string;
+  name?: string;
+  description?: string;
+  averagePrice?: number;
+  phone?: string;
+  openingPeriods?: {
+    weekday: string;
+    opensAt: string;
+    closesAt: string;
+  }[];
+  tagIds?: string[];
 }
 
 interface CheckinDTO {
@@ -67,11 +87,20 @@ interface AuthDTO {
   };
 }
 
+interface PublicationDTO {
+  media: string;
+  description: string;
+  restaurant_id: string;
+}
+
 export type {
   RestaurantDTO,
+  RestaurantPatchDTO,
   UserDTO,
   CheckinDTO,
   ReviewDTO,
   RestaurantFilterDTO,
   AuthDTO,
+  PublicationDTO,
+  OperatingHoursDto
 };

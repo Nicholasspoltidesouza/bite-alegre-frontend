@@ -66,7 +66,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
 
   const translateXAnimation = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [2, 22],
+    outputRange: [2, 26],
   });
 
   return (

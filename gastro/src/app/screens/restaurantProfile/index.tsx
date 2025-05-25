@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback,
   Alert,
 } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Accordion from '@/src/components/Accordion';
 
 import {
@@ -22,9 +22,11 @@ import {
 } from '@expo/vector-icons';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import Button from '@/src/components/Button';
-import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
-import { CheckinDTO, RestaurantDTO } from '@/src/@types/DTO';
+import { router, useLocalSearchParams } from 'expo-router';
+import { CheckinDTO, RestaurantDTO, OperatingHoursDto } from '@/src/@types/DTO';
+import { Weekday, mapFromWeekday } from '@/src/utils/weekdayUtils'; 
 import Colors from '@/src/constants/Colors';
+import { useAuthContext } from '@/src/contexts/authContext';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -37,25 +39,41 @@ const RestaurantProfile: React.FC = () => {
     error,
   } = useRestaurantApi();
   const [modalVisible, setModalVisible] = useState(false);
-  const [refresh, setRefresh] = useState(0);
-  const { restaurantId } = useLocalSearchParams();
+  const [refresh, setRefresh ]= useState(0);
+    const [isProfile, setIsProfile] = useState(false);
+  const params = useLocalSearchParams<{ restaurantId: string }>();
+  const currentRestaurantId = params.restaurantId;
+  const { user } = useAuthContext();
 
   useEffect(() => {
-    if (typeof restaurantId === 'string')
-      getRestaurantById(restaurantId.toString());
-  }, [restaurantId, refresh]);
+    if (currentRestaurantId) {
+        getRestaurantById(currentRestaurantId);
+        setIsProfile(user?.id === currentRestaurantId.toString())
+    }
+  }, [currentRestaurantId, refresh]);
 
   function isRestaurantDTO(obj: any): obj is RestaurantDTO {
-    return (
-      obj &&
-      typeof obj === 'object' &&
-      'bannerPhoto' in obj &&
-      'profilePhoto' in obj &&
-      'name' in obj &&
-      'description' in obj &&
-      'address' in obj
-    );
-  }
+  return (
+    obj != null &&
+    typeof obj === 'object' &&
+    (typeof obj.bannerPhoto === 'string' || obj.bannerPhoto === null) && // Permitir null
+    (typeof obj.profilePhoto === 'string' || obj.profilePhoto === null) && // Permitir null
+    typeof obj.name === 'string' &&
+    typeof obj.description === 'string' &&
+    typeof obj.address === 'string' &&
+    (obj.openingPeriods === undefined || 
+     obj.openingPeriods === null ||
+     (Array.isArray(obj.openingPeriods) &&
+      obj.openingPeriods.every(
+        (period: any) =>
+          period != null &&
+          typeof period === 'object' &&
+          typeof period.weekday === 'string' && 
+          typeof period.opensAt === 'string' &&
+          typeof period.closesAt === 'string'
+      )))
+  );
+}
 
   if (loading) {
     return (
@@ -73,16 +91,59 @@ const RestaurantProfile: React.FC = () => {
     return (
       <SafeAreaView style={styles.container}>
         <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>
-          {error ?? 'Erro ao buscar restaurante.'}
+          {error ?? 'Erro ao carregar dados do restaurante ou formato inválido.'}
         </Text>
       </SafeAreaView>
     );
   }
 
+  const formatOpeningPeriodsForDisplay = (
+    openingPeriods: OperatingHoursDto[] | undefined,
+  ): string => {
+    if (!openingPeriods || openingPeriods.length === 0) {
+      return 'Horários de funcionamento não disponíveis.';
+    }
+
+    const groupedPeriods: Record<string, string[]> = {};
+    const dayOrder: Weekday[] = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    const dayDisplayNames: { [key in Weekday]?: string } = {};
+    
+    openingPeriods.forEach(period => {
+      const validWeekday = period.weekday as Weekday;
+      const dayName = mapFromWeekday(validWeekday);
+      if (!dayName) {
+        return;
+      }
+      dayDisplayNames[validWeekday] = dayName;
+      if (!groupedPeriods[period.weekday]) {
+        groupedPeriods[period.weekday] = [];
+      }
+      groupedPeriods[period.weekday].push(`${period.opensAt} - ${period.closesAt}`);
+    });
+
+    // Sort periods within each day (e.g., "09:00 - 12:00", "14:00 - 18:00")
+    for (const weekdayKey in groupedPeriods) {
+      groupedPeriods[weekdayKey].sort(); 
+    }
+
+    let formattedString = '';
+    dayOrder.forEach(weekday => {
+      if (groupedPeriods[weekday] && dayDisplayNames[weekday]) {
+        formattedString += `${dayDisplayNames[weekday]}:\n  ${groupedPeriods[weekday].join('\n  ')}\n\n`;
+      }
+    });
+
+    return formattedString.trim() || 'Horários de funcionamento não disponíveis.';
+  };
+
   const handleCheckin = async () => {
     try {
+      if (!currentRestaurantId) {
+        Alert.alert("Erro", "ID do restaurante não encontrado para fazer check-in.");
+        return;
+      }
       const checkinData: CheckinDTO = {
-        restaurant_id: restaurantId.toString(),
+        restaurant_id: currentRestaurantId,
       };
       await createCheckin(checkinData);
       Alert.alert('Sucesso', 'Checkin feito com sucesso!');
@@ -99,6 +160,7 @@ const RestaurantProfile: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <HeaderPerfilRestaurante
+        isProfile={isProfile}
         urlFotoBanner={restaurant?.bannerPhoto}
         urlFotoPerfil={restaurant?.profilePhoto}
       ></HeaderPerfilRestaurante>
@@ -151,15 +213,7 @@ const RestaurantProfile: React.FC = () => {
           <Accordion
             title={'Aberto'}
             description={''}
-            content={
-              `Segunda-Feira            18:30 às 23:00\n` +
-              `Terça-Feira                  18:30 às 23:00\n` +
-              `Quarta-Feira               18:30 às 23:00\n` +
-              `Quinta-Feira               18:30 às 23:00\n` +
-              `Sexta-Feira                 18:30 às 00:00\n` +
-              `Sábado                        12:00 às 00:00\n` +
-              `Domingo                    12:00 às 22:00`
-            }
+            content={formatOpeningPeriodsForDisplay(restaurant?.openingPeriods)}
             staticArrow={false}
             children={
               <Foundation
@@ -206,10 +260,14 @@ const RestaurantProfile: React.FC = () => {
                       title="Sim"
                       onPress={() => {
                         setModalVisible(!modalVisible);
+                        if (!currentRestaurantId) {
+                          Alert.alert("Erro", "ID do restaurante não encontrado para avaliação.");
+                          return;
+                        }
                         router.push({
                           pathname: '/screens/CreateReview',
                           params: {
-                            restaurantId: restaurantId,
+                            restaurantId: currentRestaurantId, // Pass the validated string ID
                           },
                         });
                       }}
