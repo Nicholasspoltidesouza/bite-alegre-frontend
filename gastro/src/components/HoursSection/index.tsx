@@ -586,17 +586,6 @@ const HoursSection: React.FC<Props> = ({ hours: operatingHoursProp, onUpdateHour
                   </View>
                 ))}
               </View>
-
-              {/* Button to mark the entire day as "Fechado" */}
-              <View style={styles.actionCell}>
-                <TouchableOpacity
-                  style={styles.removeButton}
-                  onPress={() => handleRemoveHour(day.day)}
-                  activeOpacity={0.7}
-                >
-                  <MaterialIcons name="delete" size={20} color="#FF5252" />
-                </TouchableOpacity>
-              </View>
             </View>
           ))}
         </View>
