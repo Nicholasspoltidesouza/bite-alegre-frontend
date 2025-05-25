@@ -68,7 +68,7 @@ function RootLayoutContent() {
         }}
       >
         <Tabs.Screen
-          name="index"
+          name="screens/Feed/index"
           options={{
             tabBarShowLabel: false,
             tabBarIcon: ({ color, size, focused }) => (
@@ -200,7 +200,7 @@ function RootLayoutContent() {
           options={{ href: null, tabBarShowLabel: false }}
         />
         <Tabs.Screen
-          name="screens/Feed/index"
+          name="index"
           options={{ href: null, tabBarShowLabel: false }}
         />
         <Tabs.Screen
