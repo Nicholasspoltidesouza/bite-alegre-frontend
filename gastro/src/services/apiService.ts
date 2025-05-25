@@ -8,7 +8,7 @@ export interface ApiErrorResponse {
 
 class ApiService {
     private baseUrl: string;
-    private API_URL = API_URL_BACKEND;
+    private API_URL = API_URL_ANDROID;
 
     constructor(baseUrl: string) {
         if (!baseUrl) {
