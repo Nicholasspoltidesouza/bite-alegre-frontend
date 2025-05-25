@@ -1,24 +1,24 @@
-import React, { useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-  Text,
-  SafeAreaView,
-  Pressable,
-  ActivityIndicator,
-} from 'react-native';
 import Header from '@/src/components/Header';
+import SearchInput from '@/src/components/SearchInput';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import Colors from '@/src/constants/Colors';
-import SearchInput from '@/src/components/SearchInput';
-import { router } from 'expo-router';
-import useLocation from '@/src/hooks/useLocation';
-import { useFeedApi } from '@/src/hooks/useFeedApi';
-import { useCreateUser } from '@/src/hooks/useUserApi';
 import { useAuthContext } from '@/src/contexts/authContext';
+import { useFeedApi } from '@/src/hooks/useFeedApi';
+import useLocation from '@/src/hooks/useLocation';
+import { useCreateUser } from '@/src/hooks/useUserApi';
+import { router } from 'expo-router';
+import React, { useEffect } from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 export default function Feed() {
   const { latitude, longitude, loadingLocation } = useLocation();
@@ -69,13 +69,13 @@ export default function Feed() {
           <Pressable
             onPress={() => router.push({ pathname: '/screens/Search' })}
           >
-            <SearchInput value={''} editable={false} onChangeText={() => {}} />
+            <SearchInput value={''} editable={false} onChangeText={() => { }} />
           </Pressable>
         </View>
 
         {/*Banner*/}
         <View style={[styles.rouletteCardContainer]}>
-          <TouchableOpacity onPress={() => console.log('Card pressionado')}>
+          <TouchableOpacity onPress={() => router.push('/screens/Roulette')}>
             <Image
               source={require('@/assets/images/card-roulette.png')}
               style={styles.rouletteCard}
