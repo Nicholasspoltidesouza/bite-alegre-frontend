@@ -48,8 +48,8 @@ const SignupUser = () => {
   const [userType, setUserType] = useState<string | null>(
     userData ? JSON.parse(userData as string).userType : 'Cadastro de Usuário',
   );
-  const [isInfluencer, setIsInfluencer] = useState<boolean>(
-    userData ? JSON.parse(userData as string).isInfluencer || false : false,
+  const [influencer, setInfluencer] = useState<boolean>(
+    userData ? JSON.parse(userData as string).influencer || false : false,
   );
 
   const [birthDateTouched, setBirthDateTouched] = useState<boolean>(false);
@@ -168,7 +168,7 @@ const SignupUser = () => {
       gender: formattedGender,
       birthDate: isoBirthDate,
       userType: formattedUserType,
-      isInfluencer,
+      influencer,
     };
 
     router.push({
@@ -319,8 +319,8 @@ const SignupUser = () => {
           <View style={styles.influencerToggleContainer}>
             <Text style={[styles.influencerLabel, { marginRight: 10 }]}>Sou Influenciador</Text>
             <ToggleSwitch
-              isEnabled={isInfluencer}
-              onToggle={setIsInfluencer}
+              isEnabled={influencer}
+              onToggle={setInfluencer}
               activeColor={Colors.orange.orangeStandard}
             />
           </View>
