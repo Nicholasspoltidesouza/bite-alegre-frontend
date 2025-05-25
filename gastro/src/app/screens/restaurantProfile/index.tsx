@@ -46,7 +46,7 @@ const RestaurantProfile: React.FC = () => {
   useEffect(() => {
     if (typeof restaurantId === 'string') {
       getRestaurantById(restaurantId.toString());        
-      setIsProfile(user?.id == restaurantId.toString())
+      setIsProfile(user?.id === restaurantId.toString())
      }
   }, [restaurantId, refresh]);
 
