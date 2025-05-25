@@ -32,20 +32,14 @@ const SignupRestaurant = () => {
     'Cadastro de Restaurante',
   );
 
-  const [operatingHours, setOperatingHours] = useState<OperatingHoursDto[]>([
-    { day: 'Segunda', time: '11:00 – 14:00' },
-    { day: 'Feriados', time: '18:30 – 23:30' },
-  ]);
+  const [openingPeriods, setOperatingHours] = useState<OperatingHoursDto[]>([]);
 
   const { getRestaurantById } = useRestaurantApi();
   const { createRestaurant } = useRestaurantApi();
   const router = useRouter();
 
-  const handleAddOperatingHour = () => {
-    setOperatingHours((prev: any) => [
-      ...prev,
-      { day: 'Quarta', startTime: '12:00', endTime: '15:00' },
-    ]);
+  const handleUpdateOperatingHours = (updatedHours: OperatingHoursDto[]) => {
+    setOperatingHours(updatedHours);
   };
 
   const validateDescription = (text: string): string | null => {
@@ -136,7 +130,8 @@ const SignupRestaurant = () => {
       !address ||
       !averagePrice ||
       !userType ||
-      !description
+      !description || 
+      !openingPeriods
     ) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
       return;
@@ -172,6 +167,7 @@ const SignupRestaurant = () => {
         averagePrice: parseFloat(averagePrice.replace(',', '.')),
         phone,
         userType: formatedUserType,
+        openingPeriods, 
       };
 
       router.push({
@@ -188,10 +184,6 @@ const SignupRestaurant = () => {
         err instanceof Error ? err.message : 'Ocorreu um erro inesperado',
       );
     }
-  };
-
-  const handleEditOperatingHour = (item: OperatingHoursDto, index: number) => {
-    Alert.alert('Editar Horário', `Você clicou em ${item.day} - ${item.time}`);
   };
 
   return (
@@ -325,9 +317,8 @@ const SignupRestaurant = () => {
 
           <View style={styles.inputWrapper}>
             <HoursSection
-              hours={operatingHours}
-              onAdd={handleAddOperatingHour}
-              onPressItem={handleEditOperatingHour}
+              hours={openingPeriods}
+              onUpdateHours={handleUpdateOperatingHours}
             />
           </View>
 
