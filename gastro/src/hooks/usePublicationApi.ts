@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { PublicationDTO } from '../@types/DTO';
 import ApiService from '../services/apiService';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+// Line removed as it is unused.
 
 export const usePublicationApi = () => {
 
