@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URL_ANDROID, API_URL_BACKEND } from '../constants/apiUrl';
+import { API_URL_ANDROID, API_URL_AWS, API_URL_BACKEND } from '../constants/apiUrl';
 import { router } from 'expo-router';
 
 export interface ApiErrorResponse {
@@ -13,7 +13,7 @@ export function redirectToHome() {
 
 class ApiService {
     private baseUrl: string;
-    private API_URL = API_URL_ANDROID;
+    private API_URL = API_URL_AWS; 
 
   constructor(baseUrl: string) {
     if (!baseUrl) {
