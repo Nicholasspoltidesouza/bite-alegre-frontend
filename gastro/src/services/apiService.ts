@@ -1,16 +1,19 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_URL_ANDROID, API_URL_BACKEND } from "../constants/apiUrl";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL_ANDROID, API_URL_BACKEND } from '../constants/apiUrl';
+import { router } from 'expo-router';
 
 export interface ApiErrorResponse {
   error?: string;
   message?: string;
 }
 
+export function redirectToHome() {
+  router.replace('/screens/Home');
+}
+
 class ApiService {
     private baseUrl: string;
-    private API_URL = API_URL_BACKEND;
-    private baseUrl: string;
-    private API_URL = API_URL_BACKEND;
+    private API_URL = API_URL_ANDROID;
 
   constructor(baseUrl: string) {
     if (!baseUrl) {
@@ -58,6 +61,13 @@ class ApiService {
       if (response.ok) {
         return responseData as T;
       } else {
+        if (response.status === 401) {
+          await AsyncStorage.removeItem('token');
+          await AsyncStorage.removeItem('role');
+          await AsyncStorage.removeItem('user');
+          redirectToHome();
+          throw new Error('Sessão expirada. Faça login novamente.');
+        }
         const errorPayload = responseData as ApiErrorResponse;
         throw new Error(
           errorPayload.error ||

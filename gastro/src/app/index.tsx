@@ -6,7 +6,7 @@ import Feed from './screens/Feed';
 const App: React.FC = () => {
   const { token } = useAuthContext();
 
-  return token ? <Feed /> : <Home />;
+  return token == null ? <Home /> : <Feed />;
 };
 
 export default App;

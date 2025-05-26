@@ -4,19 +4,21 @@ import Colors from '@/src/constants/Colors';
 import { AntDesign } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useCreateUser } from '@/src/hooks/useUserApi';
+import { useAuthApi } from '@/src/hooks/useAuthApi';
+import { useAuthContext } from '@/src/contexts/authContext';
 
 type BaseModalProps = {
   visible: boolean;
   onClose: () => void;
 };
 const BaseModal: React.FC<BaseModalProps> = ({ visible, onClose }) => {
-  const { logout } = useCreateUser();
+  const { clearAuthData } = useAuthContext();
   const router = useRouter();
   const handleLogout = async () => {
     try {
       onClose();
-      await logout();
-      router.replace('/');
+      await clearAuthData();
+      router.replace('/screens/Home');
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
     }

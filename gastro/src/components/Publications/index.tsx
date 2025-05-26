@@ -1,4 +1,5 @@
 import {PublicationDTO } from '@/src/@types/DTO';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -6,6 +7,7 @@ import {
   Image,
   StyleSheet,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
@@ -14,6 +16,15 @@ const columnWidth = screenWidth / 2 - 8;
 interface Props {
   images: PublicationDTO[];
 }
+
+const handlePress = (postId: string) => {
+    router.push({
+        pathname: '/screens/PublicationInfluencer',
+        params: {
+            postId: postId,
+        },
+    });
+};
 
 export const Publications: React.FC<Props> = ({ images }) => {
   const [leftColumn, setLeftColumn] = useState<any[]>([]);
@@ -65,7 +76,9 @@ export const Publications: React.FC<Props> = ({ images }) => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.column}>
         {leftColumn.map((image, index) => (
-          <View key={`left-${image.id ?? index}`} style={styles.imageContainer}>
+          <TouchableOpacity key={`left-${image.id ?? index}`} 
+            style={styles.imageContainer} 
+            onPress={() => handlePress(image.restaurant_id)}>
             <Image
               source={{ uri: image.url }}
               style={{
@@ -73,12 +86,15 @@ export const Publications: React.FC<Props> = ({ images }) => {
                 height: image.height,
               }}
             />
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
       <View style={styles.column}>
         {rightColumn.map((image, index) => (
-          <View key={`right-${image.id ?? index}`} style={styles.imageContainer}>
+          <TouchableOpacity 
+            key={`right-${image.id ?? index}`} 
+            style={styles.imageContainer} 
+            onPress={() => handlePress(image.restaurant_id)}>
           <Image
             source={{ uri: image.url }}
             style={{
@@ -86,7 +102,7 @@ export const Publications: React.FC<Props> = ({ images }) => {
               height: image.height,
             }}
           />
-        </View>
+        </TouchableOpacity>
       ))}
       </View>
     </ScrollView>
