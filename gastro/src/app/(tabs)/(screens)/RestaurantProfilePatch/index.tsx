@@ -246,7 +246,7 @@ const RestaurantProfilePatch = () => {
               autoCapitalize="none"
             />
           </View>
-            <TouchableOpacity style={styles.actionButton} onPress={() => Alert.alert('Cardápio', 'Funcionalidade para alterar cardápio')}>
+          <TouchableOpacity style={styles.actionButton} onPress={() => Alert.alert('Cardápio', 'Funcionalidade para alterar cardápio')}>
             <Text style={styles.actionButtonText}>Alterar Cardápio</Text>
             <MaterialIcons name="add-circle-outline" size={24} color={Colors.white} />
           </TouchableOpacity>
@@ -255,13 +255,16 @@ const RestaurantProfilePatch = () => {
             style={styles.actionButton} 
             onPress={() => setShowOperatingHours(!showOperatingHours)}
           >
-            <Text style={styles.actionButtonText}>Funcionamento</Text>            <MaterialIcons 
+            <Text style={styles.actionButtonText}>Funcionamento</Text>           
+             <MaterialIcons 
               name={showOperatingHours ? "keyboard-arrow-up" : "keyboard-arrow-down"} 
               size={24} 
               color={Colors.white} 
             />
-          </TouchableOpacity>            {showOperatingHours && (
-            <View style={styles.hoursContainer}>            <View style={styles.hoursTableContainer}>
+          </TouchableOpacity>            
+          {showOperatingHours && (
+            <View style={styles.hoursContainer}>            
+              <View style={styles.hoursTableContainer}>
                 <View style={styles.hoursHeader}>
                   <Text style={styles.hoursHeaderText}>Dia da semana</Text>
                   <Text style={styles.hoursHeaderText}>Abertura</Text>
@@ -322,7 +325,8 @@ const RestaurantProfilePatch = () => {
                 <View style={styles.modalHeader}>
                   <Text style={styles.modalTitle}>
                     Selecione o horário de {selectedTimeType === 'abertura' ? 'abertura' : 'fechamento'}
-                  </Text>                  <TouchableOpacity 
+                  </Text>                  
+                  <TouchableOpacity 
                     style={styles.closeButton}
                     onPress={() => setShowTimePickerModal(false)}
                   >
@@ -375,12 +379,13 @@ const RestaurantProfilePatch = () => {
               disabled={!isFormValid}
             />
             
-            <TouchableOpacity 
-              style={styles.categoriesLink}
-              onPress={() => Alert.alert('Categorias', 'Navegar para tela de categorias')}
-            >              <Text style={styles.categoriesLinkText}>Categorias</Text>
-              <MaterialIcons name="keyboard-arrow-right" size={24} color={Colors.orange.orangeStandard} />
-            </TouchableOpacity>          
+          <TouchableOpacity 
+            style={styles.categoriesLink}
+            onPress={() => Alert.alert('Categorias', 'Navegar para tela de categorias')}
+          >              
+            <Text style={styles.categoriesLinkText}>Categorias</Text>
+            <MaterialIcons name="keyboard-arrow-right" size={24} color={Colors.orange.orangeStandard} />
+          </TouchableOpacity>         
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -429,7 +434,8 @@ const styles = StyleSheet.create({  safeArea: {
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     marginBottom: '5%',
-  },  actionButtonText: {
+  },  
+  actionButtonText: {
     color: Colors.white,
     fontFamily: 'Poppins-Medium',
     fontSize: 16,

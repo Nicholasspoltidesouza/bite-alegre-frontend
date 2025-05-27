@@ -22,7 +22,7 @@ import {
 } from '@expo/vector-icons';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import Button from '@/src/components/Button';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { CheckinDTO, RestaurantDTO, OperatingHoursDto } from '@/src/@types/DTO';
 import { Weekday, mapFromWeekday } from '@/src/utils/weekdayUtils'; 
 import Colors from '@/src/constants/Colors';
@@ -45,12 +45,14 @@ const RestaurantProfile: React.FC = () => {
   const currentRestaurantId = params.restaurantId;
   const { user } = useAuthContext();
 
-  useEffect(() => {
-    if (currentRestaurantId) {
-        getRestaurantById(currentRestaurantId);
-        setIsProfile(user?.id === currentRestaurantId.toString())
-    }
-  }, [currentRestaurantId, refresh]);
+  useFocusEffect(
+  useCallback(() => {
+    const id = currentRestaurantId !== null ? currentRestaurantId : user!.id;
+    getRestaurantById(id);
+    setIsProfile(user?.id === id)
+
+  }, [currentRestaurantId, refresh])
+);
 
   function isRestaurantDTO(obj: any): obj is RestaurantDTO {
   return (

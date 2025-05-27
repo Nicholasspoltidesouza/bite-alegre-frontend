@@ -97,6 +97,7 @@ function RootLayoutContent() {
           name="Roulette/index"
           options={{
             tabBarShowLabel: false,
+            tabBarStyle: { display: 'none' },
             tabBarIcon: ({ color, size, focused }) => (
               <NavBarIcon
                 color={color}
