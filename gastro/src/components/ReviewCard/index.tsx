@@ -22,7 +22,7 @@ export const CardReview: React.FC<CardReviewProps> = ({
 
 const handlePress = (restaurantId: string) => {
     router.push({
-        pathname: '/screens/restaurantProfile',
+        pathname: '/restaurantProfile',
         params: {
             restaurantId: restaurantId,
         },

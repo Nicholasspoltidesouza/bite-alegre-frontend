@@ -18,7 +18,7 @@ interface Props {
 
 const handlePress = (restaurantId: string) => {
     router.push({
-        pathname: '/screens/restaurantProfile',
+        pathname: '/restaurantProfile',
         params: {
             restaurantId: restaurantId,
         },

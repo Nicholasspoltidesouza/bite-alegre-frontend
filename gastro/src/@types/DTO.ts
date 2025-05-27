@@ -91,11 +91,11 @@ interface AuthDTO {
 
 interface PublicationDTO {
   id?: string;
-  url: string;
-  media: string;
-  description: string;
-  restaurant_id: string;
-  restaurant_name: string;
+  url?: string;
+  media?: string;
+  description?: string;
+  restaurant_id?: string;
+  restaurant_name?: string;
 }
 export type {
   RestaurantDTO,

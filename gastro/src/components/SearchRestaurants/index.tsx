@@ -28,7 +28,7 @@ const SearchRestaurants: React.FC<SearchRestaurantsProps> = ({
       style={styles.container}
       onPress={() => {
         router.push({
-          pathname: '/screens/restaurantProfile',
+          pathname: '/restaurantProfile',
           params: {
             restaurantId: restaurantId,
           },

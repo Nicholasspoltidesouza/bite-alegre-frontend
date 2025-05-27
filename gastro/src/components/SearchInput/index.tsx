@@ -33,7 +33,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   const paddingRight = iconRight + iconSize + spacingBetweenIconAndText;
 
   const handleFilterPress = () => {
-    router.push({ pathname: '/screens/FilterScreen' });
+    router.push({ pathname: '/FilterScreen' });
   };
 
   return (
