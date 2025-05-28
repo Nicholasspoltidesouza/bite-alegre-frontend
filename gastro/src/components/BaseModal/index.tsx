@@ -2,23 +2,21 @@ import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Colors from '@/src/constants/Colors';
 import { AntDesign } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { useCreateUser } from '@/src/hooks/useUserApi';
+import { router } from 'expo-router';
 import { useAuthApi } from '@/src/hooks/useAuthApi';
-import { useAuthContext } from '@/src/contexts/authContext';
 
 type BaseModalProps = {
   visible: boolean;
   onClose: () => void;
 };
 const BaseModal: React.FC<BaseModalProps> = ({ visible, onClose }) => {
-  const { clearAuthData } = useAuthContext();
-  const router = useRouter();
+  const { logout } = useAuthApi();
+  
   const handleLogout = async () => {
     try {
       onClose();
-      await clearAuthData();
-      router.replace('/screens/Home');
+      router.replace('/Home');
+      logout();
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
     }
@@ -53,7 +51,7 @@ const BaseModal: React.FC<BaseModalProps> = ({ visible, onClose }) => {
               style={styles.filledButton}
               onPress={() => {
                 onClose();
-                router.push('/screens/RestaurantProfilePatch');
+                router.push('/RestaurantProfilePatch');
               }}
             >
               <Text style={styles.filledText}>Editar perfil</Text>

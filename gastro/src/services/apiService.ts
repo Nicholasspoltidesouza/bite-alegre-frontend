@@ -8,7 +8,7 @@ export interface ApiErrorResponse {
 }
 
 export function redirectToHome() {
-  router.replace('/screens/Home');
+  router.replace('/Home');
 }
 
 class ApiService {

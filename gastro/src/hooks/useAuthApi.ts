@@ -8,7 +8,7 @@ const authApiService = new ApiService('/auth');
 export const useAuthApi = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { setAuthData } = useAuthContext();
+  const { setAuthData, clearAuthData } = useAuthContext();
 
   const login = async (credentials: UserDTO) => {
     setLoading(true);
@@ -38,8 +38,19 @@ export const useAuthApi = () => {
     }
   };
 
+  const logout = async () => {
+    setLoading(true);
+    setError(null);
+
+    await clearAuthData();
+
+    console.log('Logout bem-sucedido:');
+    setLoading(false);
+  };
+
   return {
     login,
+    logout,
     loading,
     error,
   };

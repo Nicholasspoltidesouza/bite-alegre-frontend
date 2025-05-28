@@ -19,7 +19,7 @@ interface Props {
 
 const handlePress = (postId: string) => {
     router.push({
-        pathname: '/screens/PublicationInfluencer',
+        pathname: '/PublicationInfluencer',
         params: {
             postId: postId,
         },
@@ -41,7 +41,7 @@ export const Publications: React.FC<Props> = ({ images }) => {
 
     images.forEach(image => {
       Image.getSize(
-        image.url,
+        image.url!,
         (width, height) => {
           const scaledHeight = (columnWidth * height) / width;
           const imageWithHeight = { ...image, height: scaledHeight };

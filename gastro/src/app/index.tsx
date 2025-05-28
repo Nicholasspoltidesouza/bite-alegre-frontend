@@ -1,12 +1,18 @@
-import React from 'react';
-import Home from './screens/Home';
+import React, { useEffect } from 'react';
+import Home from './Home';
 import { useAuthContext } from '../contexts/authContext';
-import Feed from './screens/Feed';
+import { router } from 'expo-router';
 
 const App: React.FC = () => {
   const { token } = useAuthContext();
 
-  return token == null ? <Home /> : <Feed />;
+  useEffect(() => {
+    if (token) {
+      router.push('/Feed');
+    }
+  }, [token]);
+
+  return <Home />;
 };
 
 export default App;
