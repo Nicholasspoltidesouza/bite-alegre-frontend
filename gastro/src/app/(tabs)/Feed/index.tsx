@@ -1,3 +1,4 @@
+import Button from '@/src/components/Button';
 import Header from '@/src/components/Header';
 import SearchInput from '@/src/components/SearchInput';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
@@ -90,9 +91,14 @@ export default function Feed() {
           variant="closeToYou"
           restaurantsExternal={restaurantData!}
         />
+        <Button
+          title="Cadastrar"
+          onPress={() => router.push({ pathname: '/UserProfilePatch' })} type={'white'}      />
       </ScrollView>
     </SafeAreaView>
   );
+  
+
 }
 
 const styles = StyleSheet.create({
