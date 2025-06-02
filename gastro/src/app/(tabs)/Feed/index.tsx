@@ -27,7 +27,6 @@ export default function Feed() {
   const { user } = useAuthContext();
 
   useEffect(() => {
-    console.log('VEIO PRA Feed');
     getUserById(user!.id);
   }, [user]);
 

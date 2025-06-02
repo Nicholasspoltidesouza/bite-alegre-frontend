@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
-import PhotoDish from '@/src/components/PhotoDish';
 import Colors from '@/src/constants/Colors';
 import { RestaurantDTO } from '@/src/@types/DTO';
 import { router } from 'expo-router';
@@ -18,7 +17,7 @@ const CARD_HEIGHT = 156;
 const CARD_MARGIN = 10;
 
 interface Props {
-  variant: 'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYou';
+  variant: 'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYou' | 'restaurantPublications';
   carouselProfileRestaurant?: boolean;
   restaurantsExternal: RestaurantDTO[];
 }
@@ -30,6 +29,7 @@ const variantMessages: Record<string, string> = {
   menu: 'Nenhum cardápio encontrado. Tente procurar por outro restaurante.',
   influencers: 'Nenhuma recomendação de influenciadores por aqui ainda.',
   closeToYou: 'Não encontramos restaurantes próximos a você no momento.',
+  restaurantPublications: 'Nenhuma publicação do restaurante encontrada.',
 };
 
 export default function UserCarouselRestaurant({
@@ -61,7 +61,7 @@ export default function UserCarouselRestaurant({
   }, [variant, carouselProfileRestaurant, selectedPins, restaurantsExternal]);
 
   if (
-    ['visited', 'saved', 'menu', 'influencers', 'closeToYou'].includes(
+    ['visited', 'saved', 'menu', 'influencers', 'closeToYou', 'restaurantPublications'].includes(
       variant,
     ) &&
     data.length === 0
@@ -77,7 +77,7 @@ export default function UserCarouselRestaurant({
     const isSelected = selectedPins.includes(item.id!);
     const tela = '/restaurantProfile?restaurantId=' + item.id!;
 
-    if (variant === 'influencers') {
+    if (variant === 'influencers' || variant === 'restaurantPublications') {
       return (
         <TouchableOpacity
           style={styles.card}

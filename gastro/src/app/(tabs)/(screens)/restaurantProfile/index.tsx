@@ -27,6 +27,7 @@ import { CheckinDTO, RestaurantDTO, OperatingHoursDto } from '@/src/@types/DTO';
 import { Weekday, mapFromWeekday } from '@/src/utils/weekdayUtils'; 
 import Colors from '@/src/constants/Colors';
 import { useAuthContext } from '@/src/contexts/authContext';
+import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -50,7 +51,6 @@ const RestaurantProfile: React.FC = () => {
     const id = currentRestaurantId !== null ? currentRestaurantId : user!.id;
     getRestaurantById(id);
     setIsProfile(user?.id === id)
-
   }, [currentRestaurantId, refresh])
 );
 
@@ -158,8 +158,8 @@ const RestaurantProfile: React.FC = () => {
       );
     }
   };
-
-  return (
+  console.log(restaurant, 'restaurant data fetched');
+  return (    
     <SafeAreaView style={styles.container}>
       <HeaderPerfilRestaurante
         isProfile={isProfile}
@@ -241,6 +241,12 @@ const RestaurantProfile: React.FC = () => {
             }
           ></Accordion>
 
+          <Text style={styles.carouselTitle}>Restaurantes perto de você</Text>
+          <UserCarouselRestaurant
+            variant="closeToYou"
+            restaurantsExternal={[]}
+          />
+
           <Modal
             animationType="fade"
             transparent
@@ -269,7 +275,7 @@ const RestaurantProfile: React.FC = () => {
                         router.push({
                           pathname: '/CreateReview',
                           params: {
-                            restaurantId: currentRestaurantId, // Pass the validated string ID
+                            restaurantId: currentRestaurantId,
                           },
                         });
                       }}
@@ -312,6 +318,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 15,
     textAlign: 'center',
+  },
+  carouselTitle: {
+    fontFamily: 'Poppins-regular',
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.text.black,
+    marginTop: 20,
+    paddingHorizontal: '3%',
   },
   infoGrid: {
     marginTop: 20,

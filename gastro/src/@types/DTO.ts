@@ -49,6 +49,7 @@ interface RestaurantPatchDTO {
     closesAt: string;
   }[];
   tagIds?: string[];
+  publications?: PublicationDTO[];
 }
 
 interface CheckinDTO {
