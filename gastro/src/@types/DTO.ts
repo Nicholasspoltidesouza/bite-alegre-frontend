@@ -96,6 +96,7 @@ interface PublicationDTO {
   description?: string;
   restaurant_id?: string;
   restaurant_name?: string;
+  restaurant_tags?: string[];
 }
 export type {
   RestaurantDTO,

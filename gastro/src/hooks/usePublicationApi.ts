@@ -55,8 +55,20 @@ export const usePublicationApi = () => {
         console.log('responseData', responseData);
         return responseData;
     };
+    const getPublicationById = async (publicationId: string): Promise<PublicationDTO | null> => {
+  const responseData = await callApi(
+    publicationApiService.get<PublicationDTO>(`/${publicationId}`)
+  );
+
+  if (responseData) {
+    setData(responseData);
+  }
+
+  return responseData;
+};
 
     return {
+        getPublicationById,
         getPublicationbyUserId,
         createPublication,
         loading,
