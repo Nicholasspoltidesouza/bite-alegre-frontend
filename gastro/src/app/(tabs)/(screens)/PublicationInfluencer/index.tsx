@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,13 +6,37 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import Colors from '@/src/constants/Colors';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { usePublicationApi } from '@/src/hooks/usePublicationApi';
+import { PublicationDTO } from '@/src/@types/DTO';
 
 export default function PublicationInfluencer() {
   const router = useRouter();
+  const { publicationId } = useLocalSearchParams<{ publicationId: string }>();
+  const { getPublicationById, loading } = usePublicationApi();
+  const [publication, setPublication] = useState<PublicationDTO | null>(null);
+
+  useEffect(() => {
+    if (typeof publicationId === 'string') {
+      getPublicationById(publicationId).then((data) => {
+        if (data) {
+          setPublication(data);
+        }
+      });
+    }
+  }, [publicationId]);
+
+  if (loading || !publication) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.orange.orangeStandard} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -27,35 +51,22 @@ export default function PublicationInfluencer() {
             color={Colors.orange.orangeStandard}
           />
         </TouchableOpacity>
-
         <Text style={styles.headerTitle}>Publicação</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
+      
         <View style={styles.imageWrapper}>
-          <Image
-            style={styles.postImage}
-            source={{
-              uri: 'https://lirp.cdn-website.com/33406c6e/dms3rep/multi/opt/pizzaria-1920w.jpg',
-            }}
-          />
+          <Image style={styles.postImage} source={{ uri: publication.url }} />
         </View>
 
-        <Text style={styles.description}>
-          A pizzaria napolitana é especializada em trazer a autêntica
-          experiência italiana aos amantes da boa pizza. Com massas leves e
-          fermentação natural, suas pizzas são assadas em f orno a lenha em
-          altíssimas temperaturas, resultando em bordas infladas e sabor
-          levemente defumado. Ingredientes frescos, como molho de tomate San
-          Marzano, mozzarella de b úfala e manjericão, garantem o equilíbrio
-          perfeito entre simplicidade e sabor.
-        </Text>
+  
+        <Text style={styles.description}>{publication.description}</Text>
 
+      
         <View style={styles.restauranteRow}>
           <Image
-            source={{
-              uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHziDArbpect3kgH--Ytr-W5hXyfw6W7IXRQ&s',
-            }}
+            source={{ uri: publication.restaurant_photo}}
             style={styles.restaurantImage}
           />
           <View style={styles.nameAndTagsColumn}>
@@ -63,17 +74,22 @@ export default function PublicationInfluencer() {
               onPress={() =>
                 router.push({
                   pathname: '/restaurantProfile',
-                  params: {
-                    restaurantId: 'rest-1',
-                  },
+                  params: { restaurantId: publication.restaurant_id },
                 })
               }
             >
-              <Text style={styles.restaurantName}>Marques Pizzaria</Text>
+              <Text style={styles.restaurantName}>
+                {publication.restaurant_name}
+              </Text>
             </TouchableOpacity>
+
+    
             <View style={styles.tagsRow}>
-              <Text style={styles.tag}>Restaurante</Text>
-              <Text style={styles.tag}>Pizzaria</Text>
+              {publication.restaurant_tags?.map((tag) => (
+                <Text key={tag.id} style={styles.tag}>
+                  {tag.name}
+                </Text>
+              ))}
             </View>
           </View>
         </View>
@@ -162,6 +178,7 @@ const styles = StyleSheet.create({
   },
   tagsRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 12,
   },
   tag: {
@@ -171,5 +188,13 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     fontSize: 13,
+    marginRight: 6,
+    marginBottom: 6,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
   },
 });
