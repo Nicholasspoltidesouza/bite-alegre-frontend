@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -7,6 +7,8 @@ import {
   Alert,
   Platform,
   KeyboardAvoidingView,
+  Text,
+  ActivityIndicator,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Colors from '@/src/constants/Colors';
@@ -14,6 +16,8 @@ import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import SignupHeader from '@/src/components/SignupHeader';
 import Button from '@/src/components/Button';
 import { useRouter } from 'expo-router';
+import { useFetchTags } from '@/src/hooks/useFetchTags';
+import Tag from '@/src/components/Tag';
 
 export default function UserProfileEdit() {
   const insets = useSafeAreaInsets();
@@ -25,6 +29,42 @@ export default function UserProfileEdit() {
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [userType, setUserType] = useState('Editar Perfil');
+
+  // Tags
+  const { getTags, tags, loading: tagsLoading, error } = useFetchTags();
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  useEffect(() => {
+    getTags();
+  }, []);
+
+  const toggleTagSelection = (tagId: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tagId)
+        ? prev.filter((id) => id !== tagId)
+        : [...prev, tagId]
+    );
+  };
+
+  // Agrupamento de tags por tipo
+  const renderTagSection = (title: string, type: string) => {
+    const filteredTags = tags.filter((tag) => tag.type === type);
+    return (
+      <View style={{ marginBottom: 16 }}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+        <View style={styles.tagsRow}>
+          {filteredTags.map((tag) => (
+            <Tag
+              key={tag.id}
+              title={tag.name}
+              isSelected={selectedTags.includes(tag.id)}
+              onPress={() => toggleTagSelection(tag.id)}
+            />
+          ))}
+        </View>
+      </View>
+    );
+  };
 
   const validateName = (text: string) => {
     if (!text) return 'Nome é obrigatório';
@@ -55,7 +95,12 @@ export default function UserProfileEdit() {
   };
 
   const handleSubmit = () => {
+    if (selectedTags.length === 0) {
+      Alert.alert('Erro', 'Selecione pelo menos uma preferência.');
+      return;
+    }
     Alert.alert('Sucesso', 'Dados atualizados com sucesso!');
+    // Aqui você pode enviar os dados para o backend, incluindo selectedTags
   };
 
   return (
@@ -127,11 +172,24 @@ export default function UserProfileEdit() {
             />
           </View>
 
-                <View style={styles.buttonContainer}>
+          {/* Seção de Tags */}
+          <Text style={styles.editFiltersTitle}>Editar Filtros</Text>
+          {tagsLoading ? (
+            <ActivityIndicator color={Colors.orange.orangeStandard} style={{ marginVertical: 20 }} />
+          ) : error ? (
+            <Text style={{ color: 'red', textAlign: 'center' }}>{error}</Text>
+          ) : (
+            <>
+              {renderTagSection('Local', 'LOCAL')}
+              {renderTagSection('Categoria', 'CATEGORIA')}
+              {renderTagSection('Ocasião', 'OCASIAO')}
+            </>
+          )}
+
+          <View style={styles.buttonContainer}>
             <Button title="Concluir" type="orange" onPress={handleSubmit} />
           </View>
         </ScrollView>
-        
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
@@ -162,9 +220,31 @@ const styles = StyleSheet.create({
   inputWrapper: {
     width: '90%',
     marginBottom: '5%',
-  }, 
+  },
   buttonContainer: {
     width: '90%',
     marginTop: 20,
+    alignItems: 'flex-end',
+  },
+  editFiltersTitle: {
+    fontWeight: 'bold',
+    fontSize: 22,
+    color: Colors.orange.orangeStandard,
+    marginTop: 28,
+    marginBottom: 8,
+    alignSelf: 'flex-start',
+  },
+  sectionTitle: {
+    fontWeight: 'semibold',
+    fontSize: 16,
+    color: Colors.orange.orangeStandard,
+    marginBottom: 8,
+    marginLeft: 4,
+  },
+  tagsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 10,
   },
 });
