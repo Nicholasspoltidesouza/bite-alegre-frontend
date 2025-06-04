@@ -60,7 +60,6 @@ export default function PublicationInfluencer() {
           <Image style={styles.postImage} source={{ uri: publication.url }} />
         </View>
 
-  
         <Text style={styles.description}>{publication.description}</Text>
 
       
