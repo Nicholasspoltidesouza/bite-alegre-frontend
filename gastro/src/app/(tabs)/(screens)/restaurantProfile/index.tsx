@@ -241,11 +241,17 @@ const RestaurantProfile: React.FC = () => {
             }
           ></Accordion>
 
-          <Text style={styles.carouselTitle}>Restaurantes perto de você</Text>
-          <UserCarouselRestaurant
-            variant="closeToYou"
-            restaurantsExternal={[]}
-          />
+          <Text style={styles.carouselTitle}>Cardápio</Text>
+            <UserCarouselRestaurant
+              variant="menu"
+              restaurantsExternal={[]}
+            />
+
+          <Text style={styles.carouselTitle}>Influenciadores que já visitaram</Text>
+            <UserCarouselRestaurant
+              variant="restaurantPublications"
+              restaurantsExternal={[]}
+            />
 
           <Modal
             animationType="fade"
