@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { PublicationDTO } from '../@types/DTO';
 import ApiService from '../services/apiService';
-// Line removed as it is unused.
 
 export const usePublicationApi = () => {
 
@@ -30,10 +29,10 @@ export const usePublicationApi = () => {
 
 
     const createPublication = async (newPublicationData: PublicationDTO): Promise<PublicationDTO | null> => {
-        const { media, description, restaurant_id } = newPublicationData;
+        const { url, description, restaurant_id } = newPublicationData;
 
         const payload = {
-            media,
+            url,
             description,
             restaurant_id
         };
