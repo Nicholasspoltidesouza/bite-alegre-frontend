@@ -18,10 +18,15 @@ import Button from '@/src/components/Button';
 import { useRouter } from 'expo-router';
 import { useFetchTags } from '@/src/hooks/useFetchTags';
 import Tag from '@/src/components/Tag';
+import { useCreateUser } from '@/src/hooks/useUserApi';
+import { useAuthContext } from '@/src/contexts/authContext';
 
 export default function UserProfileEdit() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+
+  const { getUserById, data: userData, loading: userLoading } = useCreateUser();
+  const { user } = useAuthContext();
 
   const [nickname, setNickname] = useState('');
   const [name, setName] = useState('');
@@ -38,6 +43,26 @@ export default function UserProfileEdit() {
     getTags();
   }, []);
 
+  useEffect(() => {
+    if (user?.id) {
+      getUserById(user.id);
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (userData) {
+      console.log('Dados do usuário:', userData); 
+      setNickname(userData.nickname || '');
+      setName(userData.name || '');
+      setEmail(userData.email || '');
+      setPhone(userData.phone || '');
+
+      if (userData.tagIds) {
+        setSelectedTags(userData.tagIds);
+      }
+    }
+  }, [userData]);
+
   const toggleTagSelection = (tagId: string) => {
     setSelectedTags((prev) =>
       prev.includes(tagId)
@@ -46,7 +71,6 @@ export default function UserProfileEdit() {
     );
   };
 
-  // Agrupamento de tags por tipo
   const renderTagSection = (title: string, type: string) => {
     const filteredTags = tags.filter((tag) => tag.type === type);
     return (
@@ -100,7 +124,6 @@ export default function UserProfileEdit() {
       return;
     }
     Alert.alert('Sucesso', 'Dados atualizados com sucesso!');
-    // Aqui você pode enviar os dados para o backend, incluindo selectedTags
   };
 
   return (
@@ -123,72 +146,77 @@ export default function UserProfileEdit() {
         />
 
         <ScrollView contentContainerStyle={styles.container}>
-          <View style={styles.inputWrapper}>
-            <CustomTextInput
-              value={nickname}
-              onChangeText={setNickname}
-              placeholder="Editar usuário"
-              style={styles.input}
-              validation={validateNickname}
-            />
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <CustomTextInput
-              value={name}
-              onChangeText={setName}
-              placeholder="Editar nome"
-              style={styles.input}
-              validation={validateName}
-            />
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <CustomTextInput
-              value={email}
-              onChangeText={setEmail}
-              placeholder="Email"
-              style={styles.input}
-              validation={validateEmail}
-            />
-          </View>
-
-          <View style={styles.inputWrapper}>
-            <CustomTextInput
-              value={phone}
-              onChangeText={(text: string) => {
-                const formatted = text
-                  .replace(/\D/g, '')
-                  .replace(/^(\d{2})(\d)/g, '($1) $2')
-                  .replace(/(\d{5})(\d)/, '$1-$2')
-                  .slice(0, 15);
-                setPhone(formatted);
-              }}
-              placeholder="Telefone"
-              style={styles.input}
-              validation={validatePhone}
-              keyboardType="phone-pad"
-              maxLength={15}
-            />
-          </View>
-
-          {/* Seção de Tags */}
-          <Text style={styles.editFiltersTitle}>Editar Filtros</Text>
-          {tagsLoading ? (
+          {userLoading ? (
             <ActivityIndicator color={Colors.orange.orangeStandard} style={{ marginVertical: 20 }} />
-          ) : error ? (
-            <Text style={{ color: 'red', textAlign: 'center' }}>{error}</Text>
           ) : (
             <>
-              {renderTagSection('Local', 'LOCAL')}
-              {renderTagSection('Categoria', 'CATEGORIA')}
-              {renderTagSection('Ocasião', 'OCASIAO')}
+              <View style={styles.inputWrapper}>
+                <CustomTextInput
+                  value={nickname}
+                  onChangeText={setNickname}
+                  placeholder="Editar usuário"
+                  style={styles.input}
+                  validation={validateNickname}
+                />
+              </View>
+
+              <View style={styles.inputWrapper}>
+                <CustomTextInput
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="Editar nome"
+                  style={styles.input}
+                  validation={validateName}
+                />
+              </View>
+
+              <View style={styles.inputWrapper}>
+                <CustomTextInput
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder="Email"
+                  style={styles.input}
+                  validation={validateEmail}
+                />
+              </View>
+
+              <View style={styles.inputWrapper}>
+                <CustomTextInput
+                  value={phone}
+                  onChangeText={(text: string) => {
+                    const formatted = text
+                      .replace(/\D/g, '')
+                      .replace(/^(\d{2})(\d)/g, '($1) $2')
+                      .replace(/(\d{5})(\d)/, '$1-$2')
+                      .slice(0, 15);
+                    setPhone(formatted);
+                  }}
+                  placeholder="Telefone"
+                  style={styles.input}
+                  validation={validatePhone}
+                  keyboardType="phone-pad"
+                  maxLength={15}
+                />
+              </View>
+
+              <Text style={styles.editFiltersTitle}>Editar Filtros</Text>
+              {tagsLoading ? (
+                <ActivityIndicator color={Colors.orange.orangeStandard} style={{ marginVertical: 20 }} />
+              ) : error ? (
+                <Text style={{ color: 'red', textAlign: 'center' }}>{error}</Text>
+              ) : (
+                <>
+                  {renderTagSection('Local', 'LOCAL')}
+                  {renderTagSection('Categoria', 'CATEGORIA')}
+                  {renderTagSection('Ocasião', 'OCASIAO')}
+                </>
+              )}
+
+              <View style={styles.buttonContainer}>
+                <Button title="Concluir" type="orange" onPress={handleSubmit} />
+              </View>
             </>
           )}
-
-          <View style={styles.buttonContainer}>
-            <Button title="Concluir" type="orange" onPress={handleSubmit} />
-          </View>
         </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
