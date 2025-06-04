@@ -20,7 +20,7 @@ const Home: React.FC = () => {
                     resizeMode="contain"
                 />
 
-                <View style={styles.textContainer}>
+                <View testID="home" style={styles.textContainer}>
                     <Text style={styles.text}>
                         Primeira vez aqui?{" "}
                         <Text style={styles.bold} onPress={() => router.push({ pathname: "/SignupUser" })}>
@@ -37,7 +37,7 @@ const Home: React.FC = () => {
 
                     <Text style={styles.text}>
                         Já possui uma conta?{" "}
-                        <Text style={styles.bold} onPress={() => router.push({ pathname: "/Login" })}>
+                        <Text testID="entrar" style={styles.bold} onPress={() => router.push({ pathname: "/Login" })}>
                             Entrar
                         </Text>
                     </Text>
