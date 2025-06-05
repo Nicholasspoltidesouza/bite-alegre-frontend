@@ -1,13 +1,14 @@
+import { RestaurantFilterDTO } from '@/src/@types/DTO';
 import Button from '@/src/components/Button';
 import Tag from '@/src/components/Tag';
 import ToggleSwitch from '@/src/components/ToggleSwitch';
-import { RestaurantFilterDTO } from '@/src/@types/DTO';
-import { useSearchFilter } from '@/src/hooks/useSearchFilter';
+import Colors from '@/src/constants/Colors';
+import { useFetchTags } from '@/src/hooks/useFetchTags';
 import useLocation from '@/src/hooks/useLocation';
+import { useSearchFilter } from '@/src/hooks/useSearchFilter';
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import Colors from '@/src/constants/Colors';
 import {
   ActivityIndicator,
   Modal,
@@ -20,7 +21,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useFetchTags } from '@/src/hooks/useFetchTags';
 
 interface FilterOptions {
   price: string;
@@ -163,7 +163,7 @@ const FilterScreen: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.title}>Filtros</Text>
         <TouchableOpacity onPress={() => router.back()}>
-          <Feather name="x" size={24} color="#FF914B" />
+          <Feather name="sliders" size={24} color="#FF914B" style={{ transform: [{ rotate: '90deg' }] }} />
         </TouchableOpacity>
       </View>
 
