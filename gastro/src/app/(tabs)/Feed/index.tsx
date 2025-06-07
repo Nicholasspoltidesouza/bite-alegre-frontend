@@ -6,7 +6,7 @@ import { useAuthContext } from '@/src/contexts/authContext';
 import { useFeedApi } from '@/src/hooks/useFeedApi';
 import useLocation from '@/src/hooks/useLocation';
 import { useCreateUser } from '@/src/hooks/useUserApi';
-import { CarouselItem, mapRestaurantToCarouselItem } from '@/src/utils/carouselMappers';
+import { CarouselItem, mapPublicationToCarouselItem, mapRestaurantToCarouselItem } from '@/src/utils/carouselMappers';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -23,10 +23,10 @@ import {
 
 export default function Feed() {
   const { latitude, longitude, loadingLocation } = useLocation();
-  const { getFeed, data: restaurantData, loading, error } = useFeedApi();
+  const { getFeed, data: feedData, loading, error } = useFeedApi();
   const { getUserById, data: userData } = useCreateUser();
   const { user } = useAuthContext();
-  const [carouselItem, setCasouselItem] = useState<CarouselItem[]>([]);
+  const [restaurants, setRestaurants] = useState<CarouselItem[]>([]);
 
   useEffect(() => {
     getUserById(user!.id);
@@ -34,10 +34,11 @@ export default function Feed() {
 
   useEffect(() => {
     if (latitude && longitude) {
-      getFeed(latitude, longitude);
-      if (restaurantData) {
-        setCasouselItem(restaurantData.map(mapRestaurantToCarouselItem))
-      }
+      getFeed(latitude, longitude).then((data) => {
+        if (data) {
+          setRestaurants(data.restaurants.map(mapRestaurantToCarouselItem));
+        }
+      });    
     }
   }, [latitude, longitude]);
 
@@ -92,7 +93,7 @@ export default function Feed() {
         <Text style={styles.title}>Restaurantes perto de você</Text>
         <UserCarouselRestaurant
           variant="closeToYou"
-          items={carouselItem}
+          items={restaurants}
         />
       </ScrollView>
     </SafeAreaView>

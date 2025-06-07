@@ -105,6 +105,11 @@ interface MenuItemsDTO {
   dish_photo: string;
 }
 
+interface FeedDTO {
+  publications: PublicationDTO[];
+  restaurants: RestaurantDTO[];
+}
+
 export type {
   RestaurantDTO,
   RestaurantPatchDTO,
@@ -115,5 +120,6 @@ export type {
   AuthDTO,
   PublicationDTO,
   OperatingHoursDto,
-  MenuItemsDTO
+  MenuItemsDTO,
+  FeedDTO
 };
