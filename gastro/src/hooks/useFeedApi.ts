@@ -20,7 +20,6 @@ export const useFeedApi = () => {
       const responseData = await apiService.get<RestaurantDTO[]>(
         `/?geolocation=${latitude},${longitude}`,
       );
-      console.log(responseData);
       setData(responseData);
     } catch (err: any) {
       setError(err.message || 'Erro ao buscar feed.');

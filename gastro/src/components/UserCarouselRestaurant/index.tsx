@@ -9,17 +9,25 @@ import {
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import Colors from '@/src/constants/Colors';
-import { RestaurantDTO } from '@/src/@types/DTO';
 import { router } from 'expo-router';
+import PhotoDish from '../PhotoDish';
 
 const CARD_WIDTH = 153;
 const CARD_HEIGHT = 156;
 const CARD_MARGIN = 10;
 
+interface CarouselItem {
+  id: string;
+  stars?: number;
+  photo?: string;
+  name?: string;
+  averagePrice?: number;
+}
+
 interface Props {
   variant: 'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYou' | 'restaurantPublications';
   carouselProfileRestaurant?: boolean;
-  restaurantsExternal: RestaurantDTO[];
+  items: CarouselItem[];
 }
 
 const variantMessages: Record<string, string> = {
@@ -35,7 +43,7 @@ const variantMessages: Record<string, string> = {
 export default function UserCarouselRestaurant({
   variant,
   carouselProfileRestaurant = false,
-  restaurantsExternal,
+  items,
 }: Props) {
   const [selectedPins, setSelectedPins] = useState<string[]>([]);
 
@@ -44,21 +52,34 @@ export default function UserCarouselRestaurant({
       prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id],
     );
   };
+
   const data = useMemo(() => {
     if (variant === 'visited' && carouselProfileRestaurant) {
-      restaurantsExternal!.sort((a, b) => {
-        const aPressed = selectedPins.includes(a.id!) ? 0 : 1;
-        const bPressed = selectedPins.includes(b.id!) ? 0 : 1;
+      items.sort((a, b) => {
+        const aPressed = selectedPins.includes(a.id) ? 0 : 1;
+        const bPressed = selectedPins.includes(b.id) ? 0 : 1;
         return aPressed - bPressed;
       });
     }
+    return items;
+  }, [variant, carouselProfileRestaurant, selectedPins, items]);
 
-    // if (variant === 'menu') {
-    //   baseData.sort((a, b) => (b.favorito ? 1 : 0) - (a.favorito ? 1 : 0));
-    // }
-
-    return restaurantsExternal!;
-  }, [variant, carouselProfileRestaurant, selectedPins, restaurantsExternal]);
+  function handleInfluencerCardPress(id: string){
+    if (variant === 'restaurantPublications') {
+      return router.push({
+        pathname: '/PublicationInfluencer',
+        params: {
+          restaurantId: id,
+        },
+      });
+    }
+    return router.push({
+      pathname: '/InfluencerProfile',
+      params: {
+        restaurantId: id,
+      },
+    });
+  }
 
   if (
     ['visited', 'saved', 'menu', 'influencers', 'closeToYou', 'restaurantPublications'].includes(
@@ -73,47 +94,52 @@ export default function UserCarouselRestaurant({
     );
   }
 
-  const renderItem = ({ item }: { item: RestaurantDTO }) => {
-    const isSelected = selectedPins.includes(item.id!);
-    const tela = '/restaurantProfile?restaurantId=' + item.id!;
+  const renderItem = ({ item }: { item: CarouselItem }) => {
+    const isSelected = selectedPins.includes(item.id);
 
     if (variant === 'influencers' || variant === 'restaurantPublications') {
       return (
         <TouchableOpacity
           style={styles.card}
-          onPress={() => console.log(`Clicou em ${item.name}`)}
+          onPress={() => handleInfluencerCardPress(item.id)}
           activeOpacity={0.8}
         >
           <View style={styles.imageWrapper}>
-            <Image source={{ uri: item.profilePhoto }} style={styles.image} />
+            <Image source={{ uri: item.photo }} style={styles.image} />
           </View>
           <Text style={styles.nome}>{item.name}</Text>
         </TouchableOpacity>
       );
     }
 
-    // if (variant === 'menu') {
-    //   return (
-    //     <PhotoDish
-    //       urlFotoPrato={item.profilePhoto}
-    //       descricao={item.name ?? ''}
-    //       showStar={item.favorito}
-    //     />
-    //   );
-    // }
+    if (variant === 'menu') {
+      return (
+        <View style={styles.card}>
+          <View style={styles.imageWrapper}>
+            <Image source={{ uri: item.photo }} style={styles.image} />
+          </View>
+          <Text style={styles.nome}>{item.name}</Text>
+        </View>
+    );
+  }
 
     return (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => router.push({ pathname: tela as any })}
+        onPress={() => router.push({
+            pathname: '/restaurantProfile',
+            params: {
+              restaurantId: item.id,
+            },
+          })}
         activeOpacity={0.8}
       >
         <View style={styles.imageWrapper}>
-          <Image source={{ uri: item.profilePhoto }} style={styles.image} />
+          <Image source={{ uri: item.photo }} style={styles.image} />
           {['visited', 'saved', 'closeToYou'].includes(variant) && (
             <TouchableOpacity
               style={styles.pinButton}
-              onPress={() => togglePin(item.id!)}
+              onPress={() => togglePin(item.id)}
             >
               <AntDesign
                 name="pushpin"
@@ -152,21 +178,21 @@ export default function UserCarouselRestaurant({
                 name="star"
                 size={12}
                 color={
-                  i < item.stars! ? Colors.orange.orangeStandard : '#FF914B40'
+                  i < (item.stars ?? 0) ? Colors.orange.orangeStandard : '#FF914B40'
                 }
               />
             ))}
           </View>
         )}
 
-        {['saved'].includes(variant) && item.averageScore !== null && (
+        {['saved'].includes(variant) && item.averagePrice && (
           <View style={styles.avaliacaoRow}>
             <AntDesign
               name="star"
               size={12}
               color={Colors.orange.orangeStandard}
             />
-            <Text style={styles.nota}> {item.averageScore?.toFixed(1)}</Text>
+            <Text style={styles.nota}> {item.averagePrice.toFixed(1)}</Text>
             <Text style={styles.avaliacoes}> (0 avaliações)</Text>
           </View>
         )}
@@ -178,14 +204,14 @@ export default function UserCarouselRestaurant({
     <FlatList
       data={data}
       renderItem={renderItem}
-      keyExtractor={(item) => item.id!}
+      keyExtractor={(item) => item.id}
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{
         paddingLeft: CARD_MARGIN,
         paddingRight: CARD_MARGIN,
         paddingTop: 20,
-        paddingBottom: 30,
+        paddingBottom: 20,
       }}
     />
   );
