@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
   },
   carouselContainer: {
     marginLeft: '3%',
-    marginBottom: -30,
+    marginBottom: -10,
   },
   menuAndAveragePriceContainer: {
     marginTop: 10,

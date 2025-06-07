@@ -34,7 +34,7 @@ const variantMessages: Record<string, string> = {
   visited: 'Você ainda não visitou nenhum restaurante. Que tal começar agora?',
   saved:
     'Nenhum restaurante nos seus Salvos. Explore e salve lugares que você quer conhecer!',
-  menu: 'Nenhum cardápio encontrado. Tente procurar por outro restaurante.',
+  menu: 'Nenhum cardápio encontrado.',
   influencers: 'Nenhuma recomendação de influenciadores por aqui ainda.',
   closeToYou: 'Não encontramos restaurantes próximos a você no momento.',
   restaurantPublications: 'Nenhuma publicação do restaurante encontrada.',
