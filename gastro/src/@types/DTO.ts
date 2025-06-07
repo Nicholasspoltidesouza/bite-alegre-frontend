@@ -91,13 +91,14 @@ interface AuthDTO {
   };
 }
 
-interface PublicationDTO {
-  id?: string;
-  url?: string;
-  media?: string;
-  description?: string;
-  restaurant_id?: string;
-  restaurant_name?: string;
+ interface PublicationDTO {
+  id: string;
+  url: string;
+  description: string;
+  restaurant_id: string;
+  restaurant_name: string;
+  restaurant_photo: string;
+  restaurant_tags: { id: string; name: string; type: string }[];
 }
 
 interface MenuItemsDTO {

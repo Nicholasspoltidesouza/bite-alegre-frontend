@@ -27,7 +27,7 @@ import { CarouselItem, mapCheckinToCarouselItem, mapReviewToCarouselItem } from 
 
 export default function InfluencerProfile() {
   const { getUserById, loading, error, data: userData } = useCreateUser();
-  const { getPublicationbyUserId, loading : loadingPublication, error : errorPublication} = usePublicationApi();
+  const { getPublicationByUserId, loading : loadingPublication, error : errorPublication} = usePublicationApi();
   const { user } = useAuthContext();
   const [sameUser, setSameUser] = useState(false);
   const [userDataPublication, setUserDataPublication] = useState<PublicationDTO[] | null>([]);
@@ -46,7 +46,7 @@ export default function InfluencerProfile() {
     getUserById(id.toString()).then((data) => {
        setVisited();
     });
-    getPublicationbyUserId(id.toString()).then((data) => {
+    getPublicationByUserId(id.toString()).then((data) => {
       if (data) {
         console.log('Publicações do usuário:', data);
         setUserDataPublication(data);
