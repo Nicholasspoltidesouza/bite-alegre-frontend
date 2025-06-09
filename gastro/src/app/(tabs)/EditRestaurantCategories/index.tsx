@@ -14,6 +14,8 @@ import {
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Button from '@/src/components/Button';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useAuthContext } from '@/src/contexts/authContext';
+import { useFetchTags } from '@/src/hooks/useFetchTags';
 
 interface Category {
   id: string;
@@ -67,7 +69,7 @@ const useCategories = () => {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('localhost:3000/api/restaurants-tags');
+      const response = await fetch('localhost:3000/api/tags');
       
       if (!response.ok) {
         throw new Error('Erro ao buscar categorias');
@@ -78,18 +80,36 @@ const useCategories = () => {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
       setCategories([
-        { id: '1', name: 'Churrasco' },
-        { id: '2', name: 'Bar' },
-        { id: '3', name: 'Hambúrguer' },
-        { id: '4', name: 'Mexicana' },
-        { id: '5', name: 'Japonesa' },
-        { id: '6', name: 'Árabe' },
-        { id: '7', name: 'Sorveteria' },
-        { id: '8', name: 'Cafeteria' },
-        { id: '9', name: 'Padaria' },
-        { id: '10', name: 'Poke' },
-        { id: '11', name: 'Pizza' },
-        { id: '12', name: 'Italiana' },
+        // { id: '1', name: 'Churrasco' },
+        // { id: '2', name: 'Bar' },
+        // { id: '3', name: 'Hambúrguer' },
+        // { id: '4', name: 'Mexicana' },
+        // { id: '5', name: 'Japonesa' },
+        // { id: '6', name: 'Árabe' },
+        // { id: '7', name: 'Sorveteria' },
+        // { id: '8', name: 'Cafeteria' },
+        // { id: '9', name: 'Padaria' },
+        // { id: '10', name: 'Poke' },
+        // { id: '11', name: 'Pizza' },
+        // { id: '12', name: 'Italiana' },
+        // { id: '13', name: 'Vegana' },
+        // { id: '14', name: 'Saudável' },
+        // { id: '15', name: 'Chinesa' },
+        // { id: '16', name: 'Indiana' },
+        // { id: '17', name: 'Brasileira' },
+        // { id: '18', name: 'Nordestina' },
+        // { id: '19', name: 'Frutos do Mar' },
+        // { id: '20', name: 'Comfort Food' },
+        // { id: '21', name: 'Bistrô' },
+        // { id: '22', name: 'Lanchonete' },
+        // { id: '23', name: 'Creperia' },
+        // { id: '24', name: 'Açaí' },
+        // { id: '25', name: 'Marmitaria' },
+        // { id: '26', name: 'Comida de Boteco' },
+        // { id: '27', name: 'Panquecaria' },
+        // { id: '28', name: 'Fast Food' },
+        // { id: '29', name: 'Coreana' },
+        // { id: '30', name: 'Tailandesa' },
       ]);
     } finally {
       setLoading(false);
@@ -102,6 +122,13 @@ const useCategories = () => {
 const EditRestaurantCategories: React.FC = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { user } = useAuthContext();
+  const { getTags, tags, loading: tagsLoading, error } = useFetchTags();
+  
+  useEffect(() => {
+    getTags();
+  }, []);
+  
   
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
@@ -130,18 +157,23 @@ const EditRestaurantCategories: React.FC = () => {
     try {
       setSaving(true);
       
-      // Aqui você implementaria a chamada para salvar no backend
-      // const response = await fetch(`/api/restaurants/${restaurantData?.id}/categories`, {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ categories: selectedCategories }),
-      // });
+      const response = await fetch(`/api/restaurants/restaurants-tags`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ categories: selectedCategories }),
+      });
       
       // Simular delay de salvamento
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       Alert.alert('Sucesso', 'Categorias salvas com sucesso!');
-      router.back();
+      router.push({
+            pathname: '/restaurantProfile',
+            params: {
+              restaurantId: user!.id,
+            },
+          });
+
     } catch (err) {
       Alert.alert('Erro', 'Erro ao salvar categorias. Tente novamente.');
     } finally {
@@ -150,9 +182,8 @@ const EditRestaurantCategories: React.FC = () => {
   };
 
   const handleBack = () => {
-    router.back();
+    router.push('/RestaurantProfilePatch')
   };
-
   // Renderizar loading
   if (loading) {
     return (
@@ -160,18 +191,6 @@ const EditRestaurantCategories: React.FC = () => {
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#FF8C42" />
           <Text style={styles.loadingText}>Carregando categorias...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  // Renderizar erro
-  if (error) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Erro ao carregar categorias</Text>
-          <Button title="Tentar novamente" onPress={refetch} type="orange" />
         </View>
       </SafeAreaView>
     );
