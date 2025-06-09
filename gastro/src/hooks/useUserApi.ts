@@ -47,5 +47,15 @@ export const useCreateUser = () => {
     }
   };
 
-  return { createUser, getUserById, loading, error, data };
+  const getUserPreferences = async (userId: string): Promise<string[] | null> => {
+    const responseData = await callApi(
+      userApiService.get<any[]>(`/../user_preferences/${userId}`)
+    );
+    if (responseData && Array.isArray(responseData)) {
+      return responseData.map(pref => pref.tag_id);
+    }
+    return null;
+  };
+
+  return { createUser, getUserById, getUserPreferences, loading, error, data };
 };

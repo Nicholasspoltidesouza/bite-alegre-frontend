@@ -25,7 +25,7 @@ export default function UserProfileEdit() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
-  const { getUserById, data: userData, loading: userLoading } = useCreateUser();
+  const { getUserById, getUserPreferences, data: userData, loading: userLoading } = useCreateUser();
   const { user } = useAuthContext();
 
   const [nickname, setNickname] = useState('');
@@ -35,9 +35,10 @@ export default function UserProfileEdit() {
   const [phone, setPhone] = useState('');
   const [userType, setUserType] = useState('Editar Perfil');
 
-  // Tags
   const { getTags, tags, loading: tagsLoading, error } = useFetchTags();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const [currentScreen, setCurrentScreen] = useState<'info' | 'tags'>('info');
 
   useEffect(() => {
     getTags();
@@ -46,20 +47,19 @@ export default function UserProfileEdit() {
   useEffect(() => {
     if (user?.id) {
       getUserById(user.id);
+      getUserPreferences(user.id).then((tagIds) => {
+        console.log('Tag IDs recebidas do backend:', tagIds); 
+        if (tagIds) setSelectedTags(tagIds);
+      });
     }
   }, [user?.id]);
 
   useEffect(() => {
     if (userData) {
-      console.log('Dados do usuário:', userData); 
       setNickname(userData.nickname || '');
       setName(userData.name || '');
       setEmail(userData.email || '');
       setPhone(userData.phone || '');
-
-      if (userData.tagIds) {
-        setSelectedTags(userData.tagIds);
-      }
     }
   }, [userData]);
 
@@ -107,11 +107,6 @@ export default function UserProfileEdit() {
     return null;
   };
 
-  const validatePassword = (text: string) => {
-    if (text.length < 6) return 'Senha deve ter no mínimo 6 caracteres';
-    return null;
-  };
-
   const validatePhone = (text: string) => {
     const cleaned = text.replace(/\D/g, '');
     if (!/^\d{10,11}$/.test(cleaned)) return 'Telefone inválido';
@@ -119,12 +114,90 @@ export default function UserProfileEdit() {
   };
 
   const handleSubmit = () => {
+    if (currentScreen === 'info') {
+      setCurrentScreen('tags');
+      return;
+    }
     if (selectedTags.length === 0) {
       Alert.alert('Erro', 'Selecione pelo menos uma preferência.');
       return;
     }
     Alert.alert('Sucesso', 'Dados atualizados com sucesso!');
   };
+
+  const renderInfoScreen = () => (
+    <>
+      <View style={styles.inputWrapper}>
+        <CustomTextInput
+          value={nickname}
+          onChangeText={setNickname}
+          placeholder="Editar usuário"
+          style={styles.input}
+          validation={validateNickname}
+        />
+      </View>
+      <View style={styles.inputWrapper}>
+        <CustomTextInput
+          value={name}
+          onChangeText={setName}
+          placeholder="Editar nome"
+          style={styles.input}
+          validation={validateName}
+        />
+      </View>
+      <View style={styles.inputWrapper}>
+        <CustomTextInput
+          value={email}
+          onChangeText={setEmail}
+          placeholder="Email"
+          style={styles.input}
+          validation={validateEmail}
+        />
+      </View>
+      <View style={styles.inputWrapper}>
+        <CustomTextInput
+          value={phone}
+          onChangeText={(text: string) => {
+            const formatted = text
+              .replace(/\D/g, '')
+              .replace(/^(\d{2})(\d)/g, '($1) $2')
+              .replace(/(\d{5})(\d)/, '$1-$2')
+              .slice(0, 15);
+            setPhone(formatted);
+          }}
+          placeholder="Telefone"
+          style={styles.input}
+          validation={validatePhone}
+          keyboardType="phone-pad"
+          maxLength={15}
+        />
+      </View>
+      <View style={styles.buttonContainerRow}>
+        <Button title="Preferências ➔" type="white" onPress={() => setCurrentScreen('tags')} />
+      </View>
+    </>
+  );
+
+  const renderTagsScreen = () => (
+    <>
+      <Text style={styles.editFiltersTitle}>Editar Filtros</Text>
+      {tagsLoading ? (
+        <ActivityIndicator color={Colors.orange.orangeStandard} style={{ marginVertical: 20 }} />
+      ) : error ? (
+        <Text style={{ color: 'red', textAlign: 'center' }}>{error}</Text>
+      ) : (
+        <>
+          {renderTagSection('Local', 'LOCAL')}
+          {renderTagSection('Categoria', 'CATEGORIA')}
+          {renderTagSection('Ocasião', 'OCASIAO')}
+        </>
+      )}
+      <View style={styles.buttonContainerRow}>
+        <Button title="⟵ Dados" type="white" onPress={() => setCurrentScreen('info')} style={{ marginRight: 8 }} />
+        <Button title="Salvar" type="orange" onPress={handleSubmit} />
+      </View>
+    </>
+  );
 
   return (
     <KeyboardAvoidingView
@@ -149,73 +222,7 @@ export default function UserProfileEdit() {
           {userLoading ? (
             <ActivityIndicator color={Colors.orange.orangeStandard} style={{ marginVertical: 20 }} />
           ) : (
-            <>
-              <View style={styles.inputWrapper}>
-                <CustomTextInput
-                  value={nickname}
-                  onChangeText={setNickname}
-                  placeholder="Editar usuário"
-                  style={styles.input}
-                  validation={validateNickname}
-                />
-              </View>
-
-              <View style={styles.inputWrapper}>
-                <CustomTextInput
-                  value={name}
-                  onChangeText={setName}
-                  placeholder="Editar nome"
-                  style={styles.input}
-                  validation={validateName}
-                />
-              </View>
-
-              <View style={styles.inputWrapper}>
-                <CustomTextInput
-                  value={email}
-                  onChangeText={setEmail}
-                  placeholder="Email"
-                  style={styles.input}
-                  validation={validateEmail}
-                />
-              </View>
-
-              <View style={styles.inputWrapper}>
-                <CustomTextInput
-                  value={phone}
-                  onChangeText={(text: string) => {
-                    const formatted = text
-                      .replace(/\D/g, '')
-                      .replace(/^(\d{2})(\d)/g, '($1) $2')
-                      .replace(/(\d{5})(\d)/, '$1-$2')
-                      .slice(0, 15);
-                    setPhone(formatted);
-                  }}
-                  placeholder="Telefone"
-                  style={styles.input}
-                  validation={validatePhone}
-                  keyboardType="phone-pad"
-                  maxLength={15}
-                />
-              </View>
-
-              <Text style={styles.editFiltersTitle}>Editar Filtros</Text>
-              {tagsLoading ? (
-                <ActivityIndicator color={Colors.orange.orangeStandard} style={{ marginVertical: 20 }} />
-              ) : error ? (
-                <Text style={{ color: 'red', textAlign: 'center' }}>{error}</Text>
-              ) : (
-                <>
-                  {renderTagSection('Local', 'LOCAL')}
-                  {renderTagSection('Categoria', 'CATEGORIA')}
-                  {renderTagSection('Ocasião', 'OCASIAO')}
-                </>
-              )}
-
-              <View style={styles.buttonContainer}>
-                <Button title="Concluir" type="orange" onPress={handleSubmit} />
-              </View>
-            </>
+            currentScreen === 'info' ? renderInfoScreen() : renderTagsScreen()
           )}
         </ScrollView>
       </SafeAreaView>
@@ -253,6 +260,13 @@ const styles = StyleSheet.create({
     width: '90%',
     marginTop: 20,
     alignItems: 'flex-end',
+  },
+  buttonContainerRow: {
+    width: '90%',
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   editFiltersTitle: {
     fontWeight: 'bold',
