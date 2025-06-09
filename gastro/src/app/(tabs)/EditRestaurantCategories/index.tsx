@@ -1,4 +1,3 @@
-// EditRestaurantCategories.tsx
 import React, { useState, useEffect } from 'react';
 import {
   Alert,
@@ -14,8 +13,8 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Button from '@/src/components/Button';
+import { MaterialIcons } from '@expo/vector-icons';
 
-// Interfaces TypeScript
 interface Category {
   id: string;
   name: string;
@@ -28,7 +27,6 @@ interface RestaurantData {
   categories: string[];
 }
 
-// Componente CategoryButton
 const CategoryButton: React.FC<{
   category: Category;
   isSelected: boolean;
@@ -69,8 +67,7 @@ const useCategories = () => {
       setLoading(true);
       setError(null);
       
-      // Substitua pela URL da sua API
-      const response = await fetch('/api/tags');
+      const response = await fetch('localhost:3000/api/restaurants-tags');
       
       if (!response.ok) {
         throw new Error('Erro ao buscar categorias');
@@ -80,7 +77,6 @@ const useCategories = () => {
       setCategories(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
-      // Dados mock para desenvolvimento/teste
       setCategories([
         { id: '1', name: 'Churrasco' },
         { id: '2', name: 'Bar' },
@@ -107,26 +103,21 @@ const EditRestaurantCategories: React.FC = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
   
-  // Estados
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   
-  // Hook para buscar categorias
   const { categories, loading, error, refetch } = useCategories();
   
-  // Dados do restaurante vindos dos parâmetros
   const restaurantData: RestaurantData | null = params.restaurantData 
     ? JSON.parse(params.restaurantData as string) 
     : null;
 
-  // Inicializar categorias selecionadas
   useEffect(() => {
     if (restaurantData?.categories) {
       setSelectedCategories(restaurantData.categories);
     }
   }, [restaurantData]);
 
-  // Função para alternar seleção de categoria
   const toggleCategory = (categoryName: string) => {
     setSelectedCategories((prev) =>
       prev.includes(categoryName)
@@ -135,7 +126,6 @@ const EditRestaurantCategories: React.FC = () => {
     );
   };
 
-  // Função para salvar categorias
   const handleSave = async () => {
     try {
       setSaving(true);
@@ -159,7 +149,6 @@ const EditRestaurantCategories: React.FC = () => {
     }
   };
 
-  // Função para voltar sem salvar
   const handleBack = () => {
     router.back();
   };
@@ -194,13 +183,12 @@ const EditRestaurantCategories: React.FC = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.innerContainer}
       >
-        {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-            <Text style={styles.backButtonText}>←</Text>
+            <MaterialIcons name="arrow-back-ios" size={24} color="#FF8C42" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>
-            {params.screenTitle || 'Edite as categorias do seu restaurante'}
+            {'Edite as categorias do seu restaurante'}
           </Text>
         </View>
 
@@ -217,7 +205,6 @@ const EditRestaurantCategories: React.FC = () => {
             ))}
           </View>
 
-          {/* Botões de ação */}
           <View style={styles.actionButtons}>
             <Button 
               title={saving ? "Salvando..." : "Salvar"} 
@@ -226,7 +213,10 @@ const EditRestaurantCategories: React.FC = () => {
               disabled={saving}
             />
             <TouchableOpacity onPress={handleBack} style={styles.dataButton}>
-              <Text style={styles.dataButtonText}>Dados ←</Text>
+              <View style={styles.dataButtonContent}>
+                <Text style={styles.dataButtonText}>Dados</Text>
+                <MaterialIcons name="arrow-back-ios" size={16} color="#FF8C42" />
+              </View>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -255,11 +245,6 @@ const styles = StyleSheet.create({
   backButton: {
     marginRight: 12,
     padding: 8,
-  },
-  backButtonText: {
-    fontSize: 24,
-    color: '#FF8C42',
-    fontWeight: 'bold',
   },
   headerTitle: {
     fontSize: 18,
@@ -311,6 +296,11 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     padding: 12,
   },
+  dataButtonContent: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: 8,
+},
   dataButtonText: {
     color: '#FF8C42',
     fontSize: 16,
