@@ -16,6 +16,8 @@ import Button from '@/src/components/Button';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuthContext } from '@/src/contexts/authContext';
 import { useFetchTags } from '@/src/hooks/useFetchTags';
+import Colors from '@/src/constants/Colors';
+
 
 interface Category {
   id: string;
@@ -123,21 +125,31 @@ const EditRestaurantCategories: React.FC = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { user } = useAuthContext();
-  const { getTags, tags, loading: tagsLoading, error } = useFetchTags();
-  
-  useEffect(() => {
-    getTags();
-  }, []);
-  
-  
+  const { getTags, tags, loading: tagsLoading, error } = useFetchTags(); 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   
-  const { categories, loading, error, refetch } = useCategories();
+  const { categories, loading, refetch } = useCategories();
   
   const restaurantData: RestaurantData | null = params.restaurantData 
     ? JSON.parse(params.restaurantData as string) 
     : null;
+
+    useEffect(() => {
+    getTags();
+  }, []);
+
+    if (tagsLoading) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <ActivityIndicator
+          size="large"
+          color={Colors.orange.orangeStandard}
+          style={{ marginTop: 50 }}
+        />
+      </SafeAreaView>
+    );
+  }
 
   useEffect(() => {
     if (restaurantData?.categories) {
@@ -245,6 +257,10 @@ const EditRestaurantCategories: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+    safeArea: {
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
