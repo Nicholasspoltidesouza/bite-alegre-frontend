@@ -25,7 +25,7 @@ interface CarouselItem {
 }
 
 interface Props {
-  variant: 'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYou' | 'restaurantPublications';
+  variant: 'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYou' | 'restaurantPublications' | 'menuAdd';
   carouselProfileRestaurant?: boolean;
   items: CarouselItem[];
 }
@@ -38,6 +38,7 @@ const variantMessages: Record<string, string> = {
   influencers: 'Nenhuma recomendação de influenciadores por aqui ainda.',
   closeToYou: 'Não encontramos restaurantes próximos a você no momento.',
   restaurantPublications: 'Nenhuma publicação do restaurante encontrada.',
+  menuAdd: 'Adicione itens ao seu cardápio.',
 };
 
 export default function UserCarouselRestaurant({
@@ -82,7 +83,7 @@ export default function UserCarouselRestaurant({
   }
 
   if (
-    ['visited', 'saved', 'menu', 'influencers', 'closeToYou', 'restaurantPublications'].includes(
+    ['visited', 'saved', 'menu', 'influencers', 'closeToYou', 'restaurantPublications', 'menuAdd'].includes(
       variant,
     ) &&
     data.length === 0
@@ -112,7 +113,7 @@ export default function UserCarouselRestaurant({
       );
     }
 
-    if (variant === 'menu') {
+    if (variant === 'menu' || variant === 'menuAdd') {
       return (
         <View style={styles.card}>
           <View style={styles.imageWrapper}>
