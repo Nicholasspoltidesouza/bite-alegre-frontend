@@ -1,4 +1,3 @@
-import HeaderPerfilRestaurante from '@/src/components/HeaderPerfilRestaurante';
 import {
   View,
   StyleSheet,
@@ -30,6 +29,7 @@ import Colors from '@/src/constants/Colors';
 import { useAuthContext } from '@/src/contexts/authContext';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import { CarouselItem, mapMenuItemToCarouselItem, mapPublicationToCarouselItem } from '@/src/utils/carouselMappers';
+import { HeaderPerfilRestaurante } from '@/src/components/HeaderPerfilRestaurante';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -171,8 +171,10 @@ const RestaurantProfile: React.FC = () => {
     <SafeAreaView style={styles.container}>      
         <HeaderPerfilRestaurante
           isProfile={isProfile}
+          restaurantId={currentRestaurantId}
           urlFotoBanner={restaurant?.bannerPhoto}
           urlFotoPerfil={restaurant?.profilePhoto}
+          onError={(message) => Alert.alert('Erro', message)}
         ></HeaderPerfilRestaurante>
 
         <ScrollView>

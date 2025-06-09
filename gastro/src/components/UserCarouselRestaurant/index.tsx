@@ -6,11 +6,13 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import Colors from '@/src/constants/Colors';
 import { router } from 'expo-router';
 import PhotoDish from '../PhotoDish';
+import { useCreateUser } from '@/src/hooks/useUserApi';
 
 const CARD_WIDTH = 153;
 const CARD_HEIGHT = 156;
@@ -22,12 +24,14 @@ interface CarouselItem {
   photo?: string;
   name?: string;
   averagePrice?: number;
+  
 }
 
 interface Props {
   variant: 'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYou' | 'restaurantPublications';
   carouselProfileRestaurant?: boolean;
   items: CarouselItem[];
+  onError?: (message: string) => void; 
 }
 
 const variantMessages: Record<string, string> = {
@@ -44,13 +48,34 @@ export default function UserCarouselRestaurant({
   variant,
   carouselProfileRestaurant = false,
   items,
+  onError
 }: Props) {
   const [selectedPins, setSelectedPins] = useState<string[]>([]);
+  const { saveRestaurant, deleteSavedRestaurant, error } = useCreateUser();
 
-  const togglePin = (id: string) => {
-    setSelectedPins((prev) =>
-      prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id],
-    );
+  const togglePin = async (id: string) => {
+  const isSelected = selectedPins.includes(id);
+
+  if (isSelected) {
+    setSelectedPins((prev) => prev.filter((pid) => pid !== id));
+    await deleteSavedRestaurant(id);
+
+    if (error && onError) {
+      console.error('Error removing restaurant from saved:', error);
+      onError('Erro ao remover restaurante dos salvos.');
+      setSelectedPins((prev) => [...prev, id]); // volta ao estado anterior
+      return;
+    }
+
+  } else {
+    setSelectedPins((prev) => [...prev, id]);
+    await saveRestaurant(id);
+
+    if (error && onError) {
+      onError('Erro ao salvar restaurante.');
+      setSelectedPins((prev) => prev.filter((pid) => pid !== id)); // desfaz o toggle
+    }
+  }
   };
 
   const data = useMemo(() => {

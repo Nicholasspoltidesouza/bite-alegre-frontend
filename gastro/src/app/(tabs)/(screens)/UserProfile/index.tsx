@@ -7,6 +7,7 @@ import {
   ScrollView,
   SafeAreaView,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import Header from '@/src/components/Header';
@@ -96,6 +97,7 @@ export default function UserProfile() {
           variant={'visited'}
           carouselProfileRestaurant={true}
           items={visitedRestaurants ?? []}
+          onError={(message) => Alert.alert('Erro', message)}
         />
 
         <View style={styles.titleRow}>
@@ -104,7 +106,10 @@ export default function UserProfile() {
             <Text style={styles.mostrarMais}>Mostrar mais</Text>
           </TouchableOpacity>
         </View>
-        <UserCarouselRestaurant variant={'saved'} items={[]} />
+        <UserCarouselRestaurant 
+          variant={'saved'} 
+          items={[]}   
+          onError={(message) => Alert.alert('Erro', message)} />
       </ScrollView>
     </View>
   );

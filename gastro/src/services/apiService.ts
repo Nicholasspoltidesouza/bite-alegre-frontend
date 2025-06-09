@@ -13,7 +13,7 @@ export function redirectToHome() {
 
 class ApiService {
     private baseUrl: string;
-    private API_URL = API_URL_BACKEND;
+    private API_URL = API_URL_ANDROID;
 
   constructor(baseUrl: string) {
     if (!baseUrl) {
@@ -103,16 +103,27 @@ class ApiService {
     return this.request<ResponseBody>(endpoint, optionsForRequest);
   }
   
-    public patch<RequestBody, ResponseBody>(
+  public patch<RequestBody, ResponseBody>(
     data: RequestBody,
     endpoint?: string
     ): Promise<ResponseBody> {
+      const optionsForRequest: RequestInit = {
+          method: 'PATCH',
+          body: JSON.stringify(data),
+      };
+    return this.request<ResponseBody>(endpoint, optionsForRequest);
+  }
+  
+  public delete<RequestBody, ResponseBody>(
+    data: RequestBody,
+    endpoint?: string,
+  ): Promise<ResponseBody> {
     const optionsForRequest: RequestInit = {
-        method: 'PATCH',
-        body: JSON.stringify(data),
+      method: 'DELETE',
+      body: JSON.stringify(data),
     };
     return this.request<ResponseBody>(endpoint, optionsForRequest);
-    }
+  }
 }
 
 export default ApiService;

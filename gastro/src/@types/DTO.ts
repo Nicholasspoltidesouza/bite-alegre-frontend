@@ -92,13 +92,14 @@ interface AuthDTO {
 }
 
  interface PublicationDTO {
-  id: string;
-  url: string;
-  description: string;
-  restaurant_id: string;
-  restaurant_name: string;
-  restaurant_photo: string;
-  restaurant_tags: { id: string; name: string; type: string }[];
+  id?: string;
+  url?: string;
+  file?: string;
+  description?: string;
+  restaurant_id?: string;
+  restaurant_name?: string;
+  restaurant_photo?: string;
+  restaurant_tags?: { id: string; name: string; type: string }[];
 }
 
 interface MenuItemsDTO {
@@ -109,6 +110,11 @@ interface MenuItemsDTO {
 interface FeedDTO {
   publications: PublicationDTO[];
   restaurants: RestaurantDTO[];
+}
+
+interface  SavedRestaurantDTO { 
+  user_id: string;
+  restaurant_id: string;
 }
 
 export type {
@@ -122,5 +128,6 @@ export type {
   PublicationDTO,
   OperatingHoursDto,
   MenuItemsDTO,
-  FeedDTO
+  FeedDTO,
+  SavedRestaurantDTO
 };
