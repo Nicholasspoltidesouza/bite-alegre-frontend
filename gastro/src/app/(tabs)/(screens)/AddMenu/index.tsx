@@ -16,7 +16,6 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import { Video } from 'expo-av';
 import Button from '@/src/components/Button';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -31,22 +30,14 @@ const AddMedia = () => {
   const insets = useSafeAreaInsets();
 
   const [mediaUri, setMediaUri] = useState<string | null>(null);
-  const [mediaType, setMediaType] = useState<'image' | 'video' | null>(null);
   const [description, setDescription] = useState<string>('');
-  const [restaurantSearch, setRestaurantSearch] = useState<string>('');
+  const [preco, setPreco] = useState<number>();
   const [selectedRestaurantId, setSelectedRestaurantId] = useState<
     string
   >('');
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
-  const { restaurants, search: runSearch, loading } = useSearch();
-  const { createPublication } = usePublicationApi();
-
-  useEffect(() => {
-    if (restaurantSearch.length > 1) {
-      runSearch(restaurantSearch);
-    }
-  }, [restaurantSearch]);
+  const { createPublication } = usePublicationApi();;
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
@@ -75,19 +66,11 @@ const AddMedia = () => {
       'Selecionar Imagem',
       'Deseja tirar uma foto ou escolher da galeria?',
       [
-        { text: 'Câmera', onPress: handleCameraOption },
+        { text: 'Câmera', onPress: openCameraPhoto },
         { text: 'Galeria', onPress: pickImage },
         { text: 'Cancelar', style: 'cancel' },
       ],
     );
-  };
-
-  const handleCameraOption = () => {
-    Alert.alert('Usar Câmera', 'Deseja tirar uma foto ou gravar um vídeo?', [
-      { text: 'Foto', onPress: openCameraPhoto },
-      { text: 'Vídeo', onPress: openCameraVideo },
-      { text: 'Cancelar', style: 'cancel' },
-    ]);
   };
 
   const pickImage = async () => {
@@ -109,7 +92,6 @@ const AddMedia = () => {
     if (!result.canceled && result.assets && result.assets[0]) {
       const asset = result.assets[0];
       setMediaUri(asset.uri);
-      setMediaType(asset.type === 'video' ? 'video' : 'image');
     }
   };
 
@@ -129,27 +111,6 @@ const AddMedia = () => {
     if (!result.canceled && result.assets && result.assets[0]) {
       const asset = result.assets[0];
       setMediaUri(asset.uri);
-      setMediaType('image');
-    }
-  };
-
-  const openCameraVideo = async () => {
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    if (!permissionResult.granted) {
-      alert('Permissão para usar a câmera negada.');
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-      videoMaxDuration: 120,
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets && result.assets[0]) {
-      const asset = result.assets[0];
-      setMediaUri(asset.uri);
-      setMediaType('video');
     }
   };
 
@@ -230,7 +191,6 @@ const AddMedia = () => {
                     style={styles.removeMediaButton}
                     onPress={() => {
                       setMediaUri(null);
-                      setMediaType(null);
                     }}
                   >
                     <Text style={styles.removeMediaText}>Remover Mídia</Text>
@@ -261,39 +221,14 @@ const AddMedia = () => {
 
                 <View style={styles.inputWrapper}>
                 <CustomTextInput
-                    value={restaurantSearch}
-                    onChangeText={(text) => {
-                    setRestaurantSearch(text);
-                    setSelectedRestaurantId(''); // limpa seleção anterior
-                    }}
-                    placeholder="Restaurante"
+                    value={preco}
+                    onChangeText={setPreco}
+                    placeholder="Preço"
                     style={styles.input}
+                    multiline={true}
+                    numberOfLines={4}
+                    textAlignVertical="top"
                 />
-                <MaterialIcons
-                    name="search"
-                    size={20}
-                    color="#FF914B"
-                    style={styles.searchIcon}
-                />
-
-                {restaurantSearch.length > 1 &&
-                    !selectedRestaurantId &&
-                    restaurants.length > 0 && (
-                    <View style={styles.searchResultsContainer}>
-                        {restaurants.map((restaurant) => (
-                        <TouchableOpacity
-                            key={restaurant.id}
-                            style={styles.resultItem}
-                            onPress={() => {
-                            setRestaurantSearch(restaurant.name);
-                            setSelectedRestaurantId(restaurant.id!);
-                            }}
-                        >
-                            <Text style={styles.resultText}>{restaurant.name}</Text>
-                        </TouchableOpacity>
-                        ))}
-                    </View>
-                    )}
                 </View>
 
                 <View style={styles.buttonAddWrapper}>
@@ -444,10 +379,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Bold',
   },
   previewMedia: {
-    width: 310,
-    height: 245,
+    width: 230,
+    height: 205,
     borderRadius: 20,
     backgroundColor: '#000',
+    marginBottom: 20
   },
   previewContainer: {
     alignItems: 'center',
