@@ -33,13 +33,12 @@ export default function InfluencerProfile() {
   const [selectedTab, setSelectedTab] = useState<
     'grid' | 'reviews' | 'checkins' | 'user'
   >('grid');
-  const [visitedRestaurants, setVisitedRestaurants] = useState<RestaurantDTO[]>([],);
+  const [visitedRestaurants, setVisitedRestaurants] = useState<CarouselItem[]>([],);
 
   const handleAddPress = () => router.push({ pathname: '/AddMedia' });
   const filterAddPress = () => router.push({ pathname: '/FilterPostScreen' });
 
   useEffect(() => {
-    console.log('user', user);
     const id = typeof userId === 'string' ? userId : user!.id;
     setSameUser(id === user!.id);
     getUserById(id.toString()).then((data) => {
@@ -54,10 +53,10 @@ export default function InfluencerProfile() {
   }, [userId]);
 
   function setVisited() {
-    const visitedFromReviews: RestaurantDTO[] =
-      userData!.reviews?.map(mapRestaurantToReview) ?? [];
-    const visitedFromCheckins: RestaurantDTO[] =
-      userData!.checkinsWithoutReview?.map(mapCheckinToRestaurant) ?? [];
+    const visitedFromReviews: CarouselItem[] =
+      userData!.reviews?.map(mapReviewToCarouselItem) ?? [];
+    const visitedFromCheckins: CarouselItem[] =
+      userData!.checkinsWithoutReview?.map(mapCheckinToCarouselItem) ?? [];
 
     const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];
 
@@ -159,7 +158,7 @@ export default function InfluencerProfile() {
             <UserCarouselRestaurant
               variant={'visited'}
               carouselProfileRestaurant={true}
-              restaurantsExternal={visitedRestaurants}
+              items={visitedRestaurants}
             />
 
             <View style={styles.titleRow}>
@@ -170,7 +169,7 @@ export default function InfluencerProfile() {
             </View>
             <UserCarouselRestaurant
               variant={'saved'}
-              restaurantsExternal={[]}
+              items={[]}
             />
           </View>
         );

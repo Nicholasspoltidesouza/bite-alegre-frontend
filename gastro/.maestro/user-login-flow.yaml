@@ -1,0 +1,11 @@
+appId: 'host.exp.exponent'
+---
+- launchApp
+- tapOn: 'gastro'
+- assertVisible:
+    id: 'home'
+- tapOn:
+    id: 'entrar'
+- waitForAnimationToEnd:
+    timeout: 5000
+- assertVisible: 'Bem-vindo de volta!'

@@ -26,16 +26,15 @@ export const usePublicationApi = () => {
     }
   };
 
-  const createPublication = async (
-    newPublicationData: PublicationDTO
-  ): Promise<PublicationDTO | null> => {
-    const { media, description, restaurant_id } = newPublicationData;
 
-    const payload = {
-      media,
-      description,
-      restaurant_id,
-    };
+    const createPublication = async (newPublicationData: PublicationDTO): Promise<PublicationDTO | null> => {
+        const { url, description, restaurant_id } = newPublicationData;
+
+        const payload = {
+            url,
+            description,
+            restaurant_id
+        };
 
     const responseData = await callApi(
       publicationApiService.post<typeof payload, PublicationDTO>(payload)
@@ -47,36 +46,42 @@ export const usePublicationApi = () => {
     return responseData;
   };
 
-const getPublicationbyUserId = async (
-  userId: string,
-  filters?: RestaurantFilterDTO
-): Promise<PublicationDTO[] | null> => {
-  const queryParams = new URLSearchParams();
+    const getPublicationByUserId = async (userId: string): Promise< PublicationDTO[] | null> => {
+        const responseData = await callApi(
+            publicationApiService.get<PublicationDTO[] | null >('/user/' + userId)
+        );
+        console.log('responseData', responseData);
+        return responseData;
+    };
 
-  if (filters?.price_range) {
-    queryParams.append('price_range', filters.price_range.toString());
+    
+   const getPublicationById = async (publicationId: string): Promise<PublicationDTO | null> => {
+  try {
+    const responseData = await callApi(
+      publicationApiService.get<PublicationDTO>(`/${publicationId}`)
+    );
+
+    if (responseData) {
+      setData(responseData);
+    }
+
+    return responseData;
+  } catch (error: any) {
+    if (error?.response?.status === 404) {
+      console.warn(`Publicação ${publicationId} não encontrada.`);
+    } else {
+      console.error("Erro ao buscar publicação:", error);
+    }
+    return null;
   }
-
-  if (filters?.tags?.length) {
-    filters.tags.forEach((tag) => queryParams.append('tags', tag));
-  }
-
-  const queryString = queryParams.toString();
-  const url = `/user/${userId}${queryString ? `?${queryString}` : ''}`;
-
-  const responseData = await callApi(
-    publicationApiService.get<PublicationDTO[] | null>(url)
-  );
-
-  console.log('Publicações filtradas:', responseData);
-  return responseData;
 };
 
-  return {
-    getPublicationbyUserId,
-    createPublication,
-    loading,
-    error,
-    data,
-  };
-};
+    return {
+        getPublicationById,
+        getPublicationByUserId,
+        createPublication,
+        loading,
+        error,
+        data,
+    };
+}
