@@ -25,7 +25,7 @@ import {
 
 
 export default function InfluencerProfile() {
-  const { getUserById, loading, error, data: userData } = useCreateUser();
+  const { getUserById, loading, error } = useCreateUser();
   const { getPublicationByUserId, loading: loadingPublication, error: errorPublication } = usePublicationApi();
   const { user } = useAuthContext();
   const [sameUser, setSameUser] = useState(false);
