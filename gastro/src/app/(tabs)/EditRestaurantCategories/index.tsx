@@ -18,11 +18,10 @@ import { useAuthContext } from '@/src/contexts/authContext';
 import { useFetchTags } from '@/src/hooks/useFetchTags';
 import Colors from '@/src/constants/Colors';
 
-
 interface Category {
   id: string;
   name: string;
-  color?: string;
+  type?: string;
 }
 
 interface RestaurantData {
@@ -56,100 +55,24 @@ const CategoryButton: React.FC<{
   );
 };
 
-// Hook personalizado para buscar categorias
-const useCategories = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const response = await fetch('localhost:3000/api/tags');
-      
-      if (!response.ok) {
-        throw new Error('Erro ao buscar categorias');
-      }
-      
-      const data = await response.json();
-      setCategories(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro desconhecido');
-      setCategories([
-        // { id: '1', name: 'Churrasco' },
-        // { id: '2', name: 'Bar' },
-        // { id: '3', name: 'Hambúrguer' },
-        // { id: '4', name: 'Mexicana' },
-        // { id: '5', name: 'Japonesa' },
-        // { id: '6', name: 'Árabe' },
-        // { id: '7', name: 'Sorveteria' },
-        // { id: '8', name: 'Cafeteria' },
-        // { id: '9', name: 'Padaria' },
-        // { id: '10', name: 'Poke' },
-        // { id: '11', name: 'Pizza' },
-        // { id: '12', name: 'Italiana' },
-        // { id: '13', name: 'Vegana' },
-        // { id: '14', name: 'Saudável' },
-        // { id: '15', name: 'Chinesa' },
-        // { id: '16', name: 'Indiana' },
-        // { id: '17', name: 'Brasileira' },
-        // { id: '18', name: 'Nordestina' },
-        // { id: '19', name: 'Frutos do Mar' },
-        // { id: '20', name: 'Comfort Food' },
-        // { id: '21', name: 'Bistrô' },
-        // { id: '22', name: 'Lanchonete' },
-        // { id: '23', name: 'Creperia' },
-        // { id: '24', name: 'Açaí' },
-        // { id: '25', name: 'Marmitaria' },
-        // { id: '26', name: 'Comida de Boteco' },
-        // { id: '27', name: 'Panquecaria' },
-        // { id: '28', name: 'Fast Food' },
-        // { id: '29', name: 'Coreana' },
-        // { id: '30', name: 'Tailandesa' },
-      ]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { categories, loading, error, refetch: fetchCategories };
-};
-
 const EditRestaurantCategories: React.FC = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { user } = useAuthContext();
-  const { getTags, tags, loading: tagsLoading, error } = useFetchTags(); 
+  const { getTags, tags, loading: tagsLoading, error } = useFetchTags();
+  
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
-  
-  const { categories, loading, refetch } = useCategories();
   
   const restaurantData: RestaurantData | null = params.restaurantData 
     ? JSON.parse(params.restaurantData as string) 
     : null;
+    
+  const categoryTags = tags.filter(tag => tag.type === 'CATEGORIA');
 
-    useEffect(() => {
+  useEffect(() => {
     getTags();
   }, []);
-
-    if (tagsLoading) {
-    return (
-      <SafeAreaView style={styles.safeArea}>
-        <ActivityIndicator
-          size="large"
-          color={Colors.orange.orangeStandard}
-          style={{ marginTop: 50 }}
-        />
-      </SafeAreaView>
-    );
-  }
 
   useEffect(() => {
     if (restaurantData?.categories) {
@@ -157,11 +80,11 @@ const EditRestaurantCategories: React.FC = () => {
     }
   }, [restaurantData]);
 
-  const toggleCategory = (categoryName: string) => {
+  const toggleCategory = (categoryId: string) => {
     setSelectedCategories((prev) =>
-      prev.includes(categoryName)
-        ? prev.filter((c) => c !== categoryName)
-        : [...prev, categoryName]
+      prev.includes(categoryId)
+        ? prev.filter((id) => id !== categoryId)
+        : [...prev, categoryId]
     );
   };
 
@@ -175,18 +98,22 @@ const EditRestaurantCategories: React.FC = () => {
         body: JSON.stringify({ categories: selectedCategories }),
       });
       
-      // Simular delay de salvamento
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erro ao salvar categorias');
+      }
       
       Alert.alert('Sucesso', 'Categorias salvas com sucesso!');
+      
       router.push({
-            pathname: '/restaurantProfile',
-            params: {
-              restaurantId: user!.id,
-            },
-          });
+        pathname: '/restaurantProfile',
+        params: {
+          restaurantId: user!.id,
+        },
+      });
 
     } catch (err) {
+      console.error('Erro ao salvar categorias:', err);
       Alert.alert('Erro', 'Erro ao salvar categorias. Tente novamente.');
     } finally {
       setSaving(false);
@@ -194,15 +121,26 @@ const EditRestaurantCategories: React.FC = () => {
   };
 
   const handleBack = () => {
-    router.push('/RestaurantProfilePatch')
+    router.push('/RestaurantProfilePatch');
   };
-  // Renderizar loading
-  if (loading) {
+
+  if (tagsLoading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FF8C42" />
+          <ActivityIndicator size="large" color={Colors.orange.orangeStandard} />
           <Text style={styles.loadingText}>Carregando categorias...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Erro ao carregar categorias: {error}</Text>
+          <Button title="Tentar novamente" onPress={() => getTags()} type="orange" />
         </View>
       </SafeAreaView>
     );
@@ -216,24 +154,30 @@ const EditRestaurantCategories: React.FC = () => {
       >
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-            <MaterialIcons name="arrow-back-ios" size={24} color="#FF8C42" />
+            <MaterialIcons name="arrow-back-ios" size={24} color={Colors.orange.orangeStandard} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>
-            {'Edite as categorias do seu restaurante'}
+            Edite as categorias do seu restaurante
           </Text>
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollView}>
           {/* Grid de categorias */}
           <View style={styles.categoryGrid}>
-            {categories.map((category) => (
-              <CategoryButton
-                key={category.id}
-                category={category}
-                isSelected={selectedCategories.includes(category.name)}
-                onPress={() => toggleCategory(category.name)}
-              />
-            ))}
+            {categoryTags.length > 0 ? (
+              categoryTags.map((category) => (
+                <CategoryButton
+                  key={category.id}
+                  category={category}
+                  isSelected={selectedCategories.includes(category.id)}
+                  onPress={() => toggleCategory(category.id)}
+                />
+              ))
+            ) : (
+              <Text style={styles.noCategoriesText}>
+                Nenhuma categoria disponível
+              </Text>
+            )}
           </View>
 
           <View style={styles.actionButtons}>
@@ -241,12 +185,12 @@ const EditRestaurantCategories: React.FC = () => {
               title={saving ? "Salvando..." : "Salvar"} 
               onPress={handleSave} 
               type="orange"
-              disabled={saving}
+              disabled={saving || selectedCategories.length === 0}
             />
             <TouchableOpacity onPress={handleBack} style={styles.dataButton}>
               <View style={styles.dataButtonContent}>
                 <Text style={styles.dataButtonText}>Dados</Text>
-                <MaterialIcons name="arrow-back-ios" size={16} color="#FF8C42" />
+                <MaterialIcons name="arrow-back-ios" size={16} color={Colors.orange.orangeStandard} />
               </View>
             </TouchableOpacity>
           </View>
@@ -257,39 +201,42 @@ const EditRestaurantCategories: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    safeArea: {
+  safeArea: {
     flex: 1,
     backgroundColor: Colors.white,
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white,
   },
   innerContainer: {
     flex: 1,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'column', 
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#fff',
+    paddingTop: 12,
+    paddingBottom: 16,
+    backgroundColor: Colors.white,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
   backButton: {
-    marginRight: 12,
+    alignSelf: 'flex-start', 
     padding: 8,
+    marginBottom: 5,
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#FF8C42',
-    flex: 1,
+    color: Colors.orange.orangeStandard,
+    textAlign: 'left', // Mudança: alinhamento à esquerda
+    paddingLeft: 8, // Mudança: pequeno padding para alinhar com a seta
   },
   scrollView: {
     flexGrow: 1,
     padding: 16,
+    paddingBottom: 100, // Mudança: espaço para os botões fixos na parte inferior
   },
   categoryGrid: {
     flexDirection: 'row',
@@ -307,8 +254,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   categoryButtonSelected: {
-    backgroundColor: '#FF8C42',
-    borderColor: '#FF8C42',
+    backgroundColor: Colors.orange.orangeStandard,
+    borderColor: Colors.orange.orangeStandard,
   },
   categoryButtonUnselected: {
     backgroundColor: '#f5f5f5',
@@ -319,25 +266,41 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   categoryButtonTextSelected: {
-    color: '#fff',
+    color: Colors.white,
   },
   categoryButtonTextUnselected: {
     color: '#666',
   },
   actionButtons: {
-    gap: 16,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+    backgroundColor: Colors.white,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+  },
+  saveButtonContainer: {
+    flex: 1,
+    marginRight: 16,
   },
   dataButton: {
-    alignSelf: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 12,
   },
   dataButtonContent: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  gap: 8,
-},
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   dataButtonText: {
-    color: '#FF8C42',
+    color: Colors.orange.orangeStandard,
     fontSize: 16,
     fontWeight: '500',
   },
@@ -362,6 +325,12 @@ const styles = StyleSheet.create({
     color: '#e74c3c',
     marginBottom: 16,
     textAlign: 'center',
+  },
+  noCategoriesText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 32,
   },
 });
 
