@@ -9,6 +9,7 @@ import Colors from '@/src/constants/Colors';
 import { useAuthContext } from '@/src/contexts/authContext';
 import { usePublicationApi } from '@/src/hooks/usePublicationApi';
 import { useCreateUser } from '@/src/hooks/useUserApi';
+import { CarouselItem, mapCheckinToCarouselItem, mapReviewToCarouselItem } from '@/src/utils/carouselMappers';
 import { AntDesign } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -25,7 +26,7 @@ import {
 
 export default function InfluencerProfile() {
   const { getUserById, loading, error, data: userData } = useCreateUser();
-  const { getPublicationbyUserId, loading: loadingPublication, error: errorPublication } = usePublicationApi();
+  const { getPublicationByUserId, loading: loadingPublication, error: errorPublication } = usePublicationApi();
   const { user } = useAuthContext();
   const [sameUser, setSameUser] = useState(false);
   const [userDataPublication, setUserDataPublication] = useState<PublicationDTO[] | null>([]);
@@ -36,7 +37,19 @@ export default function InfluencerProfile() {
   const [visitedRestaurants, setVisitedRestaurants] = useState<CarouselItem[]>([],);
 
   const handleAddPress = () => router.push({ pathname: '/AddMedia' });
-  const filterAddPress = () => router.push({ pathname: '/FilterPostScreen' });
+
+  const filterAddPress = () => {
+    const id = typeof userId === 'string' ? userId : user?.id;
+    if (id) {
+      router.push({
+        pathname: '/FilterPostScreen',
+        params: { userId: id },
+      });
+    } else {
+      console.error('❌ Não foi possível navegar: userId inválido.');
+    }
+  };
+
 
   useEffect(() => {
     const id = typeof userId === 'string' ? userId : user!.id;
@@ -44,7 +57,7 @@ export default function InfluencerProfile() {
     getUserById(id.toString()).then((data) => {
       setVisited();
     });
-    getPublicationbyUserId(id.toString()).then((data) => {
+    getPublicationByUserId(id.toString()).then((data) => {
       if (data) {
         console.log('Publicações do usuário:', data);
         setUserDataPublication(data);

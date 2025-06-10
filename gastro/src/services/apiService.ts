@@ -12,13 +12,13 @@ export function redirectToHome() {
 }
 
 class ApiService {
-    private baseUrl: string;
-    private API_URL = API_URL_BACKEND;
+  private baseUrl: string;
+  private API_URL = API_URL_BACKEND;
 
   constructor(baseUrl: string) {
     if (!baseUrl) {
       throw new Error(
-        'A URL base do endpoint deve ser fornecida ao ApiService.',
+        'A URL base do endpoint deve ser fornecida ao ApiService.'
       );
     }
     this.baseUrl = baseUrl;
@@ -26,7 +26,7 @@ class ApiService {
 
   private async request<T>(
     endpoint: string | undefined,
-    options: RequestInit,
+    options: RequestInit
   ): Promise<T> {
     if (endpoint == undefined) endpoint = '';
     const url = `${this.API_URL}${this.baseUrl}${endpoint}`;
@@ -41,7 +41,7 @@ class ApiService {
     ];
 
     const shouldSkipAuth = noAuthEndpoints.some(
-      (item) => item.method === method && endpoint.startsWith(item.path),
+      (item) => item.method === method && endpoint.startsWith(item.path)
     );
 
     const baseHeaders: HeadersInit = { 'Content-Type': 'application/json' };
@@ -72,7 +72,7 @@ class ApiService {
         throw new Error(
           errorPayload.error ||
             errorPayload.message ||
-            `Falha na requisição para ${endpoint}. Status: ${response.status}`,
+            `Falha na requisição para ${endpoint}. Status: ${response.status}`
         );
       }
     } catch (error: any) {
@@ -80,21 +80,42 @@ class ApiService {
         throw error;
       }
       throw new Error(
-        `Erro de rede ou resposta inválida ao acessar ${endpoint}: ${error.toString()}`,
+        `Erro de rede ou resposta inválida ao acessar ${endpoint}: ${error.toString()}`
       );
     }
   }
+  
+  public get<T>(
+    endpoint?: string,
+    params?: Record<string, any>
+  ): Promise<T> {
+    let queryString = '';
 
-  public get<T>(endpoint?: string): Promise<T> {
+    if (params) {
+      const queryParams = new URLSearchParams();
+      for (const key in params) {
+        const value = params[key];
+        if (Array.isArray(value)) {
+          value.forEach((v) => queryParams.append(key, v));
+        } else if (value !== undefined && value !== null) {
+          queryParams.set(key, String(value));
+        }
+      }
+      queryString = `?${queryParams.toString()}`;
+    }
+
+    const fullEndpoint = endpoint ? `${endpoint}${queryString}` : queryString;
+
     const optionsForRequest: RequestInit = {
       method: 'GET',
     };
-    return this.request<T>(endpoint, optionsForRequest);
+
+    return this.request<T>(fullEndpoint, optionsForRequest);
   }
 
   public post<RequestBody, ResponseBody>(
     data: RequestBody,
-    endpoint?: string,
+    endpoint?: string
   ): Promise<ResponseBody> {
     const optionsForRequest: RequestInit = {
       method: 'POST',
@@ -102,17 +123,17 @@ class ApiService {
     };
     return this.request<ResponseBody>(endpoint, optionsForRequest);
   }
-  
-    public patch<RequestBody, ResponseBody>(
+
+  public patch<RequestBody, ResponseBody>(
     data: RequestBody,
     endpoint?: string
-    ): Promise<ResponseBody> {
+  ): Promise<ResponseBody> {
     const optionsForRequest: RequestInit = {
-        method: 'PATCH',
-        body: JSON.stringify(data),
+      method: 'PATCH',
+      body: JSON.stringify(data),
     };
     return this.request<ResponseBody>(endpoint, optionsForRequest);
-    }
+  }
 }
 
 export default ApiService;
