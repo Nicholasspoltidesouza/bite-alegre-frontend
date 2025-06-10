@@ -57,5 +57,16 @@ export const useCreateUser = () => {
     return null;
   };
 
-  return { createUser, getUserById, getUserPreferences, loading, error, data };
+  const updateUser = async (userData: Partial<UserDTO>): Promise<UserDTO | null> => {
+    const responseData = await callApi(
+      userApiService.patch<Partial<UserDTO>, UserDTO>(userData)
+    );
+    if (responseData && (responseData as any).data) {
+      setData((responseData as any).data);
+      return (responseData as any).data;
+    }
+    return null;
+  };
+
+  return { createUser, getUserById, getUserPreferences, updateUser, loading, error, data };
 };

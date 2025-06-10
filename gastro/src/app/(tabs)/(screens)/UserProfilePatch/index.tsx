@@ -25,7 +25,7 @@ export default function UserProfileEdit() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
-  const { getUserById, getUserPreferences, data: userData, loading: userLoading } = useCreateUser();
+  const { getUserById, getUserPreferences, updateUser, data: userData, loading: userLoading } = useCreateUser();
   const { user } = useAuthContext();
 
   const [nickname, setNickname] = useState('');
@@ -74,7 +74,7 @@ export default function UserProfileEdit() {
   const renderTagSection = (title: string, type: string) => {
     const filteredTags = tags.filter((tag) => tag.type === type);
     return (
-      <View style={{ marginBottom: 16 }}>
+      <View style={{ marginBottom: 16, alignSelf: 'flex-start', width: '100%' }}>
         <Text style={styles.sectionTitle}>{title}</Text>
         <View style={styles.tagsRow}>
           {filteredTags.map((tag) => (
@@ -125,6 +125,43 @@ export default function UserProfileEdit() {
     Alert.alert('Sucesso', 'Dados atualizados com sucesso!');
   };
 
+  // Salvar apenas dados pessoais (primeira tela) + tags selecionadas
+  const handleSaveUserData = async () => {
+    if (!user?.id) return;
+    try {
+      await updateUser({
+        id: user.id,
+        nickname,
+        name,
+        email,
+        phone,
+        tagIds: selectedTags, // adiciona as tags selecionadas
+      });
+      Alert.alert('Sucesso', 'Dados pessoais atualizados!');
+    } catch (e) {
+      Alert.alert('Erro', 'Não foi possível atualizar os dados.');
+    }
+  };
+
+  // Função única para salvar dados e fechar a tela
+  const handleSaveAndClose = async () => {
+    if (!user?.id) return;
+    try {
+      await updateUser({
+        id: user.id,
+        nickname,
+        name,
+        email,
+        phone,
+        tagIds: selectedTags,
+      });
+      Alert.alert('Sucesso', 'Dados atualizados com sucesso!');
+      router.back(); // Fecha a tela de edição
+    } catch (e) {
+      Alert.alert('Erro', 'Não foi possível atualizar os dados.');
+    }
+  };
+
   const renderInfoScreen = () => (
     <>
       <View style={styles.inputWrapper}>
@@ -173,14 +210,15 @@ export default function UserProfileEdit() {
         />
       </View>
       <View style={styles.buttonContainerRow}>
-        <Button title="Preferências ➔" type="white" onPress={() => setCurrentScreen('tags')} />
+        <Button title="Preferências" type="white" onPress={() => setCurrentScreen('tags')} />
+        <Button title="Salvar" type="orange" onPress={handleSaveAndClose} />
       </View>
     </>
   );
 
   const renderTagsScreen = () => (
     <>
-      <Text style={styles.editFiltersTitle}>Editar Filtros</Text>
+      <Text style={styles.editFiltersTitle}>Editar Preferências</Text>
       {tagsLoading ? (
         <ActivityIndicator color={Colors.orange.orangeStandard} style={{ marginVertical: 20 }} />
       ) : error ? (
@@ -193,8 +231,8 @@ export default function UserProfileEdit() {
         </>
       )}
       <View style={styles.buttonContainerRow}>
-        <Button title="⟵ Dados" type="white" onPress={() => setCurrentScreen('info')} style={{ marginRight: 8 }} />
-        <Button title="Salvar" type="orange" onPress={handleSubmit} />
+        <Button title="Dados" type="white" onPress={() => setCurrentScreen('info')} style={{ marginRight: 8 }} />
+        <Button title="Salvar" type="orange" onPress={handleSaveAndClose} />
       </View>
     </>
   );
@@ -272,21 +310,27 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 22,
     color: Colors.orange.orangeStandard,
-    marginTop: 28,
+    marginTop: 18, 
     marginBottom: 8,
     alignSelf: 'flex-start',
+    marginLeft: 16, 
   },
   sectionTitle: {
     fontWeight: 'semibold',
     fontSize: 16,
     color: Colors.orange.orangeStandard,
     marginBottom: 8,
-    marginLeft: 4,
+    marginLeft: 16, // move um pouco para a direita
+    alignSelf: 'flex-start',
+    marginTop: 0, // remove espaço extra acima
   },
   tagsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
     marginBottom: 10,
+    alignSelf: 'flex-start',
+    marginLeft: 16, // move um pouco para a direita
+    marginTop: -4, // sobe um pouco as tags
   },
 });
