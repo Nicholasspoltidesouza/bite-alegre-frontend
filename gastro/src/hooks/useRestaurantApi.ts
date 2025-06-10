@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckinDTO, RestaurantDTO, RestaurantPatchDTO, ReviewDTO } from '../@types/DTO';
+import { CheckinDTO, RestaurantDTO, RestaurantPatchDTO, ReviewDTO, MenuItemsDTO } from '../@types/DTO';
 import ApiService from '../services/apiService';
 
 export const useRestaurantApi = () => {

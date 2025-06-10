@@ -102,8 +102,10 @@ interface AuthDTO {
 }
 
 interface MenuItemsDTO {
-  id: string;
+  id?: string;
   dish_photo: string;
+  description: string;
+  price: number;
 }
 
 interface FeedDTO {

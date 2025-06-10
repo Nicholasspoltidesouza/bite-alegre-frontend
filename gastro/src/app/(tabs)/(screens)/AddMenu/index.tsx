@@ -1,9 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { usePublicationApi } from '@/src/hooks/usePublicationApi';
-import * as FileSystem from 'expo-file-system';
-import { Keyboard } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import Colors from '@/src/constants/Colors';
 import {
   View,
   StyleSheet,
@@ -16,40 +11,40 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import * as FileSystem from 'expo-file-system';
+import * as ImagePicker from 'expo-image-picker';
+import { Keyboard } from 'react-native';
+import { MenuItemsDTO, RestaurantDTO } from '@/src/@types/DTO';  // :contentReference[oaicite:0]{index=0}
 import Button from '@/src/components/Button';
-import { useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useSearch } from '@/src/hooks/useSearch';
-import { PublicationDTO } from '@/src/@types/DTO';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
+import Colors from '@/src/constants/Colors';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const AddMedia = () => {
+const AddMenu = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
+  const { restaurantData: restaurantParam } = useLocalSearchParams();
+  const parsedRestaurant: RestaurantDTO = restaurantParam
+    ? JSON.parse(restaurantParam as string)
+    : ({} as RestaurantDTO);
+
+  const [menuItems, setMenuItems] = useState<MenuItemsDTO[]>([]);
+
   const [mediaUri, setMediaUri] = useState<string | null>(null);
   const [description, setDescription] = useState<string>('');
-  const [preco, setPreco] = useState<number>();
-  const [selectedRestaurantId, setSelectedRestaurantId] = useState<
-    string
-  >('');
+  const [price, setPrice] = useState<string>('');
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
-  const { createPublication } = usePublicationApi();;
-
   useEffect(() => {
-    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-      setIsKeyboardVisible(true);
-    });
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      setIsKeyboardVisible(false);
-    });
-
+    const showSub = Keyboard.addListener('keyboardDidShow', () => setIsKeyboardVisible(true));
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => setIsKeyboardVisible(false));
     return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
+      showSub.remove();
+      hideSub.remove();
     };
   }, []);
 
@@ -59,7 +54,20 @@ const AddMedia = () => {
     return null;
   };
 
-  const isFormValid = true;
+  const validatePrice = (text: string): string | null => {
+    if (!text) return 'Preço é obrigatório';
+
+    const number = parseFloat(text.replace(',', '.'));
+    if (isNaN(number)) return 'Preço deve ser um número válido';
+    if (number <= 0) return 'Preço deve ser maior que zero';
+
+    return null;
+  };
+
+  const isAddFormValid =
+    !validateDescription(description) &&
+    !validatePrice(price) &&
+    mediaUri != null;
 
   const handleAddMedia = () => {
     Alert.alert(
@@ -114,43 +122,52 @@ const AddMedia = () => {
     }
   };
 
-  const handleCreate = async () => {
-    const errors = [validateDescription(description)].filter(
-      (error) => error != null,
-    );
-
-    if (!description) {
-      Alert.alert('Erro', 'Descrição é obrigatória.');
+  const handleAddItem = async () => {
+    const errDesc = validateDescription(description);
+    const errPrice = validatePrice(price);
+    if (errDesc || errPrice) {
+      Alert.alert('Erro de Validação', `${errDesc ?? ''}\n${errPrice ?? ''}`.trim());
+      return;
+    }
+    if (!mediaUri) {
+      Alert.alert('Erro', 'Adicione uma foto do prato.');
       return;
     }
 
-    if (mediaUri == null) {
-      Alert.alert('Erro', 'Adicione uma foto ou vídeo.');
-      return;
-    }
-
-    const base64Media = await FileSystem.readAsStringAsync(mediaUri, {
+    const base64 = await FileSystem.readAsStringAsync(mediaUri, {
       encoding: FileSystem.EncodingType.Base64,
     });
 
-    const postData: PublicationDTO = {
-      media: base64Media,
+    const newItem: MenuItemsDTO = {
+      dish_photo: base64,
       description,
-      restaurant_id: selectedRestaurantId
-    }
+      price: parseFloat(price.replace(',', '.')),
+    };
 
-    // const res = await createPublication(postData);
-    // if (!res) {
-    //   Alert.alert('Erro', 'Erro ao criar publicação.');
-    //   return;
-    // }
-    Alert.alert('Sucesso', 'Publicação criada com sucesso!');
-    // router.push({
-    //   pathname: '/PublicationInfluencer',
-    //   params: {
-    //     postData: JSON.stringify(postData),
-    //   },
-    // });
+    setMenuItems((old) => [...old, newItem]);
+
+    setMediaUri(null);
+    setDescription('');
+    setPrice('');
+  };
+
+  const handleSubmit = () => {
+    if (menuItems.length === 0) {
+      Alert.alert('Erro', 'Adicione pelo menos um item ao cardápio antes de avançar.');
+      return;
+    }
+    const restaurantWithMenu: RestaurantDTO = {
+      ...parsedRestaurant,
+      menuItems,
+    };
+
+    router.push({
+      pathname: '/SignupInterestsScreen',
+      params: {
+        screenTitle: 'Selecione as categorias do seu restaurante',
+        restaurantData: JSON.stringify(restaurantWithMenu),
+      },
+    });
   };
 
   return (
@@ -166,47 +183,46 @@ const AddMedia = () => {
             Platform.OS === 'ios' && { marginTop: -insets.top },
           ]}
         >
-          {!isKeyboardVisible && (
-            <View style={styles.orangeHeader}>
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => router.back()}
-              >
-                <MaterialIcons
-                  name="keyboard-arrow-left"
-                  size={24}
-                  color="#FFFFFF"
-                />
-              </TouchableOpacity>
-              <Text style={styles.textCreatePublication}>Monte seu cardápio com seus melhores pratos</Text>
+          <View style={styles.orangeHeader}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => router.back()}
+            >
+              <MaterialIcons
+                name="keyboard-arrow-left"
+                size={24}
+                color="#FFFFFF"
+              />
+            </TouchableOpacity>
+            <Text style={styles.textCreatePublication}>Monte seu cardápio com seus melhores pratos</Text>
 
-              {mediaUri ? (
-                <View style={styles.previewContainer}>
-                    <Image
-                        source={{ uri: mediaUri }}
-                        style={styles.previewMedia}
-                        resizeMode="cover"
-                    />
-                  <TouchableOpacity
-                    style={styles.removeMediaButton}
-                    onPress={() => {
-                      setMediaUri(null);
-                    }}
-                  >
-                    <Text style={styles.removeMediaText}>Remover Mídia</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <Button
-                  title="+"
-                  type="orange"
-                  onPress={handleAddMedia}
-                  style={styles.orangeButton}
-                  textStyle={styles.orangeButtonText}
-                />
-              )}
+            {mediaUri ? (
+              <View style={styles.previewContainer}>
+                  <Image
+                      source={{ uri: mediaUri }}
+                      style={styles.previewMedia}
+                      resizeMode="cover"
+                  />
+                <TouchableOpacity
+                  style={styles.removeMediaButton}
+                  onPress={() => {
+                    setMediaUri(null);
+                  }}
+                >
+                  <Text style={styles.removeMediaText}>Remover Mídia</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <Button
+                title="+"
+                type="orange"
+                onPress={handleAddMedia}
+                style={styles.orangeButton}
+                textStyle={styles.orangeButtonText}
+              />
+            )}
 
-                <View style={styles.inputWrapper}>
+              <View style={styles.inputWrapper}>
                 <CustomTextInput
                     value={description}
                     onChangeText={setDescription}
@@ -217,30 +233,29 @@ const AddMedia = () => {
                     numberOfLines={4}
                     textAlignVertical="top"
                 />
-                </View>
+              </View>
 
-                <View style={styles.inputWrapper}>
+              <View style={styles.inputWrapper}>
                 <CustomTextInput
-                    value={preco}
-                    onChangeText={setPreco}
-                    placeholder="Preço"
-                    style={styles.input}
-                    multiline={true}
-                    numberOfLines={4}
-                    textAlignVertical="top"
+                  value={price}
+                  onChangeText={setPrice}
+                  placeholder="Preço Médio"
+                  style={styles.input}
+                  validation={validatePrice}
+                  keyboardType="number-pad"
+                  autoCapitalize="none"
                 />
-                </View>
+              </View>
 
-                <View style={styles.buttonAddWrapper}>
-                <Button
-                    title="Adicionar"
-                    type="white"
-                    onPress={handleCreate}
-                    disabled={!isFormValid}
-                />
-                </View>
-            </View>
-          )}
+              <View style={styles.buttonAddWrapper}>
+              <Button
+                  title="Adicionar"
+                  type="white"
+                  onPress={handleAddItem}
+                  disabled={!isAddFormValid}
+              />
+              </View>
+          </View>
 
           <ScrollView
             contentContainerStyle={styles.container}
@@ -257,8 +272,8 @@ const AddMedia = () => {
               <Button
                 title="Avançar"
                 type="orange"
-                onPress={handleCreate}
-                disabled={!isFormValid}
+                onPress={handleSubmit}
+                disabled={false}
               />
             </View>
           </ScrollView>
@@ -340,7 +355,7 @@ const styles = StyleSheet.create({
   },
   orangeHeader: {
     width: '100%',
-    height: 600,
+    height: 560,
     backgroundColor: '#FF914B',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
@@ -350,7 +365,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 33,
+    top: 10,
     left: 30,
     backgroundColor: 'rgba(255,255,255,0.4)',
     borderRadius: 100,
@@ -360,7 +375,7 @@ const styles = StyleSheet.create({
   },
   textCreatePublication: {
     paddingHorizontal: 40,
-    paddingVertical: 20,
+    paddingVertical: 10,
     fontWeight: 'bold',
     color: '#FFFFFF',
     fontSize: 22,
@@ -441,4 +456,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddMedia;
+export default AddMenu;
