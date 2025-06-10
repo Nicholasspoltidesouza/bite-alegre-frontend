@@ -381,7 +381,7 @@ const RestaurantProfilePatch = () => {
             
           <TouchableOpacity 
             style={styles.categoriesLink}
-            onPress={() => Alert.alert('Categorias', 'Navegar para tela de categorias')}
+            onPress={() => router.push('/EditRestaurantCategories')}
           >              
             <Text style={styles.categoriesLinkText}>Categorias</Text>
             <MaterialIcons name="keyboard-arrow-right" size={24} color={Colors.orange.orangeStandard} />
