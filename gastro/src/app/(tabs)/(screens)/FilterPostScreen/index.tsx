@@ -43,7 +43,6 @@ const FilterPostScreen: React.FC = () => {
   const priceIsSet = priceNumber > 0;
 
   useEffect(() => {
-    console.log('🔍 userId recebido nos parâmetros:', userId);
     getTags();
   }, []);
 
@@ -75,25 +74,17 @@ const FilterPostScreen: React.FC = () => {
       apiFilters.tags = allSelectedTags;
     }
 
-    console.log('📦 Filtros aplicados:', {
-      price_range: priceIsSet ? priceNumber : 'Valor Médio',
-      location: filters.location,
-      category: filters.category,
-      tags: apiFilters.tags,
-    });
-
     if (!userId || typeof userId !== 'string') {
-      console.error('❌ userId inválido:', userId);
       return;
     }
 
     try {
       const result = await getPublicationByUserId(userId, apiFilters);
-      console.log('✅ Publicações filtradas:', result);
       router.push({
         pathname: '/InfluencerProfile',
         params: {
-          result: JSON.stringify(result),
+          userId: userId,
+          filteredUserData: JSON.stringify(result),
         },
       });
     } catch (error) {

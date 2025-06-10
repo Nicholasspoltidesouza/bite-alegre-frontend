@@ -31,42 +31,40 @@ export default function InfluencerProfile() {
   const [sameUser, setSameUser] = useState(false);
   const [userData, setUserData] = useState<UserDTO>();
   const [userDataPublication, setUserDataPublication] = useState<PublicationDTO[] | null>([]);
-  const { userId } = useLocalSearchParams();
+  const { userId, filteredUserData} = useLocalSearchParams();
   const [selectedTab, setSelectedTab] = useState<
     'grid' | 'reviews' | 'checkins' | 'user'
   >('grid');
   const [visitedRestaurants, setVisitedRestaurants] = useState<CarouselItem[]>([],);
+  const parsedfilteredUserData = filteredUserData as string ? JSON.parse(filteredUserData as string) : null;
 
   const handleAddPress = () => router.push({ pathname: '/AddMedia' });
 
   const filterAddPress = () => {
-    const id = typeof userId === 'string' ? userId : user?.id;
-    if (id) {
-      router.push({
-        pathname: '/FilterPostScreen',
-        params: { userId: id },
-      });
-    } else {
-      console.error('❌ Não foi possível navegar: userId inválido.');
-    }
-  };
+    const id = typeof userId as string ? userId : user?.id;
+    
+    router.push({
+      pathname: '/FilterPostScreen',
+      params: { userId: id },
+    });
 
+  };
 
   useEffect(() => {
     const id = typeof userId === 'string' ? userId : user!.id;
     setSameUser(id === user!.id);
     getUserById(id.toString()).then((data) => {
-      console.log('Dados do usuário:', data);
       if (data) {
         setUserData(data);
       }
     });
+    if (parsedfilteredUserData != null) return setUserDataPublication(parsedfilteredUserData);
     getPublicationByUserId(id.toString()).then((data) => {
       if (data) {
-        console.log('Publicações do usuário:', data);
         setUserDataPublication(data);
       }
     });
+    
   }, [userId]);
 
   useEffect(() => {
