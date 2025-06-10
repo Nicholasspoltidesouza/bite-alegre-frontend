@@ -36,13 +36,14 @@ const FilterPostScreen: React.FC = () => {
   const [priceInput, setPriceInput] = useState('');
 
   const { userId } = useLocalSearchParams();
-  const { getPublicationbyUserId, loading } = usePublicationApi();
+  const { getPublicationByUserId, loading } = usePublicationApi();
   const { getTags, tags, loading: tagsLoading, error: tagsError } = useFetchTags();
 
   const priceNumber = parseFloat(filters.price.replace(/[^\d]/g, '')) || 0;
   const priceIsSet = priceNumber > 0;
 
   useEffect(() => {
+    console.log('🔍 userId recebido nos parâmetros:', userId);
     getTags();
   }, []);
 
@@ -74,19 +75,29 @@ const FilterPostScreen: React.FC = () => {
       apiFilters.tags = allSelectedTags;
     }
 
-    console.log('Filtros aplicados:', {
+    console.log('📦 Filtros aplicados:', {
       price_range: priceIsSet ? priceNumber : 'Valor Médio',
       location: filters.location,
       category: filters.category,
       tags: apiFilters.tags,
     });
 
+    if (!userId || typeof userId !== 'string') {
+      console.error('❌ userId inválido:', userId);
+      return;
+    }
+
     try {
-      const result = await getPublicationbyUserId(userId as string, apiFilters);
-      console.log('Publicações filtradas:', result);
-      router.back();
+      const result = await getPublicationByUserId(userId, apiFilters);
+      console.log('✅ Publicações filtradas:', result);
+      router.push({
+        pathname: '/InfluencerProfile',
+        params: {
+          result: JSON.stringify(result),
+        },
+      });
     } catch (error) {
-      console.error('Erro ao filtrar publicações:', error);
+      console.error('❌ Erro ao filtrar publicações:', error);
     }
   };
 

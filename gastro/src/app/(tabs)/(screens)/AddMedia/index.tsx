@@ -1,28 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { usePublicationApi } from '@/src/hooks/usePublicationApi';
-import * as FileSystem from 'expo-file-system';
-import { Keyboard } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import {
-  View,
-  StyleSheet,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
-import { Video } from 'expo-av';
-import Button from '@/src/components/Button';
-import { useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
-import { MaterialIcons } from '@expo/vector-icons';
-import { useSearch } from '@/src/hooks/useSearch';
 import { PublicationDTO } from '@/src/@types/DTO';
+import Button from '@/src/components/Button';
+import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
+import { usePublicationApi } from '@/src/hooks/usePublicationApi';
+import { useSearch } from '@/src/hooks/useSearch';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Video } from 'expo-av';
+import * as FileSystem from 'expo-file-system';
+import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import {
+  Alert, Image, Keyboard, KeyboardAvoidingView,
+  Platform, SafeAreaView,
+  ScrollView, StyleSheet,
+  Text, TouchableOpacity, View
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const AddMedia = () => {
   const router = useRouter();
