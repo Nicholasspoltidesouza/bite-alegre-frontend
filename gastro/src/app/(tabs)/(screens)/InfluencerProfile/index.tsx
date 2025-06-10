@@ -1,4 +1,4 @@
-import { CheckinDTO, PublicationDTO, RestaurantDTO, ReviewDTO } from '@/src/@types/DTO';
+import { CheckinDTO, PublicationDTO, RestaurantDTO, ReviewDTO, UserDTO } from '@/src/@types/DTO';
 import CheckinSection from '@/src/components/CheckinSection';
 import Header from '@/src/components/Header';
 import InfluencerPageSession from '@/src/components/InfluencerPageSession';
@@ -9,6 +9,7 @@ import Colors from '@/src/constants/Colors';
 import { useAuthContext } from '@/src/contexts/authContext';
 import { usePublicationApi } from '@/src/hooks/usePublicationApi';
 import { useCreateUser } from '@/src/hooks/useUserApi';
+import { CarouselItem, mapCheckinToCarouselItem, mapReviewToCarouselItem } from '@/src/utils/carouselMappers';
 import { AntDesign } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -24,10 +25,11 @@ import {
 
 
 export default function InfluencerProfile() {
-  const { getUserById, loading, error, data: userData } = useCreateUser();
-  const { getPublicationbyUserId, loading: loadingPublication, error: errorPublication } = usePublicationApi();
+  const { getUserById, loading, error,} = useCreateUser();
+  const { getPublicationByUserId, loading: loadingPublication, error: errorPublication } = usePublicationApi();
   const { user } = useAuthContext();
   const [sameUser, setSameUser] = useState(false);
+  const [userData, setUserData] = useState<UserDTO>();
   const [userDataPublication, setUserDataPublication] = useState<PublicationDTO[] | null>([]);
   const { userId } = useLocalSearchParams();
   const [selectedTab, setSelectedTab] = useState<
@@ -36,15 +38,18 @@ export default function InfluencerProfile() {
   const [visitedRestaurants, setVisitedRestaurants] = useState<CarouselItem[]>([],);
 
   const handleAddPress = () => router.push({ pathname: '/AddMedia' });
-  const filterAddPress = () => router.push({ pathname: '/FilterPostScreen' });
+  const filterAddPress = () => router.push({ pathname: '/FilterPostScreen', params: { influencerId: userId } });
 
   useEffect(() => {
     const id = typeof userId === 'string' ? userId : user!.id;
     setSameUser(id === user!.id);
     getUserById(id.toString()).then((data) => {
-      setVisited();
+      console.log('Dados do usuário:', data);
+      if (data) {
+        setUserData(data);
+      }
     });
-    getPublicationbyUserId(id.toString()).then((data) => {
+    getPublicationByUserId(id.toString()).then((data) => {
       if (data) {
         console.log('Publicações do usuário:', data);
         setUserDataPublication(data);
@@ -52,7 +57,14 @@ export default function InfluencerProfile() {
     });
   }, [userId]);
 
+  useEffect(() => {
+    if (userData) {
+      setVisited();
+    }
+  }, [userData]);
+
   function setVisited() {
+    console.log('userData', userData);
     const visitedFromReviews: CarouselItem[] =
       userData!.reviews?.map(mapReviewToCarouselItem) ?? [];
     const visitedFromCheckins: CarouselItem[] =
@@ -68,39 +80,6 @@ export default function InfluencerProfile() {
       return setVisitedRestaurants(uniqueVisited);
     }
     setVisitedRestaurants([]);
-  }
-
-  function mapCheckinToRestaurant(checkin: CheckinDTO): RestaurantDTO {
-    return {
-      id: checkin.restaurant_id ?? '',
-      profilePhoto: checkin.restaurantProfilePhoto,
-      address: '',
-      name: checkin.restaurantName!,
-      description: '',
-      email: '',
-      password: '',
-      averagePrice: 0,
-      phone: '',
-      userType: '',
-      cnpj: '',
-    };
-  }
-
-  function mapRestaurantToReview(review: ReviewDTO): RestaurantDTO {
-    return {
-      id: review.restaurantId ?? '',
-      stars: review.stars ?? 0,
-      profilePhoto: review.restaurantProfilePhoto,
-      address: '',
-      name: review.restaurantName!,
-      description: '',
-      email: '',
-      password: '',
-      averagePrice: 0,
-      phone: '',
-      userType: '',
-      cnpj: '',
-    };
   }
 
   if (loading || loadingPublication) {
@@ -139,7 +118,7 @@ export default function InfluencerProfile() {
         return (
           <Publications images={userDataPublication!} />
         );
-      case 'reviews':
+      case 'reviews':        
         return <CardReview reviews={userData!.reviews!} />;
       case 'checkins':
         return (
