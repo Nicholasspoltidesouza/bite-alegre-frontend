@@ -1,5 +1,5 @@
-
- import React from 'react';
+import React from 'react';
+import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from 'react-native'; // Adicionar imports do React Native
 import { ChevronLeft } from 'lucide-react-native'; // Corrigido import
 import { useRouter, useLocalSearchParams } from 'expo-router'; // Corrigido import
 import UserIconPlaceholder from '../../../../components/UserIconPlaceholder';
@@ -61,97 +61,205 @@ const RestaurantReviewsScreen: React.FC = () => {
       router.back();
     } else {
       // Navegação de fallback se não houver histórico (ex: deep link)
- router.push({ pathname: '/' }); // Ajuste para sua rota principal/home
- }
+      router.push({ pathname: '/' }); // Ajuste para sua rota principal/home
+    }
   };
  
-   return (
-      // Para React Native, use <ScrollView> ou <View> com estilização apropriada.
-      // Se usar NativeWind, className funcionará nesses componentes.
- <div className="min-h-screen bg-gray-50"> {/* Use View ou ScrollView em React Native */}
-       {/* Header */}
-       <div className="bg-white px-4 py-3 flex items-center shadow-sm">
-         <ChevronLeft
-            size={24}
-            color="#4B5563" // Equivalente a text-gray-600
-            style={{ marginRight: 12 }} // Tailwind mr-3
-            onPress={handleGoBack}
-          />
-          {/* Para RN: <Text className="text-lg font-semibold text-gray-800 flex-1">{currentRestaurant.name}</Text> */} {/* Use Text em React Native */}
-         <h1 className="text-lg font-semibold text-gray-800 flex-1">
-            {currentRestaurant.name}
-          </h1>
-         <UserIconPlaceholder />
-       </div>
- 
-       {/* Rating Summary */}
-       <div className="bg-white p-4 mx-4 mt-4 rounded-lg shadow-sm">
-         <div className="flex items-start gap-4">
-           {/* Overall Rating */}
-           <div className="flex flex-col items-center">
-             {/* Para RN: <Text className="text-3xl font-bold text-gray-800">...</Text> */}
-             <div className="text-3xl font-bold text-gray-800"> {/* Use Text em React Native */}
-                {currentRestaurant.averageScore != null ? currentRestaurant.averageScore.toFixed(1) : 'N/A'}
-              </div>
-             <div className="flex mb-1">
-               <StarRating rating={currentRestaurant.averageScore != null ? Math.floor(currentRestaurant.averageScore) : 0} /> {/* Use o componente StarRating */}
-             </div>
-             {/* Para RN: <Text className="text-sm text-gray-500">...</Text> */}
-             <div className="text-sm text-gray-500">
-                {currentReviews.length} avaliações
-              </div>
-           </div>
- 
-           {/* Rating Distribution */}
-           {currentReviews && currentReviews.length > 0 ? (
-             <RatingBars reviews={currentReviews} /> // RatingBars espera { stars: number }[]
-           ) : (
-             // Para RN: <View className="flex-1"><Text className="text-sm text-gray-500">Sem dados de distribuição.</Text></View>
-             <div className="flex-1"><p className="text-sm text-gray-500">Sem dados de distribuição.</p></div> /* Use View e Text em React Native */
-           )}
-         </div>
-       </div>
- 
-       {/* Reviews List */}
-       <div className="px-4 space-y-4 pb-20"> {/* Adicionado padding-bottom para visibilidade da rolagem */}
-         {currentReviews && currentReviews.length > 0 ? (
-           currentReviews.map((displayReview) => (
-            // Garanta que review.id seja único e presente, ou use outro identificador único.
-            // Se review.id puder ser indefinido, forneça um fallback ou garanta que esteja sempre definido.
-             <ReviewItem
-               key={displayReview.id || `${displayReview.userName}-${displayReview.stars}`}
-               review={{
-                 user: displayReview.userName,
-                 rating: displayReview.stars,
-                 timeAgo: displayReview.reviewDate, // Mapeia reviewDate para timeAgo conforme esperado por ReviewItem
-                 comment: displayReview.feedback || '', // Garante que comment seja uma string, como esperado por ReviewItem
-               }}
-             />
-           ))
-         ) : (
-           // Para RN: <View className="bg-white p-4 rounded-lg shadow-sm text-center"><Text className="text-gray-600">...</Text></View> {/* Use View e Text em React Native */}
-           <div className="bg-white p-4 rounded-lg shadow-sm text-center">
-             <p className="text-gray-600">Este restaurante ainda não possui avaliações.</p>
-           </div>
-         )}
- </div>
- 
-       {/* Bottom Navigation (Placeholder - assumindo que este é um elemento fixo ou tratado pelo layout) */}
-       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2"> {/* Use View em React Native */}
-         <div className="flex justify-around items-center">
-           {/* Ícones de placeholder - substitua pelos itens de navegação reais */}
-           <div className="p-2"><div className="w-6 h-6 bg-orange-400 rounded"></div></div>
-           <div className="p-2"><div className="w-6 h-6 border-2 border-gray-300 rounded-full"></div></div>
-           <div className="p-2"><div className="w-8 h-8 bg-teal-400 rounded-full"></div></div>
-           <div className="p-2"><div className="w-6 h-6 bg-orange-300 rounded-full"></div></div>
-           <div className="p-2"><div className="w-6 h-6 bg-orange-300 rounded-full"></div></div>
-         </div>
-       </div>
+  return (
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <ChevronLeft
+          size={24}
+          color={styles.headerIcon.color}
+          style={styles.headerIcon}
+          onPress={handleGoBack}
+        />
+        <Text style={styles.headerTitle}>
+          {currentRestaurant.name}
+        </Text>
+        <UserIconPlaceholder />
+      </View>
 
-      {/* Padding para navegação inferior - não necessário se usar ScrollView e navegação inferior fixa */}
-      {/* <div className="h-16"></div> */}
-    </div>
- );
+      <ScrollView contentContainerStyle={styles.scrollContentContainer}>
+        {/* Rating Summary */}
+        <View style={styles.ratingSummaryContainer}>
+          <View style={styles.ratingSummaryContent}>
+            {/* Overall Rating */}
+            <View style={styles.overallRating}>
+              <Text style={styles.averageScoreText}>
+                {currentRestaurant.averageScore != null ? currentRestaurant.averageScore.toFixed(1) : 'N/A'}
+              </Text>
+              <View style={styles.starRatingWrapper}>
+                <StarRating rating={currentRestaurant.averageScore != null ? Math.floor(currentRestaurant.averageScore) : 0} />
+              </View>
+              <Text style={styles.reviewsCountText}>
+                {currentReviews.length} avaliações
+              </Text>
+            </View>
+
+            {/* Rating Distribution */}
+            {currentReviews && currentReviews.length > 0 ? (
+              <RatingBars reviews={currentReviews} />
+            ) : (
+              <View style={styles.noDistributionContainer}>
+                <Text style={styles.noDistributionText}>Sem dados de distribuição.</Text>
+              </View>
+            )}
+          </View>
+        </View>
+
+        {/* Reviews List */}
+        <View style={styles.reviewsListContainer}>
+          {currentReviews && currentReviews.length > 0 ? (
+            currentReviews.map((displayReview) => (
+              <ReviewItem
+                key={displayReview.id || `${displayReview.userName}-${displayReview.stars}`}
+                review={{
+                  user: displayReview.userName,
+                  rating: displayReview.stars,
+                  timeAgo: displayReview.reviewDate,
+                  comment: displayReview.feedback || '',
+                }}
+              />
+            ))
+          ) : (
+            <View style={styles.noReviewsContainer}>
+              <Text style={styles.noReviewsText}>Este restaurante ainda não possui avaliações.</Text>
+            </View>
+          )}
+        </View>
+      </ScrollView>
+
+      {/* Bottom Navigation (Placeholder - assumindo que este é um elemento fixo ou tratado pelo layout) */}
+      <View style={styles.bottomNav}>
+        <View style={styles.bottomNavContent}>
+          {/* Ícones de placeholder - substitua pelos itens de navegação reais */}
+          <View style={styles.navIconPlaceholder} />
+          <View style={styles.navIconPlaceholder} />
+          <View style={styles.navIconPlaceholder} />
+          <View style={styles.navIconPlaceholder} />
+          <View style={styles.navIconPlaceholder} />
+        </View>
+      </View>
+    </View>
+  );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB', // bg-gray-50
+  },
+  header: {
+    backgroundColor: 'white', // bg-white
+    paddingHorizontal: 16,    // px-4
+    paddingVertical: 12,      // py-3
+    flexDirection: 'row',     // flex
+    alignItems: 'center',     // items-center
+    shadowColor: '#000',      // shadow-sm (aproximado)
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,             // Para Android
+  },
+  headerIcon: {
+    marginRight: 12,          // mr-3
+    color: '#4B5563',         // text-gray-600
+  },
+  headerTitle: {
+    fontSize: 18,             // text-lg
+    fontWeight: '600',        // font-semibold
+    color: '#1F2937',         // text-gray-800
+    flex: 1,                  // flex-1
+  },
+  scrollContentContainer: {
+    paddingBottom: 80, // Para dar espaço para o bottomNav se for fixo
+  },
+  ratingSummaryContainer: {
+    backgroundColor: 'white', // bg-white
+    padding: 16,              // p-4
+    marginHorizontal: 16,     // mx-4
+    marginTop: 16,            // mt-4
+    borderRadius: 8,          // rounded-lg
+    shadowColor: '#000',      // shadow-sm (aproximado)
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  ratingSummaryContent: {
+    flexDirection: 'row',     // flex
+    alignItems: 'flex-start', // items-start
+    gap: 16,                  // gap-4
+  },
+  overallRating: {
+    flexDirection: 'column',  // flex flex-col
+    alignItems: 'center',     // items-center
+  },
+  averageScoreText: {
+    fontSize: 28,             // text-3xl (aproximado)
+    fontWeight: 'bold',       // font-bold
+    color: '#1F2937',         // text-gray-800
+  },
+  starRatingWrapper: {
+    flexDirection: 'row',     // flex
+    marginBottom: 4,          // mb-1
+  },
+  reviewsCountText: {
+    fontSize: 14,             // text-sm
+    color: '#6B7280',         // text-gray-500
+  },
+  noDistributionContainer: {
+    flex: 1,                  // flex-1
+  },
+  noDistributionText: {
+    fontSize: 14,             // text-sm
+    color: '#6B7280',         // text-gray-500
+  },
+  reviewsListContainer: {
+    paddingHorizontal: 16,    // px-4
+    // space-y-4 é geralmente aplicado pelo marginBottom no ReviewItem
+    paddingBottom: 20,        // pb-20
+  },
+  noReviewsContainer: {
+    backgroundColor: 'white', // bg-white
+    padding: 16,              // p-4
+    borderRadius: 8,          // rounded-lg
+    shadowColor: '#000',      // shadow-sm (aproximado)
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+    alignItems: 'center',     // text-center (para o conteúdo)
+    marginTop: 16,            // Para simular o space-y se for o único item
+  },
+  noReviewsText: {
+    color: '#4B5563',         // text-gray-600
+  },
+  bottomNav: {
+    // position: 'absolute', // Descomente se quiser fixo no rodapé
+    // bottom: 0,
+    // left: 0,
+    // right: 0,
+    backgroundColor: 'white', // bg-white
+    borderTopWidth: 1,        // border-t
+    borderTopColor: '#E5E7EB',// border-gray-200
+    paddingHorizontal: 16,    // px-4
+    paddingVertical: 8,       // py-2 (aproximado)
+  },
+  bottomNavContent: {
+    flexDirection: 'row',     // flex
+    justifyContent: 'space-around', // justify-around
+    alignItems: 'center',     // items-center
+  },
+  navIconPlaceholder: {       // Estilo para os placeholders dos ícones
+    width: 24,                // w-6
+    height: 24,               // h-6
+    backgroundColor: '#CBD5E1', // Cor de placeholder
+    borderRadius: 4,          // rounded (exemplo)
+    margin: 8,                // p-2 (aproximado)
+  },
+});
 
 export default RestaurantReviewsScreen;
