@@ -125,7 +125,6 @@ export default function UserProfileEdit() {
     Alert.alert('Sucesso', 'Dados atualizados com sucesso!');
   };
 
-  // Salvar apenas dados pessoais (primeira tela) + tags selecionadas
   const handleSaveUserData = async () => {
     if (!user?.id) return;
     try {
@@ -135,7 +134,7 @@ export default function UserProfileEdit() {
         name,
         email,
         phone,
-        tagIds: selectedTags, // adiciona as tags selecionadas
+        tagIds: selectedTags, 
       });
       Alert.alert('Sucesso', 'Dados pessoais atualizados!');
     } catch (e) {
@@ -143,7 +142,6 @@ export default function UserProfileEdit() {
     }
   };
 
-  // Função única para salvar dados e fechar a tela
   const handleSaveAndClose = async () => {
     if (!user?.id) return;
     try {
@@ -156,7 +154,7 @@ export default function UserProfileEdit() {
         tagIds: selectedTags,
       });
       Alert.alert('Sucesso', 'Dados atualizados com sucesso!');
-      router.back(); // Fecha a tela de edição
+      router.back();
     } catch (e) {
       Alert.alert('Erro', 'Não foi possível atualizar os dados.');
     }
@@ -320,9 +318,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.orange.orangeStandard,
     marginBottom: 8,
-    marginLeft: 16, // move um pouco para a direita
+    marginLeft: 16, 
     alignSelf: 'flex-start',
-    marginTop: 0, // remove espaço extra acima
+    marginTop: 0, 
   },
   tagsRow: {
     flexDirection: 'row',
@@ -330,7 +328,7 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 10,
     alignSelf: 'flex-start',
-    marginLeft: 16, // move um pouco para a direita
-    marginTop: -4, // sobe um pouco as tags
+    marginLeft: 16, 
+    marginTop: -4, 
   },
 });

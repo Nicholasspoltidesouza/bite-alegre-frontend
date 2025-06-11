@@ -91,9 +91,6 @@ export default function Feed() {
           variant="closeToYou"
           restaurantsExternal={restaurantData!}
         />
-        <Button
-          title="Cadastrar"
-          onPress={() => router.push({ pathname: '/UserProfilePatch' })} type={'white'}      />
       </ScrollView>
     </SafeAreaView>
   );
