@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView, ActivityIndicator } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView, ActivityIndicator, FlatList } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { RestaurantDTO } from '../../../../@types/DTO';
 import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/src/constants/Colors';
+import RatingSummaryCard from '../../../../components/RatingSummaryCard'; // Importar o componente
+import ReviewItem from '../../../../components/ReviewItem'; // Importar o componente de item de review
 
 interface UIDisplayReview {
   id?: string | number;
@@ -13,17 +15,25 @@ interface UIDisplayReview {
   feedback?: string;
 }
 
+// Adicionar averageScore e reviews ao RestaurantDTO para este contexto
+interface RestaurantWithReviewsDTO extends RestaurantDTO {
+  averageScore?: number;
+  reviews?: UIDisplayReview[];
+}
+
 const RestaurantReviewsScreen: React.FC = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [currentRestaurant, setCurrentRestaurant] = useState<RestaurantDTO>();
+  // Usar o tipo estendido para currentRestaurant se você espera dados de avaliação
+  // const [currentRestaurant, setCurrentRestaurant] = useState<RestaurantWithReviewsDTO>();
 
   useEffect(() => {
     try {
       if (typeof params.restaurant === 'string') {
-        const parsedRestaurant = JSON.parse(params.restaurant) as RestaurantDTO;
+        const parsedRestaurant = JSON.parse(params.restaurant) as RestaurantWithReviewsDTO; // Usar o tipo estendido
         setCurrentRestaurant(parsedRestaurant);
         console.log('currentRestaurant:', parsedRestaurant);
         console.log('SUCESSO')
@@ -60,6 +70,25 @@ const RestaurantReviewsScreen: React.FC = () => {
       router.push({ pathname: '/' });
     }
   };
+
+  // Função para calcular a distribuição de avaliações para o RatingSummaryCard
+  const calculateRatingDistribution = (reviews?: UIDisplayReview[]): number[] => {
+    if (!reviews || reviews.length === 0) {
+      // Retorna a distribuição esperada pelo RatingSummaryCard (5 estrelas, 4, 3, 2, 1)
+      return [0, 0, 0, 0, 0]; 
+    }
+
+    const starCounts = [0, 0, 0, 0, 0]; // Índice 0 para 5 estrelas, 1 para 4 estrelas, ..., 4 para 1 estrela
+    reviews.forEach(review => {
+      const rating = Math.round(review.stars); // Arredondar para garantir que seja um inteiro entre 1-5
+      if (rating >= 1 && rating <= 5) {
+        starCounts[5 - rating]++; // 5 estrelas -> índice 0, 1 estrela -> índice 4
+      }
+    });
+
+    const totalReviews = reviews.length;
+    return starCounts.map(count => (count / totalReviews) * 100);
+  };
  
   return (
     <SafeAreaView style={styles.container}>
@@ -92,9 +121,37 @@ const RestaurantReviewsScreen: React.FC = () => {
             )}
           </View>
 
-          </View>
+        </View>
 
-      
+        {/* Adicionar o RatingSummaryCard aqui */}
+        <RatingSummaryCard
+          score={currentRestaurant.averageScore ?? 0} // Use 0 como fallback se averageScore não estiver definido
+          reviewCount={currentRestaurant.reviews?.length ?? 0} // Use 0 como fallback
+          distribution={calculateRatingDistribution(currentRestaurant.reviews)}
+        />
+
+        {/* Lista de Reviews */}
+        <FlatList
+          data={currentRestaurant.reviews || []}
+          renderItem={({ item }) => (
+            <ReviewItem
+              review={{
+                userName: item.userName,
+                stars: item.stars,
+                date: item.reviewDate, // Mapeando reviewDate para date
+                feedback: item.feedback || "Nenhum comentário fornecido.", // ReviewItem já tem fallback
+              }}
+            />
+          )}
+          keyExtractor={(item, index) => item.id?.toString() ?? index.toString()}
+          contentContainerStyle={styles.listContent}
+          ListEmptyComponent={
+            <Text style={styles.emptyListText}>Nenhuma avaliação ainda.</Text>
+          }
+          // Se esta FlatList estiver dentro de uma ScrollView e ambas rolarem verticalmente,
+          // considere usar ListHeaderComponent na FlatList para o conteúdo acima dela,
+          // ou desabilitar a rolagem da FlatList se a ScrollView principal deve controlar tudo.
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -130,6 +187,15 @@ const styles = StyleSheet.create({
     width: 65,
     alignItems: 'center',
     marginRight: '5%',
+  },
+  listContent: {
+    paddingVertical: 10, // Espaçamento vertical para a lista
+  },
+  emptyListText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    color: Colors.textSecondary, // Usando uma cor do seu tema se disponível
   },
 });
 
