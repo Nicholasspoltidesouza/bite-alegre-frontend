@@ -31,6 +31,7 @@ interface RestaurantDTO {
   userType: string;
   reviews?: ReviewDTO[];
   stars?: number;
+  tags?: string[];
   openingPeriods?: OperatingHoursDto[];
   publications?: PublicationDTO[];
   menuItems?: MenuItemsDTO[];

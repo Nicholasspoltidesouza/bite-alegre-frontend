@@ -37,17 +37,7 @@ const AddMenu = () => {
   const [mediaUri, setMediaUri] = useState<string | null>(null);
   const [description, setDescription] = useState<string>('');
   const [price, setPrice] = useState<string>('');
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-
-  useEffect(() => {
-    const showSub = Keyboard.addListener('keyboardDidShow', () => setIsKeyboardVisible(true));
-    const hideSub = Keyboard.addListener('keyboardDidHide', () => setIsKeyboardVisible(false));
-    return () => {
-      showSub.remove();
-      hideSub.remove();
-    };
-  }, []);
-
+  
   const validateDescription = (text: string): string | null => {
     if (text.length > 200)
       return 'Descrição não pode ter mais de 200 caracteres';
@@ -134,12 +124,8 @@ const AddMenu = () => {
       return;
     }
 
-    const base64 = await FileSystem.readAsStringAsync(mediaUri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-
     const newItem: MenuItemsDTO = {
-      dish_photo: base64,
+      dish_photo: mediaUri,
       description,
       price: parseFloat(price.replace(',', '.')),
     };
