@@ -12,22 +12,24 @@ import {
   Image,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import { Keyboard } from 'react-native';
-import { MenuItemsDTO, RestaurantDTO } from '@/src/@types/DTO';  // :contentReference[oaicite:0]{index=0}
+import { MenuItemsDTO, RestaurantDTO } from '@/src/@types/DTO';
 import Button from '@/src/components/Button';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { MaterialIcons } from '@expo/vector-icons';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import Colors from '@/src/constants/Colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 
 const AddMenu = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const { restaurantData: restaurantParam } = useLocalSearchParams();
+  const { restaurantData: restaurantParam, restaurantId } =
+    useLocalSearchParams();
+  const { getRestaurantById } = useRestaurantApi();
   const parsedRestaurant: RestaurantDTO = restaurantParam
     ? JSON.parse(restaurantParam as string)
     : ({} as RestaurantDTO);
@@ -37,7 +39,7 @@ const AddMenu = () => {
   const [mediaUri, setMediaUri] = useState<string | null>(null);
   const [description, setDescription] = useState<string>('');
   const [price, setPrice] = useState<string>('');
-  
+
   const validateDescription = (text: string): string | null => {
     if (text.length > 200)
       return 'Descrição não pode ter mais de 200 caracteres';
@@ -116,7 +118,10 @@ const AddMenu = () => {
     const errDesc = validateDescription(description);
     const errPrice = validatePrice(price);
     if (errDesc || errPrice) {
-      Alert.alert('Erro de Validação', `${errDesc ?? ''}\n${errPrice ?? ''}`.trim());
+      Alert.alert(
+        'Erro de Validação',
+        `${errDesc ?? ''}\n${errPrice ?? ''}`.trim(),
+      );
       return;
     }
     if (!mediaUri) {
@@ -139,7 +144,10 @@ const AddMenu = () => {
 
   const handleSubmit = () => {
     if (menuItems.length === 0) {
-      Alert.alert('Erro', 'Adicione pelo menos um item ao cardápio antes de avançar.');
+      Alert.alert(
+        'Erro',
+        'Adicione pelo menos um item ao cardápio antes de avançar.',
+      );
       return;
     }
     const restaurantWithMenu: RestaurantDTO = {
@@ -155,6 +163,12 @@ const AddMenu = () => {
       },
     });
   };
+
+  useEffect(() => {
+    if (restaurantId) {
+      const res = getRestaurantById(restaurantId as string);
+    }
+  }, []);
 
   return (
     <View style={styles.containerPrincipal}>
@@ -180,15 +194,17 @@ const AddMenu = () => {
                 color="#FFFFFF"
               />
             </TouchableOpacity>
-            <Text style={styles.textCreatePublication}>Monte seu cardápio com seus melhores pratos</Text>
+            <Text style={styles.textCreatePublication}>
+              Monte seu cardápio com seus melhores pratos
+            </Text>
 
             {mediaUri ? (
               <View style={styles.previewContainer}>
-                  <Image
-                      source={{ uri: mediaUri }}
-                      style={styles.previewMedia}
-                      resizeMode="cover"
-                  />
+                <Image
+                  source={{ uri: mediaUri }}
+                  style={styles.previewMedia}
+                  resizeMode="cover"
+                />
                 <TouchableOpacity
                   style={styles.removeMediaButton}
                   onPress={() => {
@@ -208,39 +224,39 @@ const AddMenu = () => {
               />
             )}
 
-              <View style={styles.inputWrapper}>
-                <CustomTextInput
-                    value={description}
-                    onChangeText={setDescription}
-                    placeholder="Descrição"
-                    style={styles.input}
-                    validation={validateDescription}
-                    multiline={true}
-                    numberOfLines={4}
-                    textAlignVertical="top"
-                />
-              </View>
-
-              <View style={styles.inputWrapper}>
-                <CustomTextInput
-                  value={price}
-                  onChangeText={setPrice}
-                  placeholder="Preço Médio"
-                  style={styles.input}
-                  validation={validatePrice}
-                  keyboardType="number-pad"
-                  autoCapitalize="none"
-                />
-              </View>
-
-              <View style={styles.buttonAddWrapper}>
-              <Button
-                  title="Adicionar"
-                  type="white"
-                  onPress={handleAddItem}
-                  disabled={!isAddFormValid}
+            <View style={styles.inputWrapper}>
+              <CustomTextInput
+                value={description}
+                onChangeText={setDescription}
+                placeholder="Descrição"
+                style={styles.input}
+                validation={validateDescription}
+                multiline={true}
+                numberOfLines={4}
+                textAlignVertical="top"
               />
-              </View>
+            </View>
+
+            <View style={styles.inputWrapper}>
+              <CustomTextInput
+                value={price}
+                onChangeText={setPrice}
+                placeholder="Preço Médio"
+                style={styles.input}
+                validation={validatePrice}
+                keyboardType="number-pad"
+                autoCapitalize="none"
+              />
+            </View>
+
+            <View style={styles.buttonAddWrapper}>
+              <Button
+                title="Adicionar"
+                type="white"
+                onPress={handleAddItem}
+                disabled={!isAddFormValid}
+              />
+            </View>
           </View>
 
           <ScrollView
@@ -248,10 +264,7 @@ const AddMenu = () => {
             keyboardShouldPersistTaps="handled"
           >
             <View style={styles.carouselContainer}>
-                <UserCarouselRestaurant
-                variant="menuAdd"
-                items={[]}
-                />
+              <UserCarouselRestaurant variant="menuAdd" items={[]} />
             </View>
 
             <View style={styles.buttonCreate}>
@@ -347,7 +360,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 80
+    paddingTop: 80,
   },
   backButton: {
     position: 'absolute',
@@ -373,7 +386,7 @@ const styles = StyleSheet.create({
     width: 230,
     height: 205,
     backgroundColor: '#d9d9d9',
-    marginBottom: 20
+    marginBottom: 20,
   },
   orangeButtonText: {
     fontSize: 45,
@@ -384,7 +397,7 @@ const styles = StyleSheet.create({
     height: 205,
     borderRadius: 20,
     backgroundColor: '#000',
-    marginBottom: 20
+    marginBottom: 20,
   },
   previewContainer: {
     alignItems: 'center',

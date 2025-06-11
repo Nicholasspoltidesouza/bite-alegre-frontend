@@ -1,5 +1,8 @@
 import { RestaurantPatchDTO } from '@/src/@types/DTO';
-import { LocalOperatingHour, OpeningPeriodDto } from '@/src/@types/OperatingHoursDto';
+import {
+  LocalOperatingHour,
+  OpeningPeriodDto,
+} from '@/src/@types/OperatingHoursDto';
 import Button from '@/src/components/Button';
 import SignupHeader from '@/src/components/SignupHeader';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
@@ -23,12 +26,13 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/src/constants/Colors';
+import AddMenu from '../AddMenu';
 
 const RestaurantProfilePatch = () => {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { patchRestaurant } = useRestaurantApi();
-  
+
   const [restaurantId] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -38,52 +42,100 @@ const RestaurantProfilePatch = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userType, setUserType] = useState<string>('Editar Restaurante');
   const [showOperatingHours, setShowOperatingHours] = useState<boolean>(true);
-  
+
   const [showTimePickerModal, setShowTimePickerModal] = useState(false);
-  const [selectedTimeType, setSelectedTimeType] = useState<'abertura' | 'fechamento'>('abertura');
+  const [selectedTimeType, setSelectedTimeType] = useState<
+    'abertura' | 'fechamento'
+  >('abertura');
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(-1);
-  
+
   const availableTimes = [
-    "-",
-    "00:00", "01:00", "02:00", "03:00", "04:00", "05:00",
-    "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
-    "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
-    "18:00", "19:00", "20:00", "21:00", "22:00", "23:00",
+    '-',
+    '00:00',
+    '01:00',
+    '02:00',
+    '03:00',
+    '04:00',
+    '05:00',
+    '06:00',
+    '07:00',
+    '08:00',
+    '09:00',
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+    '21:00',
+    '22:00',
+    '23:00',
   ];
 
   const [operatingHours, setOperatingHours] = useState<LocalOperatingHour[]>([
-    { day: 'Segunda-feira', openTime: '16:00', closeTime: '22:00', weekday: 'MON' },
-    { day: 'Terça-feira', openTime: '16:00', closeTime: '22:00', weekday: 'TUE' },
-    { day: 'Quarta-feira', openTime: '16:00', closeTime: '22:00', weekday: 'WED' },
-    { day: 'Quinta-feira', openTime: '16:00', closeTime: '22:00', weekday: 'THU' },
-    { day: 'Sexta-feira', openTime: '16:00', closeTime: '22:00', weekday: 'FRI' },
+    {
+      day: 'Segunda-feira',
+      openTime: '16:00',
+      closeTime: '22:00',
+      weekday: 'MON',
+    },
+    {
+      day: 'Terça-feira',
+      openTime: '16:00',
+      closeTime: '22:00',
+      weekday: 'TUE',
+    },
+    {
+      day: 'Quarta-feira',
+      openTime: '16:00',
+      closeTime: '22:00',
+      weekday: 'WED',
+    },
+    {
+      day: 'Quinta-feira',
+      openTime: '16:00',
+      closeTime: '22:00',
+      weekday: 'THU',
+    },
+    {
+      day: 'Sexta-feira',
+      openTime: '16:00',
+      closeTime: '22:00',
+      weekday: 'FRI',
+    },
     { day: 'Sábado', openTime: '16:00', closeTime: '22:00', weekday: 'SAT' },
     { day: 'Domingo', openTime: '16:00', closeTime: '22:00', weekday: 'SUN' },
     { day: 'Feriados', openTime: '16:00', closeTime: '22:00', weekday: 'HOL' },
   ]);
 
   const validateNameRestaurant = (text: string): string | null => {
-    if (!text) return null; 
+    if (!text) return null;
     if (text.length < 2) return 'Nome deve ter no mínimo 2 caracteres';
     if (text.length > 50) return 'Nome deve ter no máximo 50 caracteres';
     return null;
   };
 
   const validateDescription = (text: string): string | null => {
-    if (!text) return null; 
-    if (text.length > 200) return 'Descrição não pode ter mais de 200 caracteres';
+    if (!text) return null;
+    if (text.length > 200)
+      return 'Descrição não pode ter mais de 200 caracteres';
     return null;
   };
 
   const validateAddress = (text: string): string | null => {
-    if (!text) return null; 
+    if (!text) return null;
     if (text.length < 5) return 'Endereço deve ter no mínimo 5 caracteres';
     if (text.length > 100) return 'Endereço deve ter no máximo 100 caracteres';
     return null;
   };
 
   const validatePhone = (text: string): string | null => {
-    if (!text) return null; 
+    if (!text) return null;
     const cleaned = text.replace(/\D/g, '');
     if (!/^\d{10,11}$/.test(cleaned)) return 'Formato de telefone inválido';
     return null;
@@ -97,15 +149,16 @@ const RestaurantProfilePatch = () => {
     return null;
   };
 
-
   const isFormValid = true;
 
-  const openTimePicker = (dayIndex: number, type: 'abertura' | 'fechamento') => {
+  const openTimePicker = (
+    dayIndex: number,
+    type: 'abertura' | 'fechamento',
+  ) => {
     setSelectedDayIndex(dayIndex);
     setSelectedTimeType(type);
     setShowTimePickerModal(true);
   };
-
 
   const selectTime = (time: string) => {
     if (selectedDayIndex >= 0) {
@@ -119,46 +172,49 @@ const RestaurantProfilePatch = () => {
       setShowTimePickerModal(false);
     }
   };
-  
+
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
-      
+
       const patchData: RestaurantPatchDTO = {
         id: restaurantId,
       };
-      
+
       if (name) patchData.name = name;
       if (description) patchData.description = description;
       if (address) patchData.address = address;
-      if (averagePrice) patchData.averagePrice = parseFloat(averagePrice.replace(',', '.'));
+      if (averagePrice)
+        patchData.averagePrice = parseFloat(averagePrice.replace(',', '.'));
       if (phone) patchData.phone = phone;
       const openingPeriods: OpeningPeriodDto[] = operatingHours
-        .filter(hour => hour.openTime !== "-" && hour.closeTime !== "-") 
-        .map(hour => ({
+        .filter((hour) => hour.openTime !== '-' && hour.closeTime !== '-')
+        .map((hour) => ({
           weekday: hour.weekday,
           opensAt: hour.openTime,
           closesAt: hour.closeTime,
         }));
-      
+
       if (openingPeriods.length > 0) {
         patchData.openingPeriods = openingPeriods;
       }
 
       const result = await patchRestaurant(patchData);
-      
+
       if (result) {
         Alert.alert(
-          'Sucesso', 
+          'Sucesso',
           'Dados do restaurante atualizados com sucesso!',
-          [{ text: 'OK', onPress: () => router.back() }]
+          [{ text: 'OK', onPress: () => router.back() }],
         );
       }
     } catch (err) {
       console.error('Submit Error:', err);
       Alert.alert(
         'Erro',
-        err instanceof Error ? err.message : 'Ocorreu um erro ao atualizar os dados'
+        err instanceof Error
+          ? err.message
+          : 'Ocorreu um erro ao atualizar os dados',
       );
     } finally {
       setIsLoading(false);
@@ -176,14 +232,14 @@ const RestaurantProfilePatch = () => {
           { paddingTop: 0 },
           Platform.OS === 'ios' && { marginTop: -insets.top },
         ]}
-      >        
+      >
         <SignupHeader
           userType={userType}
           setUserType={setUserType}
           profileIcon={'store'}
           onBack={() => router.back()}
         />
-        
+
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.inputWrapper}>
             <CustomTextInput
@@ -194,7 +250,7 @@ const RestaurantProfilePatch = () => {
               validation={validateNameRestaurant}
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={address}
@@ -205,7 +261,7 @@ const RestaurantProfilePatch = () => {
               autoCapitalize="none"
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={description}
@@ -215,7 +271,7 @@ const RestaurantProfilePatch = () => {
               validation={validateDescription}
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={phone}
@@ -234,7 +290,7 @@ const RestaurantProfilePatch = () => {
               maxLength={15}
             />
           </View>
-          
+
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={averagePrice}
@@ -246,61 +302,87 @@ const RestaurantProfilePatch = () => {
               autoCapitalize="none"
             />
           </View>
-          <TouchableOpacity style={styles.actionButton} onPress={() => Alert.alert('Cardápio', 'Funcionalidade para alterar cardápio')}>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() =>
+              router.push({
+                pathname: '/AddMenu',
+                params: {
+                  restaurantId: restaurantId,
+                },
+              })
+            }
+          >
             <Text style={styles.actionButtonText}>Alterar Cardápio</Text>
-            <MaterialIcons name="add-circle-outline" size={24} color={Colors.white} />
+            <MaterialIcons
+              name="add-circle-outline"
+              size={24}
+              color={Colors.white}
+            />
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.actionButton} 
+
+          <TouchableOpacity
+            style={styles.actionButton}
             onPress={() => setShowOperatingHours(!showOperatingHours)}
           >
-            <Text style={styles.actionButtonText}>Funcionamento</Text>           
-             <MaterialIcons 
-              name={showOperatingHours ? "keyboard-arrow-up" : "keyboard-arrow-down"} 
-              size={24} 
-              color={Colors.white} 
+            <Text style={styles.actionButtonText}>Funcionamento</Text>
+            <MaterialIcons
+              name={
+                showOperatingHours ? 'keyboard-arrow-up' : 'keyboard-arrow-down'
+              }
+              size={24}
+              color={Colors.white}
             />
-          </TouchableOpacity>            
+          </TouchableOpacity>
           {showOperatingHours && (
-            <View style={styles.hoursContainer}>            
+            <View style={styles.hoursContainer}>
               <View style={styles.hoursTableContainer}>
                 <View style={styles.hoursHeader}>
                   <Text style={styles.hoursHeaderText}>Dia da semana</Text>
                   <Text style={styles.hoursHeaderText}>Abertura</Text>
                   <Text style={styles.hoursHeaderText}>Fechamento</Text>
                 </View>
-                
+
                 <View style={styles.hoursDivider} />
-                
+
                 {operatingHours.map((hour, index) => (
                   <React.Fragment key={index}>
                     <View style={styles.hourRow}>
-                      <View style={styles.dayColumn}>                        
-                        <Text style={[
-                          styles.dayText,
-                          index === 6 && styles.weekendText 
-                        ]}>
+                      <View style={styles.dayColumn}>
+                        <Text
+                          style={[
+                            styles.dayText,
+                            index === 6 && styles.weekendText,
+                          ]}
+                        >
                           {hour.day}
                         </Text>
                       </View>
-                        <TouchableOpacity 
+                      <TouchableOpacity
                         style={styles.timeColumn}
                         onPress={() => openTimePicker(index, 'abertura')}
                       >
                         <Text style={styles.timeText}>{hour.openTime}</Text>
-                        <MaterialIcons name="keyboard-arrow-down" size={16} color={Colors.orange.orangeStandard} />
+                        <MaterialIcons
+                          name="keyboard-arrow-down"
+                          size={16}
+                          color={Colors.orange.orangeStandard}
+                        />
                       </TouchableOpacity>
-                      
-                      <TouchableOpacity 
+
+                      <TouchableOpacity
                         style={styles.timeColumn}
                         onPress={() => openTimePicker(index, 'fechamento')}
                       >
                         <Text style={styles.timeText}>{hour.closeTime}</Text>
-                        <MaterialIcons name="keyboard-arrow-down" size={16} color={Colors.orange.orangeStandard} />
+                        <MaterialIcons
+                          name="keyboard-arrow-down"
+                          size={16}
+                          color={Colors.orange.orangeStandard}
+                        />
                       </TouchableOpacity>
                     </View>
-                    
+
                     {index < operatingHours.length - 1 && (
                       <View style={styles.hourRowDivider} />
                     )}
@@ -316,49 +398,69 @@ const RestaurantProfilePatch = () => {
             animationType="slide"
             onRequestClose={() => setShowTimePickerModal(false)}
           >
-            <TouchableOpacity 
-              style={styles.modalOverlay} 
-              activeOpacity={1} 
+            <TouchableOpacity
+              style={styles.modalOverlay}
+              activeOpacity={1}
               onPress={() => setShowTimePickerModal(false)}
             >
-              <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
+              <View
+                style={styles.modalContent}
+                onStartShouldSetResponder={() => true}
+              >
                 <View style={styles.modalHeader}>
                   <Text style={styles.modalTitle}>
-                    Selecione o horário de {selectedTimeType === 'abertura' ? 'abertura' : 'fechamento'}
-                  </Text>                  
-                  <TouchableOpacity 
+                    Selecione o horário de{' '}
+                    {selectedTimeType === 'abertura'
+                      ? 'abertura'
+                      : 'fechamento'}
+                  </Text>
+                  <TouchableOpacity
                     style={styles.closeButton}
                     onPress={() => setShowTimePickerModal(false)}
                   >
-                    <MaterialIcons name="close" size={24} color={Colors.orange.orangeStandard} />
+                    <MaterialIcons
+                      name="close"
+                      size={24}
+                      color={Colors.orange.orangeStandard}
+                    />
                   </TouchableOpacity>
                 </View>
-                
+
                 <View style={styles.modalDivider} />
-                
+
                 <FlatList
                   data={availableTimes}
                   keyExtractor={(item) => item}
                   renderItem={({ item }) => {
-                    const isSelected = selectedDayIndex >= 0 && 
-                      ((selectedTimeType === 'abertura' && operatingHours[selectedDayIndex].openTime === item) ||
-                       (selectedTimeType === 'fechamento' && operatingHours[selectedDayIndex].closeTime === item));
-                      
+                    const isSelected =
+                      selectedDayIndex >= 0 &&
+                      ((selectedTimeType === 'abertura' &&
+                        operatingHours[selectedDayIndex].openTime === item) ||
+                        (selectedTimeType === 'fechamento' &&
+                          operatingHours[selectedDayIndex].closeTime === item));
+
                     return (
                       <TouchableOpacity
                         style={[
                           styles.timeItem,
-                          isSelected && styles.selectedTimeItem
+                          isSelected && styles.selectedTimeItem,
                         ]}
                         onPress={() => selectTime(item)}
                       >
-                        <Text style={[
-                          styles.timeItemText,
-                          isSelected && styles.selectedTimeItemText
-                        ]}>
+                        <Text
+                          style={[
+                            styles.timeItemText,
+                            isSelected && styles.selectedTimeItemText,
+                          ]}
+                        >
                           {item}
-                        </Text>                        {isSelected && (
-                          <MaterialIcons name="check" size={20} color={Colors.white} />
+                        </Text>{' '}
+                        {isSelected && (
+                          <MaterialIcons
+                            name="check"
+                            size={20}
+                            color={Colors.white}
+                          />
                         )}
                       </TouchableOpacity>
                     );
@@ -370,7 +472,7 @@ const RestaurantProfilePatch = () => {
               </View>
             </TouchableOpacity>
           </Modal>
-          
+
           <View style={styles.buttonContainer}>
             <Button
               title="Salvar"
@@ -378,14 +480,20 @@ const RestaurantProfilePatch = () => {
               onPress={handleSubmit}
               disabled={!isFormValid}
             />
-            
-          <TouchableOpacity 
-            style={styles.categoriesLink}
-            onPress={() => Alert.alert('Categorias', 'Navegar para tela de categorias')}
-          >              
-            <Text style={styles.categoriesLinkText}>Categorias</Text>
-            <MaterialIcons name="keyboard-arrow-right" size={24} color={Colors.orange.orangeStandard} />
-          </TouchableOpacity>         
+
+            <TouchableOpacity
+              style={styles.categoriesLink}
+              onPress={() =>
+                Alert.alert('Categorias', 'Navegar para tela de categorias')
+              }
+            >
+              <Text style={styles.categoriesLinkText}>Categorias</Text>
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={24}
+                color={Colors.orange.orangeStandard}
+              />
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -393,7 +501,8 @@ const RestaurantProfilePatch = () => {
   );
 };
 
-const styles = StyleSheet.create({  safeArea: {
+const styles = StyleSheet.create({
+  safeArea: {
     flex: 1,
     backgroundColor: Colors.white,
   },
@@ -406,7 +515,8 @@ const styles = StyleSheet.create({  safeArea: {
   inputWrapper: {
     width: '90%',
     marginBottom: '5%',
-  },  input: {
+  },
+  input: {
     width: '100%',
     height: 50,
     borderRadius: 20,
@@ -434,7 +544,7 @@ const styles = StyleSheet.create({  safeArea: {
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     marginBottom: '5%',
-  },  
+  },
   actionButtonText: {
     color: Colors.white,
     fontFamily: 'Poppins-Medium',
@@ -443,7 +553,8 @@ const styles = StyleSheet.create({  safeArea: {
   hoursContainer: {
     width: '90%',
     marginBottom: '5%',
-  },  hoursTableContainer: {
+  },
+  hoursTableContainer: {
     backgroundColor: `rgba(${parseInt(Colors.orange.orangeStandard.slice(1, 3), 16)}, ${parseInt(Colors.orange.orangeStandard.slice(3, 5), 16)}, ${parseInt(Colors.orange.orangeStandard.slice(5, 7), 16)}, 0.15)`,
     padding: 10,
     borderRadius: 10,
@@ -481,12 +592,14 @@ const styles = StyleSheet.create({  safeArea: {
     fontSize: 14,
     color: Colors.orange.orangeStandard,
     marginRight: 5,
-  },  timeText: {
+  },
+  timeText: {
     fontFamily: 'Poppins-Regular',
     fontSize: 14,
     color: Colors.orange.orangeStandard,
     marginRight: 5,
-  },  hoursDivider: {
+  },
+  hoursDivider: {
     height: 1,
     backgroundColor: `rgba(${parseInt(Colors.orange.orangeStandard.slice(1, 3), 16)}, ${parseInt(Colors.orange.orangeStandard.slice(3, 5), 16)}, ${parseInt(Colors.orange.orangeStandard.slice(5, 7), 16)}, 0.3)`,
     marginVertical: 8,
@@ -495,27 +608,32 @@ const styles = StyleSheet.create({  safeArea: {
     height: 1,
     backgroundColor: `rgba(${parseInt(Colors.orange.orangeStandard.slice(1, 3), 16)}, ${parseInt(Colors.orange.orangeStandard.slice(3, 5), 16)}, ${parseInt(Colors.orange.orangeStandard.slice(5, 7), 16)}, 0.15)`,
     marginVertical: 4,
-  },weekendText: {
+  },
+  weekendText: {
     fontWeight: '600',
   },
   timeSelector: {
     paddingVertical: 5,
     paddingHorizontal: 8,
     borderRadius: 4,
-  },  categoriesLink: {
+  },
+  categoriesLink: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-  },  categoriesLinkText: {
+  },
+  categoriesLinkText: {
     fontFamily: 'Poppins-Medium',
     fontSize: 16,
     color: Colors.orange.orangeStandard,
     marginRight: 5,
-  },  modalOverlay: {
+  },
+  modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
-  },modalContent: {
+  },
+  modalContent: {
     backgroundColor: Colors.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -526,7 +644,8 @@ const styles = StyleSheet.create({  safeArea: {
     shadowOpacity: 0.25,
     shadowRadius: 5,
     elevation: 5,
-  },  modalHeader: {
+  },
+  modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -542,12 +661,14 @@ const styles = StyleSheet.create({  safeArea: {
   },
   timeList: {
     maxHeight: Dimensions.get('window').height * 0.5,
-  },  timeItem: {
+  },
+  timeItem: {
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: `rgba(${parseInt(Colors.orange.orangeStandard.slice(1, 3), 16)}, ${parseInt(Colors.orange.orangeStandard.slice(3, 5), 16)}, ${parseInt(Colors.orange.orangeStandard.slice(5, 7), 16)}, 0.15)`,
     alignItems: 'center',
-  },timeItemText: {
+  },
+  timeItemText: {
     fontFamily: 'Poppins-Regular',
     fontSize: 16,
     color: Colors.orange.orangeStandard,
@@ -558,14 +679,16 @@ const styles = StyleSheet.create({  safeArea: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-  },  selectedTimeItemText: {
+  },
+  selectedTimeItemText: {
     color: Colors.white,
     fontFamily: 'Poppins-Medium',
     marginRight: 5,
   },
   closeButton: {
     padding: 5,
-  },  modalDivider: {
+  },
+  modalDivider: {
     height: 1,
     backgroundColor: `rgba(${parseInt(Colors.orange.orangeStandard.slice(1, 3), 16)}, ${parseInt(Colors.orange.orangeStandard.slice(3, 5), 16)}, ${parseInt(Colors.orange.orangeStandard.slice(5, 7), 16)}, 0.2)`,
     marginBottom: 10,
