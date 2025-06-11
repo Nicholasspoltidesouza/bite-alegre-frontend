@@ -193,27 +193,13 @@ const RestaurantProfile: React.FC = () => {
   };
 
   const handleNavigateToReviews = () => {
-    if (restaurant) {
-      const avaliacoesParaExibicao: UIDisplayReview[] = (restaurant.reviews || []).map((review: ReviewDTO) => {
-        return {
-          id: review.id ?? 'unknown', // Provide a fallback value for id
-          userName: review.user?.name ?? 'Usuário Anônimo', // Ajuste 'review.user?.name' conforme sua estrutura de ReviewDTO
-          stars: review.stars,
-          reviewDate: formatReviewDate(review.created_at), // Alterado para usar formatReviewDate
-          feedback: review.feedback,
-        };
-      });
-
-      router.push({
-        pathname: '/(tabs)/(screens)/RestaurantReviewsScreen',
-        params: {
-          restaurant: JSON.stringify(restaurant),
-          reviews: JSON.stringify(avaliacoesParaExibicao),
-        },
-      });
-    }
+    router.push({
+      pathname: '/RestaurantReviewsScreen',
+      params: {
+        restaurant: JSON.stringify(restaurant)
+      },
+    });
   };
-
 
   return (
     <SafeAreaView style={styles.container}>

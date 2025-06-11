@@ -113,7 +113,7 @@ const CreateReview: React.FC = () => {
           <TouchableOpacity
             style={styles.backButton}
             onPress={() =>
-              router.push({ pathname: '/restaurantProfile' })
+              router.back()
             }
           >
             <MaterialIcons
