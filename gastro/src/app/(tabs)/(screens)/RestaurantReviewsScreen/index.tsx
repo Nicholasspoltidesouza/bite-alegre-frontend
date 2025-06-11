@@ -1,25 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView, ActivityIndicator, FlatList } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { RestaurantDTO } from '../../../../@types/DTO';
+import { RestaurantDTO, ReviewDTO } from '../../../../@types/DTO';
 import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/src/constants/Colors';
 import RatingSummaryCard from '../../../../components/RatingSummaryCard'; // Importar o componente
 import ReviewItem from '../../../../components/ReviewItem'; // Importar o componente de item de review
-
-interface UIDisplayReview {
-  id?: string | number;
-  userName: string;
-  stars: number; 
-  reviewDate: string;
-  feedback?: string;
-}
-
-// Adicionar averageScore e reviews ao RestaurantDTO para este contexto
-interface RestaurantWithReviewsDTO extends RestaurantDTO {
-  averageScore?: number;
-  reviews?: UIDisplayReview[];
-}
 
 const RestaurantReviewsScreen: React.FC = () => {
   const router = useRouter();
@@ -33,7 +19,7 @@ const RestaurantReviewsScreen: React.FC = () => {
   useEffect(() => {
     try {
       if (typeof params.restaurant === 'string') {
-        const parsedRestaurant = JSON.parse(params.restaurant) as RestaurantWithReviewsDTO; // Usar o tipo estendido
+        const parsedRestaurant = JSON.parse(params.restaurant) as RestaurantDTO; // Usar o tipo estendido
         setCurrentRestaurant(parsedRestaurant);
         console.log('currentRestaurant:', parsedRestaurant);
         console.log('SUCESSO')
@@ -72,7 +58,7 @@ const RestaurantReviewsScreen: React.FC = () => {
   };
 
   // Função para calcular a distribuição de avaliações para o RatingSummaryCard
-  const calculateRatingDistribution = (reviews?: UIDisplayReview[]): number[] => {
+  const calculateRatingDistribution = (reviews?: ReviewDTO[]): number[] => {
     if (!reviews || reviews.length === 0) {
       // Retorna a distribuição esperada pelo RatingSummaryCard (5 estrelas, 4, 3, 2, 1)
       return [0, 0, 0, 0, 0]; 
@@ -135,12 +121,7 @@ const RestaurantReviewsScreen: React.FC = () => {
           data={currentRestaurant.reviews || []}
           renderItem={({ item }) => (
             <ReviewItem
-              review={{
-                userName: item.userName,
-                stars: item.stars,
-                date: item.reviewDate, // Mapeando reviewDate para date
-                feedback: item.feedback || "Nenhum comentário fornecido.", // ReviewItem já tem fallback
-              }}
+              review={item}
             />
           )}
           keyExtractor={(item, index) => item.id?.toString() ?? index.toString()}
@@ -162,7 +143,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
     paddingTop: '10%',
-    paddingHorizontal: '10%',
+    paddingRight: '5%',
+    paddingLeft: '5%'
   },
   header: {
     flexDirection: 'row',
@@ -186,7 +168,7 @@ const styles = StyleSheet.create({
     height: 65,
     width: 65,
     alignItems: 'center',
-    marginRight: '5%',
+
   },
   listContent: {
     paddingVertical: 10, // Espaçamento vertical para a lista
@@ -195,7 +177,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
     fontSize: 16,
-    color: Colors.textSecondary, // Usando uma cor do seu tema se disponível
+    color: Colors.text.black, // Usando uma cor do seu tema se disponível
   },
 });
 

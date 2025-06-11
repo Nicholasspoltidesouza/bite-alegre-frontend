@@ -1,6 +1,7 @@
+import { ReviewDTO } from '@/src/@types/DTO';
+import { Star } from 'lucide-react';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Star } from 'lucide-react-native';
 
 // Definição de cores para manter o estilo consistente com a imagem
 const COLORS = {
@@ -20,16 +21,14 @@ const COLORS = {
  * @param {string} props.review.date Data da avaliação.
  * @param {string} props.review.feedback O texto do comentário.
  */
-const ReviewItem = ({ review }: { review: { userName: string; stars: number; date: string; feedback: string; }; }) => {
-  // Fallback para caso algum dado não seja fornecido
-  const {
-    userName = "Usuário Anônimo",
-    stars = 0,
-    date = "Data Indisponível",
-    feedback = "Nenhum comentário fornecido."
-  } = review || {};
 
-  // Componente interno para o ícone placeholder
+interface CardReviewProps {
+    review: ReviewDTO;
+}
+
+export const ReviewItem: React.FC<CardReviewProps> = ({
+    review
+}) => {
   const UserIconPlaceholder = () => <View style={styles.userIcon} />;
 
   return (
@@ -39,7 +38,7 @@ const ReviewItem = ({ review }: { review: { userName: string; stars: number; dat
 
       {/* Coluna do Conteúdo */}
       <View style={styles.contentContainer}>
-        <Text style={styles.userNameText}>{userName}</Text>
+        <Text style={styles.userNameText}>{review.name ?? 'Ana Julia'}</Text>
 
         <View style={styles.metaContainer}>
           {/* Componente de Estrelas */}
@@ -48,15 +47,15 @@ const ReviewItem = ({ review }: { review: { userName: string; stars: number; dat
               <Star
                 key={index}
                 size={18}
-                color={index < stars ? COLORS.orange : COLORS.iconBorder}
-                fill={index < stars ? COLORS.orange : 'transparent'}
+                color={index < review.stars ? COLORS.orange : COLORS.iconBorder}
+                fill={index < review.stars ? COLORS.orange : 'transparent'}
               />
             ))}
           </View>
-          <Text style={styles.dateText}>{date}</Text>
+          <Text style={styles.dateText}>{review.date}</Text>
         </View>
 
-        <Text style={styles.feedbackText}>{feedback}</Text>
+        <Text style={styles.feedbackText}>{review.feedback}</Text>
       </View>
     </View>
   );
@@ -67,7 +66,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     width: '100%',
-    paddingVertical: 16, // Espaçamento vertical entre os reviews
+    paddingVertical: 16,
   },
   userIcon: {
     width: 40,

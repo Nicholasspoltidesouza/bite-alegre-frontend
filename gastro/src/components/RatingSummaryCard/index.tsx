@@ -1,6 +1,7 @@
+import Colors from '@/src/constants/Colors';
+import { Star } from 'lucide-react';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Star } from 'lucide-react-native';
 
 // Definição de cores para manter o estilo consistente
 const COLORS = {
@@ -59,7 +60,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingVertical: 16,
     paddingHorizontal: 20,
-    marginHorizontal: 16, // Margem para não colar nas bordas da tela
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   },
   scoreDisplay: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   scoreText: {
     fontSize: 52,
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
   starIcon: {
     marginLeft: 4,
-    marginTop: 12, // Alinha a estrela com o topo do número
+    marginTop: 12,
   },
   reviewCountText: {
     fontSize: 13,
@@ -92,8 +92,8 @@ const styles = StyleSheet.create({
   },
   divider: {
     width: 1,
-    height: '80%',
-    backgroundColor: COLORS.barBackground,
+    height: '90%',
+    backgroundColor: Colors.orange.orangeStandard,
     marginHorizontal: 16,
   },
   distributionSection: {
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   barRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 7, // Espaçamento entre as barras
+    marginBottom: 4, // Espaçamento entre as barras
   },
   barLabel: {
     width: 15, // Garante alinhamento das barras
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   barBackground: {
     flex: 1,
-    height: 10,
+    height: 7,
     backgroundColor: COLORS.barBackground,
     borderRadius: 5,
     overflow: 'hidden', // Garante que a barra interna não ultrapasse as bordas
