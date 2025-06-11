@@ -65,18 +65,10 @@ export default function UserCarouselRestaurant({
   }, [variant, carouselProfileRestaurant, selectedPins, items]);
 
   function handleInfluencerCardPress(id: string){
-    if (variant === 'restaurantPublications') {
-      return router.push({
-        pathname: '/PublicationInfluencer',
-        params: {
-          restaurantId: id,
-        },
-      });
-    }
     return router.push({
-      pathname: '/InfluencerProfile',
+      pathname: '/PublicationInfluencer',
       params: {
-        restaurantId: id,
+        publicationId: id,
       },
     });
   }
