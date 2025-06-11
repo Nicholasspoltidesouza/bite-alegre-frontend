@@ -22,6 +22,10 @@ import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import Colors from '@/src/constants/Colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
+import {
+  CarouselItem,
+  mapMenuItemToCarouselItem,
+} from '@/src/utils/carouselMappers';
 
 const AddMenu = () => {
   const router = useRouter();
@@ -35,6 +39,7 @@ const AddMenu = () => {
     : ({} as RestaurantDTO);
 
   const [menuItems, setMenuItems] = useState<MenuItemsDTO[]>([]);
+  const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
 
   const [mediaUri, setMediaUri] = useState<string | null>(null);
   const [description, setDescription] = useState<string>('');
@@ -135,6 +140,8 @@ const AddMenu = () => {
       price: parseFloat(price.replace(',', '.')),
     };
 
+    console.log(newItem);
+    console.log(menuItems);
     setMenuItems((old) => [...old, newItem]);
 
     setMediaUri(null);
@@ -150,6 +157,7 @@ const AddMenu = () => {
       );
       return;
     }
+    console.log(menuItems);
     const restaurantWithMenu: RestaurantDTO = {
       ...parsedRestaurant,
       menuItems,
@@ -170,115 +178,125 @@ const AddMenu = () => {
     }
   }, []);
 
+  useEffect(() => {
+    setCarouselItems(menuItems.map(mapMenuItemToCarouselItem));
+  }, [menuItems]);
+
   return (
-    <View style={styles.containerPrincipal}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
-      >
-        <SafeAreaView
-          style={[
-            styles.safeArea,
-            Platform.OS === 'ios' && { marginTop: -insets.top },
-          ]}
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.containerPrincipal}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
         >
-          <View style={styles.orangeHeader}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => router.back()}
-            >
-              <MaterialIcons
-                name="keyboard-arrow-left"
-                size={24}
-                color="#FFFFFF"
-              />
-            </TouchableOpacity>
-            <Text style={styles.textCreatePublication}>
-              Monte seu cardápio com seus melhores pratos
-            </Text>
-
-            {mediaUri ? (
-              <View style={styles.previewContainer}>
-                <Image
-                  source={{ uri: mediaUri }}
-                  style={styles.previewMedia}
-                  resizeMode="cover"
-                />
-                <TouchableOpacity
-                  style={styles.removeMediaButton}
-                  onPress={() => {
-                    setMediaUri(null);
-                  }}
-                >
-                  <Text style={styles.removeMediaText}>Remover Mídia</Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <Button
-                title="+"
-                type="orange"
-                onPress={handleAddMedia}
-                style={styles.orangeButton}
-                textStyle={styles.orangeButtonText}
-              />
-            )}
-
-            <View style={styles.inputWrapper}>
-              <CustomTextInput
-                value={description}
-                onChangeText={setDescription}
-                placeholder="Descrição"
-                style={styles.input}
-                validation={validateDescription}
-                multiline={true}
-                numberOfLines={4}
-                textAlignVertical="top"
-              />
-            </View>
-
-            <View style={styles.inputWrapper}>
-              <CustomTextInput
-                value={price}
-                onChangeText={setPrice}
-                placeholder="Preço Médio"
-                style={styles.input}
-                validation={validatePrice}
-                keyboardType="number-pad"
-                autoCapitalize="none"
-              />
-            </View>
-
-            <View style={styles.buttonAddWrapper}>
-              <Button
-                title="Adicionar"
-                type="white"
-                onPress={handleAddItem}
-                disabled={!isAddFormValid}
-              />
-            </View>
-          </View>
-
-          <ScrollView
-            contentContainerStyle={styles.container}
-            keyboardShouldPersistTaps="handled"
+          <SafeAreaView
+            style={[
+              styles.safeArea,
+              Platform.OS === 'ios' && { marginTop: -insets.top },
+            ]}
           >
-            <View style={styles.carouselContainer}>
-              <UserCarouselRestaurant variant="menuAdd" items={[]} />
+            <View style={styles.orangeHeader}>
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => router.back()}
+              >
+                <MaterialIcons
+                  name="keyboard-arrow-left"
+                  size={24}
+                  color="#FFFFFF"
+                />
+              </TouchableOpacity>
+              <Text style={styles.textCreatePublication}>
+                Monte seu cardápio com seus melhores pratos
+              </Text>
+
+              {mediaUri ? (
+                <View style={styles.previewContainer}>
+                  <Image
+                    source={{ uri: mediaUri }}
+                    style={styles.previewMedia}
+                    resizeMode="cover"
+                  />
+                  <TouchableOpacity
+                    style={styles.removeMediaButton}
+                    onPress={() => {
+                      setMediaUri(null);
+                    }}
+                  >
+                    <Text style={styles.removeMediaText}>Remover Mídia</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <Button
+                  title="+"
+                  type="orange"
+                  onPress={handleAddMedia}
+                  style={styles.orangeButton}
+                  textStyle={styles.orangeButtonText}
+                />
+              )}
+
+              <View style={styles.inputWrapper}>
+                <CustomTextInput
+                  value={description}
+                  onChangeText={setDescription}
+                  placeholder="Descrição"
+                  style={styles.input}
+                  validation={validateDescription}
+                  multiline={true}
+                  numberOfLines={4}
+                  textAlignVertical="top"
+                />
+              </View>
+
+              <View style={styles.inputWrapper}>
+                <CustomTextInput
+                  value={price}
+                  onChangeText={setPrice}
+                  placeholder="Preço Médio"
+                  style={styles.input}
+                  validation={validatePrice}
+                  keyboardType="number-pad"
+                  autoCapitalize="none"
+                />
+              </View>
+
+              <View style={styles.buttonAddWrapper}>
+                <Button
+                  title="Adicionar"
+                  type="white"
+                  onPress={handleAddItem}
+                  disabled={!isAddFormValid}
+                />
+              </View>
             </View>
 
-            <View style={styles.buttonCreate}>
-              <Button
-                title="Avançar"
-                type="orange"
-                onPress={handleSubmit}
-                disabled={false}
-              />
-            </View>
-          </ScrollView>
-        </SafeAreaView>
-      </KeyboardAvoidingView>
-    </View>
+            <ScrollView
+              contentContainerStyle={styles.container}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.carouselContainer}>
+                <Text style={styles.title}>Itens do seu cardápio</Text>
+                <UserCarouselRestaurant
+                  variant="menuAdd"
+                  items={carouselItems}
+                />
+              </View>
+
+              <View style={styles.buttonCreate}>
+                <Button
+                  title="Avançar"
+                  type="orange"
+                  onPress={handleSubmit}
+                  disabled={false}
+                />
+              </View>
+            </ScrollView>
+          </SafeAreaView>
+        </KeyboardAvoidingView>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -292,8 +310,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     flex: 1,
   },
+  title: {
+    fontFamily: 'Poppins-regular',
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.orange.orangeBold,
+  },
   container: {
-    alignItems: 'center',
     padding: '4%',
     paddingTop: 20,
     paddingBottom: '8%',
@@ -303,13 +326,6 @@ const styles = StyleSheet.create({
     width: '90%',
     marginBottom: '1%',
     padding: 6,
-  },
-  searchIcon: {
-    position: 'absolute',
-    right: 15,
-    zIndex: 1,
-    paddingTop: 20,
-    paddingRight: 16,
   },
   input: {
     width: '100%',
@@ -341,14 +357,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
   },
   buttonCreate: {
-    marginTop: '2%',
     width: '90%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    paddingTop: 30,
-    paddingBottom: 26,
-    paddingRight: 27,
-    paddingLeft: 272,
     color: Colors.orange.orangeStandard,
     backgroundColor: Colors.white,
   },
@@ -451,7 +462,6 @@ const styles = StyleSheet.create({
   },
   carouselContainer: {
     marginLeft: '3%',
-    marginBottom: -10,
   },
 });
 

@@ -27,6 +27,7 @@ const SignupInterests: React.FC = () => {
   const { createUser, loading } = useCreateUser();
   const { createRestaurant } = useRestaurantApi();
 
+  console.log('restaurant', restaurantData);
   const parsedUserData = userData ? JSON.parse(userData as string) : null;
   const parsedRestaurantData = restaurantData
     ? JSON.parse(restaurantData as string)

@@ -25,7 +25,14 @@ interface CarouselItem {
 }
 
 interface Props {
-  variant: 'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYou' | 'restaurantPublications' | 'menuAdd';
+  variant:
+    | 'visited'
+    | 'saved'
+    | 'menu'
+    | 'influencers'
+    | 'closeToYou'
+    | 'restaurantPublications'
+    | 'menuAdd';
   carouselProfileRestaurant?: boolean;
   items: CarouselItem[];
 }
@@ -65,7 +72,7 @@ export default function UserCarouselRestaurant({
     return items;
   }, [variant, carouselProfileRestaurant, selectedPins, items]);
 
-  function handleInfluencerCardPress(id: string){
+  function handleInfluencerCardPress(id: string) {
     if (variant === 'restaurantPublications') {
       return router.push({
         pathname: '/PublicationInfluencer',
@@ -83,9 +90,15 @@ export default function UserCarouselRestaurant({
   }
 
   if (
-    ['visited', 'saved', 'menu', 'influencers', 'closeToYou', 'restaurantPublications', 'menuAdd'].includes(
-      variant,
-    ) &&
+    [
+      'visited',
+      'saved',
+      'menu',
+      'influencers',
+      'closeToYou',
+      'restaurantPublications',
+      'menuAdd',
+    ].includes(variant) &&
     data.length === 0
   ) {
     return (
@@ -121,18 +134,20 @@ export default function UserCarouselRestaurant({
           </View>
           <Text style={styles.nome}>{item.name}</Text>
         </View>
-    );
-  }
+      );
+    }
 
     return (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => router.push({
+        onPress={() =>
+          router.push({
             pathname: '/restaurantProfile',
             params: {
               restaurantId: item.id,
             },
-          })}
+          })
+        }
         activeOpacity={0.8}
       >
         <View style={styles.imageWrapper}>
@@ -179,7 +194,9 @@ export default function UserCarouselRestaurant({
                 name="star"
                 size={12}
                 color={
-                  i < (item.stars ?? 0) ? Colors.orange.orangeStandard : '#FF914B40'
+                  i < (item.stars ?? 0)
+                    ? Colors.orange.orangeStandard
+                    : '#FF914B40'
                 }
               />
             ))}

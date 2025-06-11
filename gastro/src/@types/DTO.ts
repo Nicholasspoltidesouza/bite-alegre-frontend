@@ -1,129 +1,129 @@
 import { OperatingHoursDto } from "./OperatingHoursDto";
 
 interface UserDTO {
-  profilePhoto?: string;
-  name: string;
-  nickname: string;
-  email: string;
-  password: string;
-  phone: string;
-  gender: string | null;
-  birthDate?: string;
-  userType: string;
-  id?: string;
-  reviews?: ReviewDTO[];
-  checkinsWithoutReview?: CheckinDTO[];
-  influencer?: boolean;
+    profilePhoto?: string;
+    name: string;
+    nickname: string;
+    email: string;
+    password: string;
+    phone: string;
+    gender: string | null;
+    birthDate?: string;
+    userType: string;
+    id?: string;
+    reviews?: ReviewDTO[];
+    checkinsWithoutReview?: CheckinDTO[];
+    influencer?: boolean;
 }
 interface RestaurantDTO {
-  id?: string;
-  profilePhoto?: string;
-  bannerPhoto?: string;
-  address: string;
-  name: string;
-  cnpj: string;
-  description: string;
-  email: string;
-  password: string;
-  averagePrice: number;
-  averageScore?: number | null;
-  phone: string;
-  userType: string;
-  reviews?: ReviewDTO[];
-  stars?: number;
-  tags?: string[];
-  openingPeriods?: OperatingHoursDto[];
-  publications?: PublicationDTO[];
-  menuItems?: MenuItemsDTO[];
+    id?: string;
+    profilePhoto?: string;
+    bannerPhoto?: string;
+    address: string;
+    name: string;
+    cnpj: string;
+    description: string;
+    email: string;
+    password: string;
+    averagePrice: number;
+    averageScore?: number | null;
+    phone: string;
+    userType: string;
+    reviews?: ReviewDTO[];
+    stars?: number;
+    tags?: string[];
+    openingPeriods?: OperatingHoursDto[];
+    publications?: PublicationDTO[];
+    menuItems?: MenuItemsDTO[];
 }
 
 interface RestaurantPatchDTO {
-  id: string;
-  profilePhoto?: string;
-  bannerPhoto?: string;
-  address?: string;
-  name?: string;
-  description?: string;
-  averagePrice?: number;
-  phone?: string;
-  openingPeriods?: {
-    weekday: string;
-    opensAt: string;
-    closesAt: string;
-  }[];
-  tagIds?: string[];
+    id: string;
+    profilePhoto?: string;
+    bannerPhoto?: string;
+    address?: string;
+    name?: string;
+    description?: string;
+    averagePrice?: number;
+    phone?: string;
+    openingPeriods?: {
+        weekday: string;
+        opensAt: string;
+        closesAt: string;
+    }[];
+    tagIds?: string[];
 }
 
 interface CheckinDTO {
-  user_id?: string;
-  restaurant_id: string;
-  restaurantProfilePhoto?: string;
-  restaurantName?: string;
+    user_id?: string;
+    restaurant_id: string;
+    restaurantProfilePhoto?: string;
+    restaurantName?: string;
 }
 
 interface ReviewDTO {
-  id?: string;
-  user_id?: string;
-  restaurantId?: string;
-  restaurant_id?: string;
-  stars: number;
-  feedback?: string;
-  restaurantProfilePhoto?: string;
-  restaurantName?: string;
+    id?: string;
+    user_id?: string;
+    restaurantId?: string;
+    restaurant_id?: string;
+    stars: number;
+    feedback?: string;
+    restaurantProfilePhoto?: string;
+    restaurantName?: string;
 }
 
 interface RestaurantFilterDTO {
-  name?: string;
-  geolocation?: [number, number];
-  address?: string;
-  proximity?: number;
-  price_range?: number;
-  tags?: string[];
-  open_now?: boolean;
+    name?: string;
+    geolocation?: [number, number];
+    address?: string;
+    proximity?: number;
+    price_range?: number;
+    tags?: string[];
+    open_now?: boolean;
 }
 
 interface AuthDTO {
-  token: string;
-  role: string;
-  user: {
-    id: string;
-    email: string;
-    name?: string;
-  };
+    token: string;
+    role: string;
+    user: {
+        id: string;
+        email: string;
+        name?: string;
+    };
 }
 
- interface PublicationDTO {
-  id: string;
-  url: string;
-  description: string;
-  restaurant_id: string;
-  restaurant_name: string;
-  restaurant_photo: string;
-  restaurant_tags: { id: string; name: string; type: string }[];
+interface PublicationDTO {
+    id: string;
+    url: string;
+    description: string;
+    restaurant_id: string;
+    restaurant_name: string;
+    restaurant_photo: string;
+    restaurant_tags: { id: string; name: string; type: string }[];
 }
 
 interface MenuItemsDTO {
-  id?: string;
-  dish_photo: string;
-  description: string;
-  price: number;
+    id?: string;
+    dish_photo: string;
+    description: string;
+    price: number;
 }
 
 interface FeedDTO {
-  publications: PublicationDTO[];
-  restaurants: RestaurantDTO[];
+    publications: PublicationDTO[];
+    restaurants: RestaurantDTO[];
 }
 
 export type {
-  RestaurantDTO,
-  RestaurantPatchDTO,
-  UserDTO,
-  CheckinDTO,
-  ReviewDTO,
-  RestaurantFilterDTO,
-  AuthDTO,
-  PublicationDTO,
-  OperatingHoursDto,
-  MenuItemsDTO,
-  FeedDTO
+    RestaurantDTO,
+    RestaurantPatchDTO,
+    UserDTO,
+    CheckinDTO,
+    ReviewDTO,
+    RestaurantFilterDTO,
+    AuthDTO,
+    PublicationDTO,
+    OperatingHoursDto,
+    MenuItemsDTO,
+    FeedDTO
 };
