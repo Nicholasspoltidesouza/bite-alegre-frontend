@@ -33,6 +33,8 @@ interface RestaurantDTO {
   reviews?: ReviewDTO[];
   stars?: number;
   openingPeriods?: OperatingHoursDto[];
+  publications?: PublicationDTO[];
+  menuItems?: MenuItemsDTO[];
 }
 
 interface RestaurantPatchDTO {
@@ -90,14 +92,26 @@ interface AuthDTO {
   };
 }
 
-interface PublicationDTO {
-  id?: string;
-  url?: string;
-  media?: string;
-  description?: string;
-  restaurant_id?: string;
-  restaurant_name?: string;
+ interface PublicationDTO {
+  id: string;
+  url: string;
+  description: string;
+  restaurant_id: string;
+  restaurant_name: string;
+  restaurant_photo: string;
+  restaurant_tags: { id: string; name: string; type: string }[];
 }
+
+interface MenuItemsDTO {
+  id: string;
+  dish_photo: string;
+}
+
+interface FeedDTO {
+  publications: PublicationDTO[];
+  restaurants: RestaurantDTO[];
+}
+
 export type {
   RestaurantDTO,
   RestaurantPatchDTO,
@@ -107,5 +121,7 @@ export type {
   RestaurantFilterDTO,
   AuthDTO,
   PublicationDTO,
-  OperatingHoursDto
+  OperatingHoursDto,
+  MenuItemsDTO,
+  FeedDTO
 };
