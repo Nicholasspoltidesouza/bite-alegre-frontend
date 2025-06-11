@@ -95,7 +95,7 @@ export default function Feed() {
         <Text style={styles.title}>Restaurantes perto de você</Text>
         <UserCarouselRestaurant variant="closeToYou" items={restaurants} />
         
-        <Text style={styles.title}>Influeciadores para de você</Text>
+        <Text style={styles.title}>Influenciadores para você</Text>
         <UserCarouselRestaurant
           variant="influencers"
           items={feedData?.publications.map(mapPublicationToCarouselItem) ?? []}
