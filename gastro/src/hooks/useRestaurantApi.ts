@@ -55,7 +55,7 @@ export const useRestaurantApi = () => {
     newRestaurantData: RestaurantDTO,
   ): Promise<RestaurantDTO | null> => {
     const responseData = await callApi(
-      restaurantApiService.post<RestaurantDTO, RestaurantDTO>(
+      restaurantApiService.postFormData<RestaurantDTO, RestaurantDTO>(
         newRestaurantData,
       ),
     );
