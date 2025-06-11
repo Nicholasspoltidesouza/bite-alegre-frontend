@@ -53,7 +53,7 @@ const RestaurantReviewsScreen: React.FC = () => {
     if (router.canGoBack()) {
       router.back();
     } else {
-      router.push({ pathname: '/' });
+      router.back();
     }
   };
 
