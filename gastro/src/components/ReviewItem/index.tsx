@@ -1,35 +1,108 @@
 import React from 'react';
-import StarRating from '../StarRating';
-import UserIconPlaceholder from '../UserIconPlaceholder';
+import { View, Text, StyleSheet } from 'react-native';
+import { Star } from 'lucide-react-native';
 
-interface ReviewItemProps {
-  review: {
-    user: string;
-    rating: number;
-    timeAgo: string;
-    comment: string;
-  };
-}
+// Definição de cores para manter o estilo consistente com a imagem
+const COLORS = {
+  orange: '#F59E0B',
+  textPrimary: '#1F2937',   // Cinza bem escuro para nomes e texto principal
+  textSecondary: '#6B7280', // Cinza médio para data e texto de apoio
+  userIconBg: '#FEEBCB',    // Fundo do ícone de usuário (laranja bem claro)
+  iconBorder: '#E2E8F0',    // Cor da estrela vazia
+};
 
-const ReviewItem: React.FC<ReviewItemProps> = ({ review }) => {
+/**
+ * Componente para exibir um único item de review.
+ * @param {object} props
+ * @param {object} props.review O objeto contendo os dados da avaliação.
+ * @param {string} props.review.userName Nome do usuário.
+ * @param {number} props.review.stars Número de estrelas (0 a 5).
+ * @param {string} props.review.date Data da avaliação.
+ * @param {string} props.review.feedback O texto do comentário.
+ */
+const ReviewItem = ({ review }: { review: { userName: string; stars: number; date: string; feedback: string; }; }) => {
+  // Fallback para caso algum dado não seja fornecido
+  const {
+    userName = "Usuário Anônimo",
+    stars = 0,
+    date = "Data Indisponível",
+    feedback = "Nenhum comentário fornecido."
+  } = review || {};
+
+  // Componente interno para o ícone placeholder
+  const UserIconPlaceholder = () => <View style={styles.userIcon} />;
+
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm">
-      {/* User Info */}
-      <div className="flex items-center gap-3 mb-3">
-        <UserIconPlaceholder />
-        <div className="flex-1">
-          <h3 className="font-semibold text-gray-800 text-base">{review.user}</h3>
-          <div className="flex items-center gap-2">
-            <StarRating rating={review.rating} starSize={14} />
-            <span className="text-sm text-gray-500">{review.timeAgo}</span>
-          </div>
-        </div>
-      </div>
+    <View style={styles.reviewContainer}>
+      {/* Coluna do Ícone */}
+      <UserIconPlaceholder />
 
-      {/* Review Comment */}
-      <p className="text-gray-700 text-sm leading-relaxed">{review.comment}</p>
-    </div>
+      {/* Coluna do Conteúdo */}
+      <View style={styles.contentContainer}>
+        <Text style={styles.userNameText}>{userName}</Text>
+
+        <View style={styles.metaContainer}>
+          {/* Componente de Estrelas */}
+          <View style={styles.starsContainer}>
+            {[...Array(5)].map((_, index) => (
+              <Star
+                key={index}
+                size={18}
+                color={index < stars ? COLORS.orange : COLORS.iconBorder}
+                fill={index < stars ? COLORS.orange : 'transparent'}
+              />
+            ))}
+          </View>
+          <Text style={styles.dateText}>{date}</Text>
+        </View>
+
+        <Text style={styles.feedbackText}>{feedback}</Text>
+      </View>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  reviewContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    width: '100%',
+    paddingVertical: 16, // Espaçamento vertical entre os reviews
+  },
+  userIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.userIconBg,
+    marginRight: 12,
+  },
+  contentContainer: {
+    flex: 1, // Ocupa o restante do espaço disponível
+  },
+  userNameText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.textPrimary,
+  },
+  metaContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  starsContainer: {
+    flexDirection: 'row',
+    marginRight: 10,
+  },
+  dateText: {
+    fontSize: 13,
+    color: COLORS.textSecondary,
+  },
+  feedbackText: {
+    fontSize: 14,
+    lineHeight: 21, // Melhora a legibilidade do texto
+    color: COLORS.textPrimary,
+  },
+});
 
 export default ReviewItem;
