@@ -48,15 +48,7 @@ const RestaurantReviewsScreen: React.FC = () => {
       </SafeAreaView>
     );
   }
-
-  const handleGoBack = () => {
-    if (router.canGoBack()) {
-      router.back();
-    } else {
-      router.back();
-    }
-  };
-
+  
   // Função para calcular a distribuição de avaliações para o RatingSummaryCard
   const calculateRatingDistribution = (reviews?: ReviewDTO[]): number[] => {
     if (!reviews || reviews.length === 0) {
