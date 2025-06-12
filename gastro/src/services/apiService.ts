@@ -103,29 +103,6 @@ class ApiService {
     return this.request<ResponseBody>(endpoint, optionsForRequest);
   }
 
-  public postFormData<RequestBody extends Record<string, any>, ResponseBody>(
-    data: RequestBody,
-    endpoint?: string,
-    ): Promise<ResponseBody> {
-    const formData = new FormData();
-
-    Object.entries(data).forEach(([key, value]) => {
-      if (value instanceof Blob || typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-        formData.append(key, value as string | Blob);
-      } else {
-        formData.append(key, JSON.stringify(value));
-      }
-    });
-
-    const optionsForRequest: RequestInit = {
-      method: 'POST',
-      body: formData,
-    };
-
-    return this.request<ResponseBody>(endpoint, optionsForRequest);
-    }
-
-  
     public patch<RequestBody, ResponseBody>(
     data: RequestBody,
     endpoint?: string

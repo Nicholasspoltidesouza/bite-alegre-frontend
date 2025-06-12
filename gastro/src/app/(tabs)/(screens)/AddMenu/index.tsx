@@ -119,6 +119,12 @@ const AddMenu = () => {
     }
   };
 
+  const handleDeleteCarouselItem = (id: string) => {
+    const index = carouselItems.findIndex(ci => ci.id === id);
+     if (index < 0) return;
+     setMenuItems(old => old.filter((_, i) => i !== index));
+   };
+
   const handleAddItem = async () => {
     const errDesc = validateDescription(description);
     const errPrice = validatePrice(price);
@@ -281,6 +287,7 @@ const AddMenu = () => {
                 <UserCarouselRestaurant
                   variant="menuAdd"
                   items={carouselItems}
+                  onDeleteItem={handleDeleteCarouselItem}
                 />
               </View>
 
@@ -375,7 +382,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 10,
+    top: 25,
     left: 30,
     backgroundColor: 'rgba(255,255,255,0.4)',
     borderRadius: 100,

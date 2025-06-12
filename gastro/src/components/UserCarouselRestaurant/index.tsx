@@ -35,6 +35,7 @@ interface Props {
     | 'menuAdd';
   carouselProfileRestaurant?: boolean;
   items: CarouselItem[];
+  onDeleteItem?: (id: string) => void;
 }
 
 const variantMessages: Record<string, string> = {
@@ -52,6 +53,7 @@ export default function UserCarouselRestaurant({
   variant,
   carouselProfileRestaurant = false,
   items,
+  onDeleteItem,
 }: Props) {
   const [selectedPins, setSelectedPins] = useState<string[]>([]);
 
@@ -109,6 +111,7 @@ export default function UserCarouselRestaurant({
   }
 
   const renderItem = ({ item }: { item: CarouselItem }) => {
+    const canDelete = variant === 'menu' || variant === 'menuAdd';
     const isSelected = selectedPins.includes(item.id);
 
     if (variant === 'influencers' || variant === 'restaurantPublications') {
@@ -131,6 +134,14 @@ export default function UserCarouselRestaurant({
         <View style={styles.card}>
           <View style={styles.imageWrapper}>
             <Image source={{ uri: item.photo }} style={styles.image} />
+          {canDelete && onDeleteItem && (
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => onDeleteItem(item.id)}
+            >
+              <AntDesign name="delete" size={16} color={Colors.orange.orangeStandard}/>
+            </TouchableOpacity>
+          )}
           </View>
           <Text style={styles.nome}>{item.name}</Text>
         </View>
@@ -223,6 +234,7 @@ export default function UserCarouselRestaurant({
       data={data}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
+      {...(onDeleteItem ? { extraData: items } : {})}
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{
@@ -241,6 +253,20 @@ const styles = StyleSheet.create({
     height: CARD_HEIGHT,
     marginRight: CARD_MARGIN,
     alignItems: 'flex-start',
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: Colors.white,
+    color: Colors.orange.orangeStandard,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 3,
+    zIndex: 1,
   },
   imageWrapper: {
     width: '100%',
