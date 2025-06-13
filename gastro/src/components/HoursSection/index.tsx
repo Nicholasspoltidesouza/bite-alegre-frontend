@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+          import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
 import {
   FlatList,
@@ -9,6 +9,7 @@ import {
   Alert,
   Modal,
 } from "react-native";
+import Colors from '@/src/constants/Colors';
 import { OperatingHoursDto } from "../../@types/OperatingHoursDto"; // Using the strict DTO
 import {
   mapToWeekday,
@@ -153,7 +154,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                     {item}
                   </Text>
                   {selectedValue === item && (
-                    <MaterialIcons name="check" size={18} color="#FF914B" />
+                    <MaterialIcons name="check" size={18} color={Colors.orange.orangeStandard} />
                   )}
                 </TouchableOpacity>
               )}
@@ -186,7 +187,7 @@ const Dropdown: React.FC<DropdownProps> = ({
           <Text
             style={[
               dropdownStyles.buttonText,
-              !selectedValue && { color: "#FF914B", opacity: 0.8 },
+              !selectedValue && { color: Colors.orange.orangeStandard, opacity: 0.8 },
             ]}
             numberOfLines={1}
             ellipsizeMode="tail"
@@ -196,7 +197,7 @@ const Dropdown: React.FC<DropdownProps> = ({
           <MaterialIcons
             name={isOpen ? "arrow-drop-up" : "arrow-drop-down"}
             size={24}
-            color={disabled ? "#CCCCCC" : "#FF914B"}
+            color={disabled ? Colors.gray.grayDisabled : Colors.orange.orangeStandard}
           />
         </TouchableOpacity>
       </View>
@@ -452,7 +453,7 @@ const HoursSection: React.FC<Props> = ({ hours: operatingHoursProp, onUpdateHour
       <View style={styles.header}>
         <Text style={styles.title}>Funcionamento</Text>
         <TouchableOpacity onPress={handleAddNewHour} style={styles.addButton}>
-          <MaterialCommunityIcons name="plus" size={20} color="#FFFFFF" />
+          <MaterialCommunityIcons name="plus" size={20} color={Colors.white} />
         </TouchableOpacity>
       </View>
 
@@ -579,7 +580,7 @@ const HoursSection: React.FC<Props> = ({ hours: operatingHoursProp, onUpdateHour
                         <MaterialIcons
                           name="remove-circle"
                           size={16}
-                          color="#FF5252"
+                          color={Colors.redError}
                         />
                       </TouchableOpacity>
                     )}
@@ -603,7 +604,7 @@ const dropdownStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "rgba(255, 179, 112, 0.25)",
+    backgroundColor: Colors.orange.orangeTransparent,
     borderRadius: 20,
     padding: 10,
     paddingLeft: 24,
@@ -611,11 +612,11 @@ const dropdownStyles = StyleSheet.create({
     height: 50,
   },
   buttonDisabled: {
-    backgroundColor: "#EEEEEE",
+    backgroundColor: Colors.gray.grayTableBorder,
     opacity: 0.7,
   },
   buttonText: {
-    color: "#FF914B",
+    color: Colors.orange.orangeStandard,
     fontSize: 16,
     fontFamily: "Poppins-Regular",
     flex: 1,
@@ -631,12 +632,12 @@ const dropdownStyles = StyleSheet.create({
     elevation: 9999,
   },
   dropdown: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.white,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#EEEEEE",
+    borderColor: Colors.gray.grayTableBorder,
     marginTop: 4,
-    shadowColor: "#000",
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
@@ -650,22 +651,22 @@ const dropdownStyles = StyleSheet.create({
   option: {
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
+    borderBottomColor: Colors.gray.grayBorder,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
   optionSelected: {
-    backgroundColor: "#FFE5D3",
+    backgroundColor: Colors.orange.orangeSelected,
   },
   optionText: {
-    color: "#5B5B5B",
+    color: Colors.gray.grayText,
     fontSize: 14,
     fontFamily: "Poppins-Regular",
     flex: 1,
   },
   optionTextSelected: {
-    color: "#FF914B",
+    color: Colors.orange.orangeStandard,
     fontFamily: "Poppins-SemiBold",
   },
 });
@@ -673,7 +674,7 @@ const dropdownStyles = StyleSheet.create({
 // Estilos para o componente principal
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "rgba(255, 179, 112, 0.25)",
+    backgroundColor: Colors.orange.orangeTransparent,
     borderRadius: 20,
     padding: 10,
     width: "100%",
@@ -684,7 +685,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#FF914B",
+    backgroundColor: Colors.orange.orangeStandard,
     padding: 12,
     borderRadius: 20,
     width: "100%",
@@ -692,13 +693,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   title: {
-    color: "#FFFFFF",
+    color: Colors.white,
     fontSize: 16,
     fontFamily: "Poppins-SemiBold",
     left: "5%",
   },
   addButton: {
-    backgroundColor: "#FFA552",
+    backgroundColor: Colors.orange.orangeAddButton,
     borderRadius: 999,
     padding: "1%",
   },
@@ -708,10 +709,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#EEEEEE",
+    borderBottomColor: Colors.gray.grayTableBorder,
   },
   listTitle: {
-    color: "#FF9500",
+    color: Colors.orange.orangeWelcome,
     fontWeight: "bold",
     fontSize: 14,
     fontFamily: "Poppins-SemiBold",
@@ -723,15 +724,15 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
+    borderBottomColor: Colors.gray.grayBorder,
   },
   day: {
-    color: "#5B5B5B",
+    color: Colors.gray.grayText,
     fontSize: 14,
     fontFamily: "Poppins-Regular",
   },
   time: {
-    color: "#5B5B5B",
+    color: Colors.gray.grayText,
     fontSize: 14,
     fontFamily: "Poppins-Regular",
   },
@@ -740,7 +741,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   deleteIconContainer: {
-    backgroundColor: "#FF5252",
+    backgroundColor: Colors.redError,
     width: 36,
     height: 36,
     borderRadius: 18,
@@ -749,10 +750,10 @@ const styles = StyleSheet.create({
   },
   dayContainer: {
     marginBottom: 15,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.white,
     borderRadius: 10,
     padding: 10,
-    shadowColor: "#000",
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -763,14 +764,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
+    borderBottomColor: Colors.gray.grayBorder,
     paddingBottom: 8,
     marginBottom: 8,
   },
   dayTitle: {
     fontSize: 16,
     fontFamily: "Poppins-SemiBold",
-    color: "#FF914B",
+    color: Colors.orange.orangeStandard,
   },
   periodsContainer: {
     flexDirection: "row",
@@ -783,7 +784,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 16,
     marginBottom: 4,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: Colors.gray.grayBackground,
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -807,13 +808,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   emptyText: {
-    color: "#999999",
+    color: Colors.gray.graySubtle,
     fontSize: 14,
     fontFamily: "Poppins-Regular",
     textAlign: "center",
   },
   newHourContainer: {
-    backgroundColor: "rgba(255, 179, 112, 0.1)",
+    backgroundColor: Colors.orange.orangeTransparentVeryLight,
     borderRadius: 20,
     padding: 16,
     marginTop: 10,
@@ -825,7 +826,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   dropdownLabel: {
-    color: "#5B5B5B",
+    color: Colors.gray.grayText,
     fontSize: 14,
     fontFamily: "Poppins-Regular",
     marginBottom: 4,
@@ -833,40 +834,40 @@ const styles = StyleSheet.create({
   periodSectionTitle: {
     fontSize: 16,
     fontFamily: "Poppins-SemiBold",
-    color: "#FF914B",
+    color: Colors.orange.orangeStandard,
     marginTop: 15,
     marginBottom: 8,
   },
   // Estilos para a tabela
   tableContainer: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.white,
     borderRadius: 12,
     overflow: "hidden",
     marginVertical: 10,
     borderWidth: 1,
-    borderColor: "#EEEEEE",
+    borderColor: Colors.gray.grayTableBorder,
     width: "100%",
   },
   tableHeader: {
     flexDirection: "row",
-    backgroundColor: "#F5F5F5",
+    backgroundColor: Colors.gray.grayBackground,
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#EEEEEE",
+    borderBottomColor: Colors.gray.grayTableBorder,
     gap: 60,
   },
   tableHeaderText: {
     fontSize: 14,
     fontFamily: "Poppins-SemiBold",
-    color: "#5B5B5B",
+    color: Colors.gray.grayText,
   },
   tableRow: {
     flexDirection: "row",
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#EEEEEE",
+    borderBottomColor: Colors.gray.grayTableBorder,
     alignItems: "center",
   },
   dayCell: {
@@ -875,7 +876,7 @@ const styles = StyleSheet.create({
   dayText: {
     fontSize: 14,
     fontFamily: "Poppins-Medium",
-    color: "#5B5B5B",
+    color: Colors.gray.grayText,
   },
   periodsCell: {
     flex: 5,
@@ -885,7 +886,7 @@ const styles = StyleSheet.create({
   periodBadge: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F5F5F5",
+    backgroundColor: Colors.gray.grayBackground,
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -895,10 +896,10 @@ const styles = StyleSheet.create({
   periodText: {
     fontSize: 12,
     fontFamily: "Poppins-Regular",
-    color: "#5B5B5B",
+    color: Colors.gray.grayText,
   },
   closedText: {
-    color: "#999999", // More subtle color for "Fechado"
+    color: Colors.gray.graySubtle, // More subtle color for "Fechado"
     fontStyle: 'italic',
   },
   actionCell: {
@@ -923,15 +924,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   cancelButton: {
-    backgroundColor: "#CCCCCC",
+    backgroundColor: Colors.gray.grayDisabled,
     marginRight: 8,
   },
   saveButton: {
-    backgroundColor: "#FF914B",
+    backgroundColor: Colors.orange.orangeStandard,
     marginLeft: 8,
   },
   actionButtonText: {
-    color: "#FFFFFF",
+    color: Colors.white,
     fontSize: 14,
     fontFamily: "Poppins-SemiBold",
   },

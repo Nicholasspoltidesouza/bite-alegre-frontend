@@ -35,10 +35,10 @@ const Button: React.FC<ButtonProps> = ({
           justifyContent: 'center',
           alignItems: 'center',
           backgroundColor: disabled
-            ? '#FFB37080'
+            ? Colors.orange.orangeMedium + '80'
             : type === 'orange'
-              ? '#FF914B'
-              : '#FFFFFF',
+              ? Colors.orange.orangeStandard
+              : Colors.white,
           borderWidth: type === 'white' ? 2 : 0,
           borderColor:
             type === 'white' ? Colors.orange.orangeStandard : 'transparent',
