@@ -55,10 +55,9 @@ export const useCreateUser = () => {
   };
 
   const deleteSavedRestaurant = async (restauratId: string): Promise<void> => {
-    const responseData = await callApi(
+    await callApi(
       userApiService.delete<any>(`/save-restaurant/${restauratId}`),
     );
-    return responseData;
   };
 
   return { createUser, getUserById, saveRestaurant, deleteSavedRestaurant, loading, error, data };
