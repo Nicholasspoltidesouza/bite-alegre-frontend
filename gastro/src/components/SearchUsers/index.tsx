@@ -49,7 +49,7 @@ const SearchUsers: React.FC<SearchUsersProps> = ({
           <Image source={{ uri: profilePhoto }} style={styles.image} />
         ) : (
           <View style={styles.placeholderPhoto}>
-            <MaterialIcons name="image" size={32} color="#888" />
+            <MaterialIcons name="image" size={32} color={Colors.gray.grayIcon} />
           </View>
         )}
       </View>
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 12,
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     borderRadius: 20,
     marginVertical: 6,
     marginHorizontal: 12,
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     width: 86,
     height: 86,
     borderRadius: 20,
-    backgroundColor: '#EDEDED',
+    backgroundColor: Colors.gray.graySearchBg,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     width: 86,
     height: 86,
     borderRadius: 20,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: Colors.gray.graySearchBgDark,
     alignItems: 'center',
     justifyContent: 'center',
   },

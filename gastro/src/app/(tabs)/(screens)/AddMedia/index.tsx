@@ -23,6 +23,7 @@ import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useSearch } from '@/src/hooks/useSearch';
 import { PublicationDTO } from '@/src/@types/DTO';
+import Colors from '@/src/constants/Colors';
 
 const AddMedia = () => {
   const router = useRouter();
@@ -212,7 +213,7 @@ const AddMedia = () => {
                 <MaterialIcons
                   name="keyboard-arrow-left"
                   size={24}
-                  color="#FFFFFF"
+                  color={Colors.white}
                 />
               </TouchableOpacity>
               <Text style={styles.textCreatePublication}>Criar Publicação</Text>
@@ -285,7 +286,7 @@ const AddMedia = () => {
               <MaterialIcons
                 name="search"
                 size={20}
-                color="#FF914B"
+                color={Colors.orange.orangeStandard}
                 style={styles.searchIcon}
               />
 
@@ -331,7 +332,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   safeArea: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
     flex: 1,
   },
   container: {
@@ -357,10 +358,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 50,
     borderRadius: 20,
-    backgroundColor: 'rgba(255, 179, 112, 0.25)',
+    backgroundColor: Colors.orange.orangeTransparent,
     paddingLeft: 24,
     paddingRight: 16,
-    color: '#000000',
+    color: Colors.black,
     fontFamily: 'Poppins-Regular',
     fontSize: 16,
     paddingVertical: 12,
@@ -376,7 +377,7 @@ const styles = StyleSheet.create({
     width: '48%',
   },
   errorText: {
-    color: 'red',
+    color: Colors.red,
     fontSize: 12,
     marginTop: 4,
     marginLeft: 24,
@@ -395,7 +396,7 @@ const styles = StyleSheet.create({
   orangeHeader: {
     width: '100%',
     height: 430,
-    backgroundColor: '#FF914B',
+    backgroundColor: Colors.orange.orangeStandard,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     justifyContent: 'center',
@@ -405,7 +406,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 33,
     left: 30,
-    backgroundColor: 'rgba(255,255,255,0.4)',
+    backgroundColor: Colors.transparent.whiteOverlay,
     borderRadius: 100,
     padding: 10,
     marginTop: 0,
@@ -414,7 +415,7 @@ const styles = StyleSheet.create({
   textCreatePublication: {
     padding: 50,
     marginTop: -60,
-    color: '#FFFFFF',
+    color: Colors.white,
     fontSize: 18,
     fontFamily: 'Poppins-Regular',
     textAlign: 'center',
@@ -423,7 +424,7 @@ const styles = StyleSheet.create({
   orangeButton: {
     width: 310,
     height: 265,
-    backgroundColor: '#d9d9d9',
+    backgroundColor: Colors.gray.grayMediumLight,
   },
   orangeButtonText: {
     fontSize: 45,
@@ -433,7 +434,7 @@ const styles = StyleSheet.create({
     width: 310,
     height: 245,
     borderRadius: 20,
-    backgroundColor: '#000',
+    backgroundColor: Colors.black,
   },
   previewContainer: {
     alignItems: 'center',
@@ -444,20 +445,20 @@ const styles = StyleSheet.create({
     marginBottom: -45,
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
     borderRadius: 20,
   },
 
   removeMediaText: {
-    color: '#FF914B',
+    color: Colors.orange.orangeStandard,
     fontSize: 14,
     fontFamily: 'Poppins-Regular',
   },
   searchResultsContainer: {
-    backgroundColor: '#FFF',
+    backgroundColor: Colors.white,
     borderRadius: 12,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -469,12 +470,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: Colors.gray.grayVeryLight,
   },
 
   resultText: {
     fontSize: 16,
-    color: '#333',
+    color: Colors.gray.grayDark,
     fontFamily: 'Poppins-Regular',
   },
 });

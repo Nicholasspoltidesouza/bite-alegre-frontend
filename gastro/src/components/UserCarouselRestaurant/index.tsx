@@ -75,15 +75,11 @@ export default function UserCarouselRestaurant({
   };
 
   function handleInfluencerCardPress(id: string){
-    if (variant === 'restaurantPublications') {
-      return router.push({
-        pathname: '/PublicationInfluencer',
-        params: { restaurantId: id },
-      });
-    }
     return router.push({
-      pathname: '/InfluencerProfile',
-      params: { restaurantId: id },
+      pathname: '/PublicationInfluencer',
+      params: {
+        publicationId: id,
+      },
     });
   }
 
@@ -148,7 +144,7 @@ export default function UserCarouselRestaurant({
                 size={16}
                 style={{
                   transform: [{ rotate: '90deg' }],
-                  color: isSelected ? Colors.orange.orangeBold : '#FF770040',
+                  color: isSelected ? Colors.orange.orangeBold : Colors.orange.orangeTransparentLight,
                 }}
               />
             </TouchableOpacity>
@@ -164,7 +160,7 @@ export default function UserCarouselRestaurant({
                 key={i}
                 name="star"
                 size={12}
-                color="#FF914B40"
+                color={Colors.orange.orangeStandardTransparent}
                 style={{ marginRight: 2 }}
               />
             ))}
@@ -179,7 +175,9 @@ export default function UserCarouselRestaurant({
                 key={i}
                 name="star"
                 size={12}
-                color={i < (item.stars ?? 0) ? Colors.orange.orangeStandard : '#FF914B40'}
+                color={
+                  i < (item.stars ?? 0) ? Colors.orange.orangeStandard : Colors.orange.orangeStandardTransparent
+                }
               />
             ))}
           </View>
