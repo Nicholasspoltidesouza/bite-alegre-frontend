@@ -30,12 +30,16 @@ const BaseModal: React.FC<BaseModalProps> = ({ visible, onClose }) => {
     switch (role) {
       case 'RESTAURANT':
         router.push('/RestaurantProfilePatch');
-      break;
+        break;
       case 'USER':
         router.push('/UserProfilePatch');
-      break;
+        break;
       case 'INFLUENCER':
         router.push('/UserProfilePatch');
+        break;
+      default:
+        console.warn(`Unexpected role: ${role}`);
+        router.push('/Home'); // Redirect to a safe fallback route
         break;
     }
   };
