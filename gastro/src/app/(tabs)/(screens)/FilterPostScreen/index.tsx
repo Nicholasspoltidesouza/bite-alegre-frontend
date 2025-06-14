@@ -10,6 +10,7 @@ import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Modal,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -33,6 +34,8 @@ const FilterPostScreen: React.FC = () => {
   });
 
   const [priceModalVisible, setPriceModalVisible] = useState(false);
+  const [statusModalVisible, setStatusModalVisible] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
   const [priceInput, setPriceInput] = useState('');
 
   const { userId } = useLocalSearchParams();
@@ -80,6 +83,23 @@ const FilterPostScreen: React.FC = () => {
 
     try {
       const result = await getPublicationByUserId(userId, apiFilters);
+
+      if (!result) {
+        setStatusMessage(
+          'Nenhuma publicação foi localizada com os filtros aplicados. Tente ajustar os filtros.'
+        );
+        setStatusModalVisible(true);
+        return;
+      }
+
+      if (Array.isArray(result) && result.length === 0) {
+        setStatusMessage(
+          'Os filtros aplicados não retornaram nenhum resultado.'
+        );
+        setStatusModalVisible(true);
+        return;
+      }
+
       router.push({
         pathname: '/InfluencerProfile',
         params: {
@@ -87,8 +107,11 @@ const FilterPostScreen: React.FC = () => {
           filteredUserData: JSON.stringify(result),
         },
       });
+
     } catch (error) {
-      console.error('❌ Erro ao filtrar publicações:', error);
+      console.error('Erro ao filtrar publicações:', error);
+      setStatusMessage('Erro ao buscar publicações. Tente novamente mais tarde.');
+      setStatusModalVisible(true);
     }
   };
 
@@ -176,7 +199,6 @@ const FilterPostScreen: React.FC = () => {
           <Button title="Aplicar" type="orange" onPress={handleApply} style={styles.button} />
         </View>
       </ScrollView>
-
       <Modal
         visible={priceModalVisible}
         transparent
@@ -216,6 +238,39 @@ const FilterPostScreen: React.FC = () => {
             </View>
           </View>
         </View>
+      </Modal>
+      <Modal
+        visible={statusModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setStatusModalVisible(false)}
+      >
+        <Pressable
+          style={modalStyles.backdrop}
+          onPress={() => setStatusModalVisible(false)}
+        >
+          <Pressable
+            onPress={(e) => e.stopPropagation()}
+            style={[modalStyles.wrapper, { alignItems: 'center' }]}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: '500',
+                textAlign: 'center',
+                marginBottom: 20,
+              }}
+            >
+              {statusMessage}
+            </Text>
+            <Button
+              title="OK"
+              type="orange"
+              onPress={() => setStatusModalVisible(false)}
+              style={{ minWidth: 100 }}
+            />
+          </Pressable>
+        </Pressable>
       </Modal>
     </SafeAreaView>
   );
@@ -279,13 +334,15 @@ const modalStyles = StyleSheet.create({
   backdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.35)',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
   },
   wrapper: {
     backgroundColor: Colors.white,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderRadius: 16,
     padding: 24,
+    minWidth: '80%',
   },
   modalTitle: {
     fontFamily: 'Poppins-Regular',
