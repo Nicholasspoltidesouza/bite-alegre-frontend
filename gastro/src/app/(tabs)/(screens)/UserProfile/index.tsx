@@ -38,11 +38,9 @@ export default function UserProfile() {
   }, [userData]);
 
   useEffect(() => {
-  if (visitedRestaurants.length > 0) {
     setIsSelected();
     setLoading(false);
-  }
-}, [visitedRestaurants]);
+  }, [visitedRestaurants]);
 
   function setVisited() {
     const visitedFromReviews: CarouselItem[] =
