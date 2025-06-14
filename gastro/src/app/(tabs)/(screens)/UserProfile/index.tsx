@@ -38,8 +38,10 @@ export default function UserProfile() {
   }, [userData]);
 
   useEffect(() => {
-    setIsSelected();
-    setLoading(false);
+    if (visitedRestaurants.length > 0) {
+      setIsSelected();
+      setLoading(false);
+    }
   }, [visitedRestaurants]);
 
   function setVisited() {
@@ -57,16 +59,14 @@ export default function UserProfile() {
   }
 
   function setIsSelected() {
-    const updatedRestaurants = visitedRestaurants.map((restaurant) => {
+     visitedRestaurants.forEach((restaurant) => {
       if (restaurant) {
         const isSaved = userData!.savedRestaurants!.some(
           (saved) => saved.restaurantId === restaurant.id
         );
-        return { ...restaurant, isSaved };
+        restaurant.isSaved = isSaved;
       }
-      return restaurant;
     });
-    setVisitedRestaurants(updatedRestaurants);
   }
 
   if (userApiLoading || loading) {
