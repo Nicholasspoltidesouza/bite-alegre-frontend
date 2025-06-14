@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import Header from '@/src/components/Header';
 import Colors from '@/src/constants/Colors';
 import { useCreateUser } from '@/src/hooks/useUserApi';
-import { useLocalSearchParams } from 'expo-router'; 
+import { useFocusEffect, useLocalSearchParams } from 'expo-router'; 
 import { useAuthContext } from '@/src/contexts/authContext';
 import { CarouselItem, mapCheckinToCarouselItem, mapReviewToCarouselItem } from '@/src/utils/carouselMappers';
 
@@ -24,10 +24,15 @@ export default function UserProfile() {
   const { userId } = useLocalSearchParams();
   const { user } = useAuthContext();
 
-  useEffect(() => {
-    const id = typeof userId === 'string' ? userId : user!.id;
-    getUserById(id);
-  }, [userId]);
+  useFocusEffect(
+    useCallback(() => {
+      const id = typeof userId === 'string' ? userId : user!.id;
+      getUserById(id);
+      return () => {
+        console.log('Tela perdeu o foco');
+      };
+    }, [userId])
+  );
 
   useEffect(() => {
     if (userData) {
