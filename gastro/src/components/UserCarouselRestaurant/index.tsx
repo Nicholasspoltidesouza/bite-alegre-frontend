@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,26 +6,16 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import Colors from '@/src/constants/Colors';
 import { router } from 'expo-router';
-import PhotoDish from '../PhotoDish';
 import { useCreateUser } from '@/src/hooks/useUserApi';
+import { CarouselItem } from '@/src/utils/carouselMappers';
 
 const CARD_WIDTH = 153;
 const CARD_HEIGHT = 156;
 const CARD_MARGIN = 10;
-
-interface CarouselItem {
-  id: string;
-  stars?: number;
-  photo?: string;
-  name?: string;
-  averagePrice?: number;
-  
-}
 
 interface Props {
   variant: 'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYou' | 'restaurantPublications';
@@ -36,8 +26,7 @@ interface Props {
 
 const variantMessages: Record<string, string> = {
   visited: 'Você ainda não visitou nenhum restaurante. Que tal começar agora?',
-  saved:
-    'Nenhum restaurante nos seus Salvos. Explore e salve lugares que você quer conhecer!',
+  saved: 'Nenhum restaurante nos seus Salvos. Explore e salve lugares que você quer conhecer!',
   menu: 'Nenhum cardápio encontrado.',
   influencers: 'Nenhuma recomendação de influenciadores por aqui ainda.',
   closeToYou: 'Não encontramos restaurantes próximos a você no momento.',
@@ -53,64 +42,54 @@ export default function UserCarouselRestaurant({
   const [selectedPins, setSelectedPins] = useState<string[]>([]);
   const { saveRestaurant, deleteSavedRestaurant, error } = useCreateUser();
 
-  const togglePin = async (id: string) => {
-  const isSelected = selectedPins.includes(id);
+  useEffect(() => {
+    const savedIds = items.filter(item => item.isSaved).map(item => item.id);
+    setSelectedPins(savedIds);
+  }, [items]);
 
-  if (isSelected) {
-    setSelectedPins((prev) => prev.filter((pid) => pid !== id));
-    await deleteSavedRestaurant(id);
+  const togglePin = async (item: CarouselItem) => {
+    const isSelected = selectedPins.includes(item.id);
 
-    if (error && onError) {
-      console.error('Error removing restaurant from saved:', error);
-      onError('Erro ao remover restaurante dos salvos.');
-      setSelectedPins((prev) => [...prev, id]); // volta ao estado anterior
+    if (isSelected) {
+      setSelectedPins((prev) => prev.filter((pid) => pid !== item.id));
+
+      await deleteSavedRestaurant(item.id);
+
+      if (error && onError) {
+        console.error('Error removing restaurant from saved:', error);
+        onError('Erro ao remover restaurante dos salvos.');
+        setSelectedPins((prev) => [...prev, item.id]); // Rollback
+      }
+
       return;
     }
 
-  } else {
-    setSelectedPins((prev) => [...prev, id]);
-    await saveRestaurant(id);
+    setSelectedPins((prev) => [...prev, item.id]);
 
-    if (error && onError) {
+    const seveReturn = await saveRestaurant(item.id);
+
+    if (!seveReturn && onError) {
       onError('Erro ao salvar restaurante.');
-      setSelectedPins((prev) => prev.filter((pid) => pid !== id)); // desfaz o toggle
+      setSelectedPins((prev) => prev.filter((pid) => pid !== item.id)); // Rollback
     }
-  }
   };
-
-  const data = useMemo(() => {
-    if (variant === 'visited' && carouselProfileRestaurant) {
-      items.sort((a, b) => {
-        const aPressed = selectedPins.includes(a.id) ? 0 : 1;
-        const bPressed = selectedPins.includes(b.id) ? 0 : 1;
-        return aPressed - bPressed;
-      });
-    }
-    return items;
-  }, [variant, carouselProfileRestaurant, selectedPins, items]);
 
   function handleInfluencerCardPress(id: string){
     if (variant === 'restaurantPublications') {
       return router.push({
         pathname: '/PublicationInfluencer',
-        params: {
-          restaurantId: id,
-        },
+        params: { restaurantId: id },
       });
     }
     return router.push({
       pathname: '/InfluencerProfile',
-      params: {
-        restaurantId: id,
-      },
+      params: { restaurantId: id },
     });
   }
 
   if (
-    ['visited', 'saved', 'menu', 'influencers', 'closeToYou', 'restaurantPublications'].includes(
-      variant,
-    ) &&
-    data.length === 0
+    ['visited', 'saved', 'menu', 'influencers', 'closeToYou', 'restaurantPublications'].includes(variant) &&
+    items.length === 0
   ) {
     return (
       <View style={{ padding: 16 }}>
@@ -120,7 +99,7 @@ export default function UserCarouselRestaurant({
   }
 
   const renderItem = ({ item }: { item: CarouselItem }) => {
-    const isSelected = selectedPins.includes(item.id);
+    const isSelected = selectedPins.includes(item.id);    
 
     if (variant === 'influencers' || variant === 'restaurantPublications') {
       return (
@@ -145,18 +124,16 @@ export default function UserCarouselRestaurant({
           </View>
           <Text style={styles.nome}>{item.name}</Text>
         </View>
-    );
-  }
+      );
+    }
 
     return (
       <TouchableOpacity
         style={styles.card}
         onPress={() => router.push({
-            pathname: '/restaurantProfile',
-            params: {
-              restaurantId: item.id,
-            },
-          })}
+          pathname: '/restaurantProfile',
+          params: { restaurantId: item.id },
+        })}
         activeOpacity={0.8}
       >
         <View style={styles.imageWrapper}>
@@ -164,7 +141,7 @@ export default function UserCarouselRestaurant({
           {['visited', 'saved', 'closeToYou'].includes(variant) && (
             <TouchableOpacity
               style={styles.pinButton}
-              onPress={() => togglePin(item.id)}
+              onPress={() => togglePin(item)}
             >
               <AntDesign
                 name="pushpin"
@@ -202,15 +179,13 @@ export default function UserCarouselRestaurant({
                 key={i}
                 name="star"
                 size={12}
-                color={
-                  i < (item.stars ?? 0) ? Colors.orange.orangeStandard : '#FF914B40'
-                }
+                color={i < (item.stars ?? 0) ? Colors.orange.orangeStandard : '#FF914B40'}
               />
             ))}
           </View>
         )}
 
-        {['saved'].includes(variant) && item.averagePrice && (
+        {variant === 'saved' && item.averagePrice && (
           <View style={styles.avaliacaoRow}>
             <AntDesign
               name="star"
@@ -227,7 +202,7 @@ export default function UserCarouselRestaurant({
 
   return (
     <FlatList
-      data={data}
+      data={items}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
       horizontal

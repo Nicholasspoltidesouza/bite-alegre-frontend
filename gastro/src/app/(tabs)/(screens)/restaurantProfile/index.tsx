@@ -175,6 +175,7 @@ const RestaurantProfile: React.FC = () => {
           urlFotoBanner={restaurant?.bannerPhoto}
           urlFotoPerfil={restaurant?.profilePhoto}
           onError={(message) => Alert.alert('Erro', message)}
+          isSelected={restaurant?.isFavorite ?? false}
         ></HeaderPerfilRestaurante>
 
         <ScrollView>

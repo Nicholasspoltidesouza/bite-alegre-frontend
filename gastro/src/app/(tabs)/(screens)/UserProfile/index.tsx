@@ -18,10 +18,11 @@ import { useAuthContext } from '@/src/contexts/authContext';
 import { CarouselItem, mapCheckinToCarouselItem, mapReviewToCarouselItem } from '@/src/utils/carouselMappers';
 
 export default function UserProfile() {
-  const { getUserById, loading, error, data: userData } = useCreateUser();
+  const { getUserById, loading: userApiLoading, error, data: userData } = useCreateUser();
   const [visitedRestaurants, setVisitedRestaurants] = useState<CarouselItem[]>(
     [],
   );
+  const [loading, setLoading] = useState(true);
   const { userId } = useLocalSearchParams();
   const { user } = useAuthContext();
 
@@ -33,8 +34,15 @@ export default function UserProfile() {
   useEffect(() => {
     if (userData) {
       setVisited();
-    }
+    }    
   }, [userData]);
+
+  useEffect(() => {
+  if (visitedRestaurants.length > 0) {
+    setIsSelected();
+    setLoading(false);
+  }
+}, [visitedRestaurants]);
 
   function setVisited() {
     const visitedFromReviews: CarouselItem[] =
@@ -42,19 +50,26 @@ export default function UserProfile() {
     const visitedFromCheckins: CarouselItem[] =
       userData!.checkinsWithoutReview?.map(mapCheckinToCarouselItem) ?? [];
 
-    const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];   
+    const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];
 
-    const uniqueVisited = Array.from(
-      new Map(combinedVisited.map((item) => [item.id, item])).values(),
-    );
-
-    if (uniqueVisited.length > 0) {
-      return setVisitedRestaurants(uniqueVisited);
+    if (combinedVisited.length > 0) {
+      return setVisitedRestaurants(combinedVisited);
     }
-    setVisitedRestaurants([]);
+    setVisitedRestaurants([]);  
   }
 
-  if (loading) {
+  function setIsSelected() {
+    visitedRestaurants.forEach((restaurant) => {
+      if (restaurant) {
+        const isSaved = userData!.savedRestaurants!.some(
+          (saved) => saved.restaurantId === restaurant.id
+        );
+        restaurant.isSaved = isSaved;
+      }
+    });
+  }
+
+  if (userApiLoading || loading) {
     return (
       <SafeAreaView style={styles.container}>
         <ActivityIndicator

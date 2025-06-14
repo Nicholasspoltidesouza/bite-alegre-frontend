@@ -6,6 +6,7 @@ export interface CarouselItem {
   photo?: string;
   name?: string;
   averagePrice?: number;
+  isSaved?: boolean;
 }
 
 export const mapRestaurantToCarouselItem = (restaurant: RestaurantDTO): CarouselItem => {

@@ -14,6 +14,7 @@ interface UserDTO {
   reviews?: ReviewDTO[];
   checkinsWithoutReview?: CheckinDTO[];
   influencer?: boolean;
+  savedRestaurants?: SavedRestaurantDTO[];
 }
 interface RestaurantDTO {
   id?: string;
@@ -34,6 +35,7 @@ interface RestaurantDTO {
   openingPeriods?: OperatingHoursDto[];
   publications?: PublicationDTO[];
   menuItems?: MenuItemsDTO[];
+  isFavorite?: boolean;
 }
 
 interface RestaurantPatchDTO {
@@ -113,8 +115,11 @@ interface FeedDTO {
 }
 
 interface  SavedRestaurantDTO { 
-  user_id: string;
-  restaurant_id: string;
+  user_id?: string;
+  restaurant_id?: string;
+  restaurantId?: string;
+  averageScore?: number;
+  profilePhoto?: string;
 }
 
 export type {

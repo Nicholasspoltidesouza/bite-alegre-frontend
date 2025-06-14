@@ -13,7 +13,7 @@ export function redirectToHome() {
 
 class ApiService {
     private baseUrl: string;
-    private API_URL = API_URL_ANDROID;
+    private API_URL = API_URL_BACKEND;
 
   constructor(baseUrl: string) {
     if (!baseUrl) {
@@ -56,7 +56,8 @@ class ApiService {
 
     try {
       const response = await fetch(url, config);
-      const responseData = await response.json();
+      const responseText = await response.text();
+      const responseData = responseText ? JSON.parse(responseText) : null;
 
       if (response.ok) {
         return responseData as T;
