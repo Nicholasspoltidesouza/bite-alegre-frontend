@@ -33,7 +33,7 @@ const AddMenu = () => {
 
   const { restaurantData: restaurantParam, restaurantId } =
     useLocalSearchParams();
-  const { getRestaurantById } = useRestaurantApi();
+  const { getRestaurantById, deleteDish } = useRestaurantApi();
   const parsedRestaurant: RestaurantDTO = restaurantParam
     ? JSON.parse(restaurantParam as string)
     : ({} as RestaurantDTO);
@@ -87,7 +87,6 @@ const AddMenu = () => {
       return;
     }
 
-    console.log('Abrindo galeria');
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
@@ -119,10 +118,13 @@ const AddMenu = () => {
     }
   };
 
-  const handleDeleteCarouselItem = (id: string) => {
-    const index = carouselItems.findIndex((ci) => ci.id === id);
-    if (index < 0) return;
-    setMenuItems((old) => old.filter((_, i) => i !== index));
+  const handleDeleteCarouselItem = async (id: string) => {
+    try {
+      await deleteDish(id);
+      setMenuItems((old) => old.filter((item) => item.id !== id));
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível excluir o item.');
+    }
   };
 
   const handleAddItem = async () => {
@@ -146,8 +148,6 @@ const AddMenu = () => {
       price: parseFloat(price.replace(',', '.')),
     };
 
-    console.log(newItem);
-    console.log(menuItems);
     setMenuItems((old) => [...old, newItem]);
 
     setMediaUri(null);
@@ -163,7 +163,6 @@ const AddMenu = () => {
       );
       return;
     }
-    console.log(menuItems);
     const restaurantWithMenu: RestaurantDTO = {
       ...parsedRestaurant,
       menuItems,
@@ -201,14 +200,8 @@ const AddMenu = () => {
   }, [restaurantId]);
 
   useEffect(() => {
-    console.log(menuItems);
     setCarouselItems(menuItems.map(mapMenuItemToCarouselItem));
-    console.log(carouselItems);
   }, [menuItems]);
-
-  useEffect(() => {
-    console.log(carouselItems);
-  }, [carouselItems]);
 
   return (
     <SafeAreaView style={styles.safeArea}>

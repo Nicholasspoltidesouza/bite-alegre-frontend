@@ -199,7 +199,6 @@ const RestaurantProfilePatch = () => {
         const res = await getRestaurantById(restaurantId as string);
 
         if (res) {
-          console.log(res);
           setProfilePhoto(res.profilePhoto ?? '');
           setName(res.name?.replace(/(^"|"$)/g, '') ?? '');
           setDescription(res.description ?? '');
