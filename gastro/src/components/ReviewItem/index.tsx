@@ -26,7 +26,7 @@ export const ReviewItem: React.FC<CardReviewProps> = ({ review }) => {
             {review!.restaurantProfilePhoto ? (
               <Image
                 source={{ uri: review.restaurantProfilePhoto }}
-                style={{ width: 40, height: 40, borderRadius: 50 }} 
+                style={styles.restaurantImage} 
                 onError={(error) => console.error('Erro ao carregar imagem:', error)}
               />
             ) : (
