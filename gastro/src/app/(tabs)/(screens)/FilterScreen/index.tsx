@@ -153,7 +153,7 @@ const FilterScreen: React.FC = () => {
   const occasionTags = tags.filter((t) => t.type === 'OCASIAO');
 
   const iconColor = Colors.icon;
-  const dropdownIconColor = '#8F8F8F';
+  const dropdownIconColor = Colors.gray.grayDropdown;
   const iconSize = 16;
 
   return (
@@ -163,7 +163,7 @@ const FilterScreen: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.title}>Filtros</Text>
         <TouchableOpacity onPress={() => router.back()}>
-          <Feather name="sliders" size={24} color="#FF914B" style={{ transform: [{ rotate: '90deg' }] }} />
+          <Feather name="sliders" size={24} color={Colors.orange.orangeStandard} style={{ transform: [{ rotate: '90deg' }] }} />
         </TouchableOpacity>
       </View>
 
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   errorText: {
-    color: 'red',
+    color: Colors.red,
     textAlign: 'center',
     paddingHorizontal: 20,
   },
@@ -456,7 +456,7 @@ const styles = StyleSheet.create({
 const modalStyles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: Colors.transparent.blackOverlayLight,
     justifyContent: 'flex-end',
   },
   wrapper: {

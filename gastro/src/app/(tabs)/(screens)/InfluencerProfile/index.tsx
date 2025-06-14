@@ -82,12 +82,8 @@ export default function InfluencerProfile() {
 
     const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];
 
-    const uniqueVisited = Array.from(
-      new Map(combinedVisited.map((item) => [item.id, item])).values(),
-    );
-
-    if (uniqueVisited.length > 0) {
-      return setVisitedRestaurants(uniqueVisited);
+    if (combinedVisited.length > 0) {
+      return setVisitedRestaurants(combinedVisited);
     }
     setVisitedRestaurants([]);
   }

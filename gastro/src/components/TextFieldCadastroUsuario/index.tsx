@@ -42,7 +42,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
       {error && (
         <Text
           style={{
-            color: 'red',
+            color: Colors.red,
             fontSize: 12,
             textAlign: 'left',
             marginBottom: 2,

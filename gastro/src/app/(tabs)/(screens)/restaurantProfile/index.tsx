@@ -1,4 +1,3 @@
-import HeaderPerfilRestaurante from '@/src/components/HeaderPerfilRestaurante';
 import {
   View,
   StyleSheet,
@@ -22,16 +21,35 @@ import {
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
-import Button from '@/src/components/Button';
+import Button from '@/src/components/Button'; // Assuming Button is correctly imported
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { CheckinDTO, RestaurantDTO, OperatingHoursDto } from '@/src/@types/DTO';
+import { CheckinDTO, RestaurantDTO, OperatingHoursDto, ReviewDTO as OriginalReviewDTO } from '@/src/@types/DTO';
 import { Weekday, mapFromWeekday } from '@/src/utils/weekdayUtils'; 
 import Colors from '@/src/constants/Colors';
 import { useAuthContext } from '@/src/contexts/authContext';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import { CarouselItem, mapMenuItemToCarouselItem, mapPublicationToCarouselItem } from '@/src/utils/carouselMappers';
+import { HeaderPerfilRestaurante } from '@/src/components/HeaderPerfilRestaurante';
 
 const { width: screenWidth } = Dimensions.get('window');
+
+// Interface para os dados de review que a RestaurantReviewsScreen espera
+interface UIDisplayReview {
+  id?: string | number;
+  userName: string;
+  stars: number;
+  reviewDate: string; // Alterado de timeAgo para reviewDate
+  feedback?: string;
+}
+
+// Ajuste esta interface para corresponder à sua ReviewDTO original, se necessário
+interface ReviewDTO extends OriginalReviewDTO { // Use OriginalReviewDTO as base 
+  // A re-declaração de 'id' como 'string | number' era incompatível com
+  // OriginalReviewDTO.id (que é 'string | undefined' conforme o erro TypeScript).
+  // Removendo a re-declaração de 'id', ele será herdado de OriginalReviewDTO.
+  user?: { name?: string }; // Mantido, assumindo que é compatível ou uma adição intencional.
+  created_at?: string; // Mantido, assumindo que é compatível ou uma adição intencional.
+}
 
 const RestaurantProfile: React.FC = () => {
   const {
@@ -62,6 +80,21 @@ const RestaurantProfile: React.FC = () => {
   }, [currentRestaurantId, refresh])
 );
 
+  // Função para formatar a data da avaliação (DD/MM/YYYY)
+  const formatReviewDate = (dataISO?: string): string => {
+    if (!dataISO) return 'Data desconhecida';
+    try {
+      const data = new Date(dataISO);
+      // Assegura que dia e mês tenham dois dígitos
+      const dia = String(data.getDate()).padStart(2, '0');
+      const mes = String(data.getMonth() + 1).padStart(2, '0'); // Meses são 0-indexed
+      const ano = data.getFullYear();
+      return `${dia}/${mes}/${ano}`;
+    } catch (e) {
+      console.error("Erro ao formatar data da avaliação:", e);
+      return "Data inválida";
+    }
+  };
   function isRestaurantDTO(obj: any): obj is RestaurantDTO {
     return (
       obj != null &&
@@ -167,12 +200,24 @@ const RestaurantProfile: React.FC = () => {
     }
   };
 
+  const handleNavigateToReviews = () => {
+    router.push({
+      pathname: '/RestaurantReviewsScreen',
+      params: {
+        restaurant: JSON.stringify(restaurant)
+      },
+    });
+  };
+
   return (    
     <SafeAreaView style={styles.container}>      
         <HeaderPerfilRestaurante
           isProfile={isProfile}
+          restaurantId={currentRestaurantId}
           urlFotoBanner={restaurant?.bannerPhoto}
           urlFotoPerfil={restaurant?.profilePhoto}
+          onError={(message) => Alert.alert('Erro', message)}
+          isSelected={restaurant?.isFavorite ?? false}
         ></HeaderPerfilRestaurante>
 
         <ScrollView>
@@ -184,6 +229,7 @@ const RestaurantProfile: React.FC = () => {
                 description={`(${restaurant?.reviews?.length ?? 0} avaliações)`}
                 content={''}
                 staticArrow={true}
+                onPressAction={handleNavigateToReviews}
                 children={
                   <FontAwesome
                     name="star"
