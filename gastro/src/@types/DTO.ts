@@ -69,6 +69,9 @@ interface ReviewDTO {
   restaurantName?: string;
   name?: string;
   date?: string;
+  userName?: string;
+  createdAt?: string;
+  userProfilePhoto?: string;
 }
 
 interface RestaurantFilterDTO {
