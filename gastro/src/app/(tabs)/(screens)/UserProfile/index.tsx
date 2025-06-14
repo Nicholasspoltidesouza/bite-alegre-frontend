@@ -57,14 +57,16 @@ export default function UserProfile() {
   }
 
   function setIsSelected() {
-    visitedRestaurants.forEach((restaurant) => {
+    const updatedRestaurants = visitedRestaurants.map((restaurant) => {
       if (restaurant) {
         const isSaved = userData!.savedRestaurants!.some(
           (saved) => saved.restaurantId === restaurant.id
         );
-        restaurant.isSaved = isSaved;
+        return { ...restaurant, isSaved };
       }
+      return restaurant;
     });
+    setVisitedRestaurants(updatedRestaurants);
   }
 
   if (userApiLoading || loading) {
