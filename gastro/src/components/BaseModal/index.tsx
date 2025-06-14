@@ -8,10 +8,15 @@ import { useAuthApi } from '@/src/hooks/useAuthApi';
 type BaseModalProps = {
   visible: boolean;
   onClose: () => void;
+  restaurantId?: string;
 };
-const BaseModal: React.FC<BaseModalProps> = ({ visible, onClose }) => {
+const BaseModal: React.FC<BaseModalProps> = ({
+  visible,
+  onClose,
+  restaurantId,
+}) => {
   const { logout } = useAuthApi();
-  
+
   const handleLogout = async () => {
     try {
       onClose();
@@ -51,7 +56,12 @@ const BaseModal: React.FC<BaseModalProps> = ({ visible, onClose }) => {
               style={styles.filledButton}
               onPress={() => {
                 onClose();
-                router.push('/RestaurantProfilePatch');
+                router.push({
+                  pathname: '/RestaurantProfilePatch',
+                  params: {
+                    restaurantId: restaurantId,
+                  },
+                });
               }}
             >
               <Text style={styles.filledText}>Editar perfil</Text>

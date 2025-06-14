@@ -17,6 +17,7 @@ interface HeaderPerfilRestauranteProps {
   urlFotoPerfil?: string;
   isSelected?: boolean;
   isProfile?: boolean;
+  restaurantId?: string;
 }
 
 const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({
@@ -24,6 +25,7 @@ const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({
   urlFotoPerfil,
   isSelected = false,
   isProfile = false,
+  restaurantId,
 }) => {
   const [selected, setSelected] = useState(isSelected);
   const [modalVisible, setModalVisible] = useState(false);
@@ -136,6 +138,7 @@ const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({
 
       <BaseModal
         visible={modalVisible}
+        restaurantId={restaurantId}
         onClose={() => setModalVisible(false)}
       />
     </SafeAreaView>

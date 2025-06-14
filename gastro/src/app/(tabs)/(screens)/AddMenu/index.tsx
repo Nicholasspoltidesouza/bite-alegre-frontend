@@ -120,10 +120,10 @@ const AddMenu = () => {
   };
 
   const handleDeleteCarouselItem = (id: string) => {
-    const index = carouselItems.findIndex(ci => ci.id === id);
-     if (index < 0) return;
-     setMenuItems(old => old.filter((_, i) => i !== index));
-   };
+    const index = carouselItems.findIndex((ci) => ci.id === id);
+    if (index < 0) return;
+    setMenuItems((old) => old.filter((_, i) => i !== index));
+  };
 
   const handleAddItem = async () => {
     const errDesc = validateDescription(description);
@@ -179,14 +179,36 @@ const AddMenu = () => {
   };
 
   useEffect(() => {
-    if (restaurantId) {
-      const res = getRestaurantById(restaurantId as string);
-    }
-  }, []);
+    const fetchRestaurantMenu = async () => {
+      try {
+        if (!restaurantId) return;
+
+        const res = await getRestaurantById(restaurantId as string);
+
+        if (res && Array.isArray(res.menuItems)) {
+          setMenuItems(res.menuItems);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar cardápio:', error);
+        Alert.alert(
+          'Erro',
+          'Não foi possível carregar o cardápio do restaurante.',
+        );
+      }
+    };
+
+    fetchRestaurantMenu();
+  }, [restaurantId]);
 
   useEffect(() => {
+    console.log(menuItems);
     setCarouselItems(menuItems.map(mapMenuItemToCarouselItem));
+    console.log(carouselItems);
   }, [menuItems]);
+
+  useEffect(() => {
+    console.log(carouselItems);
+  }, [carouselItems]);
 
   return (
     <SafeAreaView style={styles.safeArea}>

@@ -173,6 +173,7 @@ const RestaurantProfile: React.FC = () => {
           isProfile={isProfile}
           urlFotoBanner={restaurant?.bannerPhoto}
           urlFotoPerfil={restaurant?.profilePhoto}
+          restaurantId={restaurant?.id}
         ></HeaderPerfilRestaurante>
 
         <ScrollView>

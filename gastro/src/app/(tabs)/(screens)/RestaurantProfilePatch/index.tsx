@@ -8,7 +8,7 @@ import SignupHeader from '@/src/components/SignupHeader';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -27,18 +27,20 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/src/constants/Colors';
 import AddMenu from '../AddMenu';
+import { useLocalSearchParams } from 'expo-router/build/hooks';
 
 const RestaurantProfilePatch = () => {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { patchRestaurant } = useRestaurantApi();
+  const { restaurantId } = useLocalSearchParams();
+  const { patchRestaurant, getRestaurantById } = useRestaurantApi();
 
-  const [restaurantId] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [address, setAddress] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [averagePrice, setAveragePrice] = useState<string>('');
+  const [profilePhoto, setProfilePhoto] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userType, setUserType] = useState<string>('Editar Restaurante');
   const [showOperatingHours, setShowOperatingHours] = useState<boolean>(true);
@@ -77,41 +79,9 @@ const RestaurantProfilePatch = () => {
     '23:00',
   ];
 
-  const [operatingHours, setOperatingHours] = useState<LocalOperatingHour[]>([
-    {
-      day: 'Segunda-feira',
-      openTime: '16:00',
-      closeTime: '22:00',
-      weekday: 'MON',
-    },
-    {
-      day: 'Terça-feira',
-      openTime: '16:00',
-      closeTime: '22:00',
-      weekday: 'TUE',
-    },
-    {
-      day: 'Quarta-feira',
-      openTime: '16:00',
-      closeTime: '22:00',
-      weekday: 'WED',
-    },
-    {
-      day: 'Quinta-feira',
-      openTime: '16:00',
-      closeTime: '22:00',
-      weekday: 'THU',
-    },
-    {
-      day: 'Sexta-feira',
-      openTime: '16:00',
-      closeTime: '22:00',
-      weekday: 'FRI',
-    },
-    { day: 'Sábado', openTime: '16:00', closeTime: '22:00', weekday: 'SAT' },
-    { day: 'Domingo', openTime: '16:00', closeTime: '22:00', weekday: 'SUN' },
-    { day: 'Feriados', openTime: '16:00', closeTime: '22:00', weekday: 'HOL' },
-  ]);
+  const [operatingHours, setOperatingHours] = useState<LocalOperatingHour[]>(
+    [],
+  );
 
   const validateNameRestaurant = (text: string): string | null => {
     if (!text) return null;
@@ -178,7 +148,7 @@ const RestaurantProfilePatch = () => {
       setIsLoading(true);
 
       const patchData: RestaurantPatchDTO = {
-        id: restaurantId,
+        id: restaurantId as string,
       };
 
       if (name) patchData.name = name;
@@ -220,6 +190,61 @@ const RestaurantProfilePatch = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchRestaurantData = async () => {
+      try {
+        if (!restaurantId) return;
+
+        const res = await getRestaurantById(restaurantId as string);
+
+        if (res) {
+          console.log(res);
+          setProfilePhoto(res.profilePhoto ?? '');
+          setName(res.name?.replace(/(^"|"$)/g, '') ?? '');
+          setDescription(res.description ?? '');
+          setAddress(res.address ?? '');
+          setPhone(res.phone ?? '');
+          setAveragePrice(res.averagePrice?.toString() ?? '');
+
+          if (Array.isArray(res.openingPeriods)) {
+            const defaultDays = [
+              { day: 'Segunda-feira', weekday: 'MON' },
+              { day: 'Terça-feira', weekday: 'TUE' },
+              { day: 'Quarta-feira', weekday: 'WED' },
+              { day: 'Quinta-feira', weekday: 'THU' },
+              { day: 'Sexta-feira', weekday: 'FRI' },
+              { day: 'Sábado', weekday: 'SAT' },
+              { day: 'Domingo', weekday: 'SUN' },
+              { day: 'Feriados', weekday: 'HOL' },
+            ];
+
+            const updatedHours = defaultDays.map((dayItem) => {
+              const period = res.openingPeriods?.find(
+                (p: any) => p.weekday === dayItem.weekday,
+              );
+              return {
+                ...dayItem,
+                openTime: period?.opensAt ?? '-',
+                closeTime: period?.closesAt ?? '-',
+              };
+            });
+
+            setOperatingHours(updatedHours);
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao buscar restaurante:', error);
+        Alert.alert(
+          'Erro',
+          'Não foi possível carregar os dados do restaurante.',
+        );
+      }
+    };
+
+    fetchRestaurantData();
+  }, [restaurantId]);
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
