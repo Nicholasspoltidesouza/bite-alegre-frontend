@@ -121,7 +121,7 @@ const EditRestaurantCategories: React.FC = () => {
   };
 
   const handleBack = () => {
-    router.push('/RestaurantProfilePatch');
+    router.back();
   };
 
   if (tagsLoading) {
