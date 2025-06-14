@@ -22,11 +22,12 @@ import { CardReview } from '@/src/components/ReviewCard';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
 import { useCreateUser } from '@/src/hooks/useUserApi';
 import { usePublicationApi } from '@/src/hooks/usePublicationApi';
+import { CarouselItem, mapCheckinToCarouselItem, mapReviewToCarouselItem } from '@/src/utils/carouselMappers';
 
 
 export default function InfluencerProfile() {
   const { getUserById, loading, error, data: userData } = useCreateUser();
-  const { getPublicationbyUserId, loading : loadingPublication, error : errorPublication} = usePublicationApi();
+  const { getPublicationByUserId, loading : loadingPublication, error : errorPublication} = usePublicationApi();
   const { user } = useAuthContext();
   const [sameUser, setSameUser] = useState(false);
   const [userDataPublication, setUserDataPublication] = useState<PublicationDTO[] | null>([]);
@@ -34,19 +35,18 @@ export default function InfluencerProfile() {
   const [selectedTab, setSelectedTab] = useState<
     'grid' | 'reviews' | 'checkins' | 'user'
   >('grid');
-  const [visitedRestaurants, setVisitedRestaurants] = useState<RestaurantDTO[]>([],);
+  const [visitedRestaurants, setVisitedRestaurants] = useState<CarouselItem[]>([],);
 
   const handleAddPress = () => router.push({ pathname: '/AddMedia' });
   const filterAddPress = () => router.push({ pathname: '/AddMedia' });
 
   useEffect(() => {
-    console.log('user', user);
     const id = typeof userId === 'string' ? userId : user!.id;
     setSameUser(id === user!.id);
     getUserById(id.toString()).then((data) => {
        setVisited();
     });
-    getPublicationbyUserId(id.toString()).then((data) => {
+    getPublicationByUserId(id.toString()).then((data) => {
       if (data) {
         console.log('Publicações do usuário:', data);
         setUserDataPublication(data);
@@ -55,12 +55,12 @@ export default function InfluencerProfile() {
   }, [userId]);
 
   function setVisited() {
-    const visitedFromReviews: RestaurantDTO[] =
-      userData!.reviews?.map(mapRestaurantToReview) ?? [];
-    const visitedFromCheckins: RestaurantDTO[] =
-      userData!.checkinsWithoutReview?.map(mapCheckinToRestaurant) ?? [];
+    const visitedFromReviews: CarouselItem[] =
+      userData!.reviews?.map(mapReviewToCarouselItem) ?? [];
+    const visitedFromCheckins: CarouselItem[] =
+      userData!.checkinsWithoutReview?.map(mapCheckinToCarouselItem) ?? [];
 
-    const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];
+    const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];   
 
     const uniqueVisited = Array.from(
       new Map(combinedVisited.map((item) => [item.id, item])).values(),
@@ -70,39 +70,6 @@ export default function InfluencerProfile() {
       return setVisitedRestaurants(uniqueVisited);
     }
     setVisitedRestaurants([]);
-  }
-
-  function mapCheckinToRestaurant(checkin: CheckinDTO): RestaurantDTO {
-    return {
-      id: checkin.restaurant_id ?? '',
-      profilePhoto: checkin.restaurantProfilePhoto,
-      address: '',
-      name: checkin.restaurantName!,
-      description: '',
-      email: '',
-      password: '',
-      averagePrice: 0,
-      phone: '',
-      userType: '',
-      cnpj: '',
-    };
-  }
-
-  function mapRestaurantToReview(review: ReviewDTO): RestaurantDTO {
-    return {
-      id: review.restaurantId ?? '',
-      stars: review.stars ?? 0,
-      profilePhoto: review.restaurantProfilePhoto,
-      address: '',
-      name: review.restaurantName!,
-      description: '',
-      email: '',
-      password: '',
-      averagePrice: 0,
-      phone: '',
-      userType: '',
-      cnpj: '',
-    };
   }
 
   if (loading || loadingPublication ) {
@@ -160,7 +127,7 @@ export default function InfluencerProfile() {
             <UserCarouselRestaurant
               variant={'visited'}
               carouselProfileRestaurant={true}
-              restaurantsExternal={visitedRestaurants}
+              items={visitedRestaurants}
             />
 
             <View style={styles.titleRow}>
@@ -171,7 +138,7 @@ export default function InfluencerProfile() {
             </View>
             <UserCarouselRestaurant
               variant={'saved'}
-              restaurantsExternal={[]}
+              items={[]}
             />
           </View>
         );

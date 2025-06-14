@@ -9,6 +9,7 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Alert,
+  ScrollView,
 } from 'react-native';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Accordion from '@/src/components/Accordion';
@@ -27,6 +28,8 @@ import { CheckinDTO, RestaurantDTO, OperatingHoursDto, ReviewDTO as OriginalRevi
 import { Weekday, mapFromWeekday } from '@/src/utils/weekdayUtils'; 
 import Colors from '@/src/constants/Colors';
 import { useAuthContext } from '@/src/contexts/authContext';
+import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
+import { CarouselItem, mapMenuItemToCarouselItem, mapPublicationToCarouselItem } from '@/src/utils/carouselMappers';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -58,17 +61,22 @@ const RestaurantProfile: React.FC = () => {
   } = useRestaurantApi();
   const [modalVisible, setModalVisible] = useState(false);
   const [refresh, setRefresh ]= useState(0);
-    const [isProfile, setIsProfile] = useState(false);
+  const [isProfile, setIsProfile] = useState(false);
+  const [publications, setPublications] = useState<CarouselItem[]>([]);
+  const [menu, setMenu] = useState<CarouselItem[]>([]);
   const params = useLocalSearchParams<{ restaurantId: string }>();
+  
   const currentRestaurantId = params.restaurantId;
   const { user } = useAuthContext();
 
   useFocusEffect(
   useCallback(() => {
     const id = currentRestaurantId !== null ? currentRestaurantId : user!.id;
-    getRestaurantById(id);
+    getRestaurantById(id).then((restaurantData) => {
+      setPublications(restaurantData.publications!.map(mapPublicationToCarouselItem));
+      setMenu(restaurantData.menuItems!.map(mapMenuItemToCarouselItem));
+    });
     setIsProfile(user?.id === id)
-
   }, [currentRestaurantId, refresh])
 );
 
@@ -88,26 +96,26 @@ const RestaurantProfile: React.FC = () => {
     }
   };
   function isRestaurantDTO(obj: any): obj is RestaurantDTO {
-  return (
-    obj != null &&
-    typeof obj === 'object' &&
-    (typeof obj.bannerPhoto === 'string' || obj.bannerPhoto === null) && // Permitir null
-    (typeof obj.profilePhoto === 'string' || obj.profilePhoto === null) && // Permitir null
-    typeof obj.name === 'string' &&
-    typeof obj.description === 'string' &&
-    typeof obj.address === 'string' &&
-    (obj.openingPeriods === undefined || 
-     obj.openingPeriods === null ||
-     (Array.isArray(obj.openingPeriods) &&
-      obj.openingPeriods.every(
-        (period: any) =>
-          period != null &&
-          typeof period === 'object' &&
-          typeof period.weekday === 'string' && 
-          typeof period.opensAt === 'string' &&
-          typeof period.closesAt === 'string'
-      )))
-  );
+    return (
+      obj != null &&
+      typeof obj === 'object' &&
+      (typeof obj.bannerPhoto === 'string' || obj.bannerPhoto === null) && // Permitir null
+      (typeof obj.profilePhoto === 'string' || obj.profilePhoto === null) && // Permitir null
+      typeof obj.name === 'string' &&
+      typeof obj.description === 'string' &&
+      typeof obj.address === 'string' &&
+      (obj.openingPeriods === undefined || 
+      obj.openingPeriods === null ||
+      (Array.isArray(obj.openingPeriods) &&
+        obj.openingPeriods.every(
+          (period: any) =>
+            period != null &&
+            typeof period === 'object' &&
+            typeof period.weekday === 'string' && 
+            typeof period.opensAt === 'string' &&
+            typeof period.closesAt === 'string'
+        )))
+    );
 }
 
   if (loading) {
@@ -201,139 +209,158 @@ const RestaurantProfile: React.FC = () => {
     });
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <HeaderPerfilRestaurante
-        isProfile={isProfile}
-        urlFotoBanner={restaurant?.bannerPhoto}
-        urlFotoPerfil={restaurant?.profilePhoto}
-      ></HeaderPerfilRestaurante>
+  return (    
+    <SafeAreaView style={styles.container}>      
+        <HeaderPerfilRestaurante
+          isProfile={isProfile}
+          urlFotoBanner={restaurant?.bannerPhoto}
+          urlFotoPerfil={restaurant?.profilePhoto}
+        ></HeaderPerfilRestaurante>
 
-      <View style={styles.infos}>
-        <Text style={styles.title}>{restaurant?.name}</Text>
-        <View style={styles.infoGrid}>
-          <Accordion
-            title={`${restaurant?.averageScore ?? '-'}`}
-            description={`(${restaurant?.reviews?.length ?? 0} avaliações)`}
-            content={''}
-            staticArrow={true}
-            onPressAction={handleNavigateToReviews} // Changed to onPressAction
-            children={
-              <FontAwesome
-                name="star"
-                size={24}
-                color={Colors.orange.orangeStandard}
-              />
-            }
-          ></Accordion>
+        <ScrollView>
+          <View style={styles.infos}>
+            <Text style={styles.title}>{restaurant?.name}</Text>
+            <View style={styles.infoGrid}>
+              <Accordion
+                title={`${restaurant?.averageScore ?? ' - '}`}
+                description={`(${restaurant?.reviews?.length ?? 0} avaliações)`}
+                content={''}
+                staticArrow={true}
+                onPressAction={handleNavigateToReviews}
+                children={
+                  <FontAwesome
+                    name="star"
+                    size={24}
+                    color={Colors.orange.orangeStandard}
+                  />
+                }
+              ></Accordion>
 
-          <Accordion
-            title={'Descrição'}
-            description={''}
-            content={restaurant?.description ?? ''}
-            staticArrow={false}
-            children={
-              <Ionicons
-                name="document-text-outline"
-                size={24}
-                color={Colors.orange.orangeStandard}
-              />
-            }
-          ></Accordion>
+              <Accordion
+                title={'Descrição'}
+                description={''}
+                content={restaurant?.description ?? ''}
+                staticArrow={false}
+                children={
+                  <Ionicons
+                    name="document-text-outline"
+                    size={24}
+                    color={Colors.orange.orangeStandard}
+                  />
+                }
+              ></Accordion>
 
-          <Accordion
-            title={'Endereço do Restaurante'}
-            description={''}
-            content={restaurant?.address ?? ''}
-            staticArrow={false}
-            children={
-              <FontAwesome6
-                name="location-dot"
-                size={24}
-                color={Colors.orange.orangeStandard}
-              />
-            }
-          ></Accordion>
+              <Accordion
+                title={'Endereço do Restaurante'}
+                description={''}
+                content={restaurant?.address ?? ''}
+                staticArrow={false}
+                children={
+                  <FontAwesome6
+                    name="location-dot"
+                    size={24}
+                    color={Colors.orange.orangeStandard}
+                  />
+                }
+              ></Accordion>
 
-          <Accordion
-            title={'Aberto'}
-            description={''}
-            content={formatOpeningPeriodsForDisplay(restaurant?.openingPeriods)}
-            staticArrow={false}
-            children={
-              <Foundation
-                name="clock"
-                size={24}
-                color={Colors.orange.orangeStandard}
-              />
-            }
-          ></Accordion>
+              <Accordion
+                title={'Aberto'}
+                description={''}
+                content={formatOpeningPeriodsForDisplay(restaurant?.openingPeriods)}
+                staticArrow={false}
+                children={
+                  <Foundation
+                    name="clock"
+                    size={24}
+                    color={Colors.orange.orangeStandard}
+                  />
+                }
+              ></Accordion>
 
-          <Accordion
-            title={'Estive Aqui'}
-            description={''}
-            content={''}
-            staticArrow={true}
-            onPressAction={() => setModalVisible(true)}
-            children={
-              <MaterialCommunityIcons
-                name="calendar-start"
-                size={24}
-                color={Colors.orange.orangeStandard}
-              />
-            }
-          ></Accordion>
+              <Accordion
+                title={'Estive Aqui'}
+                description={''}
+                content={''}
+                staticArrow={true}
+                onPressAction={() => setModalVisible(true)}
+                children={
+                  <MaterialCommunityIcons
+                    name="calendar-start"
+                    size={24}
+                    color={Colors.orange.orangeStandard}
+                  />
+                }
+              ></Accordion>          
 
-          <Modal
-            animationType="fade"
-            transparent
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <TouchableWithoutFeedback
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <View style={styles.modalOverlay}>
-                <View style={styles.modalView}>
-                  <Text style={styles.modalText}>
-                    Deseja avaliar o restaurante?
-                  </Text>
-                  <View style={styles.modalButtons}>
-                    <Button
-                      title="Sim"
-                      onPress={() => {
-                        setModalVisible(!modalVisible);
-                        if (!currentRestaurantId) {
-                          Alert.alert("Erro", "ID do restaurante não encontrado para avaliação.");
-                          return;
-                        }
-                        router.push({
-                          pathname: '/CreateReview',
-                          params: {
-                            restaurantId: currentRestaurantId, // Pass the validated string ID
-                          },
-                        });
-                      }}
-                      type={'orange'}
-                      style={{ marginRight: 10 }}
-                    />
-                    <Button
-                      title="Nao"
-                      onPress={() => {
-                        setModalVisible(!modalVisible);
-                        handleCheckin();
-                      }}
-                      type={'white'}
-                    />
+              <Modal
+                animationType="fade"
+                transparent
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <TouchableWithoutFeedback
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  <View style={styles.modalOverlay}>
+                    <View style={styles.modalView}>
+                      <Text style={styles.modalText}>
+                        Deseja avaliar o restaurante?
+                      </Text>
+                      <View style={styles.modalButtons}>
+                        <Button
+                          title="Sim"
+                          onPress={() => {
+                            setModalVisible(!modalVisible);
+                            if (!currentRestaurantId) {
+                              Alert.alert("Erro", "ID do restaurante não encontrado para avaliação.");
+                              return;
+                            }
+                            router.push({
+                              pathname: '/CreateReview',
+                              params: {
+                                restaurantId: currentRestaurantId,
+                              },
+                            });
+                          }}
+                          type={'orange'}
+                          style={{ marginRight: 10 }}
+                        />
+                        <Button
+                          title="Nao"
+                          onPress={() => {
+                            setModalVisible(!modalVisible);
+                            handleCheckin();
+                          }}
+                          type={'white'}
+                        />
+                      </View>
+                    </View>
                   </View>
-                </View>
+                </TouchableWithoutFeedback>
+              </Modal>
+            </View>        
+            <View style={styles.carouselContainer}>
+              <View style={styles.menuAndAveragePriceContainer}>
+                <Text style={styles.carouselTitle}>Cardápio</Text>
+                <Text style={styles.averagePriceText}>Preço médio: {restaurant?.averagePrice ?? ' - '}</Text>
               </View>
-            </TouchableWithoutFeedback>
-          </Modal>
+                <UserCarouselRestaurant
+                  variant="menu"
+                  items={menu}
+                />
+            </View>
+            <View style={styles.carouselContainer}>
+              <Text style={styles.carouselTitle}>Influenciadores que já visitaram</Text>
+              <UserCarouselRestaurant
+                variant="restaurantPublications"
+                items={publications}
+              />
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -355,6 +382,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 15,
     textAlign: 'center',
+  },
+  carouselTitle: {
+    fontFamily: 'Poppins-Medium',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.text.black,
+    paddingHorizontal: '3%',
   },
   infoGrid: {
     marginTop: 20,
@@ -383,6 +417,22 @@ const styles = StyleSheet.create({
   modalButtons: {
     display: 'flex',
     flexDirection: 'row',
+  },
+  carouselContainer: {
+    marginLeft: '3%',
+    marginBottom: -10,
+  },
+  menuAndAveragePriceContainer: {
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'flex-start'
+  },
+  averagePriceText: {
+    fontFamily: 'Poppins-Medium',
+    fontSize: 12,
+    color: 'gray',
+    marginLeft: 120,
+    marginTop: '1%',
   },
 });
 

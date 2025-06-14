@@ -24,14 +24,14 @@ export const useRestaurantApi = () => {
     }
   };
 
-  const getRestaurantById = async (restaurantId: string): Promise<void> => {
+  const getRestaurantById = async (restaurantId: string): Promise<RestaurantDTO> => {
     const responseData = await callApi(
       restaurantApiService.get<RestaurantDTO>(`/${restaurantId}`),
     );
-
-        if (responseData) {
-            setData(responseData);
-        }
+      if (responseData) {
+          setData(responseData);
+      }
+      return responseData!;
     };
 
     const getRandomRestaurant = async (

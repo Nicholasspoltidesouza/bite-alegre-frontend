@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { PublicationDTO } from '../@types/DTO';
 import ApiService from '../services/apiService';
-// Line removed as it is unused.
 
 export const usePublicationApi = () => {
 
@@ -30,10 +29,10 @@ export const usePublicationApi = () => {
 
 
     const createPublication = async (newPublicationData: PublicationDTO): Promise<PublicationDTO | null> => {
-        const { media, description, restaurant_id } = newPublicationData;
+        const { url, description, restaurant_id } = newPublicationData;
 
         const payload = {
-            media,
+            url,
             description,
             restaurant_id
         };
@@ -48,7 +47,7 @@ export const usePublicationApi = () => {
         return responseData;
     };
 
-    const getPublicationbyUserId = async (userId: string): Promise< PublicationDTO[] | null> => {
+    const getPublicationByUserId = async (userId: string): Promise< PublicationDTO[] | null> => {
         const responseData = await callApi(
             publicationApiService.get<PublicationDTO[] | null >('/user/' + userId)
         );
@@ -56,8 +55,31 @@ export const usePublicationApi = () => {
         return responseData;
     };
 
+    
+   const getPublicationById = async (publicationId: string): Promise<PublicationDTO | null> => {
+  try {
+    const responseData = await callApi(
+      publicationApiService.get<PublicationDTO>(`/${publicationId}`)
+    );
+
+    if (responseData) {
+      setData(responseData);
+    }
+
+    return responseData;
+  } catch (error: any) {
+    if (error?.response?.status === 404) {
+      console.warn(`Publicação ${publicationId} não encontrada.`);
+    } else {
+      console.error("Erro ao buscar publicação:", error);
+    }
+    return null;
+  }
+};
+
     return {
-        getPublicationbyUserId,
+        getPublicationById,
+        getPublicationByUserId,
         createPublication,
         loading,
         error,

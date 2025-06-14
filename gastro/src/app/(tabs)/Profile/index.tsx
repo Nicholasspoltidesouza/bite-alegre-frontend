@@ -10,7 +10,6 @@ export default function Profile() {
 
   useFocusEffect(
     useCallback(() => {
-      console.log('Navigating to profile based on role:', role);
       switch (role) {
         case 'INFLUENCER':
           router.push('/InfluencerProfile');

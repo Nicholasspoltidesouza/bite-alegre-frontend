@@ -17,13 +17,11 @@ interface Props {
   images: PublicationDTO[];
 }
 
-const handlePress = (postId: string) => {
-    router.push({
-        pathname: '/PublicationInfluencer',
-        params: {
-            postId: postId,
-        },
-    });
+const handlePress = (publicationId: string) => {
+  router.push({
+    pathname: '/PublicationInfluencer',
+    params: { publicationId },
+  });
 };
 
 export const Publications: React.FC<Props> = ({ images }) => {
@@ -78,7 +76,7 @@ export const Publications: React.FC<Props> = ({ images }) => {
         {leftColumn.map((image, index) => (
           <TouchableOpacity key={`left-${image.id ?? index}`} 
             style={styles.imageContainer} 
-            onPress={() => handlePress(image.restaurant_id)}>
+            onPress={() => handlePress(image.id)}>
             <Image
               source={{ uri: image.url }}
               style={{
@@ -94,7 +92,7 @@ export const Publications: React.FC<Props> = ({ images }) => {
           <TouchableOpacity 
             key={`right-${image.id ?? index}`} 
             style={styles.imageContainer} 
-            onPress={() => handlePress(image.restaurant_id)}>
+            onPress={() => handlePress(image.id)}>
           <Image
             source={{ uri: image.url }}
             style={{

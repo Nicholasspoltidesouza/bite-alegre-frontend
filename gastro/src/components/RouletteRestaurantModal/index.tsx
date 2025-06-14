@@ -8,6 +8,7 @@ import {
     View,
 } from 'react-native';
 import Button from '../Button';
+import Colors from '@/src/constants/Colors';
 
 type RouletteRestaurantModalProps = {
     visible: boolean;
@@ -75,10 +76,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: Colors.transparent.blackOverlayDark,
     },
     modalContent: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.white,
         borderRadius: 24,
         width: 260,
         padding: 20,
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
     },
     textModal: {
         fontSize: 20,
-        color: '#FF914B',
+        color: Colors.orange.orangeStandard,
         fontFamily: 'Poppins-SemiBold',
         textAlign: 'center',
         marginBottom: 20,
