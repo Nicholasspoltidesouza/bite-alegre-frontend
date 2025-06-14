@@ -11,15 +11,14 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
+  StatusBar,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Colors from '@/src/constants/Colors';
 
 const SignupRestaurant = () => {
-  const insets = useSafeAreaInsets();
   const [name, setName] = useState<string>('');
   const [cnpj, setCnpj] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -187,17 +186,16 @@ const SignupRestaurant = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
-    >
-      <SafeAreaView
-        style={[
-          styles.safeArea,
-          { paddingTop: 0 },
-          Platform.OS === 'ios' && { marginTop: -insets.top },
-        ]}
+    <View style={styles.container}>
+      <StatusBar 
+        barStyle="dark-content" 
+        backgroundColor={Colors.white} 
+        translucent={Platform.OS === 'android'} 
+      />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <SignupHeader
           userType={userType}
@@ -205,7 +203,7 @@ const SignupRestaurant = () => {
           profileIcon={'store'}
           onBack={() => router.back()}
         />
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.inputWrapper}>
             <CustomTextInput
               value={name}
@@ -331,17 +329,18 @@ const SignupRestaurant = () => {
             />
           </View>
         </ScrollView>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
   container: {
+    flex: 1,
+    backgroundColor: Colors.white,
+    marginTop: Platform.OS === 'android' ? -(StatusBar.currentHeight || 0) : 0,
+  },
+  scrollContainer: {
     alignItems: 'center',
     padding: '4%',
     paddingBottom: '8%',
@@ -355,10 +354,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 50,
     borderRadius: 20,
-    backgroundColor: 'rgba(255, 179, 112, 0.25)',
+    backgroundColor: Colors.orange.orangeTransparent,
     paddingLeft: 24,
     paddingRight: 16,
-    color: '#000000',
+    color: Colors.black,
     fontFamily: 'Poppins-Regular',
     fontSize: 16,
   },
