@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { router } from 'expo-router';
-import { API_URL_AWS } from '../constants/apiUrl';
+import { API_URL_BACKEND } from '../constants/apiUrl';
 
 export interface ApiErrorResponse {
   error?: string;
@@ -13,9 +12,8 @@ export function redirectToHome() {
 }
 
 class ApiService {
-  private axiosInstance: AxiosInstance;
   private baseUrl: string;
-  private API_URL = API_URL_AWS;
+  private API_URL = API_URL_BACKEND;
 
   constructor(baseUrl: string) {
     if (!baseUrl) {
@@ -24,75 +22,66 @@ class ApiService {
       );
     }
     this.baseUrl = baseUrl;
-    
-    // Configurar instância do axios
-    this.axiosInstance = axios.create({
-      baseURL: `${this.API_URL}${this.baseUrl}`,
-      timeout: 10000,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+  }
 
-    // Interceptor para adicionar token automaticamente
-    this.axiosInstance.interceptors.request.use(
-      async (config) => {
-        const token = await AsyncStorage.getItem('token');
-        const method = config.method?.toUpperCase();
-        const url = config.url || '';
+  private async request<T>(
+    endpoint: string | undefined,
+    options: RequestInit
+  ): Promise<T> {
+    if (endpoint == undefined) endpoint = '';
+    const url = `${this.API_URL}${this.baseUrl}${endpoint}`;
+    const token = await AsyncStorage.getItem('token');
 
-        const noAuthEndpoints = [
-          { method: 'POST', path: '/login' },
-          { method: 'POST', path: '/users' },
-          { method: 'POST', path: '/restaurants' },
-        ];
+    const method = options.method;
 
-        const shouldSkipAuth = noAuthEndpoints.some(
-          (item) => item.method === method && url.startsWith(item.path),
-        );
+    const noAuthEndpoints = [
+      { method: 'POST', path: '/login' },
+      { method: 'POST', path: '/users' },
+      { method: 'POST', path: '/restaurants' },
+    ];
 
-        if (!shouldSkipAuth && token) {
-          config.headers['Authorization'] = `Bearer ${token}`;
-        }
-
-        return config;
-      },
-      (error) => {
-        return Promise.reject(error);
-      }
+    const shouldSkipAuth = noAuthEndpoints.some(
+      (item) => item.method === method && endpoint.startsWith(item.path)
     );
 
-    // Interceptor para tratar respostas e erros
-    this.axiosInstance.interceptors.response.use(
-      (response: AxiosResponse) => {
-        return response;
-      },
-      async (error) => {
-        if (error.response?.status === 401) {
+    const baseHeaders: HeadersInit = { 'Content-Type': 'application/json' };
+    if (!shouldSkipAuth) {
+      baseHeaders['Authorization'] = `Bearer ${token}`;
+    }
+
+    const config: RequestInit = {
+      ...options,
+      headers: baseHeaders,
+    };
+
+    try {
+      const response = await fetch(url, config);
+      const responseData = await response.json();
+
+      if (response.ok) {
+        return responseData as T;
+      } else {
+        if (response.status === 401) {
           await AsyncStorage.removeItem('token');
           await AsyncStorage.removeItem('role');
           await AsyncStorage.removeItem('user');
           redirectToHome();
           throw new Error('Sessão expirada. Faça login novamente.');
         }
-
-        const errorMessage = 
-          error.response?.data?.error ||
-          error.response?.data?.message ||
-          error.message ||
-          'Erro desconhecido na requisição';
-
-        throw new Error(errorMessage);
+        const errorPayload = responseData as ApiErrorResponse;
+        throw new Error(
+          errorPayload.error ||
+            errorPayload.message ||
+            `Falha na requisição para ${endpoint}. Status: ${response.status}`
+        );
       }
-    );
-  }
-
-  public async get<T>(endpoint?: string): Promise<T> {
-    try {
-      const response = await this.axiosInstance.get<T>(endpoint || '');
-      return response.data;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error(
+        `Erro de rede ou resposta inválida ao acessar ${endpoint}: ${error.toString()}`
+      );
     }
   }
   
@@ -124,49 +113,26 @@ class ApiService {
     return this.request<T>(fullEndpoint, optionsForRequest);
   }
 
-  public async post<RequestBody, ResponseBody>(
+  public post<RequestBody, ResponseBody>(
     data: RequestBody,
     endpoint?: string
   ): Promise<ResponseBody> {
-    try {
-      const response = await this.axiosInstance.post<ResponseBody>(endpoint || '', data);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-  
-  public async patch<RequestBody, ResponseBody>(
-    data: RequestBody,
-    endpoint?: string
-  ): Promise<ResponseBody> {
-    try {
-      const response = await this.axiosInstance.patch<ResponseBody>(endpoint || '', data);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const optionsForRequest: RequestInit = {
+      method: 'POST',
+      body: JSON.stringify(data),
+    };
+    return this.request<ResponseBody>(endpoint, optionsForRequest);
   }
 
-  public async put<RequestBody, ResponseBody>(
+  public patch<RequestBody, ResponseBody>(
     data: RequestBody,
     endpoint?: string
   ): Promise<ResponseBody> {
-    try {
-      const response = await this.axiosInstance.put<ResponseBody>(endpoint || '', data);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  public async delete<T>(endpoint?: string): Promise<T> {
-    try {
-      const response = await this.axiosInstance.delete<T>(endpoint || '');
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const optionsForRequest: RequestInit = {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    };
+    return this.request<ResponseBody>(endpoint, optionsForRequest);
   }
 }
 
