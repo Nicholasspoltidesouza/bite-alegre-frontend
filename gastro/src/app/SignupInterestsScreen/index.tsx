@@ -18,28 +18,50 @@ import { useCreateUser } from '../../hooks/useUserApi';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
 import Colors from '@/src/constants/Colors';
 import { useFetchTags } from '@/src/hooks/useFetchTags';
+import { useFeedApi } from '@/src/hooks/useFeedApi';
 
 const screenWidth = Dimensions.get('window').width;
 
 const SignupInterests: React.FC = () => {
-  const { userData, restaurantData, screenTitle } = useLocalSearchParams();
+  const { userData, restaurantData, screenTitle, restaurantId } =
+    useLocalSearchParams();
   const router = useRouter();
   const { createUser, loading } = useCreateUser();
-  const { createRestaurant } = useRestaurantApi();
+  const { createRestaurant, getRestaurantTags, patchRestaurant } =
+    useRestaurantApi();
 
-  console.log('restaurant', restaurantData);
   const parsedUserData = userData ? JSON.parse(userData as string) : null;
   const parsedRestaurantData = restaurantData
     ? JSON.parse(restaurantData as string)
     : null;
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [existingRestaurant, setExistingRestaurant] = useState<any>(null);
 
   const { getTags, tags, loading: tagsLoading, error } = useFetchTags();
 
   useEffect(() => {
     getTags();
   }, []);
+
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      if (restaurantId) {
+        try {
+          const res = await getRestaurantTags();
+          setExistingRestaurant(res);
+          if (res?.length) {
+            const existingTagIds = res.map((tag: any) => tag.id);
+            setSelectedTags(existingTagIds);
+          }
+        } catch (error) {
+          console.error('Erro ao buscar restaurante:', error);
+        }
+      }
+    };
+
+    fetchRestaurant();
+  }, [restaurantId]);
 
   const toggleTagSelection = (tagId: string) => {
     setSelectedTags((prev) =>
@@ -77,21 +99,40 @@ const SignupInterests: React.FC = () => {
         } else {
           Alert.alert('Dados inválidos para o cadastro do seu usuário.');
         }
-      } else if (parsedRestaurantData) {
-        const restaurantCreated = await createRestaurant(payload);
-        if (restaurantCreated) {
-          Alert.alert('Sucesso', 'Restaurante cadastrado com sucesso!');
-          router.push({
-            pathname: '/restaurantProfile',
-            params: {
-              restaurantId: restaurantCreated.id,
-            },
+      } else if (parsedRestaurantData || restaurantId) {
+        if (existingRestaurant && restaurantId) {
+          const updatedRestaurant = await patchRestaurant({
+            id: restaurantId as string,
+            tags: selectedTags,
           });
+
+          if (updatedRestaurant) {
+            Alert.alert('Sucesso', 'Tags atualizadas com sucesso!');
+            router.push({
+              pathname: '/RestaurantProfilePatch',
+              params: {
+                restaurantId: restaurantId.toString(),
+              },
+            });
+          } else {
+            Alert.alert('Erro', 'Falha ao atualizar tags do restaurante.');
+          }
         } else {
-          Alert.alert('Dados inválidos para o cadastro do seu restaurante.');
+          // Criação de novo restaurante
+          const restaurantCreated = await createRestaurant(payload);
+
+          if (restaurantCreated) {
+            Alert.alert('Sucesso', 'Restaurante cadastrado com sucesso!');
+            router.push({
+              pathname: '/restaurantProfile',
+              params: {
+                restaurantId: restaurantCreated.id,
+              },
+            });
+          } else {
+            Alert.alert('Dados inválidos para o cadastro do seu restaurante.');
+          }
         }
-      } else {
-        Alert.alert('Erro', 'Dados inválidos para cadastro.');
       }
     } catch {
       Alert.alert('Erro', 'Falha ao cadastrar.');
@@ -168,6 +209,13 @@ const SignupInterests: React.FC = () => {
                   pathname: '/SignupRestaurant',
                   params: {
                     restaurantData: JSON.stringify(parsedRestaurantData),
+                  },
+                });
+              } else if (existingRestaurant) {
+                router.push({
+                  pathname: '/RestaurantProfilePatch',
+                  params: {
+                    restaurantId: restaurantId,
                   },
                 });
               } else {

@@ -14,7 +14,11 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { Keyboard } from 'react-native';
-import { MenuItemsDTO, RestaurantDTO } from '@/src/@types/DTO';
+import {
+  MenuItemsDTO,
+  RestaurantDTO,
+  RestaurantPatchDTO,
+} from '@/src/@types/DTO';
 import Button from '@/src/components/Button';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -31,23 +35,25 @@ const AddMenu = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const { restaurantData: restaurantParam, restaurantId } =
-    useLocalSearchParams();
-  const { getRestaurantById, deleteDish } = useRestaurantApi();
-  const parsedRestaurant: RestaurantDTO = restaurantParam
-    ? JSON.parse(restaurantParam as string)
-    : ({} as RestaurantDTO);
+  const { restaurantId } = useLocalSearchParams();
+  const { getRestaurantById, deleteDish, patchRestaurant } = useRestaurantApi();
 
   const [menuItems, setMenuItems] = useState<MenuItemsDTO[]>([]);
   const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
 
   const [mediaUri, setMediaUri] = useState<string | null>(null);
   const [description, setDescription] = useState<string>('');
+  const [name, setName] = useState<string>('');
   const [price, setPrice] = useState<string>('');
 
   const validateDescription = (text: string): string | null => {
     if (text.length > 200)
       return 'Descrição não pode ter mais de 200 caracteres';
+    return null;
+  };
+
+  const validateName = (text: string): string | null => {
+    if (text.length > 80) return 'Nome não pode ter mais de 80 caracteres';
     return null;
   };
 
@@ -143,9 +149,10 @@ const AddMenu = () => {
     }
 
     const newItem: MenuItemsDTO = {
-      dish_photo: mediaUri,
+      name: name,
+      media: mediaUri,
       description,
-      price: parseFloat(price.replace(',', '.')),
+      dish_price: parseFloat(price.replace(',', '.')),
     };
 
     setMenuItems((old) => [...old, newItem]);
@@ -155,7 +162,7 @@ const AddMenu = () => {
     setPrice('');
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (menuItems.length === 0) {
       Alert.alert(
         'Erro',
@@ -163,25 +170,33 @@ const AddMenu = () => {
       );
       return;
     }
-    const restaurantWithMenu: RestaurantDTO = {
-      ...parsedRestaurant,
-      menuItems,
+
+    const restaurantWithMenu: RestaurantPatchDTO = {
+      id: restaurantId as string,
+      menuItems: menuItems.map((item) => ({
+        name: item.name,
+        description: item.description,
+        dish_price: item.dish_price,
+        media: item.media,
+      })),
     };
-    
+
+    const res = await patchRestaurant(restaurantWithMenu);
+
     if (restaurantId) {
       router.push({
         pathname: '/RestaurantProfilePatch',
         params: {
-          restaurantData: JSON.stringify(restaurantWithMenu),
+          restaurantId: restaurantId,
         },
       });
     } else {
       router.push({
-      pathname: '/SignupInterestsScreen',
-      params: {
-        screenTitle: 'Selecione as categorias do seu restaurante',
-        restaurantData: JSON.stringify(restaurantWithMenu),
-      },
+        pathname: '/SignupInterestsScreen',
+        params: {
+          screenTitle: 'Selecione as categorias do seu restaurante',
+          restaurantData: JSON.stringify(restaurantWithMenu),
+        },
       });
     }
   };
@@ -192,7 +207,6 @@ const AddMenu = () => {
         if (!restaurantId) return;
 
         const res = await getRestaurantById(restaurantId as string);
-
         if (res && Array.isArray(res.menuItems)) {
           setMenuItems(res.menuItems);
         }
@@ -229,7 +243,14 @@ const AddMenu = () => {
             <View style={styles.orangeHeader}>
               <TouchableOpacity
                 style={styles.backButton}
-                onPress={() => router.back()}
+                onPress={() =>
+                  router.push({
+                    pathname: '/RestaurantProfilePatch',
+                    params: {
+                      restaurantId: restaurantId,
+                    },
+                  })
+                }
               >
                 <MaterialIcons
                   name="keyboard-arrow-left"
@@ -266,6 +287,19 @@ const AddMenu = () => {
                   textStyle={styles.orangeButtonText}
                 />
               )}
+
+              <View style={styles.inputWrapper}>
+                <CustomTextInput
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="Nome"
+                  style={styles.input}
+                  validation={validateName}
+                  multiline={true}
+                  numberOfLines={4}
+                  textAlignVertical="top"
+                />
+              </View>
 
               <View style={styles.inputWrapper}>
                 <CustomTextInput
@@ -349,74 +383,46 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: '4%',
-    paddingTop: 20,
-    paddingBottom: '8%',
-    width: '100%',
   },
   inputWrapper: {
     width: '90%',
-    marginBottom: '1%',
     padding: 6,
   },
   input: {
     width: '100%',
-    height: 50,
     borderRadius: 20,
     backgroundColor: Colors.white,
-    paddingLeft: 24,
-    paddingRight: 16,
     color: Colors.orange.orangeStandard,
     fontFamily: 'Poppins-Regular',
     fontSize: 16,
     paddingVertical: 12,
     paddingHorizontal: 16,
   },
-  rowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '90%',
-    marginBottom: '5%',
-  },
-  halfInputWrapper: {
-    width: '48%',
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 12,
-    marginTop: 4,
-    marginLeft: 24,
-    fontFamily: 'Poppins-Regular',
-  },
   buttonCreate: {
-    width: '90%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
     color: Colors.orange.orangeStandard,
     backgroundColor: Colors.white,
   },
   orangeHeader: {
-    width: '100%',
-    height: 560,
+    height: 550,
     backgroundColor: '#FF914B',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 80,
+    paddingTop: 20,
   },
   backButton: {
     position: 'absolute',
-    top: 25,
-    left: 30,
+    top: 15,
+    left: 15,
     backgroundColor: 'rgba(255,255,255,0.4)',
     borderRadius: 100,
-    padding: 10,
-    marginTop: 0,
-    marginLeft: 10,
+    padding: 8,
   },
   textCreatePublication: {
-    paddingHorizontal: 40,
-    paddingVertical: 10,
+    paddingHorizontal: 45,
+    paddingBottom: 15,
     fontWeight: 'bold',
     color: '#FFFFFF',
     fontSize: 22,
@@ -444,7 +450,6 @@ const styles = StyleSheet.create({
   previewContainer: {
     alignItems: 'center',
   },
-
   removeMediaButton: {
     marginTop: 10,
     marginBottom: -45,
@@ -453,7 +458,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
   },
-
   removeMediaText: {
     color: '#FF914B',
     fontSize: 14,
@@ -470,26 +474,12 @@ const styles = StyleSheet.create({
     marginTop: 8,
     zIndex: 10,
   },
-
-  resultItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  resultText: {
-    fontSize: 16,
-    color: '#333',
-    fontFamily: 'Poppins-Regular',
-  },
   buttonAddWrapper: {
-    marginTop: '2%',
+    marginTop: '1%',
     width: '90%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingBottom: 26,
-    paddingRight: 27,
-    paddingLeft: 272,
   },
   carouselContainer: {
     marginLeft: '3%',

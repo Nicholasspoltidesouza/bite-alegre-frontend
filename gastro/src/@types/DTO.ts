@@ -1,4 +1,4 @@
-import { OperatingHoursDto } from "./OperatingHoursDto";
+import { OpeningPeriodDto, OperatingHoursDto } from "./OperatingHoursDto";
 
 interface UserDTO {
     profilePhoto?: string;
@@ -37,6 +37,12 @@ interface RestaurantDTO {
     menuItems?: MenuItemsDTO[];
 }
 
+export type OpeningPeriodPatch = {
+    add?: OpeningPeriodDto[];
+    update?: (OpeningPeriodDto & { periodId: string })[];
+    delete?: string[];
+};
+
 interface RestaurantPatchDTO {
     id: string;
     profilePhoto?: string;
@@ -46,12 +52,9 @@ interface RestaurantPatchDTO {
     description?: string;
     averagePrice?: number;
     phone?: string;
-    openingPeriods?: {
-        weekday: string;
-        opensAt: string;
-        closesAt: string;
-    }[];
-    tagIds?: string[];
+    openingPeriods?: OpeningPeriodPatch;
+    tags?: string[];
+    menuItems?: MenuItemsDTO[];
 }
 
 interface CheckinDTO {
@@ -104,9 +107,10 @@ interface PublicationDTO {
 
 interface MenuItemsDTO {
     id?: string;
-    dish_photo: string;
+    name: string;
+    media: string;
     description: string;
-    price: number;
+    dish_price: number;
 }
 
 interface FeedDTO {

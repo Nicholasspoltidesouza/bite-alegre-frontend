@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { CheckinDTO, RestaurantDTO, RestaurantPatchDTO, ReviewDTO, MenuItemsDTO } from '../@types/DTO';
 import ApiService from '../services/apiService';
+import { OpeningPeriodDto } from '../@types/OperatingHoursDto';
+import { TagItem } from './useFetchTags';
 
 export const useRestaurantApi = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [data, setData] = useState<
-        RestaurantDTO | CheckinDTO | ReviewDTO | null
+        RestaurantDTO | CheckinDTO | ReviewDTO | OpeningPeriodDto[] | TagItem[] | null
     >(null);
     const restaurantApiService = new ApiService('/restaurants');
 
@@ -98,9 +100,9 @@ export const useRestaurantApi = () => {
         const responseData = await callApi(
             restaurantApiService.patch<RestaurantPatchDTO, RestaurantDTO>(
                 patchData,
-                `/${patchData.id}`
             )
         );
+
 
         if (responseData) {
             setData(responseData);
@@ -114,6 +116,30 @@ export const useRestaurantApi = () => {
         );
     };
 
+    const getRestaurantWorkingHours = async (restaurantId: string): Promise<OpeningPeriodDto[] | null> => {
+        const responseData = await callApi(
+            restaurantApiService.get<OpeningPeriodDto[]>(`/${restaurantId}/opening-hours`)
+        )
+
+        if (responseData) {
+            setData(responseData);
+        }
+
+        return responseData;
+    }
+
+    const getRestaurantTags = async (): Promise<TagItem[] | null> => {
+        const responseData = await callApi(
+            restaurantApiService.get<TagItem[]>(`-tags`)
+        )
+
+        if (responseData) {
+            setData(responseData);
+        }
+
+        return responseData;
+    }
+
 
     return {
         patchRestaurant,
@@ -123,6 +149,8 @@ export const useRestaurantApi = () => {
         createCheckin,
         createReview,
         deleteDish,
+        getRestaurantWorkingHours,
+        getRestaurantTags,
         loading,
         error,
         data,

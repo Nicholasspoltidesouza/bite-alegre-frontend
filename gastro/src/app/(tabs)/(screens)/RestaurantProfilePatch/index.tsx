@@ -33,7 +33,8 @@ const RestaurantProfilePatch = () => {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { restaurantId } = useLocalSearchParams();
-  const { patchRestaurant, getRestaurantById } = useRestaurantApi();
+  const { patchRestaurant, getRestaurantById, getRestaurantWorkingHours } =
+    useRestaurantApi();
 
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -143,6 +144,17 @@ const RestaurantProfilePatch = () => {
     }
   };
 
+  type OpeningPeriodPatch = {
+    add: OpeningPeriodDto[];
+    update: {
+      periodId: string;
+      weekday: string;
+      opensAt: string;
+      closesAt: string;
+    }[];
+    delete: string[];
+  };
+
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
@@ -157,16 +169,45 @@ const RestaurantProfilePatch = () => {
       if (averagePrice)
         patchData.averagePrice = parseFloat(averagePrice.replace(',', '.'));
       if (phone) patchData.phone = phone;
-      const openingPeriods: OpeningPeriodDto[] = operatingHours
-        .filter((hour) => hour.openTime !== '-' && hour.closeTime !== '-')
-        .map((hour) => ({
-          weekday: hour.weekday,
-          opensAt: hour.openTime,
-          closesAt: hour.closeTime,
-        }));
+      const openingPeriodsPatch: OpeningPeriodPatch = {
+        add: [],
+        update: [],
+        delete: [],
+      };
 
-      if (openingPeriods.length > 0) {
-        patchData.openingPeriods = openingPeriods;
+      for (const hour of operatingHours) {
+        const { openTime, closeTime, weekday, periodId } = hour;
+
+        const hasValidTime = openTime !== '-' && closeTime !== '-';
+
+        if (periodId) {
+          if (hasValidTime) {
+            openingPeriodsPatch.update.push({
+              periodId,
+              weekday,
+              opensAt: openTime,
+              closesAt: closeTime,
+            });
+          } else {
+            openingPeriodsPatch.delete.push(periodId);
+          }
+        } else {
+          if (hasValidTime) {
+            openingPeriodsPatch.add.push({
+              weekday,
+              opensAt: openTime,
+              closesAt: closeTime,
+            });
+          }
+        }
+      }
+
+      if (
+        openingPeriodsPatch.add.length ||
+        openingPeriodsPatch.update.length ||
+        openingPeriodsPatch.delete.length
+      ) {
+        patchData.openingPeriods = openingPeriodsPatch;
       }
 
       const result = await patchRestaurant(patchData);
@@ -197,7 +238,6 @@ const RestaurantProfilePatch = () => {
         if (!restaurantId) return;
 
         const res = await getRestaurantById(restaurantId as string);
-
         if (res) {
           setProfilePhoto(res.profilePhoto ?? '');
           setName(res.name?.replace(/(^"|"$)/g, '') ?? '');
@@ -206,31 +246,32 @@ const RestaurantProfilePatch = () => {
           setPhone(res.phone ?? '');
           setAveragePrice(res.averagePrice?.toString() ?? '');
 
-          if (Array.isArray(res.openingPeriods)) {
-            const defaultDays = [
-              { day: 'Segunda-feira', weekday: 'MON' },
-              { day: 'Terça-feira', weekday: 'TUE' },
-              { day: 'Quarta-feira', weekday: 'WED' },
-              { day: 'Quinta-feira', weekday: 'THU' },
-              { day: 'Sexta-feira', weekday: 'FRI' },
-              { day: 'Sábado', weekday: 'SAT' },
-              { day: 'Domingo', weekday: 'SUN' },
-              { day: 'Feriados', weekday: 'HOL' },
-            ];
+          const resOpenHours = await getRestaurantWorkingHours(res.id ?? '');
 
-            const updatedHours = defaultDays.map((dayItem) => {
-              const period = res.openingPeriods?.find(
-                (p: any) => p.weekday === dayItem.weekday,
-              );
-              return {
-                ...dayItem,
-                openTime: period?.opensAt ?? '-',
-                closeTime: period?.closesAt ?? '-',
-              };
-            });
+          const defaultDays = [
+            { day: 'Segunda-feira', weekday: 'MON' },
+            { day: 'Terça-feira', weekday: 'TUE' },
+            { day: 'Quarta-feira', weekday: 'WED' },
+            { day: 'Quinta-feira', weekday: 'THU' },
+            { day: 'Sexta-feira', weekday: 'FRI' },
+            { day: 'Sábado', weekday: 'SAT' },
+            { day: 'Domingo', weekday: 'SUN' },
+            { day: 'Feriados', weekday: 'HOL' },
+          ];
 
-            setOperatingHours(updatedHours);
-          }
+          const updatedHours = defaultDays.map((dayItem) => {
+            const period = resOpenHours?.find(
+              (p: any) => p.weekday === dayItem.weekday,
+            );
+            return {
+              ...dayItem,
+              openTime: period?.opensAt ?? '-',
+              closeTime: period?.closesAt ?? '-',
+              periodId: period?.id ?? '',
+            };
+          });
+
+          setOperatingHours(updatedHours);
         }
       } catch (error) {
         console.error('Erro ao buscar restaurante:', error);
@@ -261,6 +302,7 @@ const RestaurantProfilePatch = () => {
           userType={userType}
           setUserType={setUserType}
           profileIcon={'store'}
+          urlProfilePhoto={profilePhoto}
           onBack={() => router.back()}
         />
 
@@ -508,41 +550,40 @@ const RestaurantProfilePatch = () => {
             <TouchableOpacity
               style={styles.categoriesLink}
               onPress={() => {
-              const restaurantData = {
-                id: restaurantId as string,
-                name,
-                description,
-                address,
-                phone,
-                averagePrice: averagePrice
-                ? parseFloat(averagePrice.replace(',', '.'))
-                : undefined,
-                profilePhoto,
-                openingPeriods: operatingHours
-                .filter(
-                  (hour) => hour.openTime !== '-' && hour.closeTime !== '-'
-                )
-                .map((hour) => ({
-                  weekday: hour.weekday,
-                  opensAt: hour.openTime,
-                  closesAt: hour.closeTime,
-                })),
-              };
-              console.log(restaurantData);
-              router.push({
-                pathname: '/SignupInterestsScreen',
-                params: {
-                screenTitle: 'Selecione as categorias do seu restaurante',
-                restaurantData: JSON.stringify(restaurantData),
-                },
-              });
+                const restaurantData = {
+                  id: restaurantId as string,
+                  name,
+                  description,
+                  address,
+                  phone,
+                  averagePrice: averagePrice
+                    ? parseFloat(averagePrice.replace(',', '.'))
+                    : undefined,
+                  profilePhoto,
+                  openingPeriods: operatingHours
+                    .filter(
+                      (hour) => hour.openTime !== '-' && hour.closeTime !== '-',
+                    )
+                    .map((hour) => ({
+                      weekday: hour.weekday,
+                      opensAt: hour.openTime,
+                      closesAt: hour.closeTime,
+                    })),
+                };
+                router.push({
+                  pathname: '/SignupInterestsScreen',
+                  params: {
+                    screenTitle: 'Selecione as categorias do seu restaurante',
+                    restaurantId: restaurantId,
+                  },
+                });
               }}
             >
               <Text style={styles.categoriesLinkText}>Categorias</Text>
               <MaterialIcons
-              name="keyboard-arrow-right"
-              size={24}
-              color={Colors.orange.orangeStandard}
+                name="keyboard-arrow-right"
+                size={24}
+                color={Colors.orange.orangeStandard}
               />
             </TouchableOpacity>
           </View>
