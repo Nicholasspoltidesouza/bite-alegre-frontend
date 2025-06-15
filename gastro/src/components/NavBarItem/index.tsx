@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import React from 'react';
+import Colors from '@/src/constants/Colors';
 
 interface NavBarIconProps {
   children?: React.ReactNode;
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     height: 60,
     width: 60,
-    backgroundColor: 'rgba(255, 179, 112, 0.25)',
+    backgroundColor: Colors.orange.orangeTransparent,
     justifyContent: 'center',
     alignItems: 'center',
   },
