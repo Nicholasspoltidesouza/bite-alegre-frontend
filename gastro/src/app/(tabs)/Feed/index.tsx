@@ -34,12 +34,15 @@ export default function Feed() {
   const [restaurants, setRestaurants] = useState<CarouselItem[]>([]);
 
   useEffect(() => {
-    getUserById(user!.id);
+    if (user) {
+      getUserById(user!.id);
+    }    
   }, [user]);
 
   useEffect(() => {
     if (latitude && longitude) {
       getFeed(latitude, longitude).then((data) => {
+        console.log('Feed data:', data);
         if (data) {
           setRestaurants(data.restaurants.map(mapRestaurantToCarouselItem));
         }

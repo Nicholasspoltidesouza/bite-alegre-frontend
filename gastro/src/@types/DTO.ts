@@ -15,6 +15,7 @@ interface UserDTO {
   reviews?: ReviewDTO[];
   checkinsWithoutReview?: CheckinDTO[];
   influencer?: boolean;
+  savedRestaurants?: SavedRestaurantDTO[];
 }
 interface RestaurantDTO {
   id?: string;
@@ -35,6 +36,7 @@ interface RestaurantDTO {
   openingPeriods?: OperatingHoursDto[];
   publications?: PublicationDTO[];
   menuItems?: MenuItemsDTO[];
+  isFavorite?: boolean;
 }
 
 interface RestaurantPatchDTO {
@@ -70,6 +72,11 @@ interface ReviewDTO {
   feedback?: string;
   restaurantProfilePhoto?: string;
   restaurantName?: string;
+  name?: string;
+  date?: string;
+  userName?: string;
+  createdAt?: string;
+  userProfilePhoto?: string;
 }
 
 interface RestaurantFilterDTO {
@@ -93,13 +100,14 @@ interface AuthDTO {
 }
 
  interface PublicationDTO {
-  id: string;
-  url: string;
-  description: string;
-  restaurant_id: string;
-  restaurant_name: string;
-  restaurant_photo: string;
-  restaurant_tags: { id: string; name: string; type: string }[];
+  id?: string;
+  url?: string;
+  file?: string;
+  description?: string;
+  restaurant_id?: string;
+  restaurant_name?: string;
+  restaurant_photo?: string;
+  restaurant_tags?: { id: string; name: string; type: string }[];
 }
 
 interface MenuItemsDTO {
@@ -110,6 +118,14 @@ interface MenuItemsDTO {
 interface FeedDTO {
   publications: PublicationDTO[];
   restaurants: RestaurantDTO[];
+}
+
+interface  SavedRestaurantDTO { 
+  user_id?: string;
+  restaurant_id?: string;
+  restaurantId?: string;
+  averageScore?: number;
+  profilePhoto?: string;
 }
 
 export type {
@@ -123,5 +139,6 @@ export type {
   PublicationDTO,
   OperatingHoursDto,
   MenuItemsDTO,
-  FeedDTO
+  FeedDTO,
+  SavedRestaurantDTO
 };
