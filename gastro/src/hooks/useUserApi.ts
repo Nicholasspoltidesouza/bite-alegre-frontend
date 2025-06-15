@@ -37,7 +37,7 @@ export const useCreateUser = () => {
     return responseData;
   };
 
-  const getUserById = async (userId: string): Promise<void> => {
+  const getUserById = async (userId: string): Promise<UserDTO | null> => {
     const responseData = await callApi(
       userApiService.get<UserDTO>(`/${userId}`),
     );
@@ -45,6 +45,7 @@ export const useCreateUser = () => {
     if (responseData) {
       setData(responseData);
     }
+    return responseData;
   };
 
   const saveRestaurant = async (restauratId: string): Promise<SavedRestaurantDTO | null> => {

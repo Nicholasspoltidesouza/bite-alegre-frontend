@@ -1,60 +1,80 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-  ActivityIndicator,
-} from 'react-native';
-import Header from '@/src/components/Header';
-import Colors from '@/src/constants/Colors';
-import InfluencerPageSession from '@/src/components/InfluencerPageSession';
-import { AntDesign } from '@expo/vector-icons';
-import { router, useLocalSearchParams } from 'expo-router';
-import { useAuthContext } from '@/src/contexts/authContext';
-import { Publications } from '@/src/components/Publications';
-import {CheckinDTO, PublicationDTO, RestaurantDTO, ReviewDTO } from '@/src/@types/DTO';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { CheckinDTO, PublicationDTO, RestaurantDTO, ReviewDTO, UserDTO } from '@/src/@types/DTO';
 import CheckinSection from '@/src/components/CheckinSection';
+import Header from '@/src/components/Header';
+import InfluencerPageSession from '@/src/components/InfluencerPageSession';
+import { Publications } from '@/src/components/Publications';
 import { CardReview } from '@/src/components/ReviewCard';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
-import { useCreateUser } from '@/src/hooks/useUserApi';
+import Colors from '@/src/constants/Colors';
+import { useAuthContext } from '@/src/contexts/authContext';
 import { usePublicationApi } from '@/src/hooks/usePublicationApi';
+import { useCreateUser } from '@/src/hooks/useUserApi';
 import { CarouselItem, mapCheckinToCarouselItem, mapReviewToCarouselItem } from '@/src/utils/carouselMappers';
+import { AntDesign } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { router, useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 
 
 export default function InfluencerProfile() {
-  const { getUserById, loading, error, data: userData } = useCreateUser();
-  const { getPublicationByUserId, loading : loadingPublication, error : errorPublication} = usePublicationApi();
+  const { getUserById, loading, error } = useCreateUser();
+  const { getPublicationByUserId, loading: loadingPublication, error: errorPublication } = usePublicationApi();
   const { user } = useAuthContext();
   const [sameUser, setSameUser] = useState(false);
+  const [userData, setUserData] = useState<UserDTO>();
   const [userDataPublication, setUserDataPublication] = useState<PublicationDTO[] | null>([]);
-  const { userId } = useLocalSearchParams();
+  const { userId, filteredUserData} = useLocalSearchParams();
   const [selectedTab, setSelectedTab] = useState<
     'grid' | 'reviews' | 'checkins' | 'user'
   >('grid');
   const [visitedRestaurants, setVisitedRestaurants] = useState<CarouselItem[]>([],);
+  const parsedfilteredUserData = filteredUserData as string ? JSON.parse(filteredUserData as string) : null;
 
   const handleAddPress = () => router.push({ pathname: '/AddMedia' });
-  const filterAddPress = () => router.push({ pathname: '/AddMedia' });
+
+  const filterAddPress = () => {
+    const id = typeof userId as string ? userId : user?.id;
+    
+    router.push({
+      pathname: '/FilterPostScreen',
+      params: { userId: id },
+    });
+
+  };
 
   useEffect(() => {
     const id = typeof userId === 'string' ? userId : user!.id;
     setSameUser(id === user!.id);
     getUserById(id.toString()).then((data) => {
-       setVisited();
+      if (data) {
+        setUserData(data);
+      }
     });
+    if (parsedfilteredUserData != null) return setUserDataPublication(parsedfilteredUserData);
     getPublicationByUserId(id.toString()).then((data) => {
       if (data) {
-        console.log('Publicações do usuário:', data);
         setUserDataPublication(data);
       }
     });
+    
   }, [userId]);
 
+  useEffect(() => {
+    if (userData) {
+      setVisited();
+    }
+  }, [userData]);
+
   function setVisited() {
+    console.log('userData', userData);
     const visitedFromReviews: CarouselItem[] =
       userData!.reviews?.map(mapReviewToCarouselItem) ?? [];
     const visitedFromCheckins: CarouselItem[] =
@@ -68,7 +88,7 @@ export default function InfluencerProfile() {
     setVisitedRestaurants([]);
   }
 
-  if (loading || loadingPublication ) {
+  if (loading || loadingPublication) {
     return (
       <SafeAreaView style={styles.container}>
         <ActivityIndicator
@@ -89,7 +109,7 @@ export default function InfluencerProfile() {
   }
 
   function renderComponent() {
-  if (!userData) return null;
+    if (!userData) return null;
     switch (selectedTab) {
       case 'grid':
         if (!userDataPublication) {
@@ -104,11 +124,11 @@ export default function InfluencerProfile() {
         return (
           <Publications images={userDataPublication!} />
         );
-      case 'reviews':
+      case 'reviews':        
         return <CardReview reviews={userData!.reviews!} />;
       case 'checkins':
         return (
-            <CheckinSection checkins={userData!.checkinsWithoutReview!} />
+          <CheckinSection checkins={userData!.checkinsWithoutReview!} />
         );
       case 'user':
         return (
@@ -145,19 +165,19 @@ export default function InfluencerProfile() {
 
   return (
     <View style={styles.container}>
-        <Header
-          isProfile={true}
-          name={userData?.name!}
-          nickName={userData?.nickname!}
-          userView={!sameUser}
-        />
+      <Header
+        isProfile={true}
+        name={userData?.name!}
+        nickName={userData?.nickname!}
+        userView={!sameUser}
+      />
 
-        <InfluencerPageSession
-          userView={!sameUser}
-          onTabSelect={setSelectedTab}
-          selectedTab={selectedTab}
-        />
-        {renderComponent()}
+      <InfluencerPageSession
+        userView={!sameUser}
+        onTabSelect={setSelectedTab}
+        selectedTab={selectedTab}
+      />
+      {renderComponent()}
       {selectedTab === 'grid' && sameUser && (
         <TouchableOpacity style={styles.fab} onPress={handleAddPress}>
           <AntDesign name="plus" size={28} color="white" />
@@ -175,7 +195,7 @@ export default function InfluencerProfile() {
 
 const styles = StyleSheet.create({
   container: {
-    
+
     flex: 1,
     backgroundColor: Colors.background,
   },
@@ -195,7 +215,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
-   titleRow: {
+  titleRow: {
     marginTop: 24,
     marginHorizontal: '3%',
     flexDirection: 'row',
