@@ -507,15 +507,42 @@ const RestaurantProfilePatch = () => {
 
             <TouchableOpacity
               style={styles.categoriesLink}
-              onPress={() =>
-                Alert.alert('Categorias', 'Navegar para tela de categorias')
-              }
+              onPress={() => {
+              const restaurantData = {
+                id: restaurantId as string,
+                name,
+                description,
+                address,
+                phone,
+                averagePrice: averagePrice
+                ? parseFloat(averagePrice.replace(',', '.'))
+                : undefined,
+                profilePhoto,
+                openingPeriods: operatingHours
+                .filter(
+                  (hour) => hour.openTime !== '-' && hour.closeTime !== '-'
+                )
+                .map((hour) => ({
+                  weekday: hour.weekday,
+                  opensAt: hour.openTime,
+                  closesAt: hour.closeTime,
+                })),
+              };
+              console.log(restaurantData);
+              router.push({
+                pathname: '/SignupInterestsScreen',
+                params: {
+                screenTitle: 'Selecione as categorias do seu restaurante',
+                restaurantData: JSON.stringify(restaurantData),
+                },
+              });
+              }}
             >
               <Text style={styles.categoriesLinkText}>Categorias</Text>
               <MaterialIcons
-                name="keyboard-arrow-right"
-                size={24}
-                color={Colors.orange.orangeStandard}
+              name="keyboard-arrow-right"
+              size={24}
+              color={Colors.orange.orangeStandard}
               />
             </TouchableOpacity>
           </View>

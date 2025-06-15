@@ -167,14 +167,23 @@ const AddMenu = () => {
       ...parsedRestaurant,
       menuItems,
     };
-
-    router.push({
+    
+    if (restaurantId) {
+      router.push({
+        pathname: '/RestaurantProfilePatch',
+        params: {
+          restaurantData: JSON.stringify(restaurantWithMenu),
+        },
+      });
+    } else {
+      router.push({
       pathname: '/SignupInterestsScreen',
       params: {
         screenTitle: 'Selecione as categorias do seu restaurante',
         restaurantData: JSON.stringify(restaurantWithMenu),
       },
-    });
+      });
+    }
   };
 
   useEffect(() => {
