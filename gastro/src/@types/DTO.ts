@@ -1,6 +1,7 @@
 import { OperatingHoursDto } from "./OperatingHoursDto";
 
 interface UserDTO {
+  tagIds: any;
   profilePhoto?: string;
   name: string;
   nickname: string;

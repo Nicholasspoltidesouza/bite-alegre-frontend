@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SavedRestaurantDTO, UserDTO } from '../@types/DTO';
+import { UserDTO } from '../@types/DTO';
 import ApiService from '../services/apiService';
 
 const userApiService = new ApiService('/users');
@@ -48,18 +48,26 @@ export const useCreateUser = () => {
     return responseData;
   };
 
-  const saveRestaurant = async (restauratId: string): Promise<SavedRestaurantDTO | null> => {
+  const getUserPreferences = async (userId: string): Promise<string[] | null> => {
     const responseData = await callApi(
-      userApiService.post<any, SavedRestaurantDTO>({},`/save-restaurant/${restauratId}`),
+      userApiService.get<any[]>(`/../user_preferences/${userId}`)
     );
-    return responseData;
+    if (responseData && Array.isArray(responseData)) {
+      return responseData.map(pref => pref.tag_id);
+    }
+    return null;
   };
 
-  const deleteSavedRestaurant = async (restauratId: string): Promise<void> => {
-    await callApi(
-      userApiService.delete<any>(`/save-restaurant/${restauratId}`),
+  const updateUser = async (userData: Partial<UserDTO>): Promise<UserDTO | null> => {
+    const responseData = await callApi(
+      userApiService.patch<Partial<UserDTO>, UserDTO>(userData)
     );
+    if (responseData && (responseData as any).data) {
+      setData((responseData as any).data);
+      return (responseData as any).data;
+    }
+    return null;
   };
 
-  return { createUser, getUserById, saveRestaurant, deleteSavedRestaurant, loading, error, data };
+  return { createUser, getUserById, getUserPreferences, updateUser, loading, error, data };
 };
