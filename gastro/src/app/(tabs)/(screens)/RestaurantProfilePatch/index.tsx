@@ -216,7 +216,13 @@ const RestaurantProfilePatch = () => {
         Alert.alert(
           'Sucesso',
           'Dados do restaurante atualizados com sucesso!',
-          [{ text: 'OK', onPress: () => router.back() }],
+          [{ text: 'OK', onPress: () => router.push({
+                  pathname: '/restaurantProfile',
+                  params: {
+                    restaurantId: restaurantId,
+                  },
+                }) 
+              }],
         );
       }
     } catch (err) {
