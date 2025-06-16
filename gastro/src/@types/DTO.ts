@@ -1,4 +1,4 @@
-import { OperatingHoursDto } from "./OperatingHoursDto";
+import { OperatingHoursDto } from './OperatingHoursDto';
 
 interface UserDTO {
   tagIds: any;
@@ -99,10 +99,11 @@ interface AuthDTO {
   };
 }
 
- interface PublicationDTO {
+interface PublicationDTO {
   id?: string;
   url?: string;
   file?: string;
+  media?: string;
   description?: string;
   restaurant_id?: string;
   restaurant_name?: string;
@@ -120,7 +121,7 @@ interface FeedDTO {
   restaurants: RestaurantDTO[];
 }
 
-interface  SavedRestaurantDTO { 
+interface SavedRestaurantDTO {
   user_id?: string;
   restaurant_id?: string;
   restaurantId?: string;
@@ -140,5 +141,5 @@ export type {
   OperatingHoursDto,
   MenuItemsDTO,
   FeedDTO,
-  SavedRestaurantDTO
+  SavedRestaurantDTO,
 };
