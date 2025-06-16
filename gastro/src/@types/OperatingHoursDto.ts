@@ -15,8 +15,9 @@ export interface OpeningPeriodDto {
 }
 
 export interface LocalOperatingHour {
-  day: string;
-  openTime: string;
-  closeTime: string;
-  weekday: string;
+    day: string;
+    openTime: string;
+    closeTime: string;
+    weekday: string;
+    periodId: string;
 }

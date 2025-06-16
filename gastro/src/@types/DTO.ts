@@ -1,4 +1,4 @@
-import { OperatingHoursDto } from './OperatingHoursDto';
+import { OpeningPeriodDto, OperatingHoursDto } from "./OperatingHoursDto";
 
 interface UserDTO {
   tagIds: any;
@@ -39,28 +39,31 @@ interface RestaurantDTO {
   isFavorite?: boolean;
 }
 
+export type OpeningPeriodPatch = {
+    add?: OpeningPeriodDto[];
+    update?: (OpeningPeriodDto & { periodId: string })[];
+    delete?: string[];
+};
+
 interface RestaurantPatchDTO {
-  id: string;
-  profilePhoto?: string;
-  bannerPhoto?: string;
-  address?: string;
-  name?: string;
-  description?: string;
-  averagePrice?: number;
-  phone?: string;
-  openingPeriods?: {
-    weekday: string;
-    opensAt: string;
-    closesAt: string;
-  }[];
-  tagIds?: string[];
+    id: string;
+    profilePhoto?: string;
+    bannerPhoto?: string;
+    address?: string;
+    name?: string;
+    description?: string;
+    averagePrice?: number;
+    phone?: string;
+    openingPeriods?: OpeningPeriodPatch;
+    tags?: string[];
+    menuItems?: MenuItemsDTO[];
 }
 
 interface CheckinDTO {
-  user_id?: string;
-  restaurant_id: string;
-  restaurantProfilePhoto?: string;
-  restaurantName?: string;
+    user_id?: string;
+    restaurant_id: string;
+    restaurantProfilePhoto?: string;
+    restaurantName?: string;
 }
 
 interface ReviewDTO {
@@ -80,23 +83,23 @@ interface ReviewDTO {
 }
 
 interface RestaurantFilterDTO {
-  name?: string;
-  geolocation?: [number, number];
-  address?: string;
-  proximity?: number;
-  price_range?: number;
-  tags?: string[];
-  open_now?: boolean;
+    name?: string;
+    geolocation?: [number, number];
+    address?: string;
+    proximity?: number;
+    price_range?: number;
+    tags?: string[];
+    open_now?: boolean;
 }
 
 interface AuthDTO {
-  token: string;
-  role: string;
-  user: {
-    id: string;
-    email: string;
-    name?: string;
-  };
+    token: string;
+    role: string;
+    user: {
+        id: string;
+        email: string;
+        name?: string;
+    };
 }
 
 interface PublicationDTO {
@@ -112,13 +115,16 @@ interface PublicationDTO {
 }
 
 interface MenuItemsDTO {
-  id: string;
-  dish_photo: string;
+    id?: string;
+    name: string;
+    media: string;
+    description: string;
+    dish_price: number;
 }
 
 interface FeedDTO {
-  publications: PublicationDTO[];
-  restaurants: RestaurantDTO[];
+    publications: PublicationDTO[];
+    restaurants: RestaurantDTO[];
 }
 
 interface SavedRestaurantDTO {

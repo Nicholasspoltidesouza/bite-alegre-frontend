@@ -120,70 +120,70 @@ const SignupRestaurant = () => {
     !validateDescription(description) &&
     !validateCnpj(cnpj);
 
-  const handleSubmit = async () => {
-    if (
-      !name ||
-      !email ||
-      !password ||
-      !phone ||
-      !address ||
-      !averagePrice ||
-      !userType ||
-      !description || 
-      !openingPeriods
-    ) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
-      return;
-    }
+const handleSubmit = async () => {
+  if (
+    !name ||
+    !email ||
+    !password ||
+    !phone ||
+    !address ||
+    !averagePrice ||
+    !userType ||
+    !description || 
+    !openingPeriods
+  ) {
+    Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
+    return;
+  }
 
-    const errors = [
-      validateNameRestaurant(name),
-      validateAddress(address),
-      validateEmail(email),
-      validatePassword(password),
-      validatePhone(phone),
-      validateAveregePrice(averagePrice.toString()),
-      validateDescription(description),
-      validateCnpj(cnpj),
-    ].filter((error) => error != null);
+  const errors = [
+    validateNameRestaurant(name),
+    validateAddress(address),
+    validateEmail(email),
+    validatePassword(password),
+    validatePhone(phone),
+    validateAveregePrice(averagePrice.toString()),
+    validateDescription(description),
+    validateCnpj(cnpj),
+  ].filter((error) => error != null);
 
-    if (errors.length > 0) {
-      Alert.alert('Erro de Validação', errors.join('\n'));
-      return;
-    }
+  if (errors.length > 0) {
+    Alert.alert('Erro de Validação', errors.join('\n'));
+    return;
+  }
 
-    try {
-      const formatedUserType =
-        userType === 'Cadastro de Restaurante' ? 'RESTAURANTE' : 'USUARIO';
+  try {
+    const formatedUserType =
+      userType === 'Cadastro de Restaurante' ? 'RESTAURANTE' : 'USUARIO';
 
-      const restaurantData: RestaurantDTO = {
-        name,
-        cnpj,
-        description,
-        address,
-        email,
-        password,
-        averagePrice: parseFloat(averagePrice.replace(',', '.')),
-        phone,
-        userType: formatedUserType,
-        openingPeriods, 
-      };
+    const restaurantData: RestaurantDTO = {
+      name,
+      cnpj,
+      description,
+      address,
+      email,
+      password,
+      averagePrice: parseFloat(averagePrice.replace(',', '.')),
+      phone,
+      userType: formatedUserType,
+      openingPeriods,
+    };
 
-      router.push({
-        pathname: '/SignupInterestsScreen',
-        params: {
-          screenTitle: 'Selecione as categorias do seu restaurante',
-          restaurantData: JSON.stringify(restaurantData),
-        },
-      });
-    } catch (err) {
-      console.error('Submit Error:', err);
-      Alert.alert(
-        'Erro',
-        err instanceof Error ? err.message : 'Ocorreu um erro inesperado',
-      );
-    }
-  };
+    router.push({
+      pathname: '/AddMenu',
+      params: {
+        screenTitle: 'Monte seu cardápio',
+        restaurantData: JSON.stringify(restaurantData),
+      },
+    });
+  } catch (err) {
+    console.error('Submit Error:', err);
+    Alert.alert(
+      'Erro',
+      err instanceof Error ? err.message : 'Ocorreu um erro inesperado',
+    );
+  }
+};
 
   return (
     <View style={styles.container}>

@@ -9,9 +9,13 @@ import { useAuthContext } from '@/src/contexts/authContext';
 type BaseModalProps = {
   visible: boolean;
   onClose: () => void;
+  restaurantId?: string;
 };
-
-const BaseModal: React.FC<BaseModalProps> = ({ visible, onClose }) => {
+const BaseModal: React.FC<BaseModalProps> = ({
+  visible,
+  onClose,
+  restaurantId,
+}) => {
   const { logout } = useAuthApi();
   const { role } = useAuthContext(); 
 
@@ -71,7 +75,15 @@ const BaseModal: React.FC<BaseModalProps> = ({ visible, onClose }) => {
 
             <TouchableOpacity
               style={styles.filledButton}
-              onPress={handleProfileEdit}
+              onPress={() => {
+                onClose();
+                router.push({
+                  pathname: '/RestaurantProfilePatch',
+                  params: {
+                    restaurantId: restaurantId,
+                  },
+                });
+              }}
             >
                <Text style={styles.filledText}>
                Editar perfil 

@@ -1,19 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import { API_URL_AWS, API_URL_BACKEND } from '../constants/apiUrl';
+import { API_URL_AWS, API_URL_BACKEND, API_URL_ANDROID } from '../constants/apiUrl';
 
 export interface ApiErrorResponse {
-  error?: string;
-  message?: string;
+    error?: string;
+    message?: string;
 }
 
 export function redirectToHome() {
-  router.replace('/Home');
+    router.replace('/Home');
 }
 
 class ApiService {
   private baseUrl: string;
-  private API_URL = API_URL_AWS;
+  private API_URL = API_URL_ANDROID;
 
   constructor(baseUrl: string) {
     if (!baseUrl) {
@@ -134,6 +134,16 @@ class ApiService {
     };
     return this.request<ResponseBody>(endpoint, optionsForRequest);
   }
+  public delete<RequestBody, ResponseBody>(
+    data: RequestBody,
+    endpoint?: string
+    ): Promise<ResponseBody> {
+        const optionsForRequest: RequestInit = {
+            method: 'DELETE',
+            body: JSON.stringify(data),
+        };
+        return this.request<ResponseBody>(endpoint, optionsForRequest);
+    }
 }
 
 export default ApiService;

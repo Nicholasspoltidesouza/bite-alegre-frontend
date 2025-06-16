@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -18,9 +18,17 @@ const CARD_HEIGHT = 156;
 const CARD_MARGIN = 10;
 
 interface Props {
-  variant: 'visited' | 'saved' | 'menu' | 'influencers' | 'closeToYou' | 'restaurantPublications';
+  variant:
+    | 'visited'
+    | 'saved'
+    | 'menu'
+    | 'influencers'
+    | 'closeToYou'
+    | 'restaurantPublications'
+    | 'menuAdd';
   carouselProfileRestaurant?: boolean;
   items: CarouselItem[];
+  onDeleteItem?: (id: string) => void;
   onError?: (message: string) => void; 
 }
 
@@ -31,12 +39,14 @@ const variantMessages: Record<string, string> = {
   influencers: 'Nenhuma recomendação de influenciadores por aqui ainda.',
   closeToYou: 'Não encontramos restaurantes próximos a você no momento.',
   restaurantPublications: 'Nenhuma publicação do restaurante encontrada.',
+  menuAdd: 'Adicione itens ao seu cardápio.',
 };
 
 export default function UserCarouselRestaurant({
   variant,
   carouselProfileRestaurant = false,
   items,
+  onDeleteItem,
   onError
 }: Props) {
   const [selectedPins, setSelectedPins] = useState<string[]>([]);
@@ -74,7 +84,26 @@ export default function UserCarouselRestaurant({
     }
   };
 
-  function handleInfluencerCardPress(id: string){
+  const data = useMemo(() => {
+    if (variant === 'visited' && carouselProfileRestaurant) {
+      items.sort((a, b) => {
+        const aPressed = selectedPins.includes(a.id) ? 0 : 1;
+        const bPressed = selectedPins.includes(b.id) ? 0 : 1;
+        return aPressed - bPressed;
+      });
+    }
+    return items;
+  }, [variant, carouselProfileRestaurant, selectedPins, items]);
+
+  function handleInfluencerCardPress(id: string) {
+    if (variant === 'restaurantPublications') {
+      return router.push({
+        pathname: '/PublicationInfluencer',
+        params: {
+          restaurantId: id,
+        },
+      });
+    }
     return router.push({
       pathname: '/PublicationInfluencer',
       params: {
@@ -84,8 +113,16 @@ export default function UserCarouselRestaurant({
   }
 
   if (
-    ['visited', 'saved', 'menu', 'influencers', 'closeToYou', 'restaurantPublications'].includes(variant) &&
-    items.length === 0
+    [
+      'visited',
+      'saved',
+      'menu',
+      'influencers',
+      'closeToYou',
+      'restaurantPublications',
+      'menuAdd',
+    ].includes(variant) &&
+    data.length === 0
   ) {
     return (
       <View style={{ padding: 16 }}>
@@ -95,7 +132,8 @@ export default function UserCarouselRestaurant({
   }
 
   const renderItem = ({ item }: { item: CarouselItem }) => {
-    const isSelected = selectedPins.includes(item.id);    
+    const canDelete = variant === 'menu' || variant === 'menuAdd';
+    const isSelected = selectedPins.includes(item.id);
 
     if (variant === 'influencers' || variant === 'restaurantPublications') {
       return (
@@ -112,11 +150,19 @@ export default function UserCarouselRestaurant({
       );
     }
 
-    if (variant === 'menu') {
+    if (variant === 'menu' || variant === 'menuAdd') {
       return (
         <View style={styles.card}>
           <View style={styles.imageWrapper}>
             <Image source={{ uri: item.photo }} style={styles.image} />
+          {canDelete && onDeleteItem && (
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => onDeleteItem(item.id)}
+            >
+              <AntDesign name="delete" size={16} color={Colors.orange.orangeStandard}/>
+            </TouchableOpacity>
+          )}
           </View>
           <Text style={styles.nome}>{item.name}</Text>
         </View>
@@ -126,10 +172,14 @@ export default function UserCarouselRestaurant({
     return (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => router.push({
-          pathname: '/restaurantProfile',
-          params: { restaurantId: item.id },
-        })}
+        onPress={() =>
+          router.push({
+            pathname: '/restaurantProfile',
+            params: {
+              restaurantId: item.id,
+            },
+          })
+        }
         activeOpacity={0.8}
       >
         <View style={styles.imageWrapper}>
@@ -203,6 +253,7 @@ export default function UserCarouselRestaurant({
       data={items}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
+      {...(onDeleteItem ? { extraData: items } : {})}
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{
@@ -221,6 +272,20 @@ const styles = StyleSheet.create({
     height: CARD_HEIGHT,
     marginRight: CARD_MARGIN,
     alignItems: 'flex-start',
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: Colors.white,
+    color: Colors.orange.orangeStandard,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 3,
+    zIndex: 1,
   },
   imageWrapper: {
     width: '100%',

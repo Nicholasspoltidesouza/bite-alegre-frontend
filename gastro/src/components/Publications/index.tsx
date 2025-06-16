@@ -1,6 +1,7 @@
 import {PublicationDTO } from '@/src/@types/DTO';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
 import {
   View,
   ScrollView,

@@ -158,6 +158,7 @@ export const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = (
 
       <BaseModal
         visible={modalVisible}
+        restaurantId={restaurantId}
         onClose={() => setModalVisible(false)}
       />
     </SafeAreaView>
