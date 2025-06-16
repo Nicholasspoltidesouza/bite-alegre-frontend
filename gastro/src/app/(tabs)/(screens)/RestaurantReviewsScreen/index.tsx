@@ -23,8 +23,6 @@ const RestaurantReviewsScreen: React.FC = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log('FALHA')
-      console.error("Erro ao parsear parâmetros da rota para RestaurantReviewsScreen:", error);
     }    
   }, [params.restaurant]);
   

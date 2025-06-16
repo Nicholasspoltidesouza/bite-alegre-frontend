@@ -230,13 +230,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: Colors.orange.orangeStandard,
-    textAlign: 'left', // Mudança: alinhamento à esquerda
-    paddingLeft: 8, // Mudança: pequeno padding para alinhar com a seta
+    textAlign: 'left', 
+    paddingLeft: 8, 
   },
   scrollView: {
     flexGrow: 1,
     padding: 16,
-    paddingBottom: 100, // Mudança: espaço para os botões fixos na parte inferior
+    paddingBottom: 100, 
   },
   categoryGrid: {
     flexDirection: 'row',

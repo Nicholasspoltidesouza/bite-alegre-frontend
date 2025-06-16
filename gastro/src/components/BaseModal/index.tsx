@@ -39,7 +39,7 @@ const BaseModal: React.FC<BaseModalProps> = ({ visible, onClose }) => {
         break;
       default:
         console.warn(`Unexpected role: ${role}`);
-        router.push('/Home'); // Redirect to a safe fallback route
+        router.push('/Home'); 
         break;
     }
   };

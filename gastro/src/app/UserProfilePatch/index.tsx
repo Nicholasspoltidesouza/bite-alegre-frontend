@@ -48,7 +48,6 @@ export default function UserProfileEdit() {
     if (user?.id) {
       getUserById(user.id);
       getUserPreferences(user.id).then((tagIds) => {
-        console.log('Tag IDs recebidas do backend:', tagIds); 
         if (tagIds) setSelectedTags(tagIds);
       });
     }

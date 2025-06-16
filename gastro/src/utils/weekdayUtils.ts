@@ -1,6 +1,5 @@
 export type Weekday = 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI' | 'SAT' | 'SUN';
 
-// Função para mapear os dias da semana em português para o formato Weekday
 export function mapToWeekday(day: string): Weekday | undefined {
     const mapping: { [key: string]: Weekday } = {
         'Segunda': 'MON',
@@ -15,7 +14,6 @@ export function mapToWeekday(day: string): Weekday | undefined {
     return mapping[day];
 }
 
-// Função para mapear o formato Weekday para os dias da semana em português
 export function mapFromWeekday(weekday: Weekday): string {
     const reverseMapping: { [key in Weekday]: string } = {
         MON: 'Segunda',

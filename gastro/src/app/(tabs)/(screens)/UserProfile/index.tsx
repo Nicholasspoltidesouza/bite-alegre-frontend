@@ -1,24 +1,33 @@
+import Header from '@/src/components/Header';
+import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
+import Colors from '@/src/constants/Colors';
+import { useAuthContext } from '@/src/contexts/authContext';
+import { useCreateUser } from '@/src/hooks/useUserApi';
+import {
+  CarouselItem,
+  mapCheckinToCarouselItem,
+  mapReviewToCarouselItem,
+} from '@/src/utils/carouselMappers';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
   ActivityIndicator,
   Alert,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
-import Header from '@/src/components/Header';
-import Colors from '@/src/constants/Colors';
-import { useCreateUser } from '@/src/hooks/useUserApi';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router'; 
-import { useAuthContext } from '@/src/contexts/authContext';
-import { CarouselItem, mapCheckinToCarouselItem, mapReviewToCarouselItem } from '@/src/utils/carouselMappers';
 
 export default function UserProfile() {
-  const { getUserById, loading: userApiLoading, error, data: userData } = useCreateUser();
+  const {
+    getUserById,
+    loading: userApiLoading,
+    error,
+    data: userData,
+  } = useCreateUser();
   const [visitedRestaurants, setVisitedRestaurants] = useState<CarouselItem[]>(
     [],
   );
@@ -28,53 +37,57 @@ export default function UserProfile() {
 
   useFocusEffect(
     useCallback(() => {
-      const id = typeof userId === 'string' ? userId : user!.id;
-      getUserById(id);
-      return () => {
-        console.log('Tela perdeu o foco');
-      };
-    }, [userId])
+      if (!user?.id) return;
+
+      const id = typeof userId === 'string' ? userId : user.id;
+      getUserById(id).catch((err) => {
+        console.error('Erro ao buscar dados do usuário:', err);
+      });
+    }, [userId, user?.id]),
   );
 
   useEffect(() => {
     if (userData) {
       setVisited();
-    }    
+      setLoading(false); 
+    }
   }, [userData]);
 
   useEffect(() => {
-    if (visitedRestaurants.length > 0) {
+    if (userData && visitedRestaurants.length >= 0) {
       setIsSelected();
-      setLoading(false);
     }
-  }, [visitedRestaurants]);
+  }, [visitedRestaurants, userData]);
 
   function setVisited() {
+    if (!userData) {
+      setVisitedRestaurants([]);
+      return;
+    }
+
     const visitedFromReviews: CarouselItem[] =
-      userData!.reviews?.map(mapReviewToCarouselItem) ?? [];
+      userData.reviews?.map(mapReviewToCarouselItem) ?? [];
     const visitedFromCheckins: CarouselItem[] =
-      userData!.checkinsWithoutReview?.map(mapCheckinToCarouselItem) ?? [];
+      userData.checkinsWithoutReview?.map(mapCheckinToCarouselItem) ?? [];
 
     const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];
-
-    if (combinedVisited.length > 0) {
-      return setVisitedRestaurants(combinedVisited);
-    }
-    setVisitedRestaurants([]);  
+    setVisitedRestaurants(combinedVisited);
   }
 
   function setIsSelected() {
-     visitedRestaurants.forEach((restaurant) => {
+    if (!userData || !userData.savedRestaurants) return;
+
+    visitedRestaurants.forEach((restaurant) => {
       if (restaurant) {
-        const isSaved = userData!.savedRestaurants!.some(
-          (saved) => saved.restaurantId === restaurant.id
+        const isSaved = userData.savedRestaurants!.some(
+          (saved) => saved.restaurantId === restaurant.id,
         );
         restaurant.isSaved = isSaved;
       }
     });
   }
 
-  if (userApiLoading || loading) {
+  if (userApiLoading || loading || !userData) {
     return (
       <SafeAreaView style={styles.container}>
         <ActivityIndicator
@@ -126,10 +139,11 @@ export default function UserProfile() {
             <Text style={styles.mostrarMais}>Mostrar mais</Text>
           </TouchableOpacity>
         </View>
-        <UserCarouselRestaurant 
-          variant={'saved'} 
-          items={[]}   
-          onError={(message) => Alert.alert('Erro', message)} />
+        <UserCarouselRestaurant
+          variant={'saved'}
+          items={[]}
+          onError={(message) => Alert.alert('Erro', message)}
+        />
       </ScrollView>
     </View>
   );

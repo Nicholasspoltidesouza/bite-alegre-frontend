@@ -42,7 +42,6 @@ export const useAuthApi = () => {
 
     await clearAuthData();
 
-    console.log('Logout bem-sucedido:');
     setLoading(false);
   };
 

@@ -31,7 +31,6 @@ export const useCreateUser = () => {
     );
 
     if (responseData) {
-      console.log('Usuário criado:', responseData);
       setData(responseData);
     }
     return responseData;
