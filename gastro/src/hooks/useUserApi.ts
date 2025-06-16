@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { UserDTO } from '../@types/DTO';
+import { UserDTO, SavedRestaurantDTO } from '../@types/DTO';
 import ApiService from '../services/apiService';
 
 const userApiService = new ApiService('/users');
@@ -68,5 +68,18 @@ export const useCreateUser = () => {
     return null;
   };
 
-  return { createUser, getUserById, getUserPreferences, updateUser, loading, error, data };
+  const saveRestaurant = async (restauratId: string): Promise<SavedRestaurantDTO | null> => {
+    const responseData = await callApi(
+      userApiService.post<any, SavedRestaurantDTO>({},`/save-restaurant/${restauratId}`),
+    );
+    return responseData;
+  };
+
+  const deleteSavedRestaurant = async (restauratId: string): Promise<void> => {
+    await callApi(
+      userApiService.delete(`/save-restaurant/${restauratId}`),
+    );
+  };
+
+  return { createUser, getUserById, getUserPreferences, updateUser, saveRestaurant, deleteSavedRestaurant, loading, error, data };
 };
