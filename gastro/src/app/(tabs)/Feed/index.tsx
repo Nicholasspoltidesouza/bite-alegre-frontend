@@ -1,3 +1,4 @@
+import Button from '@/src/components/Button';
 import Header from '@/src/components/Header';
 import SearchInput from '@/src/components/SearchInput';
 import UserCarouselRestaurant from '@/src/components/UserCarouselRestaurant';
@@ -6,7 +7,11 @@ import { useAuthContext } from '@/src/contexts/authContext';
 import { useFeedApi } from '@/src/hooks/useFeedApi';
 import useLocation from '@/src/hooks/useLocation';
 import { useCreateUser } from '@/src/hooks/useUserApi';
-import { CarouselItem, mapPublicationToCarouselItem, mapRestaurantToCarouselItem } from '@/src/utils/carouselMappers';
+import {
+  CarouselItem,
+  mapPublicationToCarouselItem,
+  mapRestaurantToCarouselItem,
+} from '@/src/utils/carouselMappers';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -29,7 +34,9 @@ export default function Feed() {
   const [restaurants, setRestaurants] = useState<CarouselItem[]>([]);
 
   useEffect(() => {
-    getUserById(user!.id);
+    if (user) {
+      getUserById(user!.id);
+    }    
   }, [user]);
 
   useEffect(() => {
@@ -38,7 +45,7 @@ export default function Feed() {
         if (data) {
           setRestaurants(data.restaurants.map(mapRestaurantToCarouselItem));
         }
-      });    
+      });
     }
   }, [latitude, longitude]);
 
@@ -72,10 +79,8 @@ export default function Feed() {
           nickName={userData?.nickname ?? ' - '}
         />
         <View style={{ marginHorizontal: '3%' }}>
-          <Pressable
-            onPress={() => router.push({ pathname: '/Search' })}
-          >
-            <SearchInput value={''} editable={false} onChangeText={() => { }} />
+          <Pressable onPress={() => router.push({ pathname: '/Search' })}>
+            <SearchInput value={''} editable={false} onChangeText={() => {}} />
           </Pressable>
         </View>
 
@@ -91,13 +96,18 @@ export default function Feed() {
         </View>
 
         <Text style={styles.title}>Restaurantes perto de você</Text>
+        <UserCarouselRestaurant variant="closeToYou" items={restaurants} />
+        
+        <Text style={styles.title}>Influenciadores para você</Text>
         <UserCarouselRestaurant
-          variant="closeToYou"
-          items={restaurants}
+          variant="influencers"
+          items={feedData?.publications.map(mapPublicationToCarouselItem) ?? []}
         />
       </ScrollView>
     </SafeAreaView>
   );
+  
+
 }
 
 const styles = StyleSheet.create({

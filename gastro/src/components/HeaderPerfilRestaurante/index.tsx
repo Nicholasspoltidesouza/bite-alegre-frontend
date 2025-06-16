@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -11,34 +12,53 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import Colors from '@/src/constants/Colors';
 import BaseModal from '@/src/components/BaseModal';
+import { useCreateUser } from '@/src/hooks/useUserApi';
 
 interface HeaderPerfilRestauranteProps {
   urlFotoBanner?: string;
   urlFotoPerfil?: string;
+  restaurantId: string;
   isSelected?: boolean;
   isProfile?: boolean;
-  restaurantId?: string;
+  onError?: (message: string) => void; 
 }
 
-const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({
+export const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({
   urlFotoBanner,
   urlFotoPerfil,
-  isSelected = false,
-  isProfile = false,
   restaurantId,
+  isSelected,
+  isProfile = false,
+  onError
 }) => {
   const [selected, setSelected] = useState(isSelected);
   const [modalVisible, setModalVisible] = useState(false);
+  const { saveRestaurant, deleteSavedRestaurant, error } = useCreateUser();
 
   useEffect(() => {
     setSelected(isSelected);
   }, [isSelected]);
 
-  const handlePress = () => {
+  const handlePress = async () => {
     if (isProfile) {
       setModalVisible(true);
     } else {
-      setSelected(!selected);
+      if (selected) {
+        await deleteSavedRestaurant(restaurantId)
+        setSelected(false)
+        if (error && onError) {
+          onError('Erro ao remover restaurante dos salvos.');
+          setSelected(true)
+        }
+      } else {
+        setSelected(true);
+        await saveRestaurant(restaurantId)
+       
+        if (error && onError) {
+          onError('Erro ao salvar restaurante.');
+          setSelected(false);
+        }
+      }      
     }
   };
 
@@ -145,4 +165,3 @@ const HeaderPerfilRestaurante: React.FC<HeaderPerfilRestauranteProps> = ({
   );
 };
 
-export default HeaderPerfilRestaurante;

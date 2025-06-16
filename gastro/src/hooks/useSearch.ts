@@ -25,7 +25,7 @@ export const useSearch = () => {
 
     try {
       if (trimmed.startsWith('@')) {
-        const allUsers = await userApi.get<UserDTO[]>(); // GET /users
+        const allUsers = await userApi.get<UserDTO[]>(); 
         const searchTerm = trimmed.replace('@', '').toLowerCase();
         const filtered = allUsers.filter(
           (user) =>
@@ -35,7 +35,7 @@ export const useSearch = () => {
         setUsers(filtered);
         setRestaurants([]);
       } else {
-        const allRestaurants = await restaurantApi.get<RestaurantDTO[]>(); // GET /restaurants
+        const allRestaurants = await restaurantApi.get<RestaurantDTO[]>(); 
         const searchTerm = trimmed.toLowerCase();
         const filtered = allRestaurants.filter((restaurant) =>
           restaurant.name.toLowerCase().includes(searchTerm),

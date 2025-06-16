@@ -1,40 +1,42 @@
 import { OpeningPeriodDto, OperatingHoursDto } from "./OperatingHoursDto";
 
 interface UserDTO {
-    profilePhoto?: string;
-    name: string;
-    nickname: string;
-    email: string;
-    password: string;
-    phone: string;
-    gender: string | null;
-    birthDate?: string;
-    userType: string;
-    id?: string;
-    reviews?: ReviewDTO[];
-    checkinsWithoutReview?: CheckinDTO[];
-    influencer?: boolean;
+  tagIds: any;
+  profilePhoto?: string;
+  name: string;
+  nickname: string;
+  email: string;
+  password: string;
+  phone: string;
+  gender: string | null;
+  birthDate?: string;
+  userType: string;
+  id?: string;
+  reviews?: ReviewDTO[];
+  checkinsWithoutReview?: CheckinDTO[];
+  influencer?: boolean;
+  savedRestaurants?: SavedRestaurantDTO[];
 }
 interface RestaurantDTO {
-    id?: string;
-    profilePhoto?: string;
-    bannerPhoto?: string;
-    address: string;
-    name: string;
-    cnpj: string;
-    description: string;
-    email: string;
-    password: string;
-    averagePrice: number;
-    averageScore?: number | null;
-    phone: string;
-    userType: string;
-    reviews?: ReviewDTO[];
-    stars?: number;
-    tags?: string[];
-    openingPeriods?: OperatingHoursDto[];
-    publications?: PublicationDTO[];
-    menuItems?: MenuItemsDTO[];
+  id?: string;
+  profilePhoto?: string;
+  bannerPhoto?: string;
+  address: string;
+  name: string;
+  cnpj: string;
+  description: string;
+  email: string;
+  password: string;
+  averagePrice: number;
+  averageScore?: number | null;
+  phone: string;
+  userType: string;
+  reviews?: ReviewDTO[];
+  stars?: number;
+  openingPeriods?: OperatingHoursDto[];
+  publications?: PublicationDTO[];
+  menuItems?: MenuItemsDTO[];
+  isFavorite?: boolean;
 }
 
 export type OpeningPeriodPatch = {
@@ -65,14 +67,19 @@ interface CheckinDTO {
 }
 
 interface ReviewDTO {
-    id?: string;
-    user_id?: string;
-    restaurantId?: string;
-    restaurant_id?: string;
-    stars: number;
-    feedback?: string;
-    restaurantProfilePhoto?: string;
-    restaurantName?: string;
+  id?: string;
+  user_id?: string;
+  restaurantId?: string;
+  restaurant_id?: string;
+  stars: number;
+  feedback?: string;
+  restaurantProfilePhoto?: string;
+  restaurantName?: string;
+  name?: string;
+  date?: string;
+  userName?: string;
+  createdAt?: string;
+  userProfilePhoto?: string;
 }
 
 interface RestaurantFilterDTO {
@@ -95,14 +102,15 @@ interface AuthDTO {
     };
 }
 
-interface PublicationDTO {
-    id: string;
-    url: string;
-    description: string;
-    restaurant_id: string;
-    restaurant_name: string;
-    restaurant_photo: string;
-    restaurant_tags: { id: string; name: string; type: string }[];
+ interface PublicationDTO {
+  id?: string;
+  url?: string;
+  file?: string;
+  description?: string;
+  restaurant_id?: string;
+  restaurant_name?: string;
+  restaurant_photo?: string;
+  restaurant_tags?: { id: string; name: string; type: string }[];
 }
 
 interface MenuItemsDTO {
@@ -118,16 +126,25 @@ interface FeedDTO {
     restaurants: RestaurantDTO[];
 }
 
+interface  SavedRestaurantDTO { 
+  user_id?: string;
+  restaurant_id?: string;
+  restaurantId?: string;
+  averageScore?: number;
+  profilePhoto?: string;
+}
+
 export type {
-    RestaurantDTO,
-    RestaurantPatchDTO,
-    UserDTO,
-    CheckinDTO,
-    ReviewDTO,
-    RestaurantFilterDTO,
-    AuthDTO,
-    PublicationDTO,
-    OperatingHoursDto,
-    MenuItemsDTO,
-    FeedDTO
+  RestaurantDTO,
+  RestaurantPatchDTO,
+  UserDTO,
+  CheckinDTO,
+  ReviewDTO,
+  RestaurantFilterDTO,
+  AuthDTO,
+  PublicationDTO,
+  OperatingHoursDto,
+  MenuItemsDTO,
+  FeedDTO,
+  SavedRestaurantDTO
 };

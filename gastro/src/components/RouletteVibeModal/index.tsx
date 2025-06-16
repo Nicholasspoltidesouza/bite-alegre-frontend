@@ -8,6 +8,7 @@ import {
   Text
 } from 'react-native';
 import Tag from '../Tag';
+import Colors from '@/src/constants/Colors';
 
 type RouletteVibeModalProps = {
   visible: boolean;
@@ -34,8 +35,8 @@ const RouletteVibeModal = ({ visible, onClose, onSelect }: RouletteVibeModalProp
         <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
           <Text style={styles.title}>Qual a vibe de hoje?</Text>
           <ScrollView contentContainerStyle={styles.tagsContainer}>
-            {tagsLoading && <Text style={{ color: '#FF914B', marginBottom: 10 }}>Carregando...</Text>}
-            {error && <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text>}
+            {tagsLoading && <Text style={{ color: Colors.orange.orangeStandard, marginBottom: 10 }}>Carregando...</Text>}
+            {error && <Text style={{ color: Colors.red, marginBottom: 10 }}>{error}</Text>}
             {vibeOptions.map((tag) => (
               <Tag
                 key={tag.id}
@@ -58,12 +59,12 @@ const RouletteVibeModal = ({ visible, onClose, onSelect }: RouletteVibeModalProp
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: Colors.transparent.blackOverlay,
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
     borderRadius: 24,
     padding: 20,
     width: '85%',
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     fontFamily: 'Poppins-Medium',
-    color: '#FF914B',
+    color: Colors.orange.orangeStandard,
     marginBottom: 20,
     textAlign: 'center',
   },

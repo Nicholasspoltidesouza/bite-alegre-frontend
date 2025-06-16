@@ -3,7 +3,7 @@ import Button from '@/src/components/Button';
 import Dropdown from '@/src/components/Dropdown';
 import SignupHeader from '@/src/components/SignupHeader';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
-import ToggleSwitch from '@/src/components/ToggleSwitch'; // Importar o ToggleSwitch
+import ToggleSwitch from '@/src/components/ToggleSwitch'; 
 import Colors from '@/src/constants/Colors';
 import { useCreateUser } from '@/src/hooks/useUserApi';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -12,13 +12,12 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   View,
+  StatusBar,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SignupUser = () => {
   const router = useRouter();
@@ -55,8 +54,6 @@ const SignupUser = () => {
   const [birthDateTouched, setBirthDateTouched] = useState<boolean>(false);
 
   const { createUser } = useCreateUser();
-
-  const insets = useSafeAreaInsets();
 
   const validateName = (text: string): string | null => {
     if (text.length < 2) return 'Nome deve ter no mínimo 2 caracteres';
@@ -181,17 +178,16 @@ const SignupUser = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
-    >
-      <SafeAreaView
-        style={[
-          styles.safeArea,
-          { paddingTop: 0 },
-          Platform.OS === 'ios' && { marginTop: -insets.top },
-        ]}
+    <View style={styles.container}>
+      <StatusBar 
+        barStyle="dark-content" 
+        backgroundColor={Colors.white} 
+        translucent={Platform.OS === 'android'} 
+      />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <SignupHeader
           userType={userType}
@@ -200,7 +196,7 @@ const SignupUser = () => {
           profileIcon={'person'}
         />
         <ScrollView
-          contentContainerStyle={styles.container}
+          contentContainerStyle={styles.scrollContainer}
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.inputWrapper}>
@@ -301,7 +297,7 @@ const SignupUser = () => {
                   birthDateTouched &&
                     validateBirthDate(birthDate) && {
                       borderWidth: 2,
-                      borderColor: 'red',
+                      borderColor: Colors.redError,
                     },
                 ]}
                 validation={undefined}
@@ -334,17 +330,18 @@ const SignupUser = () => {
             />
           </View>
         </ScrollView>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
     backgroundColor: Colors.white,
+    marginTop: Platform.OS === 'android' ? -(StatusBar.currentHeight || 0) : 0,
   },
-  container: {
+  scrollContainer: {
     alignItems: 'center',
     padding: '4%',
     paddingBottom: '8%',
@@ -358,7 +355,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 50,
     borderRadius: 20,
-    backgroundColor: 'rgba(255, 179, 112, 0.25)',
+    backgroundColor: Colors.orange.orangeTransparent,
     paddingLeft: 24,
     paddingRight: 16,
     color: Colors.black,
@@ -378,7 +375,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: '100%',
     borderRadius: 20,
-    backgroundColor: 'rgba(255, 179, 112, 0.25)',
+    backgroundColor: Colors.orange.orangeTransparent,
     paddingLeft: 24,
     paddingRight: 16,
     color: Colors.black,
@@ -386,7 +383,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   errorText: {
-    color: 'red',
+    color: Colors.redError,
     fontSize: 12,
     marginTop: 4,
     marginLeft: 24,

@@ -24,8 +24,6 @@ export const useAuthApi = () => {
         const { token, role, user } = responseData;
 
         await setAuthData(token, role, { id: user.id, email: user.email });
-
-        console.log('Login bem-sucedido:', responseData);
       }
     } catch (err: any) {
       const errorMessage =
@@ -44,7 +42,6 @@ export const useAuthApi = () => {
 
     await clearAuthData();
 
-    console.log('Logout bem-sucedido:');
     setLoading(false);
   };
 

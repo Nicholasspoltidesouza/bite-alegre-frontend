@@ -4,6 +4,7 @@ import Colors from '@/src/constants/Colors';
 import { AntDesign } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useAuthApi } from '@/src/hooks/useAuthApi';
+import { useAuthContext } from '@/src/contexts/authContext'; 
 
 type BaseModalProps = {
   visible: boolean;
@@ -16,14 +17,34 @@ const BaseModal: React.FC<BaseModalProps> = ({
   restaurantId,
 }) => {
   const { logout } = useAuthApi();
+  const { role } = useAuthContext(); 
 
   const handleLogout = async () => {
     try {
+      await logout(); 
       onClose();
       router.replace('/Home');
-      logout();
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
+    }
+  };
+
+  const handleProfileEdit = () => {
+    onClose();
+    switch (role) {
+      case 'RESTAURANT':
+        router.push('/RestaurantProfilePatch');
+        break;
+      case 'USER':
+        router.push('/UserProfilePatch');
+        break;
+      case 'INFLUENCER':
+        router.push('/UserProfilePatch');
+        break;
+      default:
+        console.warn(`Unexpected role: ${role}`);
+        router.push('/Home'); 
+        break;
     }
   };
 
@@ -64,7 +85,9 @@ const BaseModal: React.FC<BaseModalProps> = ({
                 });
               }}
             >
-              <Text style={styles.filledText}>Editar perfil</Text>
+               <Text style={styles.filledText}>
+               Editar perfil 
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

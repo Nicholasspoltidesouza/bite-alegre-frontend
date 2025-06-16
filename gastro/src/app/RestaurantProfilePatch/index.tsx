@@ -26,7 +26,6 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/src/constants/Colors';
-import AddMenu from '../AddMenu';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
 
 const RestaurantProfilePatch = () => {

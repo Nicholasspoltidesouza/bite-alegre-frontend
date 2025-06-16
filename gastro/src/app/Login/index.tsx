@@ -55,17 +55,17 @@ export default function Login() {
             end={{ x: 0.5, y: 1 }}
             style={styles.container}
         >
-            <Image
-                source={require("../../../assets/images/logo.png")}
-                resizeMode="contain"
-                style={styles.logo}
-            />
-
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={{ flex: 1 }}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+                style={styles.keyboardAvoidingView}
+                keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
             >
+                <Image
+                    source={require("../../../assets/images/logo.png")}
+                    resizeMode="contain"
+                    style={styles.logo}
+                />
+
                 <View style={styles.formWrapper}>
                     <View style={styles.formContainer}>
                         <Text style={styles.welcome}> Bem-vindo de volta! </Text>
@@ -74,7 +74,7 @@ export default function Login() {
                             placeholder="Email"
                             style={[
                                 styles.textField,
-                                emailError && { borderColor: "red", borderWidth: 2 }
+                                emailError && { borderColor: Colors.redError, borderWidth: 2 }
                             ]}
                             placeholderTextColor={Colors.orange.orangeStandard}
                             value={email}
@@ -82,12 +82,14 @@ export default function Login() {
                                 setEmail(text);
                                 setEmailError(false);
                             }}
+                            autoCapitalize="none"
+                            keyboardType="email-address"
                         />
                         <TextInput
                             placeholder="Senha"
                             style={[
                                 styles.textField,
-                                passwordError && { borderColor: "red", borderWidth: 2 }
+                                passwordError && { borderColor: Colors.redError, borderWidth: 2 }
                             ]}
                             secureTextEntry
                             placeholderTextColor={Colors.orange.orangeStandard}
@@ -99,7 +101,10 @@ export default function Login() {
                         />
 
                         <View style={styles.buttonRow}>
-                            <TouchableOpacity style={styles.outlinedButton}>
+                            <TouchableOpacity 
+                                style={styles.outlinedButton}
+                                onPress={() => router.push('/SignupUser')}
+                            >
                                 <Text style={styles.outlinedText}>Cadastre-se</Text>
                             </TouchableOpacity>
 
@@ -112,7 +117,7 @@ export default function Login() {
                             </TouchableOpacity>
                         </View>
 
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => router.push('/SignupRestaurant')}>
                             <Text style={styles.linkText}>
                                 Cadastre seu restaurante <Text style={{ fontWeight: "bold" }}>aqui!</Text>
                             </Text>
@@ -129,20 +134,26 @@ const styles = StyleSheet.create({
         flex: 1,
     },
 
+    keyboardAvoidingView: {
+        flex: 1,
+        justifyContent: 'space-between',
+    },
+
     logo: {
         width: 389,
         height: 219,
-        marginTop: 218,
+        marginTop: Platform.OS === 'ios' ? 100 : 80,
         alignSelf: "center",
     },
 
     formWrapper: {
-        position: "absolute",
-        bottom: 0, 
-        width: "100%",
         backgroundColor: Colors.white,
         paddingHorizontal: 24,
-        paddingVertical: 32,
+        paddingTop: 32,
+        paddingBottom: Platform.OS === 'ios' ? 32 : 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        minHeight: 300,
     },
     
     formContainer: {

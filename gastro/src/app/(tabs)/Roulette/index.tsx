@@ -4,6 +4,7 @@ import RouletteFilterModal from '@/src/components/RouletteFilterModal';
 import RouletteRestaurantModal from '@/src/components/RouletteRestaurantModal';
 import RouletteVibeModal from '@/src/components/RouletteVibeModal';
 import { useRestaurantApi } from '@/src/hooks/useRestaurantApi';
+import Colors from '@/src/constants/Colors';
 import MaterialIcons from '@expo/vector-icons/build/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -96,16 +97,16 @@ export default function Roulette() {
 
       <View style={StyleSheet.absoluteFill}>
         <LinearGradient
-          colors={['#FFB370', '#FF914B']}
+          colors={[Colors.orange.orangeMedium, Colors.orange.orangeStandard]}
           locations={[0.5, 0.95]}
           style={styles.gradient}
         />
-        <View style={{ flex: 1, backgroundColor: '#FFFFFF' }} />
+        <View style={{ flex: 1, backgroundColor: Colors.white }} />
       </View>
 
       <View style={styles.container}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <MaterialIcons name="keyboard-arrow-left" size={24} color="#FFFFFF" />
+          <MaterialIcons name="keyboard-arrow-left" size={24} color={Colors.white} />
         </TouchableOpacity>
 
         <Text style={styles.description}>
@@ -210,14 +211,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 80,
     maxWidth: 280,
-    color: 'white',
+    color: Colors.white,
   },
   rouletteWrapper: {
     padding: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
     borderRadius: 9999,
     borderWidth: 4,
-    borderColor: '#FFFFFF',
+    borderColor: Colors.white,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 55,
@@ -242,13 +243,13 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   button: {
-    backgroundColor: '#06C1B1',
+    backgroundColor: Colors.light.lightBlue,
     paddingHorizontal: 32,
     paddingVertical: 12,
     borderRadius: 999,
   },
   buttonText: {
-    color: '#fff',
+    color: Colors.white,
     fontSize: 20,
     fontWeight: 'bold',
   },
@@ -256,7 +257,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 57,
     left: 30,
-    backgroundColor: '#FF770090',
+    backgroundColor: Colors.orange.orangeBackButtonTransparent,
     borderRadius: 100,
     padding: 10,
   },

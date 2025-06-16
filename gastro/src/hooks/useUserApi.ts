@@ -31,13 +31,12 @@ export const useCreateUser = () => {
     );
 
     if (responseData) {
-      console.log('Usuário criado:', responseData);
       setData(responseData);
     }
     return responseData;
   };
 
-  const getUserById = async (userId: string): Promise<void> => {
+  const getUserById = async (userId: string): Promise<UserDTO | null> => {
     const responseData = await callApi(
       userApiService.get<UserDTO>(`/${userId}`),
     );
@@ -45,7 +44,29 @@ export const useCreateUser = () => {
     if (responseData) {
       setData(responseData);
     }
+    return responseData;
   };
 
-  return { createUser, getUserById, loading, error, data };
+  const getUserPreferences = async (userId: string): Promise<string[] | null> => {
+    const responseData = await callApi(
+      userApiService.get<any[]>(`/../user_preferences/${userId}`)
+    );
+    if (responseData && Array.isArray(responseData)) {
+      return responseData.map(pref => pref.tag_id);
+    }
+    return null;
+  };
+
+  const updateUser = async (userData: Partial<UserDTO>): Promise<UserDTO | null> => {
+    const responseData = await callApi(
+      userApiService.patch<Partial<UserDTO>, UserDTO>(userData)
+    );
+    if (responseData && (responseData as any).data) {
+      setData((responseData as any).data);
+      return (responseData as any).data;
+    }
+    return null;
+  };
+
+  return { createUser, getUserById, getUserPreferences, updateUser, loading, error, data };
 };

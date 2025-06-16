@@ -7,11 +7,11 @@ export interface OperatingHoursDto {
 }
 
 export interface OpeningPeriodDto {
-    id?: string;
-    periodId?: string;
-    weekday: string; // 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI' | 'SAT' | 'SUN' | 'HOL'
-    opensAt: string;
-    closesAt: string;
+  id?: string;
+  periodId?: string;
+  weekday: string;
+  opensAt: string;
+  closesAt: string;
 }
 
 export interface LocalOperatingHour {

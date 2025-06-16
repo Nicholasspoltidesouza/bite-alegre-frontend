@@ -57,7 +57,6 @@ const CreateReview: React.FC = () => {
 
   const handleEstrelaPress = (estrelaSelecionada: number) => {
     setNota(estrelaSelecionada);
-    console.log(`Nota selecionada: ${estrelaSelecionada}`);
   };
 
   const renderEstrelas = () => {
@@ -113,7 +112,7 @@ const CreateReview: React.FC = () => {
           <TouchableOpacity
             style={styles.backButton}
             onPress={() =>
-              router.push({ pathname: '/restaurantProfile' })
+              router.back()
             }
           >
             <MaterialIcons
