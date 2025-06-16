@@ -77,7 +77,7 @@ export const useCreateUser = () => {
 
   const deleteSavedRestaurant = async (restauratId: string): Promise<void> => {
     await callApi(
-      userApiService.delete(`/save-restaurant/${restauratId}`),
+      userApiService.delete({},`/save-restaurant/${restauratId}`),
     );
   };
 

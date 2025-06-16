@@ -33,7 +33,12 @@ const BaseModal: React.FC<BaseModalProps> = ({
     onClose();
     switch (role) {
       case 'RESTAURANT':
-        router.push('/RestaurantProfilePatch');
+        router.push({
+          pathname: '/RestaurantProfilePatch',
+          params: {
+            restaurantId: restaurantId,
+          },
+        });
         break;
       case 'USER':
         router.push('/UserProfilePatch');
@@ -75,15 +80,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
             <TouchableOpacity
               style={styles.filledButton}
-              onPress={() => {
-                onClose();
-                router.push({
-                  pathname: '/RestaurantProfilePatch',
-                  params: {
-                    restaurantId: restaurantId,
-                  },
-                });
-              }}
+              onPress={handleProfileEdit}
             >
                <Text style={styles.filledText}>
                Editar perfil 

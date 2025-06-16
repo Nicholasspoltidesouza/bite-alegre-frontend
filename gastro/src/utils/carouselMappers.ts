@@ -16,6 +16,7 @@ export const mapRestaurantToCarouselItem = (restaurant: RestaurantDTO): Carousel
         photo: restaurant.profilePhoto,
         averagePrice: restaurant.averagePrice,
         stars: restaurant.averageScore ?? undefined,
+        isSaved: restaurant.isFavorite ?? false,
     };
 };
 

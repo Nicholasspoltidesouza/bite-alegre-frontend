@@ -134,7 +134,6 @@ export default function UserCarouselRestaurant({
   const renderItem = ({ item }: { item: CarouselItem }) => {
     const canDelete = variant === 'menu' || variant === 'menuAdd';
     const isSelected = selectedPins.includes(item.id);
-
     if (variant === 'influencers' || variant === 'restaurantPublications') {
       return (
         <TouchableOpacity
