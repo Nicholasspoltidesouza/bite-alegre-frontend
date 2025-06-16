@@ -91,7 +91,6 @@ const AddMedia = () => {
       return;
     }
 
-    console.log('Abrindo galeria');
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
@@ -271,7 +270,7 @@ const AddMedia = () => {
                 value={restaurantSearch}
                 onChangeText={(text) => {
                   setRestaurantSearch(text);
-                  setSelectedRestaurantId(''); // limpa seleção anterior
+                  setSelectedRestaurantId(''); 
                 }}
                 placeholder="Restaurante"
                 style={styles.input}

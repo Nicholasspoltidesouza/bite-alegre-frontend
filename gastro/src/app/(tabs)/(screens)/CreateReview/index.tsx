@@ -57,7 +57,6 @@ const CreateReview: React.FC = () => {
 
   const handleEstrelaPress = (estrelaSelecionada: number) => {
     setNota(estrelaSelecionada);
-    console.log(`Nota selecionada: ${estrelaSelecionada}`);
   };
 
   const renderEstrelas = () => {

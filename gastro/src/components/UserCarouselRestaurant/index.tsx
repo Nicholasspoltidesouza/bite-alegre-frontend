@@ -58,7 +58,7 @@ export default function UserCarouselRestaurant({
       if (error && onError) {
         console.error('Error removing restaurant from saved:', error);
         onError('Erro ao remover restaurante dos salvos.');
-        setSelectedPins((prev) => [...prev, item.id]); // Rollback
+        setSelectedPins((prev) => [...prev, item.id]); 
       }
 
       return;
@@ -70,7 +70,7 @@ export default function UserCarouselRestaurant({
 
     if (!seveReturn && onError) {
       onError('Erro ao salvar restaurante.');
-      setSelectedPins((prev) => prev.filter((pid) => pid !== item.id)); // Rollback
+      setSelectedPins((prev) => prev.filter((pid) => pid !== item.id));
     }
   };
 

@@ -1,4 +1,4 @@
-import { CheckinDTO, PublicationDTO, RestaurantDTO, ReviewDTO, UserDTO } from '@/src/@types/DTO';
+import { PublicationDTO, UserDTO } from '@/src/@types/DTO';
 import CheckinSection from '@/src/components/CheckinSection';
 import Header from '@/src/components/Header';
 import InfluencerPageSession from '@/src/components/InfluencerPageSession';
@@ -9,7 +9,11 @@ import Colors from '@/src/constants/Colors';
 import { useAuthContext } from '@/src/contexts/authContext';
 import { usePublicationApi } from '@/src/hooks/usePublicationApi';
 import { useCreateUser } from '@/src/hooks/useUserApi';
-import { CarouselItem, mapCheckinToCarouselItem, mapReviewToCarouselItem } from '@/src/utils/carouselMappers';
+import {
+  CarouselItem,
+  mapCheckinToCarouselItem,
+  mapReviewToCarouselItem,
+} from '@/src/utils/carouselMappers';
 import { AntDesign } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -20,52 +24,124 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
-
 
 export default function InfluencerProfile() {
   const { getUserById, loading, error } = useCreateUser();
-  const { getPublicationByUserId, loading: loadingPublication, error: errorPublication } = usePublicationApi();
+  const {
+    getPublicationByUserId,
+    loading: loadingPublication,
+    error: errorPublication,
+  } = usePublicationApi();
   const { user } = useAuthContext();
   const [sameUser, setSameUser] = useState(false);
   const [userData, setUserData] = useState<UserDTO>();
-  const [userDataPublication, setUserDataPublication] = useState<PublicationDTO[] | null>([]);
-  const { userId, filteredUserData} = useLocalSearchParams();
+  const [userDataPublication, setUserDataPublication] = useState<
+    PublicationDTO[] | null
+  >([]);
+  const { userId, filteredUserData } = useLocalSearchParams();
   const [selectedTab, setSelectedTab] = useState<
     'grid' | 'reviews' | 'checkins' | 'user'
   >('grid');
-  const [visitedRestaurants, setVisitedRestaurants] = useState<CarouselItem[]>([],);
-  const parsedfilteredUserData = filteredUserData as string ? JSON.parse(filteredUserData as string) : null;
+  const [visitedRestaurants, setVisitedRestaurants] = useState<CarouselItem[]>(
+    [],
+  );
+  const [localLoading, setLocalLoading] = useState(true);
+  const [localError, setLocalError] = useState<string | null>(null);
+  const [userDataLoaded, setUserDataLoaded] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+
+  const parsedfilteredUserData = (filteredUserData as string)
+    ? JSON.parse(filteredUserData as string)
+    : null;
 
   const handleAddPress = () => router.push({ pathname: '/AddMedia' });
 
   const filterAddPress = () => {
-    const id = typeof userId as string ? userId : user?.id;
-    
+    const id = (typeof userId as string) ? userId : user?.id;
+
     router.push({
       pathname: '/FilterPostScreen',
       params: { userId: id },
     });
-
   };
 
   useEffect(() => {
-    const id = typeof userId === 'string' ? userId : user!.id;
-    setSameUser(id === user!.id);
-    getUserById(id.toString()).then((data) => {
-      if (data) {
-        setUserData(data);
-      }
-    });
-    if (parsedfilteredUserData != null) return setUserDataPublication(parsedfilteredUserData);
-    getPublicationByUserId(id.toString()).then((data) => {
-      if (data) {
-        setUserDataPublication(data);
-      }
-    });
-    
-  }, [userId]);
+    if (!user?.id) return; 
+
+    setUserData(undefined);
+    setUserDataLoaded(false);
+    setLocalLoading(true);
+    setLocalError(null);
+    setRetryCount(0);
+
+    const id = typeof userId === 'string' ? userId : user.id;
+    setSameUser(id === user.id);
+
+    getUserById(id.toString())
+      .then((data) => {
+        if (data) {
+          setUserData(data);
+          setUserDataLoaded(true);
+          setLocalError(null);
+        } else {
+          setLocalError('Usuário não encontrado');
+        }
+      })
+      .catch((err) => {
+        console.error('Erro ao buscar dados do usuário:', err);
+
+        if (retryCount === 0) {
+          setRetryCount(1);
+          setTimeout(() => {
+            getUserById(id.toString())
+              .then((data) => {
+                if (data) {
+                  setUserData(data);
+                  setUserDataLoaded(true);
+                  setLocalError(null);
+                } else {
+                  setLocalError('Usuário não encontrado');
+                }
+              })
+              .catch((retryErr) => {
+                console.error('Erro na segunda tentativa:', retryErr);
+                setLocalError(
+                  `Erro ao carregar dados do usuário: ${retryErr.message || retryErr}`,
+                );
+              });
+          }, 1000);
+        } else {
+          setLocalError(
+            `Erro ao carregar dados do usuário: ${err.message || err}`,
+          );
+        }
+      })
+      .finally(() => {
+        if (parsedfilteredUserData != null) {
+          setLocalLoading(false);
+        }
+      });
+
+    if (parsedfilteredUserData != null) {
+      setUserDataPublication(parsedfilteredUserData);
+      return;
+    }
+
+    getPublicationByUserId(id.toString())
+      .then((data) => {
+        if (data) {
+          setUserDataPublication(data);
+        }
+      })
+      .catch((err) => {
+        console.error('Erro ao buscar publicações:', err);
+      })
+      .finally(() => {
+        setLocalLoading(false);
+      });
+  }, [userId, user?.id]);
 
   useEffect(() => {
     if (userData) {
@@ -74,21 +150,22 @@ export default function InfluencerProfile() {
   }, [userData]);
 
   function setVisited() {
-    console.log('userData', userData);
+    if (!userData) {
+      setVisitedRestaurants([]);
+      return;
+    }
+
     const visitedFromReviews: CarouselItem[] =
-      userData!.reviews?.map(mapReviewToCarouselItem) ?? [];
+      userData.reviews?.map(mapReviewToCarouselItem) ?? [];
     const visitedFromCheckins: CarouselItem[] =
-      userData!.checkinsWithoutReview?.map(mapCheckinToCarouselItem) ?? [];
+      userData.checkinsWithoutReview?.map(mapCheckinToCarouselItem) ?? [];
 
     const combinedVisited = [...visitedFromReviews, ...visitedFromCheckins];
 
-    if (combinedVisited.length > 0) {
-      return setVisitedRestaurants(combinedVisited);
-    }
-    setVisitedRestaurants([]);
+    setVisitedRestaurants(combinedVisited);
   }
 
-  if (loading || loadingPublication) {
+  if (localLoading || (!userDataLoaded && !localError)) {
     return (
       <SafeAreaView style={styles.container}>
         <ActivityIndicator
@@ -99,36 +176,47 @@ export default function InfluencerProfile() {
       </SafeAreaView>
     );
   }
-  if (error || errorPublication) {
+
+  if (localError) {
     return (
       <SafeAreaView style={styles.container}>
         <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>
-          'Erro ao carregar os dados do usuário.'</Text>
+          {localError}
+        </Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (!userData) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={{ color: 'red', textAlign: 'center', marginTop: 50 }}>
+          Dados do usuário não encontrados
+        </Text>
       </SafeAreaView>
     );
   }
 
   function renderComponent() {
     if (!userData) return null;
+
     switch (selectedTab) {
       case 'grid':
-        if (!userDataPublication) {
+        if (!userDataPublication || userDataPublication.length === 0) {
           return (
-            <View style={{ marginTop: 20 }}>
-              <Text style={{ textAlign: 'center' }}>
+            <View style={{ marginTop: 20, paddingHorizontal: 20 }}>
+              <Text style={{ textAlign: 'center', color: Colors.text.black }}>
                 Nenhuma publicação encontrada.
               </Text>
             </View>
           );
         }
-        return (
-          <Publications images={userDataPublication!} />
-        );
-      case 'reviews':        
-        return <CardReview reviews={userData!.reviews!} />;
+        return <Publications images={userDataPublication} />;
+      case 'reviews':
+        return <CardReview reviews={userData.reviews || []} />;
       case 'checkins':
         return (
-          <CheckinSection checkins={userData!.checkinsWithoutReview!} />
+          <CheckinSection checkins={userData.checkinsWithoutReview || []} />
         );
       case 'user':
         return (
@@ -152,10 +240,7 @@ export default function InfluencerProfile() {
                 <Text style={styles.mostrarMais}>Mostrar mais</Text>
               </TouchableOpacity>
             </View>
-            <UserCarouselRestaurant
-              variant={'saved'}
-              items={[]}
-            />
+            <UserCarouselRestaurant variant={'saved'} items={[]} />
           </View>
         );
       default:
@@ -167,8 +252,8 @@ export default function InfluencerProfile() {
     <View style={styles.container}>
       <Header
         isProfile={true}
-        name={userData?.name!}
-        nickName={userData?.nickname!}
+        name={userData.name || 'Usuário'}
+        nickName={userData.nickname || ''}
         userView={!sameUser}
       />
 
@@ -195,7 +280,6 @@ export default function InfluencerProfile() {
 
 const styles = StyleSheet.create({
   container: {
-
     flex: 1,
     backgroundColor: Colors.background,
   },

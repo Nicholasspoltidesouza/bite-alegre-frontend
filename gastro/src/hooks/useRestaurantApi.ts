@@ -75,7 +75,6 @@ export const useRestaurantApi = () => {
     );
 
     if (responseData) {
-      console.log('Checkin criado:', responseData);
       setData(responseData);
     }
   };
@@ -89,7 +88,6 @@ export const useRestaurantApi = () => {
     );
 
     if (responseData) {
-      console.log('Review criada:', responseData);
       setData(responseData);
     }
   };

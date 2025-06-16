@@ -15,7 +15,6 @@ export const usePublicationApi = () => {
       const result = await callApiPromise;
       return result;
     } catch (err: any) {
-      console.log(err);
       setError(err.message || 'Erro ao executar a chamada da API.');
       return null;
     } finally {

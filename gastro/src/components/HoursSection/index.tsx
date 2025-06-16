@@ -10,21 +10,20 @@ import {
   Modal,
 } from "react-native";
 import Colors from '@/src/constants/Colors';
-import { OperatingHoursDto } from "../../@types/OperatingHoursDto"; // Using the strict DTO
+import { OperatingHoursDto } from "../../@types/OperatingHoursDto";
 import {
   mapToWeekday,
   mapFromWeekday,
   Weekday,
-} from "../../utils/weekdayUtils"; // Assuming this path is correct
-import "../Dropdown"; // Assuming this import is for styles or a global component setup
+} from "../../utils/weekdayUtils"; 
+import "../Dropdown"; 
 
-// Internal display structure
 interface DisplayPeriod {
   startTime: string;
   endTime: string;
 }
 interface DisplayHourGroup {
-  day: string; // Display name like "Segunda", "Terça"
+  day: string; 
   periods: DisplayPeriod[];
 }
 
@@ -33,7 +32,6 @@ interface Props {
   onUpdateHours: (hours: OperatingHoursDto[]) => void;
 }
 
-// Opções para os dropdowns
 const dayOptions = [
   "Segunda",
   "Terça",
@@ -54,7 +52,6 @@ const timeOptions = [
   }),
 ];
 
-// Componente para o dropdown
 interface DropdownProps {
   options: string[];
   selectedValue: string;
@@ -64,7 +61,6 @@ interface DropdownProps {
   width?: number | string;
 }
 
-// Componente de dropdown com modal para garantir que as opções apareçam sobre outros elementos
 const Dropdown: React.FC<DropdownProps> = ({
   options,
   selectedValue,
@@ -86,7 +82,6 @@ const Dropdown: React.FC<DropdownProps> = ({
   const toggleDropdown = () => {
     if (!disabled) {
       if (!isOpen) {
-        // Capturar a posição do dropdown antes de abrir
         dropdownRef.current?.measure((_, __, width, height, pageX, pageY) => {
           setDropdownLayout({
             x: pageX,
@@ -107,7 +102,6 @@ const Dropdown: React.FC<DropdownProps> = ({
     setIsOpen(false);
   };
 
-  // Componente de modal para as opções do dropdown
   const renderDropdownOptions = () => {
     return (
       <Modal
@@ -201,14 +195,11 @@ const Dropdown: React.FC<DropdownProps> = ({
           />
         </TouchableOpacity>
       </View>
-
-      {/* Renderizar as opções do dropdown em um modal para garantir que fiquem acima de tudo */}
       {renderDropdownOptions()}
     </>
   );
 };
 
-// Componente principal
 const HoursSection: React.FC<Props> = ({ hours: operatingHoursProp, onUpdateHours }) => {
   const [displayedHours, setDisplayedHours] = useState<DisplayHourGroup[]>([]);
   const [newHourEntry, setNewHourEntry] = useState<{
@@ -223,15 +214,14 @@ const HoursSection: React.FC<Props> = ({ hours: operatingHoursProp, onUpdateHour
   const [isAddingNew, setIsAddingNew] = useState(false);
 
   const convertToActualDtoFormat = (
-    groups: DisplayHourGroup[] // Internal display format
-  ): OperatingHoursDto[] => { // Strict DTO for output
+    groups: DisplayHourGroup[] 
+  ): OperatingHoursDto[] => { 
     const actualDtos: OperatingHoursDto[] = [];
     groups.forEach(group => {
       const weekday = mapToWeekday(group.day);
       group.periods.forEach(period => {
-        // Only create a DTO if it's a valid opening period and maps to a Weekday
         if (period.startTime && period.endTime && period.startTime !== "Fechado" && period.endTime !== "Fechado") {
-          if (weekday) { // Ensure it's a valid weekday (filters out "Feriados")
+          if (weekday) {
             actualDtos.push({
               weekday: weekday,
               opensAt: period.startTime,
@@ -246,12 +236,11 @@ const HoursSection: React.FC<Props> = ({ hours: operatingHoursProp, onUpdateHour
 
   useEffect(() => {
     const convertToDisplayFormat = (
-      actualDtos: OperatingHoursDto[] // Strict DTO from props
+      actualDtos: OperatingHoursDto[] 
     ): DisplayHourGroup[] => {
       const grouped: { [key: string]: DisplayHourGroup } = {};
       actualDtos.forEach(dto => {
-        const dayName = mapFromWeekday(dto.weekday); // dto.weekday is mandatory
-        // dto.opensAt and dto.closesAt are mandatory
+        const dayName = mapFromWeekday(dto.weekday); 
           if (!grouped[dayName]) {
             grouped[dayName] = { day: dayName, periods: [] };
           }
@@ -264,7 +253,7 @@ const HoursSection: React.FC<Props> = ({ hours: operatingHoursProp, onUpdateHour
       Object.values(grouped).forEach(group => {
         group.periods.sort((a, b) => {
           const timeToMinutes = (timeStr: string) => {
-            if (timeStr === "Fechado") return Infinity; // Sort "Fechado" last or handle as needed
+            if (timeStr === "Fechado") return Infinity; 
             const [h, m] = timeStr.split(':').map(Number);
             return h * 60 + m;
           };
@@ -285,23 +274,20 @@ const HoursSection: React.FC<Props> = ({ hours: operatingHoursProp, onUpdateHour
     };
 
     const initialDisplayHoursFromProps = convertToDisplayFormat(operatingHoursProp);
-    
-    // Ensure all days from dayOptions are represented, marking them as "Fechado" if no hours are provided.
-    // "Feriados" will only be included if it came with actual times from props, otherwise it's not added by default.
+
     const allDisplayDays: DisplayHourGroup[] = dayOptions
       .map(dayString => {
         const existingDay = initialDisplayHoursFromProps.find(dh => dh.day === dayString);
         if (existingDay) {
           return existingDay;
         }
-        if (dayString !== "Feriados") { // Don't add "Feriados" by default if not in props
+        if (dayString !== "Feriados") { 
           return { day: dayString, periods: [{ startTime: "Fechado", endTime: "Fechado" }] };
         }
-        return null; // Skip "Feriados" if not in props
+        return null; 
       })
-      .filter(Boolean) as DisplayHourGroup[]; // Filter out nulls
+      .filter(Boolean) as DisplayHourGroup[]; 
 
-    // Sort again to ensure correct order after merging
     const dayOrderMap = dayOptions.reduce((acc, day, index) => {
         acc[day] = index;
         return acc;
@@ -371,9 +357,8 @@ const HoursSection: React.FC<Props> = ({ hours: operatingHoursProp, onUpdateHour
     if (existingDayIndex >= 0) {
       const dayGroup = updatedDisplayHours[existingDayIndex];
       if (isClosingTime) {
-        dayGroup.periods = [{ startTime: 'Fechado', endTime: 'Fechado' }]; // Represent "Fechado"
+        dayGroup.periods = [{ startTime: 'Fechado', endTime: 'Fechado' }]; 
       } else {
-        // Remove any "Fechado" placeholder if adding actual times
         dayGroup.periods = dayGroup.periods.filter(p => p.startTime !== "Fechado");
         
         const isDuplicate = dayGroup.periods.some(
@@ -393,19 +378,16 @@ const HoursSection: React.FC<Props> = ({ hours: operatingHoursProp, onUpdateHour
           });
         } else {
           Alert.alert("Aviso", "Este período de horário já existe para o dia selecionado.");
-          return; // Keep form open
+          return; 
         }
       }
     } else {
-      // This case should ideally not happen if all days are pre-populated.
-      // But if it does, add the new day group.
       updatedDisplayHours.push({
         day: selectedDay,
         periods: isClosingTime ? [{ startTime: 'Fechado', endTime: 'Fechado' }] : [{ startTime, endTime }],
       });
     }
 
-    // Sort all day groups by the predefined order
     const dayOrderMap = dayOptions.reduce((acc, day, index) => {
       acc[day] = index;
       return acc;
@@ -419,11 +401,11 @@ const HoursSection: React.FC<Props> = ({ hours: operatingHoursProp, onUpdateHour
     setDisplayedHours(updatedDisplayHours);
     onUpdateHours(convertToActualDtoFormat(updatedDisplayHours));
     setIsAddingNew(false);
-    setNewHourEntry({ day: '', startTime: '', endTime: '' }); // Reset form
+    setNewHourEntry({ day: '', startTime: '', endTime: '' }); 
   };
 
   const handleCancelNewHour = () => {
-    setNewHourEntry({ day: '', startTime: '', endTime: '' }); // Reset on cancel
+    setNewHourEntry({ day: '', startTime: '', endTime: '' }); 
     setIsAddingNew(false);
   };
 
@@ -480,7 +462,6 @@ const HoursSection: React.FC<Props> = ({ hours: operatingHoursProp, onUpdateHour
                 onSelect={(value: string) => {
                   if (value === "Feriados") {
                     Alert.alert("Aviso", "Horários para 'Feriados' não são salvos como horários regulares. Selecione um dia da semana ou marque como 'Fechado'.");
-                    // Optionally clear other fields or prevent selection
                   }
                   setNewHourEntry({
                     ...newHourEntry,
@@ -595,7 +576,6 @@ const HoursSection: React.FC<Props> = ({ hours: operatingHoursProp, onUpdateHour
   );
 };
 
-// Estilos para o dropdown
 const dropdownStyles = StyleSheet.create({
   container: {
     position: "relative",
@@ -671,7 +651,6 @@ const dropdownStyles = StyleSheet.create({
   },
 });
 
-// Estilos para o componente principal
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.orange.orangeTransparent,
@@ -838,7 +817,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 8,
   },
-  // Estilos para a tabela
   tableContainer: {
     backgroundColor: Colors.white,
     borderRadius: 12,
@@ -899,7 +877,7 @@ const styles = StyleSheet.create({
     color: Colors.gray.grayText,
   },
   closedText: {
-    color: Colors.gray.graySubtle, // More subtle color for "Fechado"
+    color: Colors.gray.graySubtle,
     fontStyle: 'italic',
   },
   actionCell: {

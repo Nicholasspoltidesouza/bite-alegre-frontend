@@ -68,10 +68,7 @@ const SignupInterests: React.FC = () => {
         if (userCreated) {
           Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
           router.push({
-            pathname: '/UserProfile',
-            params: {
-              userId: userCreated.id,
-            },
+            pathname: '/Login',
           });
         } else {
           Alert.alert('Dados inválidos para o cadastro do seu usuário.');
@@ -81,10 +78,7 @@ const SignupInterests: React.FC = () => {
         if (restaurantCreated) {
           Alert.alert('Sucesso', 'Restaurante cadastrado com sucesso!');
           router.push({
-            pathname: '/restaurantProfile',
-            params: {
-              restaurantId: restaurantCreated.id,
-            },
+            pathname: '/Login',
           });
         } else {
           Alert.alert('Dados inválidos para o cadastro do seu restaurante.');

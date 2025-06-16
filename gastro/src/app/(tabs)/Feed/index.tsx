@@ -42,7 +42,6 @@ export default function Feed() {
   useEffect(() => {
     if (latitude && longitude) {
       getFeed(latitude, longitude).then((data) => {
-        console.log('Feed data:', data);
         if (data) {
           setRestaurants(data.restaurants.map(mapRestaurantToCarouselItem));
         }

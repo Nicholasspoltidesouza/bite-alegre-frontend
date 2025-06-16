@@ -3,7 +3,7 @@ import Button from '@/src/components/Button';
 import Dropdown from '@/src/components/Dropdown';
 import SignupHeader from '@/src/components/SignupHeader';
 import CustomTextInput from '@/src/components/TextFieldCadastroUsuario';
-import ToggleSwitch from '@/src/components/ToggleSwitch'; // Importar o ToggleSwitch
+import ToggleSwitch from '@/src/components/ToggleSwitch'; 
 import Colors from '@/src/constants/Colors';
 import { useCreateUser } from '@/src/hooks/useUserApi';
 import { useRouter, useLocalSearchParams } from 'expo-router';
