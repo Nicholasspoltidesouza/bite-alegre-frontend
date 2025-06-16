@@ -23,22 +23,22 @@ export const usePublicationApi = () => {
   };
 
   const createPublication = async (newPublicationData: PublicationDTO): Promise<PublicationDTO | null> => {
-    const { url, description, restaurant_id } = newPublicationData;
+      const { media, description, restaurant_id } = newPublicationData;
 
-    const payload = {
-      url,
-      description,
-      restaurant_id,
-    };
+      const payload = {
+          media,
+          description,
+          restaurant_id
+      };
+      setLoading(true);
+      const responseData = await callApi(
+          publicationApiService.post<typeof payload, PublicationDTO>(payload)
+      );
 
-    const responseData = await callApi(
-      publicationApiService.post<typeof payload, PublicationDTO>(payload)
-    );
-
-    if (responseData) {
-      setData(responseData);
-    }
-    return responseData;
+      if (responseData) {
+          setData(responseData);
+      }
+      return responseData;
   };
 
   const getPublicationByUserId = async (

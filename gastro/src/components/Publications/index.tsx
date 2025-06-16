@@ -93,15 +93,24 @@ export const Publications: React.FC<Props> = ({ images }) => {
             key={`right-${image.id ?? index}`} 
             style={styles.imageContainer} 
             onPress={() => handlePress(image.id)}>
-          <Image
-            source={{ uri: image.url }}
-            style={{
-              width: columnWidth,
-              height: image.height,
-            }}
-          />
-        </TouchableOpacity>
-      ))}
+            {image.url && image.url.startsWith('http') ? (
+              <Image
+              source={{ uri: image.url }}
+              style={{
+                width: columnWidth,
+                height: image.height,
+              }}
+              />
+            ) : (
+              <MaterialIcons 
+                name="broken-image" 
+                size={columnWidth / 2} 
+                color="gray" 
+                style={{ alignSelf: 'center', marginVertical: image.height / 4 }}
+                    />
+            )}
+          </TouchableOpacity>
+        ))}
       </View>
     </ScrollView>
   );

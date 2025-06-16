@@ -1,7 +1,7 @@
 import { RestaurantDTO, ReviewDTO, CheckinDTO, PublicationDTO, MenuItemsDTO } from "../@types/DTO";
 
 export interface CarouselItem {
-  id: string;
+  id?: string;
   stars?: number;
   photo?: string;
   name?: string;
